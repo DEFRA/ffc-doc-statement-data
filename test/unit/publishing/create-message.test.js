@@ -17,6 +17,6 @@ describe('create message', () => {
 
   test('includes source', () => {
     const result = createMessage(body, type)
-    expect(result.source).toBe('ffc-pay-statement-data')
+    expect(result.source).toBe('ffc-doc-statement-data')
   })
 })

@@ -1,6 +1,6 @@
 apiVersion: v2
 description: FFC Statement data integration service
-name: ffc-pay-statement-data
+name: ffc-doc-statement-data
 # this version is automatically updated in the build pipeline
 version: 1.0.0
 dependencies:

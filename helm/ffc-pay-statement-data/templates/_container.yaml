@@ -1,2 +1,2 @@
-{{- define "ffc-pay-statement-data.container" -}}
+{{- define "ffc-doc-statement-data.container" -}}
 {{- end -}}

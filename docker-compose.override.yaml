@@ -3,18 +3,18 @@ version: '3.8'
 # to provide dependencies and expose ports for local testing
 
 services:
-  ffc-pay-statement-data:
+  ffc-doc-statement-data:
     build:
       target: development
-    image: ffc-pay-statement-data-development
-    container_name: ffc-pay-statement-data-development
+    image: ffc-doc-statement-data-development
+    container_name: ffc-doc-statement-data-development
     ports:
       - "9252:9229"
     volumes:
       - ./app:/home/node/app
       - ./package.json:/home/node/package.json
 
-  ffc-pay-statement-data-postgres:
+  ffc-doc-statement-data-postgres:
     ports:
       - "5452:5432"
     volumes:

@@ -1,9 +1,9 @@
 environment: development
 environmentCode:
-name: ffc-pay-statement-data
-namespace: ffc-pay
-workstream: ffc-pay
-image: ffc-pay-statement-data
+name: ffc-doc-statement-data
+namespace: ffc-doc
+workstream: ffc-doc
+image: ffc-doc-statement-data
 
 labels: {}
 
@@ -11,10 +11,10 @@ appInsights:
   key:
 
 containerConfigMap:
-  name: ffc-pay-statement-data-config-map
+  name: ffc-doc-statement-data-config-map
 
 containerSecret:
-  name: ffc-pay-statement-data-container-secret
+  name: ffc-doc-statement-data-container-secret
   type: Opaque
 
 deployment:
@@ -30,11 +30,11 @@ container:
   limitMemory: 150Mi
   limitCpu: 180m
   messageQueueHost: namespace.servicebus.windows.net
-  dataTopicAddress: ffc-pay-statement-data
+  dataTopicAddress: ffc-doc-statement-data
 
 postgresService:
-  postgresDb: ffc_pay_statement_data
-  postgresqlHost: ffc-pay-statement-data-postgres
+  postgresDb: ffc_doc_statement_data
+  postgresqlHost: ffc-doc-statement-data-postgres
   postgresPort: 5432
   postgresSchema: public
   postgresUser: postgres

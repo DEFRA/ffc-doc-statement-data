@@ -3,7 +3,7 @@
 set -e
 projectRoot="$(a="/$0"; a=${a%/*}; a=${a:-.}; a=${a#/}/; cd "$a/.." || return; pwd)"
 
-service="ffc-pay-statement-data"
+service="ffc-doc-statement-data"
 
 show_help() {
   echo "
