@@ -1,4 +1,4 @@
 version: '3.8'
 services:
-  ffc-pay-statement-data:
+  ffc-doc-statement-data:
     command: npm run start:debug

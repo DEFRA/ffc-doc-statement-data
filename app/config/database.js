@@ -30,7 +30,7 @@ const dbConfig = {
     ssl: isProd()
   },
   hooks,
-  host: process.env.POSTGRES_HOST || 'ffc-pay-statement-data-postgres',
+  host: process.env.POSTGRES_HOST || 'ffc-doc-statement-data-postgres',
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.POSTGRES_PORT || 5432,
   logging: process.env.POSTGRES_LOGGING || false,

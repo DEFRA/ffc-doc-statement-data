@@ -1,2 +1,2 @@
 #!/bin/sh
-docker exec -it ffc-pay-statement-data-development node app
+docker exec -it ffc-doc-statement-data-development node app

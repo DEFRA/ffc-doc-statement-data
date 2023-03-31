@@ -12,11 +12,11 @@ describe('create message', () => {
 
   test('includes type', () => {
     const result = createMessage(body, type)
-    expect(result.type).toBe('uk.gov.pay.statement.data.message')
+    expect(result.type).toBe('uk.gov.doc.statement.data.message')
   })
 
   test('includes source', () => {
     const result = createMessage(body, type)
-    expect(result.source).toBe('ffc-pay-statement-data')
+    expect(result.source).toBe('ffc-doc-statement-data')
   })
 })

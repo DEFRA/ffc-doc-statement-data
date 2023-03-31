@@ -3,11 +3,11 @@ version: '3.8'
 # that test output is saved to the host
 
 services:
-  ffc-pay-statement-data:
+  ffc-doc-statement-data:
     build:
       target: development
-    image: ffc-pay-statement-data-development
-    container_name: ffc-pay-statement-data-test
+    image: ffc-doc-statement-data-development
+    container_name: ffc-doc-statement-data-test
     command: npm run test
     volumes:
       - ./app:/home/node/app
@@ -16,7 +16,7 @@ services:
       - ./jest.config.js:/home/node/jest.config.js
       - ./package.json:/home/node/package.json
 
-  ffc-pay-statement-data-postgres:
+  ffc-doc-statement-data-postgres:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
