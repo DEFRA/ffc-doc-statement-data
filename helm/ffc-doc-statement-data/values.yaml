@@ -8,7 +8,7 @@ image: ffc-doc-statement-data
 labels: {}
 
 appInsights:
-  key:
+  connectionString:
 
 containerConfigMap:
   name: ffc-doc-statement-data-config-map
@@ -18,13 +18,11 @@ containerSecret:
   type: Opaque
 
 deployment:
-  restartPolicy: Always
-  priorityClassName: default
-  replicas: 1
+  minReplicas: 1
+  maxReplicas: 4
   minReadySeconds: 0
 
 container:
-  imagePullPolicy: Always
   requestMemory: 150Mi
   requestCpu: 120m
   limitMemory: 150Mi
