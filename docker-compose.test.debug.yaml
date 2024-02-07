@@ -3,4 +3,4 @@ services:
   ffc-doc-statement-data:
     command: npm run test:debug
     ports:
-      - "9252:9229"
+      - "9282:9229"
