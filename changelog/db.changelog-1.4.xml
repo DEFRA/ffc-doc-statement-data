@@ -62,7 +62,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="updated" type="DATE"/>
-                        <column name="datePublished" type="DATE">
                 <constraints nullable="false"/>
             </column>
             <column name="datePublished" type="DATE">
