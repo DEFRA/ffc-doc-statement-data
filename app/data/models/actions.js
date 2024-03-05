@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     annualValue: DataTypes.STRING(50),
     quarterlyValue: DataTypes.DECIMAL(15, 2),
     overDeclarationPenalty: DataTypes.DECIMAL(15, 2),
-    quarterlyPaymentAmount: DataTypes.DECIMAL(15, 2)
+    quarterlyPaymentAmount: DataTypes.DECIMAL(15, 2),
+    datePublished: { type: DataTypes.DATE, allowNull: true }
   },
   {
     tableName: 'actions',
