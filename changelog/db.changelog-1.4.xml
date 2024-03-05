@@ -61,7 +61,7 @@
             <column name="totalActionPayments" type="NUMERIC(15,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="DATE"/>
+            <column name="updated" type="DATE">
                 <constraints nullable="false"/>
             </column>
             <column name="datePublished" type="DATE">
