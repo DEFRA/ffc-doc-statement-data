@@ -6,7 +6,7 @@
 <changeSet id="2" author="Leigh Godson">
         <createTable tableName="dax">
             <column name="paymentReference" type="VARCHAR(30)">
-                <constraints primaryKey="true" nullable="false"/ primaryKeyName="daxId_pkey">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="daxId_pkey"/>
             </column>
             <column name="calculationId" type="INTEGER"/>
             <column name="paymentPeriod" type="VARCHAR(200)">
@@ -23,7 +23,7 @@
     <changeSet id="3" author="Leigh Godson">
         <createTable tableName="totals">
             <column name="calculationId" type="INTEGER">
-                <constraints primaryKey="true" nullable="false"/ primaryKeyName="totalsId_pkey">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="totalsId_pkey"/>
             </column>
             <column name="sbi" type="INTEGER">
                 <constraints nullable="false"/>
@@ -43,7 +43,7 @@
             <column name="calculationDate" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="invoiceNUmber" type="VARCHAR(20)">
+            <column name="invoiceNumber" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
             <column name="agreementStart" type="DATE">
@@ -63,8 +63,8 @@
     </changeSet>
     <changeSet id="4" author="Leigh Godson">
         <createTable tableName="actions">
-            <column name="pkid" type="INTEGER">
-                <constraints primaryKey="true"/ primaryKeyName="actionsId_pkey">
+            <column name="pkId" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="actionsId_pkey"/>
             </column>
             <column name="calculationId" type="INTEGER"/>
             <column name="fundingCode" type="VARCHAR(5)"/>
