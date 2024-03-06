@@ -38,6 +38,7 @@ describe('send calculation and organisation updates', () => {
   describe('When there are less calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource and 0 organisation records', () => {
     let numberOfRecordsCalculation
     let numberOfRecordsOrganisation
+
     let numberOfRecords
 
     beforeEach(async () => {
@@ -46,7 +47,9 @@ describe('send calculation and organisation updates', () => {
       numberOfRecords = numberOfRecordsCalculation + numberOfRecordsOrganisation
 
       await db.calculation.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
+      console.log('calculation is: ', numberOfRecordsCalculation)
       await db.funding.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+      console.log('funding is: ', numberOfRecordsCalculation)
     })
 
     test('should call sendMessage numberOfRecords times', async () => {
