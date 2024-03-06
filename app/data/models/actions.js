@@ -1,18 +1,27 @@
 module.exports = (sequelize, DataTypes) => {
+  const number2 = 2
+  const number5 = 5
+  const number6 = 6
+  const number10 = 10
+  const number15 = 15
+  const number18 = 18
+  const number50 = 50
+  const number100 = 100
+
   const action = sequelize.define('action', {
     pkId: { type: DataTypes.INTEGER, primaryKey: true },
     calculationId: DataTypes.INTEGER,
-    fundingCode: DataTypes.STRING(5),
-    groupName: DataTypes.STRING(100),
-    actionCode: DataTypes.STRING(5),
-    actionName: DataTypes.STRING(100),
-    rate: DataTypes.STRING(50),
-    landArea: DataTypes.DECIMAL(18, 6),
-    uom: DataTypes.STRING(10),
-    annualValue: DataTypes.STRING(50),
-    quarterlyValue: DataTypes.DECIMAL(15, 2),
-    overDeclarationPenalty: DataTypes.DECIMAL(15, 2),
-    quarterlyPaymentAmount: DataTypes.DECIMAL(15, 2),
+    fundingCode: DataTypes.STRING(number5),
+    groupName: DataTypes.STRING(number100),
+    actionCode: DataTypes.STRING(number5),
+    actionName: DataTypes.STRING(number100),
+    rate: DataTypes.STRING(number50),
+    landArea: DataTypes.DECIMAL(number18, number6),
+    uom: DataTypes.STRING(number10),
+    annualValue: DataTypes.STRING(number50),
+    quarterlyValue: DataTypes.DECIMAL(number15, number2),
+    overDeclarationPenalty: DataTypes.DECIMAL(number15, number2),
+    quarterlyPaymentAmount: DataTypes.DECIMAL(number15, number2),
     datePublished: { type: DataTypes.DATE, allowNull: true }
   },
   {
