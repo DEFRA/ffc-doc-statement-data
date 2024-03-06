@@ -19,6 +19,9 @@ const publish = require('../../../app/publishing')
 const { mockCalculation1 } = require('../../mocks/calculation')
 const { mockFunding1 } = require('../../mocks/funding')
 const { mockOrganisation1 } = require('../../mocks/organisation')
+const { mockAction1 } = require('../../mocks/actions')
+const { mockDax1 } = require('../../mocks/dax')
+const { mockTotal1 } = require('../../mocks/totals')
 
 describe('send calculation and organisation updates', () => {
   beforeEach(async () => {
@@ -38,6 +41,9 @@ describe('send calculation and organisation updates', () => {
   describe('When there are less calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource and 0 organisation records', () => {
     let numberOfRecordsCalculation
     let numberOfRecordsOrganisation
+    let numberOfRecordsAction
+    let numberOfRecordsDax
+    let numberOfRecordsTotal
     let numberOfRecords
 
     beforeEach(async () => {
@@ -47,6 +53,9 @@ describe('send calculation and organisation updates', () => {
 
       await db.calculation.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecordsCalculation).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
+      await db.action.bulkCreate([...Array(numberOfRecordsAction).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x } }))
+      await db.dax.bulkCreate([...Array(numberOfRecordsDax).keys()].map(x => { return { ...mockDax1, daxId: mockDax1.daxId + x } }))
+      await db.total.bulkCreate([...Array(numberOfRecordsTotal).keys()].map(x => { return { ...mockTotal1, totalId: mockTotal1.totalId + x } }))
     })
 
     test('should call sendMessage numberOfRecords times', async () => {

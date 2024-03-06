@@ -18,6 +18,9 @@ const publish = require('../../../app/publishing')
 
 const { mockCalculation1, mockCalculation3 } = require('../../mocks/calculation')
 const { mockFunding1, mockFunding3 } = require('../../mocks/funding')
+const { mockAction1 } = require('../../mocks/actions')
+const { mockDax1 } = require('../../mocks/dax')
+const { mockTotal1 } = require('../../mocks/totals')
 
 describe('send calculation updates', () => {
   beforeEach(async () => {
@@ -38,6 +41,9 @@ describe('send calculation updates', () => {
     beforeEach(async () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.create(mockFunding1)
+      await db.action.create(mockAction1)
+      await db.dax.create(mockDax1)
+      await db.total.create(mockTotal1)
     })
 
     test('should call sendMessage once', async () => {
