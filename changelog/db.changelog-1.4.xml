@@ -19,7 +19,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="datePublished" type="DATE">
-                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -65,7 +64,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="datePublished" type="DATE">
-                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -87,7 +85,6 @@
             <column name="overDeclarationPenalty" type="NUMERIC(15,2)"/>
             <column name="quarterlyPaymentAmount" type="NUMERIC(15,2)"/>
             <column name="datePublished" type="DATE">
-                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
