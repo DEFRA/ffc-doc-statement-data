@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   })
   action.associate = function (models) {
-    action.belongsTo(models.action, {
+    action.belongsTo(models.total, {
       foreignKey: 'calculationId',
       as: 'actions'
     })
