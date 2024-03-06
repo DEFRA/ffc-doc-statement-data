@@ -1,0 +1,101 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+<changeSet id ="1" author="Leigh Godson">
+    <tagDatabase tag="v1.4.0" />
+</changeSet>
+<changeSet id="2" author="Leigh Godson">
+        <createTable tableName="dax">
+            <column name="paymentReference" type="VARCHAR(30)">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="daxId_pkey"/>
+            </column>
+            <column name="calculationId" type="INTEGER"/>
+            <column name="paymentPeriod" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="totalQuarterlyPayment" type="NUMERIC">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transDate" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datePublished" type="DATE">
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="Leigh Godson">
+        <createTable tableName="totals">
+            <column name="calculationId" type="INTEGER">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="totalsId_pkey"/>
+            </column>
+            <column name="sbi" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frn" type="NUMERIC">
+                <constraints nullable="false"/>
+            </column>
+            <column name="agreementNumber" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="claimId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="schemeType" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calculationDate" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invoiceNumber" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="agreementStart" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="agreementEnd" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="totalAdditionalPayments" type="NUMERIC(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="totalActionPayments" type="NUMERIC(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datePublished" type="DATE">
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="Leigh Godson">
+        <createTable tableName="actions">
+            <column name="pkId" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="actionsId_pkey"/>
+            </column>
+            <column name="calculationId" type="INTEGER"/>
+            <column name="fundingCode" type="VARCHAR(5)"/>
+            <column name="groupName" type="VARCHAR(100)"/>
+            <column name="actionCode" type="VARCHAR(5)"/>
+            <column name="actionName" type="VARCHAR(100)"/>
+            <column name="rate" type="VARCHAR(50)"/>
+            <column name="landArea" type="NUMERIC(18,6)"/>
+            <column name="uom" type="VARCHAR(10)"/>
+            <column name="annualValue" type="VARCHAR(50)"/>
+            <column name="quarterlyValue" type="NUMERIC(15,2)"/>
+            <column name="overDeclarationPenalty" type="NUMERIC(15,2)"/>
+            <column name="quarterlyPaymentAmount" type="NUMERIC(15,2)"/>
+            <column name="datePublished" type="DATE">
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="Leigh Godson">
+        <addForeignKeyConstraint baseTableName="dax" baseColumnNames="calculationId" constraintName="fk_dax_totals" referencedTableName="totals" referencedColumnNames="calculationId"/>
+    </changeSet>
+    <changeSet id="6" author="Leigh Godson">
+        <addForeignKeyConstraint baseTableName="totals" baseColumnNames="sbi" constraintName="fk_totals_organisations" referencedTableName="organisations" referencedColumnNames="sbi"/>
+    </changeSet>
+    <changeSet id="7" author="Leigh Godson">
+        <addForeignKeyConstraint baseTableName="actions" baseColumnNames="calculationId" constraintName="fk_actions_totals" referencedTableName="totals" referencedColumnNames="calculationId"/>
+    </changeSet>
+
+</databaseChangeLog>
