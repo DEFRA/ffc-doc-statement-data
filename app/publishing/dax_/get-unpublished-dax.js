@@ -10,9 +10,6 @@ const getUnpublishedDax = async (transaction) => {
       [db.Sequelize.Op.or]: [
         {
           datePublished: null
-        },
-        {
-          datePublished: { [db.Sequelize.Op.lt]: db.sequelize.col('datePublished') }
         }
       ]
     },
