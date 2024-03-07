@@ -1,5 +1,5 @@
 const db = require('../../../app/data')
-const updatePublished = require('../../../app/publishing/totals_/update-published')
+const updatePublished = require('../../../app/publishing/totals/update-published')
 
 db.total = {
   update: jest.fn()

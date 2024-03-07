@@ -1,5 +1,5 @@
 const db = require('../../../app/data')
-const getActionsByCalculationId = require('../../../app/publishing/totals_/get-actions-by-calculation-id')
+const getActionsByCalculationId = require('../../../app/publishing/totals/get-actions-by-calculation-id')
 const { mockAction1, mockAction2, mockAction3 } = require('../../mocks/actions')
 
 db.action = {

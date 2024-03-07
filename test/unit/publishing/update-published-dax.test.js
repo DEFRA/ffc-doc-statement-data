@@ -1,5 +1,5 @@
 const db = require('../../../app/data')
-const updateDaxDatePublished = require('../../../app/publishing/dax_/update-published')
+const updateDaxDatePublished = require('../../../app/publishing/dax/update-published')
 const mockDax = { paymentReference: 'test', datePublished: null }
 
 db.dax = {

@@ -1,5 +1,5 @@
 const db = require('../../../app/data')
-const getUnpublishedTotals = require('../../../app/publishing/totals_/get-unpublished-totals')
+const getUnpublishedTotals = require('../../../app/publishing/totals/get-unpublished-totals')
 const { mockTotal1, mockTotal2, mockTotal3 } = require('../../mocks/totals')
 
 db.total = {
