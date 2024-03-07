@@ -8,14 +8,12 @@ db.dax = {
 
 describe('updateDaxDatePublished', () => {
   beforeEach(() => {
-
     db.dax.update.mockResolvedValue([1])
   })
 
   test('updateDaxDatePublished updates the correct data', async () => {
-    const transaction = {} 
+    const transaction = {}
     await updateDaxDatePublished(mockDax.paymentReference, transaction)
-
     expect(db.dax.update).toHaveBeenCalledWith(
       { datePublished: expect.any(Date) },
       { where: { paymentReference: mockDax.paymentReference }, transaction }

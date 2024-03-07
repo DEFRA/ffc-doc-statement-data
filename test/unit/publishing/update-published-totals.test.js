@@ -11,8 +11,8 @@ describe('updatePublished', () => {
   })
 
   test('updatePublished updates the correct data', async () => {
-    const transaction = {} 
-    const calculationId = 1234567 
+    const transaction = {}
+    const calculationId = 1234567
     await updatePublished(calculationId, transaction)
 
     expect(db.total.update).toHaveBeenCalledWith(
