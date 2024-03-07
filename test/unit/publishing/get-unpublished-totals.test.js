@@ -30,7 +30,7 @@ describe('getUnpublishedTotals', () => {
           }
         ]
       },
-      attributes: ['calculationId', 'sbi', 'frn', 'calculationDate', 'invoiceNumber', 'schemeType', 'updated', 'datePublished'],
+      attributes: ['calculationId', 'sbi', 'frn', 'agreementNumber', 'claimId', 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'updated', 'datePublished'],
       raw: true,
       transaction
     })
