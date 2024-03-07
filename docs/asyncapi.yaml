@@ -4,11 +4,19 @@ info:
   version: '1.0.1'
   description: Publish datasets from Data Warehouse for Payment Statements
 channels:
+  calculation:
+    publish:
+      message:
+        $ref: '#/components/messages/Calculation'
+  dax:
+    publish:
+      message:
+        $ref: '#/components/messages/Organisation'
   organisation:
     publish:
       message:
         $ref: '#/components/messages/Organisation'
-  calculation:
+  totals:
     publish:
       message:
         $ref: '#/components/messages/Calculation'
@@ -21,6 +29,16 @@ components:
         $ref: '#/components/schemas/Organisation'
     Calculation:
       name: Calculation
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Calculation'
+    Dax:
+      name: Dax
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Organisation'
+    Totals:
+      name: Totals
       contentType: application/json
       payload:
         $ref: '#/components/schemas/Calculation'
@@ -82,7 +100,7 @@ components:
     BusinessName:
       type: string
       description: The business name
-      example: 'FFC Ltd'
+      example: FFC Ltd
     SBI:
       type: number
       description: Single Business Identifier
@@ -127,7 +145,7 @@ components:
       type: string
       format: date-time
       description: The date the dataset received from Data Warehouse
-      example: "2022-08-22T16:45:20.891Z"
+      example: '2022-08-22T16:45:20.891Z'
     CalculationReference:
       type: number
       description: Calculation reference Id
@@ -136,14 +154,14 @@ components:
       type: string
       format: date-time
       description: The date the calculation was performed
-      example: "2022-08-22T16:45:20.891Z"
+      example: '2022-08-22T16:45:20.891Z'
     InvoiceNumber:
       type: string
       description: Invoice number of payment request
       example: S0000001C000001V001
     InvoiceNumberSitiAgri:
       type: string
-      pattern: ^SFI0[0-9]{7}$
+      pattern: '^SFI0[0-9]{7}$'
       description: Unique identifier for payment request in Siti Agri format
       example: SFI012345678
     Scheme:
@@ -167,16 +185,16 @@ components:
       type: number
       format: decimal
       description: The area claimed for the calculation in hectares
-      example: 100.50
+      example: 100.5
     Rate:
       type: number
       format: decimal
       description: Payment in pounds sterling per hectare
-      example: 22.50
+      example: 22.5
     Type:
       type: string
       description: Type of dataset
       example: organisation
       enum:
-      - calculation
-      - organisation
+        - calculation
+        - organisation
