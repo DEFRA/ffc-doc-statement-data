@@ -1,17 +1,54 @@
-asyncapi: 2.5.0
+asyncapi: 3.0.0
 info:
   title: FFC Payment Statement Data
-  version: '1.0.1'
+  version: 1.0.1
   description: Publish datasets from Data Warehouse for Payment Statements
 channels:
-  organisation:
-    publish:
-      message:
-        $ref: '#/components/messages/Organisation'
   calculation:
-    publish:
-      message:
+    address: calculation
+    messages:
+      publish.message:
         $ref: '#/components/messages/Calculation'
+  dax:
+    address: dax
+    messages:
+      publish.message:
+        $ref: '#/components/messages/Dax'
+  organisation:
+    address: organisation
+    messages:
+      publish.message:
+        $ref: '#/components/messages/Organisation'
+  totals:
+    address: totals
+    messages:
+      publish.message:
+        $ref: '#/components/messages/Totals'
+operations:
+  calculation.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/calculation'
+    messages:
+      - $ref: '#/channels/calculation/messages/publish.message'
+  dax.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/dax'
+    messages:
+      - $ref: '#/channels/dax/messages/publish.message'
+  organisation.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/organisation'
+    messages:
+      - $ref: '#/channels/organisation/messages/publish.message'
+  totals.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/totals'
+    messages:
+      - $ref: '#/channels/totals/messages/publish.message'
 components:
   messages:
     Organisation:
@@ -24,7 +61,57 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/Calculation'
+    Dax:
+      name: Dax
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Dax'
+    Totals:
+      name: Totals
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Totals'
   schemas:
+    Calculation:
+      type: object
+      properties:
+        calculationReference:
+          $ref: '#/components/schemas/CalculationReference'
+        sbi:
+          $ref: '#/components/schemas/SBI'
+        frn:
+          $ref: '#/components/schemas/FRN'
+        calculationDate:
+          $ref: '#/components/schemas/CalculationDate'
+        invoiceNumber:
+          $ref: '#/components/schemas/InvoiceNumber'
+        invoiceNumberSitiAgri:
+          $ref: '#/components/schemas/InvoiceNumberSitiAgri'
+        scheme:
+          $ref: '#/components/schemas/Scheme'
+        updated:
+          $ref: '#/components/schemas/Updated'
+        fundings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Funding'
+        type:
+          $ref: '#/components/schemas/TypeCalculation'
+    Dax:
+      type: object
+      properties:
+        paymentReference:
+          $ref: '#/components/schemas/PaymentReference'
+        calculationId:
+          $ref: '#/components/schemas/CalculationId'
+        paymentPeriod:
+          $ref: '#/components/schemas/PaymentPeriod'
+        transactionDate:
+          $ref: '#/components/schemas/TransactionDate'
+        paymentAmount:
+          $ref: '#/components/schemas/PaymentAmount'
+        type:
+          $ref: '#/components/schemas/TypeDax'
     Organisation:
       type: object
       properties:
@@ -53,36 +140,108 @@ components:
         updated:
           $ref: '#/components/schemas/Updated'
         type:
-          $ref: '#/components/schemas/Type'
-    Calculation:
+          $ref: '#/components/schemas/TypeOrganisation'
+    Totals:
       type: object
       properties:
-        calculationReference:
-          $ref: '#/components/schemas/CalculationReference'
+        calculationId:
+          $ref: '#/components/schemas/CalculationId'
         sbi:
           $ref: '#/components/schemas/SBI'
         frn:
           $ref: '#/components/schemas/FRN'
+        agreementNumber:
+          $ref: '#/components/schemas/AgreementNumber'
+        agreementEnd:
+          $ref: '#/components/schemas/AgreementEnd'
+        agreementStart:
+          $ref: '#/components/schemas/AgreementStart'
+        claimId:
+          $ref: '#/components/schemas/ClaimId'
         calculationDate:
           $ref: '#/components/schemas/CalculationDate'
         invoiceNumber:
           $ref: '#/components/schemas/InvoiceNumber'
-        invoiceNumberSitiAgri:
-          $ref: '#/components/schemas/InvoiceNumberSitiAgri'
-        scheme:
+        schemeType:
           $ref: '#/components/schemas/Scheme'
+        totalActionPayment:
+          $ref: '#/components/schemas/TotalActionPayment'
+        totalAdditionalPayment:
+          $ref: '#/components/schemas/TotalAdditionalPayment'
+        totalPayment:
+          $ref: '#/components/schemas/TotalPayment'
         updated:
           $ref: '#/components/schemas/Updated'
-        fundings:
+        actions:
           type: array
           items:
-            $ref: '#/components/schemas/Funding'
+            $ref: '#/components/schemas/Action'
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: '#/components/schemas/TypeTotals'
+    Action:
+      type: object
+      properties:
+        actionId:
+          $ref: '#/components/schemas/ActionId'
+        calculationId:
+          $ref: '#/components/schemas/CalculationId'
+        actionCode:
+          $ref: '#/components/schemas/ActionCode'
+        actionName:
+          $ref: '#/components/schemas/ActionName'
+        annualValue:
+          $ref: '#/components/schemas/AnnualValue'
+        fundingCode:
+          $ref: '#/components/schemas/FundingCode'
+        groupName:
+          $ref: '#/components/schemas/GroupName'
+        landArea:
+          $ref: '#/components/schemas/AreaClaimed'
+        overDeclarationPenalty:
+          $ref: '#/components/schemas/OverDeclarationPenalty'
+        quarterlyPaymentAmount:
+          $ref: '#/components/schemas/QuarterlyPaymentAmount'
+        quarterlyValue:
+          $ref: '#/components/schemas/QuarterlyValue'
+        rate:
+          $ref: '#/components/schemas/Rate'
+        uom:
+          $ref: '#/components/schemas/UnitOfMeasure'
+    ActionCode:
+      type: string
+      description: Identifier for action code within scheme
+      example: 80001
+    ActionId:
+      type: number
+      description: Unique identifier (pkId) for action
+      example: 1234567
+    ActionName:
+      type: string
+      description: Name of the action
+      example: Manage hedgerows
+    AgreementNumber:
+      type: number
+      description: Unique identifier for agreement
+      example: 123456789
+    AgreementEnd:
+      type: string
+      format: date-time
+      description: The date the Agreement End
+      example: '2022-08-22T16:45:20.891Z'
+    AgreementStart:
+      type: string
+      format: date-time
+      description: The date the Agreement Start
+      example: '2022-08-22T16:45:20.891Z'
+    AnnualValue:
+      type: number
+      format: decimal
+      description: The annual value of the action
+      example: 402.00
     BusinessName:
       type: string
       description: The business name
-      example: 'FFC Ltd'
+      example: FFC Ltd
     SBI:
       type: number
       description: Single Business Identifier
@@ -127,7 +286,11 @@ components:
       type: string
       format: date-time
       description: The date the dataset received from Data Warehouse
-      example: "2022-08-22T16:45:20.891Z"
+      example: '2022-08-22T16:45:20.891Z'
+    CalculationId:
+      type: number
+      description: Key field for calculation Data 
+      example: 1234567
     CalculationReference:
       type: number
       description: Calculation reference Id
@@ -136,20 +299,24 @@ components:
       type: string
       format: date-time
       description: The date the calculation was performed
-      example: "2022-08-22T16:45:20.891Z"
+      example: '2022-08-22T16:45:20.891Z'
+    ClaimId:
+      type: number
+      description: Unique Identifier for claim
+      example: 12345687
     InvoiceNumber:
       type: string
       description: Invoice number of payment request
       example: S0000001C000001V001
     InvoiceNumberSitiAgri:
       type: string
-      pattern: ^SFI0[0-9]{7}$
+      pattern: '^SFI0[0-9]{7}$'
       description: Unique identifier for payment request in Siti Agri format
       example: SFI012345678
     Scheme:
       type: string
       description: The scheme of the calculation belongs to
-      example: SFI
+      example: SFI-23
     Funding:
       type: object
       properties:
@@ -167,16 +334,82 @@ components:
       type: number
       format: decimal
       description: The area claimed for the calculation in hectares
-      example: 100.50
+      example: 84.05
+    GroupName:
+      type: string
+      description: The group name of the action
+      example: Actions for hedgerows
+    OverDeclarationPenalty:
+      type: number
+      format: decimal
+      description: The over declaration penalty
+      example: 120.50
+    PaymentAmount:
+      type: number
+      format: decimal
+      description: The payment amount
+      example: 800.05
+    PaymentPeriod:
+      type: string
+      description: The period covered by the payment
+      example: April 2022 to June 2022
+    PaymentReference:
+      type: string
+      description: Unique identifier for payment as shown on the remittance advice
+      example: PY1234545
+    QuarterlyPaymentAmount:
+      type: number
+      format: decimal
+      description: The quarterly payment amount
+      example: 100.5
+    QuarterlyValue:
+      type: number
+      format: decimal
+      description: The quarterly value
+      example: 100.5
+    UnitOfMeasure:
+      type: string
+      description: The unit of measure
+      example: Ha
     Rate:
       type: number
       format: decimal
       description: Payment in pounds sterling per hectare
-      example: 22.50
-    Type:
+      example: 22.5
+    TotalActionPayment:
+      type: number
+      format: decimal
+      description: Sum of all Action Payment
+      example: 100.5
+    TotalAdditionalPayment:
+      type: number
+      format: decimal
+      description: Sum of all Additional Payment
+      example: 50.2
+    TotalPayment:
+      type: number
+      format: decimal
+      description: Sum of all Payment
+      example: 150.7
+    TransactionDate:
       type: string
-      description: Type of dataset
+      format: date-time
+      description: The date the transaction was made
+      example: '2022-08-22T16:45:20.891Z'
+    TypeCalculation:
+      type: string
+      description: Constant CALCULATION
+      example: calculation
+    TypeDax:
+      type: string
+      description: Constant DAX
+      example: dax
+    TypeOrganisation:
+      type: string
+      description: Constant ORGANISATION
       example: organisation
-      enum:
-      - calculation
-      - organisation
+    TypeTotals:
+      type: string
+      description: Constant TOTALS
+      example: totals
+

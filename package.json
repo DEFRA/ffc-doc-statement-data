@@ -1,6 +1,6 @@
 {
   "name": "ffc-doc-statement-data",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-doc-statement-data",
   "main": "app/index.js",
@@ -16,6 +16,7 @@
   "author": "Defra",
   "contributors": [
     "Marc Templeton m.templeton@kainos.com",
+    "Abidemi Adio abidemi.adio@defra.gov.uk",
     "Leigh Godson leigh.godson.external@eviden.com",
     "Amirs Ishmuhametovs amirs.ishmuhametovs@defra.gov.uk"
   ],
