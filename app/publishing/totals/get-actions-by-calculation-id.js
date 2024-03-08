@@ -5,7 +5,7 @@ const getActionsByCalculationId = async (calculationId, transaction) => {
     where: {
       calculationId
     },
-    attributes: ['actionId', 'calculationId', 'fundingCode', 'groupName', 'actionCode', 'actionName', 'rate', 'landArea', 'uom', 'annualValue', 'quarterlyValue', 'overDeclarationPenalty', 'quarterlyPaymentAmount', 'datePublished'],
+    attributes: ['actionId',['actionId','actionReference'], 'calculationId',['calculationId','calculationReference'], 'fundingCode', 'groupName', 'actionCode', 'actionName', 'rate', 'landArea', 'uom', 'annualValue', 'quarterlyValue', 'overDeclarationPenalty', 'quarterlyPaymentAmount', 'datePublished'],
     raw: true,
     transaction
   })
