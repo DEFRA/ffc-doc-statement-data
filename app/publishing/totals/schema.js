@@ -21,6 +21,7 @@ module.exports = Joi.object({
   agreementEnd: Joi.date().required(),
   totalAdditionalPayments: Joi.number().precision(number15).required(),
   totalActionPayments: Joi.number().precision(number15).required(),
+  totalPayment: Joi.number().precision(number15).required(),
   updated: Joi.date().required(),
   datePublished: Joi.date(),
   type: Joi.string().required().allow(TOTALS)

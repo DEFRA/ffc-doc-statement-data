@@ -11,6 +11,7 @@ const mockTotal1 = {
   agreementEnd: new Date(2026, 7, 5, 15, 30, 10, 120),
   totalAdditionalPayments: 1000,
   totalActionPayments: 13455.99,
+  totalPayment: 13455.99,
   updated: new Date(2024, 7, 5, 15, 30, 10, 120)
 }
 
@@ -27,6 +28,7 @@ const mockTotal2 = {
   agreementEnd: new Date(2026, 7, 5, 15, 30, 10, 120),
   totalAdditionalPayments: 1000,
   totalActionPayments: 13455.99,
+  totalPayment: 13455.99,
   updated: new Date(2024, 7, 5, 15, 30, 10, 120)
 }
 
@@ -43,6 +45,7 @@ const mockTotal3 = {
   agreementEnd: new Date(2026, 7, 5, 15, 30, 10, 120),
   totalAdditionalPayments: 1000,
   totalActionPayments: 13455.99,
+  totalPayment: 13455.99,
   updated: new Date(2024, 7, 5, 15, 30, 10, 120)
 }
 

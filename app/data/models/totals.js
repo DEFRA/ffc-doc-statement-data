@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     agreementEnd: { type: DataTypes.DATE, allowNull: false },
     totalAdditionalPayments: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
     totalActionPayments: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
+    totalPayment: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
     updated: { type: DataTypes.DATE },
     datePublished: { type: DataTypes.DATE, allowNull: true }
   },
