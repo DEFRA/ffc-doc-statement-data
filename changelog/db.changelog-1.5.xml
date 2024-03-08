@@ -3,10 +3,12 @@
     <changeSet id="1" author="Leigh Godson">
         <tagDatabase tag="v1.5.0" />
     </changeSet>
+    
     <changeSet id="2" author="Leigh Godson">
         <renameColumn tableName="dax" oldColumnName="totalQuarterlyPayment" newColumnName="paymentAmount" />
         <renameColumn tableName="dax" oldColumnName="transDate" newColumnName="transactionDate" />
     </changeSet>
+
     <changeSet id="3" author="Leigh Godson">
         <addColumn tableName="totals">
             <column name="totalPayment" type="NUMERIC(15,2)">
@@ -14,6 +16,7 @@
             </column>
         </addColumn>
     </changeSet>
+
     <changeSet id="4" author="Leigh Godson">
         <renameColumn tableName="actions" oldColumnName="pkId" newColumnName="actionId" />
         <modifyDataType tableName="actions" columnName="rate" newDataType="VARCHAR(100)" />
