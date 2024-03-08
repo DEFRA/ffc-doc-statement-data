@@ -14,11 +14,11 @@ const number50 = 50
 const number100 = 100
 
 module.exports = Joi.object({
-  totalReference: Joi.number().integer().required(),
+  calculationReference: Joi.number().integer().required(),
   sbi: Joi.number().integer().min(minSbi).max(maxSbi).required(),
   frn: Joi.number().integer().min(minFrn).max(maxFrn).required(),
   agreementNumber: Joi.number().integer().required(),
-  idClaim: Joi.number().integer().required(),
+  claimReference: Joi.number().integer().required(),
   schemeType: Joi.string().max(number50).required(),
   calculationDate: Joi.date().required(),
   invoiceNumber: Joi.string().max(number20).required(),
@@ -31,14 +31,14 @@ module.exports = Joi.object({
   datePublished: Joi.date(),
   type: Joi.string().required().allow(TOTALS),
   actions: Joi.array().items(Joi.object({
-    actionReference: Joi.number().required(),
-    calculationReference: Joi.number().required(),
+    //actionReference: Joi.number().required(),
+    //calculationReference: Joi.number().required(),
     actionCode: Joi.string().max(number5).required(),
     actionName: Joi.string().max(number100).required(),
     fundingCode: Joi.string().max(number5).required(),
     rate: Joi.string().required().max(number100).required(),
-    landArea: Joi.number().max(number18),
-    uom: Joi.string().max(number10).required(),
+    landArea: Joi.string().max(number18),
+    uom: Joi.string().max(number10),
     annualValue: Joi.string().max(number50).required(),
     quarterlyValue: Joi.string().max(number15).required(),
     overDeclarationPenalty: Joi.number().max(number15).required(),

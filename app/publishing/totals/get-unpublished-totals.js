@@ -16,7 +16,7 @@ const getUnpublishedTotals = async (transaction) => {
         }
       ]
     },
-    attributes: ['calculationId',['calculationId', 'totalReference'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'idClaim'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
+    attributes: ['calculationId',['calculationId', 'calculationReference'],['calculationId', 'totalsId'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'claimReference'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
     raw: true,
     transaction
   })
