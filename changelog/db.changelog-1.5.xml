@@ -11,7 +11,7 @@
 
     <changeSet id="3" author="Leigh Godson">
         <addColumn tableName="totals">
-            <column name="totalPayment" type="NUMERIC(15,2)">
+            <column name="totalPayments" type="NUMERIC(15,2)">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

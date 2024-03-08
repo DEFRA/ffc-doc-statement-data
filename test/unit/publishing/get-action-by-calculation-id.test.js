@@ -18,7 +18,7 @@ describe('getActionsByCalculationId', () => {
     expect(result).toEqual([mockAction1, mockAction2, mockAction3])
     expect(db.action.findAll).toHaveBeenCalledWith({
       where: { calculationId },
-      attributes: ['pkId', 'calculationId', 'fundingCode', 'groupName', 'actionCode', 'actionName', 'rate', 'landArea', 'uom', 'annualValue', 'quarterlyValue', 'overDeclarationPenalty', 'quarterlyPaymentAmount', 'datePublished'],
+      attributes: ['actionId', 'calculationId', 'fundingCode', 'groupName', 'actionCode', 'actionName', 'rate', 'landArea', 'uom', 'annualValue', 'quarterlyValue', 'overDeclarationPenalty', 'quarterlyPaymentAmount', 'datePublished'],
       raw: true,
       transaction
     })
