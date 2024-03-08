@@ -6,7 +6,6 @@ const maxSbi = 999999999
 const minFrn = 1000000000
 const maxFrn = 9999999999
 const number5 = 5
-const number7 = 7
 const number10 = 10
 const number15 = 15
 const number18 = 18
@@ -36,7 +35,7 @@ module.exports = Joi.object({
     calculationReference: Joi.number().required(),
     actionCode: Joi.string().max(number5).required(),
     actionName: Joi.string().max(number100).required(),
-    fundingCode: Joi.string().max(number7).required(),
+    fundingCode: Joi.string().max(number5).required(),
     rate: Joi.string().required().max(number100).required(),
     landArea: Joi.number().max(number18),
     uom: Joi.string().max(number10).required(),
