@@ -7,7 +7,6 @@ const publish = async () => {
     sendUpdates(CALCULATION),
     sendUpdates(TOTALS),
     sendUpdates(DAX)
-
   ])
 }
 
