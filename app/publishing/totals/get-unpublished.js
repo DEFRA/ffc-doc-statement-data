@@ -7,7 +7,7 @@ const getUnpublished = async (transaction) => {
   const unpublished = []
 
   for (const total of totals) {
-    const actions = await getActionsByCalculationId(total.calculationId, transaction)
+    const actions = await getActionsByCalculationId(total.calculationReference, transaction)
     unpublished.push({
       ...total,
       actions
