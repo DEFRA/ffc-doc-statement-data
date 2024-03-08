@@ -1,7 +1,7 @@
 const db = require('../../data')
 const { publishingConfig } = require('../../config')
 
-const getUnpublishedTotals = async (transaction) => {
+const getUnpublishedTotal = async (transaction) => {
   return db.total.findAll({
     lock: true,
     skipLocked: true,
@@ -22,4 +22,4 @@ const getUnpublishedTotals = async (transaction) => {
   })
 }
 
-module.exports = getUnpublishedTotals
+module.exports = getUnpublishedTotal

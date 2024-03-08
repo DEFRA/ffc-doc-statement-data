@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { TOTALS } = require('../types')
+const { TOTAL } = require('../types')
 
 const minSbi = 105000000
 const maxSbi = 999999999
@@ -29,10 +29,10 @@ module.exports = Joi.object({
   totalPayments: Joi.number().precision(number15).required(),
   updated: Joi.date().required(),
   datePublished: Joi.date(),
-  type: Joi.string().required().allow(TOTALS),
+  type: Joi.string().required().allow(TOTAL),
   actions: Joi.array().items(Joi.object({
-    //actionReference: Joi.number().required(),
-    //calculationReference: Joi.number().required(),
+    actionReference: Joi.number().required(),
+    calculationReference: Joi.number().required(),
     actionCode: Joi.string().max(number5).required(),
     actionName: Joi.string().max(number100).required(),
     fundingCode: Joi.string().max(number5).required(),

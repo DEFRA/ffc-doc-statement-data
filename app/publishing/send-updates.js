@@ -5,10 +5,12 @@ const removeDefunctValues = require('./remove-defunct-values')
 const validateUpdate = require('./validate-update')
 
 const sendUpdates = async (type) => {
+ 
   const getUnpublished = require(`./${type}/get-unpublished`)
   const updatePublished = require(`./${type}/update-published`)
   const transaction = await db.sequelize.transaction()
   let totalPublished = 0
+
   try {
     const outstanding = await getUnpublished(transaction)
     for (const unpublished of outstanding) {
