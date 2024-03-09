@@ -20,5 +20,17 @@
     <changeSet id="4" author="Leigh Godson">
         <renameColumn tableName="actions" oldColumnName="pkId" newColumnName="actionId" />
         <modifyDataType tableName="actions" columnName="rate" newDataType="VARCHAR(100)" />
+        <modifyDataType tableName="dax" columnName="transactionDate" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="dax" columnName="datePublished" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="calculationDate" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="agreementStart" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="agreementEnd" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="updated" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="datePublished" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="actions" columnName="datePublished" newDataType="TIMESTAMP" />
+    </changeSet>
+    <changeSet author="Leigh Godson" id="5">
+        <dropForeignKeyConstraint baseTableName="dax" baseColumnNames="calculationId" constraintName="fk_dax_totals" referencedTableName="totals" referencedColumnNames="calculationId"/>
+        <dropForeignKeyConstraint baseTableName="totals" baseColumnNames="sbi" constraintName="fk_totals_organisations" referencedTableName="organisations" referencedColumnNames="sbi"/>    
     </changeSet>
 </databaseChangeLog>
