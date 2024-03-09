@@ -1,11 +1,11 @@
-const getUnpublished = require('../../../app/publishing/totals/get-unpublished')
-const getUnpublishedTotals = require('../../../app/publishing/totals/get-unpublished-totals')
-const getActionsByCalculationId = require('../../../app/publishing/totals/get-actions-by-calculation-id')
+const getUnpublished = require('../../../app/publishing/total/get-unpublished')
+const getUnpublishedTotals = require('../../../app/publishing/total/get-unpublished-total')
+const getActionsByCalculationId = require('../../../app/publishing/total/get-actions-by-calculation-id')
 const { mockTotal1, mockTotal2, mockTotal3 } = require('../../mocks/totals')
 const { mockAction1, mockAction2, mockAction3 } = require('../../mocks/actions')
 
-jest.mock('../../../app/publishing/totals/get-unpublished-totals')
-jest.mock('../../../app/publishing/totals/get-actions-by-calculation-id')
+jest.mock('../../../app/publishing/total/get-unpublished-total')
+jest.mock('../../../app/publishing/total/get-actions-by-calculation-id')
 
 describe('getUnpublished', () => {
   beforeEach(() => {

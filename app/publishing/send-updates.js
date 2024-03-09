@@ -5,7 +5,6 @@ const removeDefunctValues = require('./remove-defunct-values')
 const validateUpdate = require('./validate-update')
 
 const sendUpdates = async (type) => {
- 
   const getUnpublished = require(`./${type}/get-unpublished`)
   const updatePublished = require(`./${type}/update-published`)
   const transaction = await db.sequelize.transaction()
