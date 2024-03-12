@@ -1,5 +1,5 @@
 const db = require('../../../app/data')
-const getActionsByCalculationId = require('../../../app/publishing/totals/get-actions-by-calculation-id')
+const getActionsByCalculationId = require('../../../app/publishing/total/get-actions-by-calculation-id')
 const { mockAction1, mockAction2, mockAction3 } = require('../../mocks/actions')
 
 db.action = {
@@ -18,7 +18,7 @@ describe('getActionsByCalculationId', () => {
     expect(result).toEqual([mockAction1, mockAction2, mockAction3])
     expect(db.action.findAll).toHaveBeenCalledWith({
       where: { calculationId },
-      attributes: ['pkId', 'calculationId', 'fundingCode', 'groupName', 'actionCode', 'actionName', 'rate', 'landArea', 'uom', 'annualValue', 'quarterlyValue', 'overDeclarationPenalty', 'quarterlyPaymentAmount', 'datePublished'],
+      attributes: ['actionId', ['actionId', 'actionReference'], ['calculationId', 'calculationReference'], 'fundingCode', 'groupName', 'actionCode', 'actionName', 'rate', 'landArea', 'uom', 'annualValue', 'quarterlyValue', 'overDeclarationPenalty', 'quarterlyPaymentAmount', 'datePublished'],
       raw: true,
       transaction
     })

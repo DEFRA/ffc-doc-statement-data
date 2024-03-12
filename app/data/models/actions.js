@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
   const number100 = 100
 
   const action = sequelize.define('action', {
-    pkId: { type: DataTypes.INTEGER, primaryKey: true },
+    actionId: { type: DataTypes.INTEGER, primaryKey: true },
     calculationId: DataTypes.INTEGER,
     fundingCode: DataTypes.STRING(number5),
     groupName: DataTypes.STRING(number100),
     actionCode: DataTypes.STRING(number5),
     actionName: DataTypes.STRING(number100),
-    rate: DataTypes.STRING(number50),
+    rate: DataTypes.STRING(number100),
     landArea: DataTypes.DECIMAL(number18, number6),
     uom: DataTypes.STRING(number10),
     annualValue: DataTypes.STRING(number50),
