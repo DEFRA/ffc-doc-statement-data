@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   const total = sequelize.define('total', {
     calculationId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     sbi: { type: DataTypes.INTEGER, allowNull: false },
-    frn: { type: DataTypes.DECIMAL, allowNull: false },
+    frn: { type: DataTypes.BIGINT, allowNull: false },
     agreementNumber: { type: DataTypes.INTEGER, allowNull: false },
     claimId: { type: DataTypes.INTEGER, allowNull: false },
     schemeType: { type: DataTypes.STRING(number50), allowNull: false },
