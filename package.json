@@ -1,6 +1,6 @@
 {
   "name": "ffc-doc-statement-data",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-doc-statement-data",
   "main": "app/index.js",
@@ -18,7 +18,7 @@
     "Marc Templeton m.templeton@kainos.com",
     "Abidemi Adio abidemi.adio@defra.gov.uk",
     "Leigh Godson leigh.godson.external@eviden.com",
-    "Amirs  Ishmuhametovs amirs.ishmuhametovs@defra.gov.uk"
+    "Amirs Ishmuhametovs amirs.ishmuhametovs@defra.gov.uk"
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {
