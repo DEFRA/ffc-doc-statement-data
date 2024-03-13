@@ -1,8 +1,8 @@
-const getUnpublishedTotals = require('./get-unpublished-totals')
+const getUnpublishedTotal = require('./get-unpublished-total')
 const getActionsByCalculationId = require('./get-actions-by-calculation-id')
 
 const getUnpublished = async (transaction) => {
-  const totals = await getUnpublishedTotals(transaction)
+  const totals = await getUnpublishedTotal(transaction)
 
   const unpublished = []
 

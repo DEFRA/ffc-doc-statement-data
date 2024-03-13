@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     paymentReference: { type: DataTypes.STRING(number30), primaryKey: true, allowNull: false },
     calculationId: { type: DataTypes.INTEGER },
     paymentPeriod: { type: DataTypes.STRING(number200), allowNull: false },
-    totalQuarterlyPayment: { type: DataTypes.DECIMAL, allowNull: false },
-    transDate: { type: DataTypes.DATE, allowNull: false },
+    paymentAmount: { type: DataTypes.DECIMAL, allowNull: false },
+    transactionDate: { type: DataTypes.DATE, allowNull: false },
     datePublished: { type: DataTypes.DATE, allowNull: true }
   },
   {

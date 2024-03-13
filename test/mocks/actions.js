@@ -1,5 +1,5 @@
 const mockAction1 = {
-  pkId: 1,
+  actionId: 1,
   calculationId: 1234567,
   fundingCode: '80243',
   groupName: 'Making grass seem normal',
@@ -15,7 +15,7 @@ const mockAction1 = {
 }
 
 const mockAction2 = {
-  pkId: 2,
+  actionId: 2,
   calculationId: 1234568,
   fundingCode: '80141',
   groupName: 'Secondary action for new grasses',
@@ -31,8 +31,8 @@ const mockAction2 = {
 }
 
 const mockAction3 = {
-  pkId: 3,
-  calculationId: 1234569,
+  actionId: 3,
+  calculationId: 1234567,
   fundingCode: '80280',
   groupName: 'Actions for grass removal',
   actionCode: 'GR450',

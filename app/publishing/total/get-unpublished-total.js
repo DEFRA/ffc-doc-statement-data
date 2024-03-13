@@ -1,7 +1,7 @@
 const db = require('../../data')
 const { publishingConfig } = require('../../config')
 
-const getUnpublishedTotals = async (transaction) => {
+const getUnpublishedTotal = async (transaction) => {
   return db.total.findAll({
     lock: true,
     skipLocked: true,
@@ -16,10 +16,10 @@ const getUnpublishedTotals = async (transaction) => {
         }
       ]
     },
-    attributes: ['calculationId', 'sbi', 'frn', 'agreementNumber', 'claimId', 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'updated', 'datePublished'],
+    attributes: ['calculationId', ['calculationId', 'calculationReference'], ['calculationId', 'totalsId'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'claimReference'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
     raw: true,
     transaction
   })
 }
 
-module.exports = getUnpublishedTotals
+module.exports = getUnpublishedTotal

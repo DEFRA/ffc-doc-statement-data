@@ -1,6 +1,6 @@
 module.exports = {
   ORGANISATION: 'organisation',
   CALCULATION: 'calculation',
-  TOTALS: 'totals',
+  TOTAL: 'total',
   DAX: 'dax'
 }

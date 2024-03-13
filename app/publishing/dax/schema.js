@@ -5,10 +5,10 @@ const number200 = 200
 
 module.exports = Joi.object({
   paymentReference: Joi.string().max(number30).required(),
-  calculationId: Joi.number().integer(),
+  calculationReference: Joi.number().integer(),
   paymentPeriod: Joi.string().max(number200).required(),
-  totalQuarterlyPayment: Joi.number().required(),
-  transDate: Joi.date().required(),
+  paymentAmount: Joi.number().required(),
+  transactionDate: Joi.date().required(),
   datePublished: Joi.date(),
   type: Joi.string().required().allow(DAX)
 })

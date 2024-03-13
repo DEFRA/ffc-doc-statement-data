@@ -1,5 +1,5 @@
 const db = require('../../../app/data')
-const getUnpublishedTotals = require('../../../app/publishing/totals/get-unpublished-totals')
+const getUnpublishedTotals = require('../../../app/publishing/total/get-unpublished-total')
 const { mockTotal1, mockTotal2, mockTotal3 } = require('../../mocks/totals')
 
 db.total = {
@@ -30,7 +30,7 @@ describe('getUnpublishedTotals', () => {
           }
         ]
       },
-      attributes: ['calculationId', 'sbi', 'frn', 'agreementNumber', 'claimId', 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'updated', 'datePublished'],
+      attributes: ['calculationId', ['calculationId', 'calculationReference'], ['calculationId', 'totalsId'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'claimReference'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
       raw: true,
       transaction
     })

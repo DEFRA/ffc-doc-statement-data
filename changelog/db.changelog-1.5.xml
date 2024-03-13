@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet id="1" author="Leigh Godson">
+        <tagDatabase tag="v1.5.0" />
+    </changeSet>
+    
+    <changeSet id="2" author="Leigh Godson">
+        <renameColumn tableName="dax" oldColumnName="totalQuarterlyPayment" newColumnName="paymentAmount" />
+        <renameColumn tableName="dax" oldColumnName="transDate" newColumnName="transactionDate" />
+    </changeSet>
+
+    <changeSet id="3" author="Leigh Godson">
+        <addColumn tableName="totals">
+            <column name="totalPayments" type="NUMERIC(15,2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="Leigh Godson">
+        <renameColumn tableName="actions" oldColumnName="pkId" newColumnName="actionId" />
+        <modifyDataType tableName="actions" columnName="rate" newDataType="VARCHAR(100)" />
+        <modifyDataType tableName="dax" columnName="transactionDate" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="dax" columnName="datePublished" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="calculationDate" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="agreementStart" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="agreementEnd" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="updated" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="totals" columnName="datePublished" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="actions" columnName="datePublished" newDataType="TIMESTAMP" />
+    </changeSet>
+    <changeSet author="Leigh Godson" id="5">
+        <dropForeignKeyConstraint baseTableName="dax" baseColumnNames="calculationId" constraintName="fk_dax_totals" referencedTableName="totals" referencedColumnNames="calculationId"/>
+        <dropForeignKeyConstraint baseTableName="totals" baseColumnNames="sbi" constraintName="fk_totals_organisations" referencedTableName="organisations" referencedColumnNames="sbi"/>    
+    </changeSet>
+</databaseChangeLog>
