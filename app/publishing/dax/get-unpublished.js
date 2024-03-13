@@ -13,7 +13,7 @@ const getUnpublishedDax = async (transaction) => {
         }
       ]
     },
-    attributes: ['paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate', 'datePublished'],
+    attributes: ['paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
     raw: true,
     transaction
   })
