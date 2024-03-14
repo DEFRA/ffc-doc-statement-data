@@ -249,8 +249,8 @@ components:
       maximum: 999999999
       example: 123456789
     FRN:
-      type: number
-      description: Firm Reference Number
+      type: string
+      description: Firm Reference Number in string format
       minimum: 1000000000
       maximum: 9999999999
       example: 1234567890
