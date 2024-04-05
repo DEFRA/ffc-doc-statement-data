@@ -41,7 +41,7 @@ module.exports = Joi.object({
     uom: Joi.string().max(number10),
     annualValue: Joi.string().max(number50).required(),
     quarterlyValue: Joi.string().max(number15).required(),
-    overDeclarationPenalty: Joi.number().max(number15).required(),
+    overDeclarationPenalty: Joi.number().precision(number15).required(),
     quarterlyPaymentAmount: Joi.string().max(number15).required(),
     groupName: Joi.string().max(number100).required()
   })).required()
