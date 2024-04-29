@@ -1,9 +1,10 @@
 const mockDax1 = {
   paymentReference: 'IN0056999',
-  calculationId: 1234569,
+  calculationReference: 1234569,
   paymentPeriod: '1st May 2024 to 31st July 2024',
   paymentAmount: -3495,
-  transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120)
+  transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120),
+  type: 'dax'
 }
 
 const mockDax2 = {
