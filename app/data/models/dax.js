@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   const dax = sequelize.define('dax', {
     paymentReference: { type: DataTypes.STRING(number30), primaryKey: true, allowNull: false },
     calculationId: { type: DataTypes.INTEGER },
-    paymentPeriod: { type: DataTypes.STRING(number200), allowNull: false },
+    paymentPeriod: { type: DataTypes.STRING(number200), allowNull: true },
     paymentAmount: { type: DataTypes.DECIMAL, allowNull: false },
     transactionDate: { type: DataTypes.DATE, allowNull: false },
     datePublished: { type: DataTypes.DATE, allowNull: true }
