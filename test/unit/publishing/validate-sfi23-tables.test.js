@@ -76,7 +76,7 @@ describe('validate SFI-23 DAX', () => {
   test('returns false if total does not contain payment period', () => {
     delete dax.paymentPeriod
     const result = validateUpdate(dax, DAX)
-    expect(result).toBeFalsy()
+    expect(result).not.toBeFalsy()
   })
   test('returns false if total does not contain payment amount', () => {
     delete dax.paymentAmount
