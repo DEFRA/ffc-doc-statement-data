@@ -68,7 +68,7 @@
         </createTable>
     </changeSet>
     <changeSet id="3" author="Leigh Godson">
-        <addForeignKeyConstraint baseTableName="delinked_calculations" baseColumnNames="sbi" constraintName="fk_delinked_calculations_organisations" referencedTableName="organisations" referencedColumnNames="sbi"/>
+        <addForeignKeyConstraint baseTableName="delinkedCalculation" baseColumnNames="sbi" constraintName="fk_delinked_calculations_organisations" referencedTableName="organisations" referencedColumnNames="sbi"/>
     </changeSet>
 
 </databaseChangeLog>
