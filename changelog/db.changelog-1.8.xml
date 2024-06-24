@@ -65,9 +65,6 @@
             <column name="paymentAmountCalculated" type="NUMERIC(15,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="currentTotalReferenceAmount" type="NUMERIC(15,2)">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
     <changeSet id="3" author="Leigh Godson">
