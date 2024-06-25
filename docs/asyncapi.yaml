@@ -125,7 +125,7 @@ components:
           $ref: '#/components/schemas/ProgressiveReductions4'
         referenceAmount:
           $ref: '#/components/schemas/ReferenceAmount'
-        totalDelinkedpayment:
+        totalDelinkedPayment:
           $ref: '#/components/schemas/TotalDelinkedPayment'
         paymentAmountCalculated:
           $ref: '#/components/schemas/PaymentAmountCalculated'
@@ -350,7 +350,7 @@ components:
       example: 1234567
     ApplicationId:
       type: number
-      description: Key field for calculation Data 
+      description: ApplicationId for calculation Data 
       example: 1234567
     PaymentBand1:
       type: number
@@ -386,9 +386,9 @@ components:
       example: 70
     ProgressiveReductions1:
       type: number
+      format: decimal
       description: Value against band1 for progressive reductions 
       example: 11000
-      format: decimal
     ProgressiveReductions2:
       type: number
       format: decimal
