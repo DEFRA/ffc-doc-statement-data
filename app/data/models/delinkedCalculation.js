@@ -2,6 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const number2 = 2
   const number15 = 15
   const delinkedCalculation = sequelize.define('delinkedCalculation', {
+    applicationId: { type: DataTypes.INTEGER, allowNull: false },
     calculationId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     sbi: { type: DataTypes.INTEGER, allowNull: false },
     frn: { type: DataTypes.BIGINT, allowNull: false },
