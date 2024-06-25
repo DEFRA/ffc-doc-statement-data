@@ -1,9 +1,14 @@
 asyncapi: 3.0.0
 info:
   title: FFC Payment Statement Data
-  version: 1.0.1
+  version: 1.0.2
   description: Publish datasets from Data Warehouse for Payment Statements
 channels:
+  delinkedCalculation:
+    address: delinkedCalculation
+    messages:
+      publish.message:
+        $ref: '#/components/messages/DelinkedCalculation'
   calculation:
     address: calculation
     messages:
@@ -25,6 +30,12 @@ channels:
       publish.message:
         $ref: '#/components/messages/Totals'
 operations:
+  delinkedCalculation.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/delinkedCalculation'
+    messages:
+      - $ref: '#/channels/delinkedCalculation/messages/publish.message'
   calculation.publish:
     action: receive
     channel:
@@ -51,6 +62,11 @@ operations:
       - $ref: '#/channels/totals/messages/publish.message'
 components:
   messages:
+    DelinkedCalculation:
+      name: DelinkedCalculation
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DelinkedCalculation'
     Organisation:
       name: Organisation
       contentType: application/json
@@ -72,6 +88,47 @@ components:
       payload:
         $ref: '#/components/schemas/Totals'
   schemas:
+    DelinkedCalculation:
+      type: object
+      properties:
+        calculationReference:
+          $ref: '#/components/schemas/CalculationId'
+        applicationId:
+          $ref: '#/components/schemas/ApplicationId'
+        frn:
+          $ref: '#/components/schemas/FRN'
+        sbi:
+          $ref: '#/components/schemas/SBI'
+        paymentBand1:
+          $ref: '#/components/schemas/PaymentBand1'
+        paymentBand2:
+          $ref: '#/components/schemas/PaymentBand2'
+        paymentBand3:
+          $ref: '#/components/schemas/PaymentBand3'
+        paymentBand4:
+          $ref: '#/components/schemas/PaymentBand4'
+        percentageReduction1:
+          $ref: '#/components/schemas/PercentageReduction1'
+        percentageReduction2:
+          $ref: '#/components/schemas/PercentageReduction2'
+        percentageReduction3:
+          $ref: '#/components/schemas/PercentageReduction3'
+        percentageReduction4:
+          $ref: '#/components/schemas/PercentageReduction4'
+        progressiveReductions1:
+          $ref: '#/components/schemas/ProgressiveReductions1'
+        progressiveReductions2:
+          $ref: '#/components/schemas/ProgressiveReductions2'
+        progressiveReductions3:
+          $ref: '#/components/schemas/ProgressiveReductions3'
+        progressiveReductions4:
+          $ref: '#/components/schemas/ProgressiveReductions4'
+        referenceAmount:
+          $ref: '#/components/schemas/ReferenceAmount'
+        totalDelinkedPayment:
+          $ref: '#/components/schemas/TotalDelinkedPayment'
+        paymentAmountCalculated:
+          $ref: '#/components/schemas/PaymentAmountCalculated'
     Calculation:
       type: object
       properties:
@@ -291,6 +348,82 @@ components:
       type: number
       description: Key field for calculation Data 
       example: 1234567
+    ApplicationId:
+      type: number
+      description: ApplicationId for calculation Data 
+      example: 1234567
+    PaymentBand1:
+      type: number
+      description: first payment band bracket amount 
+      example: Up to £30000
+    PaymentBand2:
+      type: number
+      description: second payment band bracket amount 
+      example: £30,000.01 to £50,000
+    PaymentBand3:
+      type: number
+      description: third payment band bracket amount 
+      example: £50,000.01 to £150,000
+    PaymentBand4:
+      type: number
+      description: fourth payment band bracket amount 
+      example: Above £150,000
+    PercentageReduction1:
+      type: number
+      description: First percentage bracket for progressive reductions 
+      example: 50
+    PercentageReduction2:
+      type: number
+      description: Second percentage bracket for progressive reductions 
+      example: 55
+    PercentageReduction3:
+      type: number
+      description: Third percentage bracket for progressive reductions 
+      example: 60
+    PercentageReduction4:
+      type: number
+      description: Fourth percentage bracket for progressive reductions 
+      example: 70
+    ProgressiveReductions1:
+      type: number
+      format: decimal
+      description: Value against band1 for progressive reductions 
+      example: 11000
+    ProgressiveReductions2:
+      type: number
+      format: decimal
+      description: Value against band2 for progressive reductions 
+      example: 22000
+    ProgressiveReductions3:
+      type: number
+      format: decimal
+      description: Value against band3 for progressive reductions 
+      example: 33000
+    ProgressiveReductions4:
+      type: number
+      format: decimal
+      description: Value against band4 for progressive reductions 
+      example: 44000
+    ReferenceAmount:
+      type: number
+      format: decimal
+      description: Current reference amount of total
+      example: 125000
+    ProgressiveReduction:
+      type: number
+      format: decimal
+      description: Total progressive reduction amount
+      example: 74750
+    TotalDelinkedPayment:
+      type: number
+      format: decimal
+      description: Total annual delinked payment amount
+      example: 50250
+    PaymentAmountCalculated:
+      type: number
+      format: decimal
+      description: TotalDelinkedPayment /2 should match paymentAmount
+      example: 25125
     CalculationReference:
       type: number
       description: Calculation reference Id
