@@ -24,8 +24,17 @@ const mockDax3 = {
   transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120)
 }
 
+const mockDaxDelinked1 = {
+  paymentReference: 'PY0056991',
+  calculationId: 12345689,
+  paymentPeriod: '2024',
+  paymentAmount: -5495,
+  transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120)
+}
+
 module.exports = {
   mockDax1,
   mockDax2,
-  mockDax3
+  mockDax3,
+  mockDaxDelinked1
 }
