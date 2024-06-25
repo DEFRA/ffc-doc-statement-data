@@ -1,6 +1,6 @@
 {
   "name": "ffc-doc-statement-data",
-  "version": "1.4.15",
+  "version": "1.4.16",
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-doc-statement-data",
   "main": "app/index.js",
@@ -22,9 +22,9 @@
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@azure/identity": "2.1.0",
+    "@azure/identity": "^4.3.0",
     "applicationinsights": "2.3.3",
-    "ffc-messaging": "2.5.1",
+    "ffc-messaging": "^2.9.1",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
     "pg": "8.7.3",
