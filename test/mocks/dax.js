@@ -29,7 +29,8 @@ const mockDaxDelinked1 = {
   calculationId: 12345689,
   paymentPeriod: '2024',
   paymentAmount: -5495,
-  transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120)
+  transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120),
+  type: 'dax'
 }
 
 module.exports = {

@@ -81,7 +81,7 @@ describe('validate delinked DAX', () => {
   test('returns false if delinkedCalculation does not contain payment period', () => {
     delete dax.paymentPeriod
     const result = validateUpdate(dax, DAX)
-    expect(result).not.toBeFalsy()
+    expect(result).toBeFalsy()
   })
   test('returns false if delinkedCalculation does not contain payment amount', () => {
     delete dax.paymentAmount
