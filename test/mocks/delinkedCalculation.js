@@ -16,7 +16,7 @@ const mockDelinkedCalculation1 = {
   progressiveReductions3: 65000,
   progressiveReductions4: 104963.84,
   referenceAmount: 195963.84,
-  progressiveReduction: 299948.34,
+  totalProgressiveReduction: 299948.34,
   totalDelinkedPayment: 103984.50,
   paymentAmountCalculated: 51992.25
 }

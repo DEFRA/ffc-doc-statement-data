@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     progressiveReductions3: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
     progressiveReductions4: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
     referenceAmount: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
+    totalProgressiveReduction: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
     totalDelinkedPayment: { type: DataTypes.DECIMAL(number15, number2), allowNull: false },
     paymentAmountCalculated: { type: DataTypes.DECIMAL(number15, number2), allowNull: false }
   },
