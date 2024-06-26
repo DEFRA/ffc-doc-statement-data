@@ -125,6 +125,8 @@ components:
           $ref: '#/components/schemas/ProgressiveReductions4'
         referenceAmount:
           $ref: '#/components/schemas/ReferenceAmount'
+        totalProgressiveReduction:
+          $ref: '#/components/schemas/TotalProgressiveReduction'
         totalDelinkedPayment:
           $ref: '#/components/schemas/TotalDelinkedPayment'
         paymentAmountCalculated:
@@ -409,7 +411,7 @@ components:
       format: decimal
       description: Current reference amount of total
       example: 125000
-    ProgressiveReduction:
+    TotalProgressiveReduction:
       type: number
       format: decimal
       description: Total progressive reduction amount
