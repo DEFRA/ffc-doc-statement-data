@@ -368,6 +368,7 @@ components:
       example: £50,000.01 to £150,000
     PaymentBand4:
       type: number
+      format: decimal
       description: fourth payment band bracket amount 
       example: Above £150,000
     PercentageReduction1:
