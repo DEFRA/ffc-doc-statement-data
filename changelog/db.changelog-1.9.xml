@@ -13,7 +13,7 @@
     <modifyDataType tableName="delinkedCalculation" columnName="frn" newDataType="VARCHAR(16)"/>
 </changeSet>
 <changeSet id="5" author="Leigh Godson">
-    <modifyDataType tableName="delinkedCalculation" columnName="sbi" newDataType="VARCHAR(38)"/>
+    <modifyDataType tableName="delinkedCalculation" columnName="sbi" newDataType="INTEGER(38)"/>
 </changeSet>
 <changeSet id="6" author="Leigh Godson">
     <modifyDataType tableName="delinkedCalculation" columnName="paymentBand1" newDataType="VARCHAR(4000)"/>
