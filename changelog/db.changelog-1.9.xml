@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+<changeSet id ="1" author="Leigh Godson">
+    <tagDatabase tag="v1.9.0" />
+</changeSet>
+<changeSet id="2" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="applicationId" newDataType="VARCHAR(11)"/>
+</changeSet>
+<changeSet id="3" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="calculationId" newDataType="VARCHAR(11)"/>
+</changeSet>
+<changeSet id="4" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="frn" newDataType="VARCHAR(16)"/>
+</changeSet>
+<changeSet id="5" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="sbi" newDataType="INTEGER(38)"/>
+</changeSet>
+<changeSet id="6" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="paymentBand1" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="7" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="paymentBand2" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="8" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="paymentBand3" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="9" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="percentageReduction1" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="10" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="percentageReduction2" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="11" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="percentageReduction3" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="12" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="percentageReduction4" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="13" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="progressiveReductions1" newDataType="VARCHAR(4000)"/>
+</changeSet>
+<changeSet id="14" author="Leigh Godson">
+    <modifyDataType tableName="delinkedCalculation" columnName="progressiveReductions2" newDataType="VARCHAR(4000)"/>
+</changeSet>
+</databaseChangeLog>
