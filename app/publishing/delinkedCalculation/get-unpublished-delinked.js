@@ -1,21 +1,11 @@
 const db = require('../../data')
 const { publishingConfig } = require('../../config')
 
-const getUnpublishedTotal = async (transaction) => {
-  return db.total.findAll({
+const getUnpublishedDelinked = async (transaction) => {
+  return db.delinkedCalculation.findAll({
     lock: true,
     skipLocked: true,
     limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
-    where: {
-      [db.Sequelize.Op.or]: [
-        {
-          datePublished: null
-        },
-        {
-          datePublished: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') }
-        }
-      ]
-    },
     attributes: [
       'applicationId',
       'calculationId',
@@ -36,13 +26,11 @@ const getUnpublishedTotal = async (transaction) => {
       'referenceAmount',
       'totalProgressiveReduction',
       'totalDelinkedPayment',
-      'paymentAmountCalculated',
-      'updated',
-      'datePublished'
+      'paymentAmountCalculated'
     ],
     raw: true,
     transaction
   })
 }
 
-module.exports = getUnpublishedTotal
+module.exports = getUnpublishedDelinked
