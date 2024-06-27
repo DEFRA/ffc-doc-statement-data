@@ -355,75 +355,67 @@ components:
       description: ApplicationId for calculation Data 
       example: 1234567
     PaymentBand1:
-      type: number
+      type: string
       description: first payment band bracket amount 
       example: Up to £30000
     PaymentBand2:
-      type: number
+      type: string
       description: second payment band bracket amount 
       example: £30,000.01 to £50,000
     PaymentBand3:
-      type: number
+      type: string
       description: third payment band bracket amount 
       example: £50,000.01 to £150,000
     PaymentBand4:
-      type: number
+      type: string
       description: fourth payment band bracket amount 
       example: Above £150,000
     PercentageReduction1:
-      type: number
+      type: string
       description: First percentage bracket for progressive reductions 
       example: 50
     PercentageReduction2:
-      type: number
+      type: string
       description: Second percentage bracket for progressive reductions 
       example: 55
     PercentageReduction3:
-      type: number
+      type: string
       description: Third percentage bracket for progressive reductions 
       example: 60
     PercentageReduction4:
-      type: number
+      type: string
       description: Fourth percentage bracket for progressive reductions 
       example: 70
     ProgressiveReductions1:
-      type: number
-      format: decimal
+      type: string
       description: Value against band1 for progressive reductions 
       example: 11000
     ProgressiveReductions2:
-      type: number
-      format: decimal
+      type: string
       description: Value against band2 for progressive reductions 
       example: 22000
     ProgressiveReductions3:
-      type: number
-      format: decimal
+      type: string
       description: Value against band3 for progressive reductions 
       example: 33000
     ProgressiveReductions4:
-      type: number
-      format: decimal
+      type: string
       description: Value against band4 for progressive reductions 
       example: 44000
     ReferenceAmount:
-      type: number
-      format: decimal
+      type: string
       description: Current reference amount of total
       example: 125000
     TotalProgressiveReduction:
-      type: number
-      format: decimal
+      type: string
       description: Total progressive reduction amount
       example: 74750
     TotalDelinkedPayment:
-      type: number
-      format: decimal
+      type: string
       description: Total annual delinked payment amount
       example: 50250
     PaymentAmountCalculated:
-      type: number
-      format: decimal
+      type: string
       description: TotalDelinkedPayment /2 should match paymentAmount
       example: 25125
     CalculationReference:
