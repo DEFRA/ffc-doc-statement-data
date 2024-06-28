@@ -30,51 +30,67 @@ module.exports = Joi.object({
     'any.required': 'The field frn is not present but it is required'
   }),
   paymentBand1: Joi.string().required().messages({
+    'string.base': 'paymentBand1 should be a type of string',
     'any.required': 'The field paymentBand1 is not present but it is required'
   }),
   paymentBand2: Joi.string().required().messages({
+    'string.base': 'paymentBand2 should be a type of string',
     'any.required': 'The field paymentBand2 is not present but it is required'
   }),
   paymentBand3: Joi.string().required().messages({
+    'string.base': 'paymentBand2 should be a type of string',
     'any.required': 'The field paymentBand3 is not present but it is required'
   }),
   paymentBand4: Joi.string().required().messages({
+    'string.base': 'paymentBand4 should be a type of string',
     'any.required': 'The field paymentBand4 is not present but it is required'
   }),
   percentageReduction1: Joi.string().required().messages({
+    'string.base': 'percentageReduction1 should be a type of string',
     'any.required': 'The field percentageReduction1 is not present but it is required'
   }),
   percentageReduction2: Joi.string().required().messages({
+    'string.base': 'percentageReduction2 should be a type of string',
     'any.required': 'The field percentageReduction2 is not present but it is required'
   }),
   percentageReduction3: Joi.string().required().messages({
+    'string.base': 'percentageReduction3 should be a type of string',
     'any.required': 'The field percentageReduction3 is not present but it is required'
   }),
   percentageReduction4: Joi.string().required().messages({
+    'string.base': 'percentageReduction4 should be a type of string',
     'any.required': 'The field percentageReduction4 is not present but it is required'
   }),
   progressiveReductions1: Joi.string().required().messages({
+    'string.base': 'progressiveReductions1 should be a type of string',
     'any.required': 'The field progressiveReductions1 is not present but it is required'
   }),
   progressiveReductions2: Joi.string().required().messages({
+    'string.base': 'progressiveReductions2 should be a type of string',
     'any.required': 'The field progressiveReductions2 is not present but it is required'
   }),
   progressiveReductions3: Joi.string().required().messages({
+    'string.base': 'progressiveReductions3 should be a type of string',
     'any.required': 'The field progressiveReductions3 is not present but it is required'
   }),
   progressiveReductions4: Joi.string().required().messages({
+    'string.base': 'progressiveReductions4 should be a type of string',
     'any.required': 'The field progressiveReductions4 is not present but it is required'
   }),
   referenceAmount: Joi.string().required().messages({
+    'string.base': 'referenceAmount should be a type of string',
     'any.required': 'The field referenceAmount is not present but it is required'
   }),
   totalProgressiveReduction: Joi.string().required().messages({
+    'string.base': 'totalProgressiveReduction should be a type of string',
     'any.required': 'The field totalProgressiveReduction is not present but it is required'
   }),
   totalDelinkedPayment: Joi.string().required().messages({
+    'string.base': 'totalDelinkedPayment should be a type of string',
     'any.required': 'The field totalDelinkedPayment is not present but it is required'
   }),
   paymentAmountCalculated: Joi.string().required().messages({
+    'string.base': 'paymentAmountCalculated should be a type of string',
     'any.required': 'The field paymentAmountCalculated is not present but it is required'
   }),
   type: Joi.string().required().allow(DELINKEDCALCULATION).messages({
