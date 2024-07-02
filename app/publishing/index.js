@@ -1,12 +1,13 @@
 const sendUpdates = require('./send-updates')
-const { ORGANISATION, CALCULATION, TOTAL, DAX } = require('./types')
+const { ORGANISATION, CALCULATION, TOTAL, DAX, DELINKEDCALCULATION } = require('./types')
 
 const publish = async () => {
   await Promise.all([
     sendUpdates(ORGANISATION),
     sendUpdates(CALCULATION),
     sendUpdates(TOTAL),
-    sendUpdates(DAX)
+    sendUpdates(DAX),
+    sendUpdates(DELINKEDCALCULATION)
   ])
 }
 
