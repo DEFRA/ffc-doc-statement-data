@@ -3,6 +3,8 @@ const { DELINKEDCALCULATION } = require('../types')
 
 const minSbi = 105000000
 const maxSbi = 999999999
+const minFrn = 1000000000
+const maxFrn = 9999999999
 
 module.exports = Joi.object({
   applicationId: Joi.number().integer().required().messages({
@@ -10,10 +12,10 @@ module.exports = Joi.object({
     'number.integer': 'applicationId should be an integer',
     'any.required': 'The field applicationId is not present but it is required'
   }),
-  calculationId: Joi.number().integer().required().messages({
-    'number.base': 'calculationId should be a type of number',
-    'number.integer': 'calculationId should be an integer',
-    'any.required': 'The field calculationId is not present but it is required'
+  calculationReference: Joi.number().integer().required().messages({
+    'number.base': 'calculationReference should be a type of number',
+    'number.integer': 'calculationReference should be an integer',
+    'any.required': 'The field calculationReference is not present but it is required'
   }),
   sbi: Joi.number().integer().min(minSbi).max(maxSbi).required().messages({
     'number.base': 'sbi should be a type of number',
@@ -22,7 +24,9 @@ module.exports = Joi.object({
     'number.max': `sbi should have a maximum value of ${maxSbi}`,
     'any.required': 'The field sbi is not present but it is required'
   }),
-  frn: Joi.string().required().messages({
+  frn: Joi.string().min(minFrn).max(maxFrn).required().messages({
+    'number.min': `frn should have a minimum value of ${minFrn}`,
+    'number.max': `frn should have a maximum value of ${maxFrn}`,
     'any.required': 'The field frn is not present but it is required'
   }),
   paymentBand1: Joi.string().required().messages({
