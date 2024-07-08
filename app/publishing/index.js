@@ -6,8 +6,8 @@ const publish = async () => {
     sendUpdates(ORGANISATION),
     sendUpdates(CALCULATION),
     sendUpdates(TOTAL),
-    sendUpdates(DAX),
-    sendUpdates(DELINKEDCALCULATION)
+    sendUpdates(DELINKEDCALCULATION),
+    sendUpdates(DAX)
   ])
 }
 

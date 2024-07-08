@@ -6,6 +6,13 @@ const getUnpublishedDelinked = async (transaction) => {
     lock: true,
     skipLocked: true,
     limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
+    where: {
+      [db.Sequelize.Op.or]: [
+        {
+          datePublished: null
+        }
+      ]
+    },
     attributes: [
       'applicationId',
       'calculationId',
