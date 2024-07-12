@@ -17,8 +17,9 @@ const getAddressLines = (address) => {
       addressLine2: buildingNumber ? `${buildingNumber} ${street}` : street,
       addressLine3: null
     }
+  } else {
+    return null
   }
-  return null
 }
 
 module.exports = {
