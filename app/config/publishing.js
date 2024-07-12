@@ -1,11 +1,13 @@
 const Joi = require('joi')
 
 const schema = Joi.object({
-  dataPublishingMaxBatchSizePerDataSource: Joi.number().default(250)
+  dataPublishingMaxBatchSizePerDataSource: Joi.number().default(250),
+  pollingInterval: Joi.number().integer().default(600000)
 })
 
 const config = {
-  dataPublishingMaxBatchSizePerDataSource: process.env.DATA_PUBLISHING_MAX_BATCH_SIZE_PER_DATA_SOURCE
+  dataPublishingMaxBatchSizePerDataSource: process.env.DATA_PUBLISHING_MAX_BATCH_SIZE_PER_DATA_SOURCE,
+  pollingInterval: process.env.POLLING_INTERVAL
 }
 
 const result = schema.validate(config, {

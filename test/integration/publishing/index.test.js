@@ -53,12 +53,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage numberOfRecords times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
     test('should call sendMessage with numberOfRecordsCalculation calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
@@ -67,7 +67,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -77,7 +77,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -99,12 +99,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage numberOfRecords times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
     test('should call sendMessage with numberOfRecordsCalculation calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
@@ -113,7 +113,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -123,7 +123,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -151,12 +151,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage numberOfRecords times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
     test('should call sendMessage with numberOfRecordsCalculation calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
@@ -165,7 +165,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -175,7 +175,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -203,12 +203,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage numberOfRecords times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
     test('should call sendMessage with numberOfRecordsCalculation calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
@@ -217,7 +217,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -227,7 +227,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -255,12 +255,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage numberOfRecords times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
     test('should call sendMessage with numberOfRecordsCalculation calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
@@ -269,7 +269,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -279,7 +279,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -307,12 +307,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage publishingConfig.dataPublishingMaxBatchSizePerDataSource + numberOfRecordsOrganisation times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSizePerDataSource + numberOfRecordsOrganisation)
     })
 
     test('should call sendMessage with publishingConfig.dataPublishingMaxBatchSizePerDataSource calculation messages and numberOfRecordsOrganisation organisation messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(numberOfRecordsOrganisation)
@@ -321,7 +321,7 @@ describe('send calculation and organisation updates', () => {
     test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -331,7 +331,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -359,12 +359,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage numberOfRecordsCalculation + publishingConfig.dataPublishingMaxBatchSizePerDataSource times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecordsCalculation + publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
 
     test('should call sendMessage with numberOfRecordsCalculation calculation messages and publishingConfig.dataPublishingMaxBatchSizePerDataSource messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(numberOfRecordsCalculation)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
@@ -373,7 +373,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -383,7 +383,7 @@ describe('send calculation and organisation updates', () => {
     test('should process all organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -411,12 +411,12 @@ describe('send calculation and organisation updates', () => {
     })
 
     test('should call sendMessage 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource times', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
 
     test('should call sendMessage with publishingConfig.dataPublishingMaxBatchSizePerDataSource calculation messages and publishingConfig.dataPublishingMaxBatchSizePerDataSource messages', async () => {
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.calculation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
       expect(mockSendMessage.mock.calls.filter(call => call[0].type === 'uk.gov.pay.statement.data.organisation')).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
@@ -425,7 +425,7 @@ describe('send calculation and organisation updates', () => {
     test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource calculation records', async () => {
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -435,7 +435,7 @@ describe('send calculation and organisation updates', () => {
     test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource organisation records', async () => {
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
@@ -468,8 +468,8 @@ describe('send calculation and organisation updates', () => {
       const unpublishedCalculationsBefore = await db.calculation.findAll({ where: { published: null } })
       const unpublishedOrganisationsBefore = await db.organisation.findAll({ where: { published: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedCalculationsAfter = await db.calculation.findAll({ where: { published: null } })

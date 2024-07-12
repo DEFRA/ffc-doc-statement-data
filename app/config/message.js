@@ -10,6 +10,11 @@ const mqSchema = Joi.object({
   },
   dataTopic: {
     address: Joi.string()
+  },
+  updatesSubscription: {
+    address: Joi.string(),
+    topic: Joi.string(),
+    type: Joi.string().default('subscription')
   }
 })
 
@@ -23,6 +28,11 @@ const mqConfig = {
   },
   dataTopic: {
     address: process.env.DATA_TOPIC_ADDRESS
+  },
+  updatesSubscription: {
+    address: process.env.DEMOGRAPHICS_SUBSCRIPTION_ADDRESS,
+    topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
+    type: 'subscription'
   }
 }
 
@@ -36,7 +46,9 @@ if (mqResult.error) {
 }
 
 const dataTopic = { ...mqResult.value.messageQueue, ...mqResult.value.dataTopic }
+const updatesSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.updatesSubscription }
 
 module.exports = {
-  dataTopic
+  dataTopic,
+  updatesSubscription
 }
