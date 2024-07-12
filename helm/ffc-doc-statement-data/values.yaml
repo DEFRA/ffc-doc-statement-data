@@ -29,8 +29,8 @@ container:
   limitCpu: 180m
   messageQueueHost: namespace.servicebus.windows.net
   dataTopicAddress: ffc-doc-statement-data
-  demographicsTopicAddress: ffc-pay-demographics
-  demographicsSubscriptionAddress: ffc-pay-demographics
+  demographicsTopicAddress: ffc-pay-demographics-extract
+  demographicsSubscriptionAddress: ffc-doc-demographics
 
 postgresService:
   postgresDb: ffc_doc_statement_data
