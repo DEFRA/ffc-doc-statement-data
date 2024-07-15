@@ -15,7 +15,9 @@ const getUnpublishedDelinked = async (transaction) => {
     },
     attributes: [
       'applicationId',
+      ['applicationId', 'applicationReference'],
       'calculationId',
+      ['calculationId', 'calculationReference'],
       'sbi',
       'frn',
       'paymentBand1',

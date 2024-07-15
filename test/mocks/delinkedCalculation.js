@@ -19,7 +19,7 @@ const mockDelinkedCalculation1 = {
   totalProgressiveReduction: '299948.34',
   totalDelinkedPayment: '103984.50',
   paymentAmountCalculated: '51992.25',
-  updated: '2023-07-01T00:00:00.000Z'
+  datePublished: '2023-07-01T00:00:00.000Z'
 }
 
 const mockDelinkedCalculation2 = {

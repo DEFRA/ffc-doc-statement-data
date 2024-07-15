@@ -7,12 +7,12 @@ const minFrn = '1000000000'
 const maxFrn = '9999999999'
 
 module.exports = Joi.object({
-  applicationId: Joi.number().integer().required().messages({
+  applicationReference: Joi.number().integer().required().messages({
     'number.base': 'applicationId should be a type of number',
     'number.integer': 'applicationId should be an integer',
     'any.required': 'The field applicationId is not present but it is required'
   }),
-  calculationId: Joi.number().integer().required().messages({
+  calculationReference: Joi.number().integer().required().messages({
     'number.base': 'calculationId should be a type of number',
     'number.integer': 'calculationId should be an integer',
     'any.required': 'The field calculationId is not present but it is required'
@@ -93,6 +93,10 @@ module.exports = Joi.object({
   paymentAmountCalculated: Joi.string().required().messages({
     'string.base': 'paymentAmountCalculated should be a type of string',
     'any.required': 'The field paymentAmountCalculated is not present but it is required'
+  }),
+  datePublished: Joi.date().allow(null).messages({
+    'date.base': 'datePublished should be a type of date',
+    'date.strict': 'datePublished should be a type of date or null'
   }),
   type: Joi.string().required().allow(DELINKEDCALCULATION).messages({
     'string.base': 'type should be a type of string',

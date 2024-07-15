@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     referenceAmount: { type: DataTypes.STRING, allowNull: false },
     totalProgressiveReduction: { type: DataTypes.STRING, allowNull: false },
     totalDelinkedPayment: { type: DataTypes.STRING, allowNull: false },
-    paymentAmountCalculated: { type: DataTypes.STRING, allowNull: false }
+    paymentAmountCalculated: { type: DataTypes.STRING, allowNull: false },
+    datePublished: { type: DataTypes.DATE, allowNull: true }
   },
   {
     tableName: 'delinkedCalculation',
