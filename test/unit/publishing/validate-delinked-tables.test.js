@@ -113,7 +113,7 @@ describe('validate delinked against delinkedCalculation', () => {
   test('returns falsy if delinkedCalculation does not contain updated date', () => {
     delete delinkedCalculation.datePublished
     const result = validateUpdate(delinkedCalculation, DELINKEDCALCULATION)
-    expect(result).toBeTruthy()
+    expect(result).toBeFalsy()
   })
 })
 describe('validate delinked DAX', () => {
