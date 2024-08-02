@@ -19,6 +19,11 @@ channels:
     messages:
       publish.message:
         $ref: '#/components/messages/Dax'
+  demographicsUpdate:
+    address: demographicsUpdate
+    messages:
+      publish.message:
+        $ref: '#/components/messages/DemographicsUpdate'
   organisation:
     address: organisation
     messages:
@@ -48,6 +53,12 @@ operations:
       $ref: '#/channels/dax'
     messages:
       - $ref: '#/channels/dax/messages/publish.message'
+  demographicsUpdate.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/demographicsUpdate'
+    messages:
+      - $ref: '#/channels/demographicsUpdate/messages/publish.message'
   organisation.publish:
     action: receive
     channel:
@@ -67,6 +78,11 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/DelinkedCalculation'
+    DemographicsUpdate:
+      name: DemographicsUpdate
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DemographicsUpdate'
     Organisation:
       name: Organisation
       contentType: application/json
@@ -156,6 +172,15 @@ components:
             $ref: '#/components/schemas/Funding'
         type:
           $ref: '#/components/schemas/TypeCalculation'
+    Funding:
+      type: object
+      properties:
+        fundingCode:
+          $ref: '#/components/schemas/FundingCode'
+        areaClaimed:
+          $ref: '#/components/schemas/AreaClaimed'
+        rate:
+          $ref: '#/components/schemas/Rate'
     Dax:
       type: object
       properties:
@@ -171,6 +196,173 @@ components:
           $ref: '#/components/schemas/TransactionDate'
         type:
           $ref: '#/components/schemas/TypeDax'
+    DemographicsUpdate:
+      type: object
+      properties:
+        rev:
+          $ref: '#/components/schemas/Rev'
+        person:
+          type: object
+          properties:
+            rev:  
+              $ref: '#/components/schemas/Rev'
+            partyId:
+              $ref: '#/components/schemas/PartyId'
+            title:
+              $ref: '#/components/schemas/Title'
+            firstName:
+              $ref: '#/components/schemas/FirstName'
+            middleName:
+              $ref: '#/components/schemas/MiddleName'
+            lastName:
+              $ref: '#/components/schemas/LastName'
+            dateOfBirth:
+              $ref: '#/components/schemas/DateOfBirth'
+            updateType:
+              $ref: '#/components/schemas/UpdateType'
+            customerReference:
+              $ref: '#/components/schemas/CustomerReference'
+            niNumber:
+              $ref: '#/components/schemas/NINumber'
+            personalIdentifier:
+              $ref: '#/components/schemas/PersonalIdentifier'
+            doNotContact:
+              $ref: '#/components/schemas/DoNotContact'
+            mdmId:
+              $ref: '#/components/schemas/MDMId'
+        organisation:
+          type: object
+          properties:
+            rev:
+              $ref: '#/components/schemas/Rev'
+            partyId:
+              $ref: '#/components/schemas/PartyId'
+            organisationName:
+              $ref: '#/components/schemas/BusinessName'
+            sbi:
+              $ref: '#/components/schemas/SBIDemographics'
+            taxRegistrationNumber:
+              $ref: '#/components/schemas/TaxRegistrationNumber'
+            legalStatusTypeId:
+              $ref: '#/components/schemas/LegalStatusTypeId'
+            businessTypeId:
+              $ref: '#/components/schemas/BusinessTypeId'
+            updateType:
+              $ref: '#/components/schemas/UpdateType'
+            firmId:
+              $ref: '#/components/schemas/FRN'
+            vendornumber:
+              $ref: '#/components/schemas/VendorNumber'
+            tradernumber:
+              $ref: '#/components/schemas/TraderNumber'
+            mdmId:
+              $ref: '#/components/schemas/MDMId'
+            financialToBusinessAddr:
+              $ref: '#/components/schemas/FinancialToBusinessAddr'
+        phoneContact:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneContact'
+        digitalContact:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalContact'
+        legacyIdentifier:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegacyIdentifier'
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+    PhoneContact:
+      type: object
+      properties:
+        partyId:
+          $ref: '#/components/schemas/PartyId'
+        partyContactId:
+          $ref: '#/components/schemas/PartyContactId'
+        partyContactTypeId:
+          $ref: '#/components/schemas/PartyContactTypeId'
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        updateType:
+          $ref: '#/components/schemas/UpdateType'
+        mdmId:
+          $ref: '#/components/schemas/MDMId'
+    DigitalContact:
+      type: object
+      properties:
+        partyId:
+          $ref: '#/components/schemas/PartyId'
+        partyContactId:
+          $ref: '#/components/schemas/PartyContactId'
+        digitalContactTypeId:
+          $ref: '#/components/schemas/DigitalContactTypeId'
+        digitalAddress:
+          $ref: '#/components/schemas/Email'
+        updateType:
+          $ref: '#/components/schemas/UpdateType'
+        mdmId:
+          $ref: '#/components/schemas/MDMId'
+        validated:
+          $ref: '#/components/schemas/Validated'
+    LegacyIdentifier:
+      type: object
+      properties:
+        partyId:
+          $ref: '#/components/schemas/PartyId'
+        type:
+          $ref: '#/components/schemas/LegacyIdentifierType'
+        value:
+          $ref: '#/components/schemas/LegacyIdentifierValue'
+    Address:
+      type: object
+      properties:
+        partyId:
+          $ref: '#/components/schemas/PartyId'
+        partyAddressId:
+          $ref: '#/components/schemas/PartyAddressId'
+        pafOrganisationName:
+          $ref: '#/components/schemas/PafOrganisationName'
+        flatName:
+          $ref: '#/components/schemas/FlatName'
+        buildingNumberRange:
+          $ref: '#/components/schemas/BuildingNumberRange'
+        buildingName:
+          $ref: '#/components/schemas/BuildingName'
+        street:
+          $ref: '#/components/schemas/Street'
+        city:
+          $ref: '#/components/schemas/City'
+        county:
+          $ref: '#/components/schemas/County'
+        country:
+          $ref: '#/components/schemas/Country'
+        postalCode:
+          $ref: '#/components/schemas/Postcode'
+        uprn:
+          $ref: '#/components/schemas/UPRN'
+        addressType:
+          $ref: '#/components/schemas/AddressType'
+        address1:
+          $ref: '#/components/schemas/AddressLine1'
+        address2:
+          $ref: '#/components/schemas/AddressLine2'
+        address3:
+          $ref: '#/components/schemas/AddressLine3'
+        address4:
+          $ref: '#/components/schemas/AddressLine4'
+        address5:
+          $ref: '#/components/schemas/AddressLine5'
+        doubleDependentLocality:
+          $ref: '#/components/schemas/DoubleDependentLocality'
+        dependentLocality:
+          $ref: '#/components/schemas/DependentLocality'
+        updateType:
+          $ref: '#/components/schemas/UpdateType'
+        mdmId:
+          $ref: '#/components/schemas/MDMId'
     Organisation:
       type: object
       properties:
@@ -278,45 +470,6 @@ components:
       type: string
       description: Name of the action
       example: Manage hedgerows
-    AgreementNumber:
-      type: number
-      description: Unique identifier for agreement
-      example: 123456789
-    AgreementEnd:
-      type: string
-      format: date-time
-      description: The date the Agreement End
-      example: '2022-08-22T16:45:20.891Z'
-    AgreementStart:
-      type: string
-      format: date-time
-      description: The date the Agreement Start
-      example: '2022-08-22T16:45:20.891Z'
-    AnnualValue:
-      type: number
-      format: decimal
-      description: The annual value of the action
-      example: 402.00
-    BusinessName:
-      type: string
-      description: The business name
-      example: FFC Ltd
-    SBI:
-      type: number
-      description: Single Business Identifier
-      minimum: 105000000
-      maximum: 999999999
-      example: 123456789
-    FRN:
-      type: string
-      description: Firm Reference Number in string format
-      minimum: 1000000000
-      maximum: 9999999999
-      example: 1234567890
-    Email:
-      type: string
-      description: The business email address
-      example: farm@farms.com
     AddressLine1:
       type: string
       description: The first line of the address
@@ -329,31 +482,207 @@ components:
       type: string
       description: The third line of the address
       example: The Town
-    City:
+    AddressLine4:
       type: string
       description: The fourth line of the address
-      example: The Region
-    County:
+      example: Line Four
+    AddressLine5:
       type: string
       description: The fifth line of the address
-      example: The County
-    Postcode:
+      example: Line Five
+    AddressType:
       type: string
-      description: The postcode
-      example: AB1 2CD
-    Updated:
+      description: Type of address
+      example: Address
+    AnnualValue:
+      type: number
+      format: decimal
+      description: The annual value of the action
+      example: 402.00
+    AgreementEnd:
       type: string
       format: date-time
-      description: The date the dataset received from Data Warehouse
+      description: The date the Agreement End
+      example: '2022-08-22T16:45:20.891Z'
+    AgreementNumber:
+      type: number
+      description: Unique identifier for agreement
+      example: 123456789
+    AgreementStart:
+      type: string
+      format: date-time
+      description: The date the Agreement Start
+      example: '2022-08-22T16:45:20.891Z'
+    ApplicationId:
+      type: number
+      description: ApplicationId for calculation Data 
+      example: 1234567
+    AreaClaimed:
+      type: number
+      format: decimal
+      description: The area claimed for the calculation in hectares
+      example: 84.05
+    BuildingName:
+      type: string
+      description: The business name
+      example: Grange Park
+    BuildingNumberRange:
+      type: string
+      description: The business number range
+      example: 10-12
+    BusinessName:
+      type: string
+      description: The business name
+      example: FFC Ltd
+    CalculationReference:
+      type: number
+      description: Calculation reference Id
+      example: 1234567
+    CalculationDate:
+      type: string
+      format: date-time
+      description: The date the calculation was performed
       example: '2022-08-22T16:45:20.891Z'
     CalculationId:
       type: number
       description: Key field for calculation Data 
       example: 1234567
-    ApplicationId:
+    City:
+      type: string
+      description: The fourth line of the address
+      example: The Region
+    ClaimId:
       type: number
-      description: ApplicationId for calculation Data 
-      example: 1234567
+      description: Unique Identifier for claim
+      example: 12345687
+    County:
+      type: string
+      description: The fifth line of the address
+      example: The County
+    Country:
+      type: string
+      description: The country of address
+      example: United Kingdom
+    CustomerReference:
+      type: string
+      description: Unique reference for an individual customer
+      example: 1106238273
+    DateOfBirth:
+      type: number
+      description: Date of birth as a UNIX timestamp
+      example: 946684800000
+    DependentLocality:
+      type: boolean
+      description: Whether address is a dependent locality
+      example: false
+    DigitalContactTypeId:
+      type: number
+      description: Unique identifier for a party's digital contact type
+      example: 100301
+    DoNotContact:
+      type: boolean
+      description: If individual does not wish to be contacted
+      example: false
+    DoubleDependentLocality:
+      type: boolean
+      description: Whether address is a double dependent locality
+      example: false
+    Email:
+      type: string
+      description: The business email address
+      example: farm@farms.com
+    FinancialToBusinessAddr:
+      type: string
+      description: Financial to business address mapping
+      example: null
+    FirstName:
+      type: string
+      description: An individual's first name
+      example: John
+    FlatName:
+      type: string
+      description: Flat name
+      example: The Burrows
+    FRN:
+      type: string
+      description: Firm Reference Number in string format
+      minimum: '1000000000'
+      maximum: '9999999999'
+      example: '1234567890'
+    FundingCode:
+      type: string
+      description: Identifier for funding code within scheme
+      example: '80001'
+    GroupName:
+      type: string
+      description: The group name of the action
+      example: Actions for hedgerows
+    InvoiceNumber:
+      type: string
+      description: Invoice number of payment request
+      example: S0000001C000001V001
+    InvoiceNumberSitiAgri:
+      type: string
+      pattern: '^SFI0[0-9]{7}$'
+      description: Unique identifier for payment request in Siti Agri format
+      example: SFI012345678
+    LegacyIdentifierType:
+      type: string
+      description: Type of legacy identifier
+      enum:
+        - SBI
+        - Trader Number
+        - Vendor Number
+      example: SBI
+    LegacyIdentifierValue:
+      type: string
+      description: Legacy identifier value
+      example: '123456789'
+    LastName:
+      type: string
+      description: An individual's last name
+      example: Jones
+    LegalStatusTypeId:
+      type: number
+      description: An ID representing an organisation's legal status type
+      example: 123456
+    MdmId:
+      type: number
+      description: MDM ID
+      example: 54321
+    MiddleName:
+      type: string
+      description: An individual's middle name
+      example: Steven
+    NINumber:
+      type: string
+      description: An individual's national insurance number
+      example: QQ123456B    
+    OverDeclarationPenalty:
+      type: number
+      format: decimal
+      description: The over declaration penalty
+      example: 120.50
+    PafOrganisationName:
+      type: string
+      description: Organisation name
+      example: Terry's Crew    
+    PartyAddressId:
+      type: number
+      description: Unique identifier for a party's address
+      example: 1509519
+    PartyContactId:
+      type: number
+      description: Unique identifier for a party's contact
+      example: 5671508
+    PartyContactTypeId:
+      type: number
+      description: Unique identifier for a party's contact type
+      example: 101801
+    PartyId:
+      type: number
+      description: Unique identifier for a party
+      example: 5671508
     PaymentBand1:
       type: string
       description: first payment band bracket amount 
@@ -370,6 +699,23 @@ components:
       type: string
       description: fourth payment band bracket amount 
       example: Above £150,000
+    PaymentAmount:
+      type: number
+      format: decimal
+      description: The payment amount
+      example: 800.05
+    PaymentAmountCalculated:
+      type: string
+      description: TotalDelinkedPayment /2 should match paymentAmount
+      example: 25125
+    PaymentPeriod:
+      type: string
+      description: The period covered by the payment
+      example: April 2022 to June 2022
+    PaymentReference:
+      type: string
+      description: Unique identifier for payment as shown on the remittance advice
+      example: PY1234545
     PercentageReduction1:
       type: string
       description: First percentage bracket for progressive reductions 
@@ -386,6 +732,18 @@ components:
       type: string
       description: Fourth percentage bracket for progressive reductions 
       example: 70
+    PersonalIdentifier:
+      type: string
+      description: Personal identification number
+      example: '12345'   
+    PhoneNumber:
+      type: string
+      description: Party's phone number
+      example: '07213547689'   
+    Postcode:
+      type: string
+      description: The postcode
+      example: AB1 2CD
     ProgressiveReductions1:
       type: string
       description: Value against band1 for progressive reductions 
@@ -402,88 +760,6 @@ components:
       type: string
       description: Value against band4 for progressive reductions 
       example: 44000
-    ReferenceAmount:
-      type: string
-      description: Current reference amount of total
-      example: 125000
-    TotalProgressiveReduction:
-      type: string
-      description: Total progressive reduction amount
-      example: 74750
-    TotalDelinkedPayment:
-      type: string
-      description: Total annual delinked payment amount
-      example: 50250
-    PaymentAmountCalculated:
-      type: string
-      description: TotalDelinkedPayment /2 should match paymentAmount
-      example: 25125
-    CalculationReference:
-      type: number
-      description: Calculation reference Id
-      example: 1234567
-    CalculationDate:
-      type: string
-      format: date-time
-      description: The date the calculation was performed
-      example: '2022-08-22T16:45:20.891Z'
-    ClaimId:
-      type: number
-      description: Unique Identifier for claim
-      example: 12345687
-    InvoiceNumber:
-      type: string
-      description: Invoice number of payment request
-      example: S0000001C000001V001
-    InvoiceNumberSitiAgri:
-      type: string
-      pattern: '^SFI0[0-9]{7}$'
-      description: Unique identifier for payment request in Siti Agri format
-      example: SFI012345678
-    Scheme:
-      type: string
-      description: The scheme of the calculation belongs to
-      example: SFI-23
-    Funding:
-      type: object
-      properties:
-        fundingCode:
-          $ref: '#/components/schemas/FundingCode'
-        areaClaimed:
-          $ref: '#/components/schemas/AreaClaimed'
-        rate:
-          $ref: '#/components/schemas/Rate'
-    FundingCode:
-      type: string
-      description: Identifier for funding code within scheme
-      example: 80001
-    AreaClaimed:
-      type: number
-      format: decimal
-      description: The area claimed for the calculation in hectares
-      example: 84.05
-    GroupName:
-      type: string
-      description: The group name of the action
-      example: Actions for hedgerows
-    OverDeclarationPenalty:
-      type: number
-      format: decimal
-      description: The over declaration penalty
-      example: 120.50
-    PaymentAmount:
-      type: number
-      format: decimal
-      description: The payment amount
-      example: 800.05
-    PaymentPeriod:
-      type: string
-      description: The period covered by the payment
-      example: April 2022 to June 2022
-    PaymentReference:
-      type: string
-      description: Unique identifier for payment as shown on the remittance advice
-      example: PY1234545
     QuarterlyPaymentAmount:
       type: number
       format: decimal
@@ -494,15 +770,45 @@ components:
       format: decimal
       description: The quarterly value
       example: 100.5
-    UnitOfMeasure:
-      type: string
-      description: The unit of measure
-      example: Ha
     Rate:
       type: number
       format: decimal
       description: Payment in pounds sterling per hectare
       example: 22.5
+    ReferenceAmount:
+      type: string
+      description: Current reference amount of total
+      example: 125000
+    Rev:
+      type: number
+      description: Unique identifier for demopgraphics update
+      example: 10620000
+    SBI:
+      type: number
+      description: Single Business Identifier
+      minimum: 105000000
+      maximum: 999999999
+      example: 123456789
+    SBIDemographics:
+      type: string
+      description: Single Business Identifier, in stringified format
+      example: '123456789'
+    Scheme:
+      type: string
+      description: The scheme of the calculation belongs to
+      example: SFI-23
+    Street:
+      type: string
+      description: Street name
+      example: Baker Street
+    TaxRegistrationNumber:
+      type: string
+      description: An organisation's tax registration number
+      example: Mr
+    Title:
+      type: string
+      description: A person's title
+      example: '1234567'
     TotalActionPayment:
       type: number
       format: decimal
@@ -513,11 +819,23 @@ components:
       format: decimal
       description: Sum of all Additional Payment
       example: 50.2
+    TotalDelinkedPayment:
+      type: string
+      description: Total annual delinked payment amount
+      example: 50250
     TotalPayment:
       type: number
       format: decimal
       description: Sum of all Payment
       example: 150.7
+    TotalProgressiveReduction:
+      type: string
+      description: Total progressive reduction amount
+      example: 74750
+    TraderNumber:
+      type: string
+      description: Trader Number
+      example: 123456A
     TransactionDate:
       type: string
       format: date-time
@@ -539,4 +857,28 @@ components:
       type: string
       description: Constant TOTALS
       example: totals
-
+    UnitOfMeasure:
+      type: string
+      description: The unit of measure
+      example: Ha
+    Updated:
+      type: string
+      format: date-time
+      description: The date the dataset received from Data Warehouse
+      example: '2022-08-22T16:45:20.891Z'
+    UpdateType:
+      type: string
+      description: Type of update
+      example: U
+    UPRN:
+      type: string
+      description: Unique Property Reference Number
+      example: '100023336956'
+    Validated:
+      type: boolean
+      description: Confirms if a contact method has been validated
+      example: false
+    VendorNumber:
+      type: string
+      description: Vendor Number
+      example: 123456G
