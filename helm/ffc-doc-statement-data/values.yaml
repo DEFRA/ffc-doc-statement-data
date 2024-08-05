@@ -5,7 +5,8 @@ namespace: ffc-doc
 workstream: ffc-doc
 image: ffc-doc-statement-data
 
-labels: {}
+labels:
+  component: service
 
 appInsights:
   connectionString:
