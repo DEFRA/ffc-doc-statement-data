@@ -39,90 +39,90 @@ describe('send organisation updates', () => {
     })
 
     test('should call sendMessage once', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
 
     test('should publish organisation sbi', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.sbi).toBe(mockOrganisation1.sbi)
     })
 
     test('should publish organisation frn', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn.toString())
     })
 
     test('should publish organisation name', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.name).toBe(mockOrganisation1.name)
     })
 
     test('should publish organisation email address', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.emailAddress).toBe(mockOrganisation1.emailAddress)
     })
 
     test('should publish organisation address line 1', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.addressLine1).toBe(mockOrganisation1.addressLine1)
     })
 
     test('should publish organisation address line 2', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.addressLine2).toBe(mockOrganisation1.addressLine2)
     })
 
     test('should publish organisation address line 3', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.addressLine3).toBe(mockOrganisation1.addressLine3)
     })
 
     test('should publish organisation city', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.city).toBe(mockOrganisation1.city)
     })
 
     test('should publish organisation county', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.county).toBe(mockOrganisation1.county)
     })
 
     test('should publish organisation postcode', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.postcode).toBe(mockOrganisation1.postcode)
     })
 
     test('should publish organisation updated date', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockOrganisation1.updated.toISOString())
     })
 
     test('should publish type', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.type).toBe('organisation')
     })
 
     test('should not publish null published value', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.published).toBeUndefined()
     })
 
     test('should update published date', async () => {
-      await publish()
+      await publish.start()
       const organisation = await db.organisation.findByPk(123456789)
       expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
     })
 
     test('should call a console log with number of datasets published for organisations', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
-      await publish()
+      await publish.start()
       expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'organisation'])
     })
 
     test('should not publish same organisation on second run if record has not been updated', async () => {
-      await publish()
-      await publish()
+      await publish.start()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
   })
@@ -133,10 +133,10 @@ describe('send organisation updates', () => {
     })
 
     test('should call sendMessage twice', async () => {
-      await publish()
+      await publish.start()
       await db.organisation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { sbi: 123456789 } })
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(2)
     })
@@ -148,7 +148,7 @@ describe('send organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -160,7 +160,7 @@ describe('send organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -172,7 +172,7 @@ describe('send organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -184,10 +184,10 @@ describe('send organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
       const unpublishedAfterFirstPublish = await db.organisation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
       const unpublishedAfterSecondPublish = await db.organisation.findAll({ where: { published: null } })
 
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -206,8 +206,8 @@ describe('send organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
@@ -219,8 +219,8 @@ describe('send organisation updates', () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
@@ -231,8 +231,8 @@ describe('send organisation updates', () => {
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
@@ -244,8 +244,8 @@ describe('send organisation updates', () => {
       const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)

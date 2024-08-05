@@ -41,95 +41,95 @@ describe('send calculation updates', () => {
     })
 
     test('should call sendMessage once', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
 
     test('should publish calculation reference', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.calculationReference).toBe(mockCalculation1.calculationId)
     })
 
     test('should publish calculation sbi', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.sbi).toBe(mockCalculation1.sbi)
     })
 
     test('should publish calculation frn', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn.toString())
     })
 
     test('should publish invoice number', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.invoiceNumber).toBe(mockCalculation1.invoiceNumber)
     })
 
     test('should publish calculation scheme', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.scheme).toBe(mockCalculation1.scheme)
     })
 
     test('should publish calculation date', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.calculationDate).toBe(mockCalculation1.calculationDate.toISOString())
     })
 
     test('should publish calculation updated date', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockCalculation1.updated.toISOString())
     })
 
     test('should publish funding', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.fundings.length).toBe(1)
     })
 
     test('should publish funding rate', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.fundings[0].rate).toBe(mockFunding1.rate.toFixed(6))
     })
 
     test('should publish funding code', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.fundings[0].fundingCode).toBe(mockFunding1.fundingCode)
     })
 
     test('should publish funding area claimed', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.fundings[0].areaClaimed).toBe(mockFunding1.areaClaimed.toFixed(4))
     })
 
     test('should not publish funding primary key', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.fundings[0].fundingId).toBeUndefined()
     })
 
     test('should publish type', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.type).toBe('calculation')
     })
 
     test('should not publish null published value', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.published).toBeUndefined()
     })
 
     test('should update published date', async () => {
-      await publish()
+      await publish.start()
       const calculation = await db.calculation.findByPk(1234567)
       expect(calculation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
     })
 
     test('should call a console log with number of datasets published for calculation', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
-      await publish()
+      await publish.start()
       expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'calculation'])
     })
 
     test('should not publish same calculation on second run if record has not been updated', async () => {
-      await publish()
-      await publish()
+      await publish.start()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
@@ -142,7 +142,7 @@ describe('send calculation updates', () => {
     })
 
     test('should publish all funding options', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.fundings.length).toBe(2)
     })
   })
@@ -154,10 +154,10 @@ describe('send calculation updates', () => {
     })
 
     test('should call sendMessage twice', async () => {
-      await publish()
+      await publish.start()
       await db.calculation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { calculationId: 1234567 } })
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(2)
     })
@@ -170,7 +170,7 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -182,7 +182,7 @@ describe('send calculation updates', () => {
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
@@ -193,7 +193,7 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -205,7 +205,7 @@ describe('send calculation updates', () => {
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
@@ -216,7 +216,7 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -228,7 +228,7 @@ describe('send calculation updates', () => {
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
@@ -239,10 +239,10 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
       const unpublishedAfterFirstPublish = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
       const unpublishedAfterSecondPublish = await db.calculation.findAll({ where: { published: null } })
 
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -255,8 +255,8 @@ describe('send calculation updates', () => {
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
-      await publish()
-      await publish()
+      await publish.start()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
@@ -270,7 +270,7 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -283,7 +283,7 @@ describe('send calculation updates', () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecordsCalculation)
       expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecordsFunding)
@@ -294,7 +294,7 @@ describe('send calculation updates', () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
     })
@@ -306,7 +306,7 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -319,7 +319,7 @@ describe('send calculation updates', () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecordsCalculation)
       expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecordsFunding)
@@ -330,7 +330,7 @@ describe('send calculation updates', () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
     })
@@ -342,7 +342,7 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsCalculation)
@@ -355,7 +355,7 @@ describe('send calculation updates', () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecordsCalculation)
       expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecordsFunding)
@@ -366,7 +366,7 @@ describe('send calculation updates', () => {
       await db.calculation.create(mockCalculation1)
       await db.funding.bulkCreate([...Array(numberOfRecordsFunding).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId } }))
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
       expect(mockSendMessage.mock.calls[0][0].body.fundings).not.toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
@@ -384,8 +384,8 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
@@ -398,8 +398,8 @@ describe('send calculation updates', () => {
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
@@ -411,8 +411,8 @@ describe('send calculation updates', () => {
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
       const unpublishedBefore = await db.calculation.findAll({ where: { published: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.calculation.findAll({ where: { published: null } })
@@ -425,8 +425,8 @@ describe('send calculation updates', () => {
       await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
       await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)

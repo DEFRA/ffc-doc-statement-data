@@ -19,7 +19,7 @@ containerSecret:
 
 deployment:
   minReplicas: 1
-  maxReplicas: 4
+  maxReplicas: 1
   minReadySeconds: 0
 
 container:
@@ -29,6 +29,8 @@ container:
   limitCpu: 180m
   messageQueueHost: namespace.servicebus.windows.net
   dataTopicAddress: ffc-doc-statement-data
+  demographicsTopicAddress: ffc-pay-demographics-extract
+  demographicsSubscriptionAddress: ffc-doc-demographics
 
 postgresService:
   postgresDb: ffc_doc_statement_data
@@ -42,9 +44,3 @@ aadPodIdentity: true
 azureIdentity:
   clientID: not-a-real-clientID
   resourceID: not-a-real-resourceID
-
-cronJob:
-  schedule: "*/10 * * * *"
-  resultsAllSchedule: "0 0 1 * *"
-  concurrencyPolicy: Forbid
-  restartPolicy: Never

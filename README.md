@@ -61,8 +61,8 @@ Use Docker Compose to run service locally.
 ./scripts/start
 ```
 
-The application is intended to run a scheduled cron job.  Therefore the process will exit once complete.  
-A script is provided to execute the process within an already running Docker container.
+The application is constantly listening to service bus updates.
+In parallel, every ten minutes, a fresh data publish is ran. This is line with this service's prior behaviour as a CRON job.
 
 ```
 ./scripts/execute

@@ -25,6 +25,7 @@ value.isDev = value.env === 'development'
 value.isTest = value.env === 'test'
 value.isProd = value.env === 'production'
 value.dataTopic = mqConfig.dataTopic
+value.updatesSubscription = mqConfig.updatesSubscription
 value.dbConfig = dbConfig
 value.publishingConfig = publishingConfig
 
