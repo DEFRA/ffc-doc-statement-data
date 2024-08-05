@@ -534,6 +534,10 @@ components:
       type: string
       description: The business name
       example: FFC Ltd
+    BusinessTypeId:
+      type: number
+      description: The type of business
+      example: 123456
     CalculationReference:
       type: number
       description: Calculation reference Id
@@ -606,8 +610,6 @@ components:
     FRN:
       type: string
       description: Firm Reference Number in string format
-      minimum: '1000000000'
-      maximum: '9999999999'
       example: '1234567890'
     FundingCode:
       type: string
@@ -646,7 +648,7 @@ components:
       type: number
       description: An ID representing an organisation's legal status type
       example: 123456
-    MdmId:
+    MDMId:
       type: number
       description: MDM ID
       example: 54321
