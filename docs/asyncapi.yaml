@@ -22,7 +22,7 @@ channels:
   demographicsUpdate:
     address: demographicsUpdate
     messages:
-      publish.message:
+      subscribe.message:
         $ref: '#/components/messages/DemographicsUpdate'
   organisation:
     address: organisation
@@ -53,12 +53,12 @@ operations:
       $ref: '#/channels/dax'
     messages:
       - $ref: '#/channels/dax/messages/publish.message'
-  demographicsUpdate.publish:
+  demographicsUpdate.subscribe:
     action: receive
     channel:
       $ref: '#/channels/demographicsUpdate'
     messages:
-      - $ref: '#/channels/demographicsUpdate/messages/publish.message'
+      - $ref: '#/channels/demographicsUpdate/messages/subscribe.message'
   organisation.publish:
     action: receive
     channel:
