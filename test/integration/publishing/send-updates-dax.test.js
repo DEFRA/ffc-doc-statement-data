@@ -41,44 +41,44 @@ describe('send dax updates', () => {
     })
 
     test('should call sendMessage once', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
 
     test('should publish dax paymentReference', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.paymentReference).toBe(mockDax1.paymentReference)
     })
 
     test('should publish dax calculationId as calculationReference', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.calculationReference).toBe(mockDax1.calculationId)
     })
 
     test('should publish dax paymentPeriod', async () => {
-      await publish()
+      await publish.start()
       console.log(mockSendMessage.mock.calls[0][0].body)
       expect(mockSendMessage.mock.calls[0][0].body.paymentPeriod).toBe(mockDax1.paymentPeriod)
     })
 
     test('should publish dax paymentAmount', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.paymentAmount).toBe(mockDax1.paymentAmount.toString())
     })
 
     test('should publish dax transactionDate', async () => {
-      await publish()
+      await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.transactionDate).toBe(mockDax1.transactionDate.toISOString())
     })
     test('should call a console log with number of datasets published for daxs', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
-      await publish()
+      await publish.start()
       expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'dax'])
     })
 
     test('should not publish same dax on second run if record has not been updated', async () => {
-      await publish()
-      await publish()
+      await publish.start()
+      await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
   })
@@ -89,10 +89,10 @@ describe('send dax updates', () => {
     })
 
     test('should call sendMessage twice', async () => {
-      await publish()
+      await publish.start()
       await db.dax.update({ datePublished: null }, { where: { paymentReference: mockDax2.paymentReference } })
 
-      await publish()
+      await publish.start()
 
       expect(mockSendMessage).toHaveBeenCalledTimes(2)
     })
@@ -104,7 +104,7 @@ describe('send dax updates', () => {
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -116,7 +116,7 @@ describe('send dax updates', () => {
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -128,7 +128,7 @@ describe('send dax updates', () => {
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
 
-      await publish()
+      await publish.start()
 
       const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -140,10 +140,10 @@ describe('send dax updates', () => {
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
 
-      await publish()
+      await publish.start()
       const unpublishedAfterFirstPublish = await db.dax.findAll({ where: { datePublished: null } })
 
-      await publish()
+      await publish.start()
       const unpublishedAfterSecondPublish = await db.dax.findAll({ where: { datePublished: null } })
 
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
@@ -162,8 +162,8 @@ describe('send dax updates', () => {
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
@@ -175,8 +175,8 @@ describe('send dax updates', () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
@@ -187,8 +187,8 @@ describe('send dax updates', () => {
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
@@ -200,8 +200,8 @@ describe('send dax updates', () => {
       const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
 
-      publish()
-      publish()
+      publish.start()
+      publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)

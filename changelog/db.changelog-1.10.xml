@@ -25,9 +25,9 @@
     <modifyDataType tableName="delinkedCalculation" columnName="paymentAmountCalculated" newDataType="VARCHAR(4000)"/>
 </changeSet>
 <changeSet id="9" author="Leigh Godson">
-    <modifyDataType tableName="delinkedCalculation" columnName="applicationId" newDataType="INTEGER(11)"/>
+    <modifyDataType tableName="delinkedCalculation" columnName="applicationId" newDataType="INTEGER"/>
 </changeSet>
 <changeSet id="10" author="Leigh Godson">
-    <modifyDataType tableName="delinkedCalculation" columnName="calculationId" newDataType="INTEGER(11)"/>
+    <modifyDataType tableName="delinkedCalculation" columnName="calculationId" newDataType="INTEGER"/>
 </changeSet>
 </databaseChangeLog>

@@ -1,9 +1,14 @@
 require('./insights').setup()
 require('log-timestamp')
-const publish = require('./publishing')
+const publishing = require('./publishing')
+const messaging = require('./messaging')
+
+process.on(['SIGTERM', 'SIGINT'], async () => {
+  await messaging.stop()
+  process.exit(0)
+})
 
 module.exports = (async () => {
-  console.log('Ready to publish data')
-  await publish()
-  console.log('All outstanding valid datasets published')
+  messaging.start()
+  publishing.start()
 })()
