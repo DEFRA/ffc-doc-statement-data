@@ -5,7 +5,8 @@ namespace: ffc-doc
 workstream: ffc-doc
 image: ffc-doc-statement-data
 
-labels: {}
+labels:
+  component: service
 
 appInsights:
   connectionString:
@@ -20,7 +21,8 @@ containerSecret:
 deployment:
   minReplicas: 1
   maxReplicas: 1
-  minReadySeconds: 0
+  cpuThreshold: 50
+  memoryThreshold: 70
 
 container:
   requestMemory: 150Mi
