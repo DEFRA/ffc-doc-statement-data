@@ -1,6 +1,6 @@
 const { publishingConfig } = require('../config')
 const sendUpdates = require('./send-updates')
-const { ORGANISATION, CALCULATION, TOTAL, DAX } = require('./types')
+const { ORGANISATION, CALCULATION, TOTAL, DAX, DELINKEDCALCULATION } = require('./types')
 
 const start = async () => {
   try {
@@ -9,7 +9,8 @@ const start = async () => {
       sendUpdates(ORGANISATION),
       sendUpdates(CALCULATION),
       sendUpdates(TOTAL),
-      sendUpdates(DAX)
+      sendUpdates(DAX),
+      sendUpdates(DELINKEDCALCULATION)
     ])
     console.log('All outstanding valid datasets published')
   } catch (err) {
