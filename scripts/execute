@@ -1,0 +1,2 @@
+#!/bin/sh
+docker exec -it ffc-doc-statement-data-development node app
