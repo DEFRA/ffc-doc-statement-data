@@ -15,6 +15,9 @@ const sendUpdates = async (type) => {
     for (const unpublished of outstanding) {
       const sanitizedUpdate = removeDefunctValues(unpublished)
       sanitizedUpdate.type = type
+      if (type === 'DELINKEDCALCULATION') {
+        sanitizedUpdate.type = 'TOTAL'
+      }
       const isValid = validateUpdate(sanitizedUpdate, type)
       if (isValid) {
         await sendMessage(sanitizedUpdate, type)

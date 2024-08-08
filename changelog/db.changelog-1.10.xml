@@ -30,4 +30,14 @@
 <changeSet id="10" author="Leigh Godson">
     <modifyDataType tableName="delinkedCalculation" columnName="calculationId" newDataType="INTEGER"/>
 </changeSet>
+<changeSet id="11" author="Leigh Godson">
+    <addColumn tableName="delinkedCalculation">
+        <column name="datePublished" type="TIMESTAMP"/>
+    </addColumn>
+</changeSet>
+<changeSet id="12" author="Leigh Godson">
+    <addColumn tableName="delinkedCalculation">
+        <column name="updated" type="TIMESTAMP"/>
+    </addColumn>
+</changeSet>
 </databaseChangeLog>
