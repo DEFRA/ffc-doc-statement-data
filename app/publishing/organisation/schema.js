@@ -25,25 +25,25 @@ module.exports = Joi.object({
     'number.max': `frn should have a maximum value of ${MAX_FRN}`,
     'any.required': 'The field frn is not present but it is required'
   }),
-  addressLine1: Joi.string().optional().messages({
+  addressLine1: Joi.string().optional().allow('').messages({
     'string.base': 'addressLine1 should be a type of string'
   }),
-  addressLine2: Joi.string().optional().messages({
+  addressLine2: Joi.string().optional().allow('').messages({
     'string.base': 'addressLine2 should be a type of string'
   }),
-  addressLine3: Joi.string().optional().messages({
+  addressLine3: Joi.string().optional().allow('').messages({
     'string.base': 'addressLine3 should be a type of string'
   }),
-  city: Joi.string().optional().messages({
+  city: Joi.string().optional().allow('').messages({
     'string.base': 'city should be a type of string'
   }),
-  county: Joi.string().optional().messages({
+  county: Joi.string().optional().allow('').messages({
     'string.base': 'county should be a type of string'
   }),
-  postcode: Joi.string().optional().messages({
+  postcode: Joi.string().optional().allow('').messages({
     'string.base': 'postcode should be a type of string'
   }),
-  emailAddress: Joi.string().optional().messages({
+  emailAddress: Joi.string().optional().allow('').messages({
     'string.base': 'emailAddress should be a type of string'
   }),
   updated: Joi.date().required().messages({

@@ -5,12 +5,10 @@ const { ORGANISATION, CALCULATION, TOTAL, DAX } = require('./types')
 const start = async () => {
   try {
     console.log('Ready to publish data')
-    await Promise.all([
-      sendUpdates(ORGANISATION),
-      sendUpdates(CALCULATION),
-      sendUpdates(TOTAL),
-      sendUpdates(DAX)
-    ])
+    await sendUpdates(ORGANISATION)
+    await sendUpdates(CALCULATION)
+    await sendUpdates(TOTAL)
+    await sendUpdates(DAX)
     console.log('All outstanding valid datasets published')
   } catch (err) {
     console.error(err)
