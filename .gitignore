@@ -5,3 +5,6 @@ helm/**/*.lock
 .vscode
 .env
 .DS_Store
+etl/dwh_extracts/*
+!etl/dwh_extracts/dumps/dumps.sh
+
