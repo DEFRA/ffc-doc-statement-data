@@ -175,6 +175,13 @@ module.exports = async function stage_css_contract() {
         }))
         .pump()
         .on('finish', (data) => res(data))
+        .on('result', (data) => {
+          global.results.push({
+            table: "etl_stage_css_contracts",
+            database: "ffc_doc_statement_data",
+            data: data
+          })
+        })
     } catch (e) {
       rej(e)
     }

@@ -11,6 +11,7 @@ services:
       #- ./app:/home/node/app
       #- ./package.json:/home/node/package.json
       - ..:/workspaces:cached
+      - ../.gitignore:/workspaces:cached/.gitignore
 
   ffc-doc-statement-data-postgres:
     ports:

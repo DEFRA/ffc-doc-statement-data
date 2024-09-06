@@ -121,6 +121,13 @@ module.exports = function stage_apps_payment_notifications() {
         }))
         .pump()
         .on('finish', (data) => res(data))
+        .on('result', (data) => {
+          global.results.push({
+            table: "etl_stage_apps_payment_notification",
+            database: "ffc_doc_statement_data",
+            data: data
+          })
+        })
     } catch (e) {
       rej(e)
     }

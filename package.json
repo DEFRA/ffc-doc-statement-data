@@ -28,7 +28,7 @@
     "@topcli/spinner": "^2.1.2",
     "applicationinsights": "2.3.3",
     "ffc-messaging": "2.9.1",
-    "ffc-pay-etl-framework": "^0.0.9",
+    "ffc-pay-etl-framework": "^0.0.11",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
     "pg": "8.7.3",

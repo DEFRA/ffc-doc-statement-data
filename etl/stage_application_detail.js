@@ -186,6 +186,13 @@ module.exports = async function stage_application_details() {
         }))
         .pump()
         .on('finish', (data) => res(data))
+        .on('result', (data) => {
+          global.results.push({
+            table: "etl_stage_application_detail",
+            database: "ffc_doc_statement_data",
+            data: data
+          })
+        })
     } catch (e) {
       rej(e)
     }

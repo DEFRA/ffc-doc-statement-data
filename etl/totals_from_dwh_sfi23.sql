@@ -1,7 +1,32 @@
 --=========================================================================================
+--Interim step to load data into etl_interm_finance_dax
+DELETE FROM etl_interm_finance_dax;
+INSERT INTO etl_interm_finance_dax (
+	transdate, invoiceid, scheme,
+	fund, marketingyear, "month",
+	quarter, TRANSACTION_AMOUNT, agreementreference,
+	siti_invoice_id, claim_id, PAYMENT_REF
+)
+SELECT transdate, invoiceid, scheme::integer,
+	fund, marketingyear::integer, "month", 
+	quarter,
+	-- lineamountmstgbp AS TRANSACTION_AMOUNT,
+	CAST(COALESCE(
+		(SELECT value FROM etl_stage_settlement S WHERE S.reference = D.settlementvoucher AND S.invoice_number = D.invoiceid)/-100.00,
+		lineamountmstgbp) AS DECIMAL(10,2)) AS TRANSACTION_AMOUNT,
+	agreementreference, substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS siti_invoice_id,
+	substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1) )::integer AS claim_id,
+	settlementvoucher AS PAYMENT_REF
+	FROM etl_stage_finance_dax D
+	WHERE LENGTH(accountnum) = 10 
+	--accounttype = 2 
+	AND invoiceid LIKE 'S%Z%';
+	-- (invoiceid LIKE 'S%Z%' OR invoiceid LIKE 'X%Z%'); No statements required for manual payments
+
+--=========================================================================================
 --Interim step to load data into etl_interm_calc_org
 DELETE FROM etl_interm_calc_org;
-INSERT INTO etl_interm_calc_org
+INSERT INTO etl_interm_calc_org 
 	(calculation_id, sbi, frn, application_id, calculation_date, id_clc_header)
 SELECT CD.calculation_id, BAC.sbi, BAC.frn,
 	CD.application_id, CD.calculation_dt, CD.id_clc_header
@@ -27,12 +52,12 @@ INSERT INTO etl_interm_org (
 	postcode, emailaddress, frn,
 	"name", updated
 )
-SELECT A.sbi, A.business_address1 as addressLine1, A.business_address2 as addressLine2,
+SELECT O.sbi, A.business_address1 as addressLine1, A.business_address2 as addressLine2,
 	A.business_address3 as addressLine3, A.business_city as city, A.business_county as county, 
 	A.business_post_code as postcode, A.business_email_addr as emailaddress, A.frn, 
 	A. business_name as name, TO_DATE(O.last_updated_on, 'DD-MON-YY') as updated 
-	FROM etl_stage_business_address_contact_v A
-	INNER JOIN etl_stage_organisation O ON A.sbi = O.sbi;
+	FROM etl_stage_organisation O 
+	LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi;
 
 --=========================================================================================
 --Interim step to load data into etl_interm_application_claim
@@ -47,14 +72,6 @@ SELECT cc.contract_id, ca.application_id as claim_id, ca.application_id as agree
 	WHERE cl.data_source_s_code = 'CAPCLM'
 	GROUP BY cc.contract_id, cc.start_dt, cc.end_dt, ca.application_id;
 
--- SELECT cl.contract_id as contract_id, cl.claim_id as claim_id,
--- 	ca.application_id as agreement_id
--- 	FROM (SELECT contract_id, application_id as claim_id
--- FROM etl_stage_css_contract_applications
--- WHERE data_source_s_code = 'CAPCLM') cl
--- LEFT JOIN etl_stage_css_contract_applications ca on cl.contract_id = ca.contract_id
--- WHERE data_source_s_code = '000001';
-
 --=========================================================================================
 --Interim step to load data into etl_interm_application_contract
 DELETE FROM etl_interm_application_contract;
@@ -66,17 +83,9 @@ INSERT INTO etl_interm_application_contract (
 	ca.application_id
 	FROM etl_stage_css_contract_applications cl
 	LEFT JOIN etl_stage_css_contract_applications ca ON cl.contract_id = ca.contract_id AND ca.data_source_s_code = '000001'
-	LEFT JOIN etl_stage_css_contracts cc ON cl.contract_id = cc.contract_id
+	LEFT JOIN etl_stage_css_contracts cc ON cl.contract_id = cc.contract_id AND cc.contract_state_s_code = '000020'
 	WHERE cl.data_source_s_code = 'CAPCLM'
 	GROUP BY cc.contract_id, cc.start_dt, cc.end_dt, ca.application_id;
-
--- SELECT C.contract_id, A.start_dt AS agreementStart, A.end_dt AS agreementEnd,
--- 	A.application_id
--- FROM etl_stage_css_contract_applications A
--- 	INNER JOIN etl_stage_css_contracts C ON C.contract_id = A.contract_id
--- WHERE A.data_source_s_code = 'CAPCLM'
--- 	GROUP BY C.contract_id, A.start_dt, A.end_dt,
--- 	A.application_id;
 
 --=========================================================================================
 --Interim step to load data into etl_interm_application_payment
@@ -95,24 +104,6 @@ SELECT CL.application_id, APN.invoice_number,
 	CL.data_source_s_code = '000001' AND
 	APN.notification_flag = 'P';
 	
---=========================================================================================
---Interim step to load data into etl_interm_finance_dax
-DELETE FROM etl_interm_finance_dax;
-INSERT INTO etl_interm_finance_dax (
-	transdate, invoiceid, scheme,
-	fund, marketingyear, "month",
-	quarter, TRANSACTION_AMOUNT, agreementreference,
-	siti_invoice_id, claim_id, PAYMENT_REF
-)
-SELECT transdate, invoiceid, scheme::integer,
-	fund, marketingyear::integer, "month", 
-	quarter, lineamountmstgbp AS TRANSACTION_AMOUNT,
-	agreementreference, substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS siti_invoice_id,
-	substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1) )::integer AS claim_id,
-	settlementvoucher AS PAYMENT_REF
-	FROM etl_stage_finance_dax
-	WHERE accounttype = 2 AND (invoiceid LIKE 'S%Z%' OR invoiceid LIKE 'X%Z%');
-
 --=========================================================================================
 --Interim step to load data into etl_interm_total
 DELETE FROM etl_interm_total;
@@ -134,7 +125,6 @@ SELECT payment_ref,
 	payment_ref
 	ORDER BY payment_ref;
 
-SELECT * FROM etl_interm_total;
 --=========================================================================================
 --Final step to load data into dax
 DELETE FROM Dax;
@@ -172,6 +162,11 @@ SELECT PA.payment_ref, O.sbi, O.frn::bigint
 	INNER JOIN etl_interm_calc_org O ON O.application_id = PA.application_id
 	GROUP BY PA.payment_ref, O.sbi, O.frn;
 
+-- SELECT PA.payment_ref, V.sbi, V.frn FROM etl_interm_paymentref_application PA
+-- 	INNER JOIN etl_stage_finance_dax D ON PA.payment_ref = D.settlementvoucher
+-- 	INNER JOIN etl_stage_business_address_contact_v V ON V.frn = D.custvendac
+-- 	GROUP BY PA.payment_ref, V.sbi, V.frn;
+
 --=========================================================================================
 --Interim step to load data into etl_interm_paymentref_agreement_dates
 DELETE FROM etl_interm_paymentref_agreement_dates;
@@ -195,7 +190,8 @@ INSERT INTO totals (
 	"totalAdditionalPayments", "totalActionPayments", "updated",
 	"datePublished", "totalPayments"  
 )
-SELECT T.calculation_id AS calculationId,
+SELECT
+	T.calculation_id AS calculationId,
 	PO.sbi::integer,
 	PO.frn::bigint,
 	CA2.application_id AS agreementNumber,
@@ -233,7 +229,6 @@ INSERT INTO organisations (
 	"name", NOW()
 	FROM etl_interm_org;
 
-SELECT * FROM organisations;
 UPDATE organisations 
 	SET "addressLine1" = 'Rosendo Garden',
 		"addressLine2" = '169 Weston Manor',
