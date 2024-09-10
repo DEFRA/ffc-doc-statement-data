@@ -6,13 +6,21 @@ INSERT INTO etl_interm_finance_dax (
 	fund, marketingyear, "month",
 	quarter, TRANSACTION_AMOUNT, agreementreference,
 	siti_invoice_id, claim_id, PAYMENT_REF
-)
+) 
 SELECT transdate, invoiceid, scheme::integer,
 	fund, marketingyear::integer, "month", 
 	quarter,
 	-- lineamountmstgbp AS TRANSACTION_AMOUNT,
-	CAST(COALESCE(
-		(SELECT value FROM etl_stage_settlement S WHERE S.reference = D.settlementvoucher AND S.invoice_number = D.invoiceid)/-100.00,
+	CAST(
+		COALESCE(
+		(SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
+		FROM (
+			SELECT value, COALESCE(LAG(value, 1) OVER ( ORDER BY S.settlement_date ASC),0) AS lag,
+			S.reference
+			FROM etl_stage_settlement S 
+			WHERE S.invoice_number = D.invoiceid
+			ORDER BY value	
+		) B WHERE B.reference = D.settlementvoucher),
 		lineamountmstgbp) AS DECIMAL(10,2)) AS TRANSACTION_AMOUNT,
 	agreementreference, substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS siti_invoice_id,
 	substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1) )::integer AS claim_id,

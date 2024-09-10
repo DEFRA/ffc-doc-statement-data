@@ -8,10 +8,8 @@ services:
       - "9282:9229"
     user: root
     volumes:
-      #- ./app:/home/node/app
-      #- ./package.json:/home/node/package.json
-      - ..:/workspaces:cached
       - ../.gitignore:/workspaces:cached/.gitignore
+      - ..:/workspaces:cached
 
   ffc-doc-statement-data-postgres:
     ports:
