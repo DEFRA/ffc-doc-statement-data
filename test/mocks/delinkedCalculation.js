@@ -27,6 +27,7 @@ const mockDelinkedCalculation1 = {
 const mockDelinkedCalculation2 = {
   applicationId: 1810908,
   calculationId: 123456788,
+  calculationReference: 123456788,
   sbi: 123456788,
   frn: 1234567899,
   paymentBand1: 30000,
@@ -44,11 +45,14 @@ const mockDelinkedCalculation2 = {
   referenceAmount: 12503.38,
   progressiveReduction: 25006.76,
   totalDelinkedPayment: 12503.38,
-  paymentAmountCalculated: 6251.6
+  paymentAmountCalculated: 6251.6,
+  datePublished: new Date(),
+  updated: new Date()
 }
 const mockDelinkedCalculation3 = {
   applicationId: 1810907,
   calculationId: 123456787,
+  calculationReference: 123456787,
   sbi: 123456787,
   frn: 1234567898,
   paymentBand1: 30000,
@@ -66,7 +70,9 @@ const mockDelinkedCalculation3 = {
   referenceAmount: 90982.40,
   progressiveReduction: 149972.93,
   totalDelinkedPayment: 58990.53,
-  paymentAmountCalculated: 29495.27
+  paymentAmountCalculated: 29495.27,
+  datePublished: new Date(),
+  updated: new Date()
 }
 
 module.exports = {

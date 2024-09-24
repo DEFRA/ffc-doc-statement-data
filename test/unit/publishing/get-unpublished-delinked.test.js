@@ -1,61 +1,49 @@
-const db = require('../../../app/data')
+const getUnpublished = require('../../../app/publishing/delinkedCalculation/get-unpublished')
 const getUnpublishedDelinked = require('../../../app/publishing/delinkedCalculation/get-unpublished-delinked')
-const { mockTotal1, mockTotal2, mockTotal3 } = require('../../mocks/delinkedCalculation')
+const updatePublished = require('../../../app/publishing/delinkedCalculation/update-published')
+const { mockDelinkedCalculation1, mockDelinkedCalculation2, mockDelinkedCalculation3 } = require('../../mocks/delinkedCalculation')
 
-db.delinkedCalculation = {
-  findAll: jest.fn()
-}
+jest.mock('../../../app/publishing/delinkedCalculation/get-unpublished-delinked')
+jest.mock('../../../app/publishing/delinkedCalculation/update-published')
 
-describe('getUnpublishedDelinked', () => {
+describe('getUnpublished', () => {
   beforeEach(() => {
-    db.delinkedCalculation.findAll.mockResolvedValue([mockTotal1, mockTotal2, mockTotal3])
+    getUnpublishedDelinked.mockResolvedValue([mockDelinkedCalculation1, mockDelinkedCalculation2, mockDelinkedCalculation3])
+    updatePublished.mockResolvedValue()
   })
 
-  test('getUnpublishedDelinked returns the correct data', async () => {
+  test('returns the correct unpublished data and updates them', async () => {
     const transaction = {}
-    const result = await getUnpublishedDelinked(transaction)
-    expect(result).toEqual([mockTotal1, mockTotal2, mockTotal3])
+    const result = await getUnpublished(transaction)
 
-    expect(db.delinkedCalculation.findAll).toHaveBeenCalledWith({
-      lock: true,
-      skipLocked: true,
-      limit: expect.any(Number),
-      where: {
-        [db.Sequelize.Op.or]: [
-          {
-            datePublished: null
-          },
-          {
-            datePublished: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') }
-          }
-        ]
-      },
-      attributes: [
-        'applicationId',
-        ['calculationId', 'calculationReference'],
-        'sbi',
-        'frn',
-        'paymentBand1',
-        'paymentBand2',
-        'paymentBand3',
-        'paymentBand4',
-        'percentageReduction1',
-        'percentageReduction2',
-        'percentageReduction3',
-        'percentageReduction4',
-        'progressiveReductions1',
-        'progressiveReductions2',
-        'progressiveReductions3',
-        'progressiveReductions4',
-        'referenceAmount',
-        'totalProgressiveReduction',
-        'totalDelinkedPayment',
-        'paymentAmountCalculated',
-        'datePublished',
-        'updated'
-      ],
-      raw: true,
-      transaction
-    })
+    expect(result).toEqual([
+      { ...mockDelinkedCalculation1, calculationId: mockDelinkedCalculation1.calculationReference },
+      { ...mockDelinkedCalculation2, calculationId: mockDelinkedCalculation2.calculationReference },
+      { ...mockDelinkedCalculation3, calculationId: mockDelinkedCalculation3.calculationReference }
+    ])
+
+    expect(updatePublished).toHaveBeenCalledTimes(3)
+    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation1.calculationReference, transaction)
+    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation2.calculationReference, transaction)
+    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation3.calculationReference, transaction)
+  })
+
+  test('logs an error for items missing calculationReference', async () => {
+    const transaction = {}
+    const mockItemMissingReference = { ...mockDelinkedCalculation1, calculationReference: undefined }
+    getUnpublishedDelinked.mockResolvedValue([mockItemMissingReference, mockDelinkedCalculation2, mockDelinkedCalculation3])
+
+    console.error = jest.fn()
+
+    const result = await getUnpublished(transaction)
+
+    expect(result).toEqual([
+      { ...mockDelinkedCalculation2, calculationId: mockDelinkedCalculation2.calculationReference },
+      { ...mockDelinkedCalculation3, calculationId: mockDelinkedCalculation3.calculationReference }
+    ])
+
+    expect(console.error).toHaveBeenCalledWith('Missing calculationReference for item:', mockItemMissingReference)
+    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation2.calculationReference, transaction)
+    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation3.calculationReference, transaction)
   })
 })
