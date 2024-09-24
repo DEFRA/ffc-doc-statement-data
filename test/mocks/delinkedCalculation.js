@@ -1,6 +1,7 @@
 const mockDelinkedCalculation1 = {
   applicationId: 1810909,
   calculationId: 123456789,
+  calculationReference: 123456789,
   sbi: 123456789,
   frn: 1234567890,
   paymentBand1: 30000,
@@ -18,7 +19,9 @@ const mockDelinkedCalculation1 = {
   referenceAmount: 195963.84,
   totalProgressiveReduction: 299948.34,
   totalDelinkedPayment: 103984.50,
-  paymentAmountCalculated: 51992.25
+  paymentAmountCalculated: 51992.25,
+  datePublished: new Date(),
+  updated: new Date()
 }
 
 const mockDelinkedCalculation2 = {

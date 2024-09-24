@@ -1,11 +1,12 @@
 const { publishingConfig } = require('../config')
 const sendUpdates = require('./send-updates')
-const { ORGANISATION, CALCULATION, TOTAL, DAX } = require('./types')
+const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX } = require('./types')
 
 const start = async () => {
   try {
     console.log('Ready to publish data')
     await sendUpdates(ORGANISATION)
+    await sendUpdates(DELINKED)
     await sendUpdates(CALCULATION)
     await sendUpdates(TOTAL)
     await sendUpdates(DAX)
