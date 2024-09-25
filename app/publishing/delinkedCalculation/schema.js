@@ -26,7 +26,7 @@ const messages = {
 }
 
 module.exports = Joi.object({
-  calculationReference: numberRequired.messages({
+  calculationId: numberRequired.messages({
     'number.base': `calculationId ${messages.number.base}`,
     'number.integer': `calculationId ${messages.number.integer}`,
     'any.required': `The field calculationId ${messages.number.required}`
