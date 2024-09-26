@@ -24,13 +24,16 @@ module.exports = (sequelize, DataTypes) => {
     referenceAmount: { type: DataTypes.STRING, allowNull: false },
     totalProgressiveReduction: { type: DataTypes.STRING, allowNull: false },
     totalDelinkedPayment: { type: DataTypes.STRING, allowNull: false },
-    paymentAmountCalculated: { type: DataTypes.STRING, allowNull: false }
+    paymentAmountCalculated: { type: DataTypes.STRING, allowNull: false },
+    datePublished: { type: DataTypes.DATE, allowNull: true },
+    updated: { type: DataTypes.DATE, allowNull: true }
   },
   {
     tableName: 'delinkedCalculation',
     freezeTableName: true,
     timestamps: false
   })
+
   delinkedCalculation.associate = function (models) {
     delinkedCalculation.hasMany(models.dax, {
       foreignKey: 'calculationId',
@@ -41,5 +44,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'organisations'
     })
   }
+
   return delinkedCalculation
 }
