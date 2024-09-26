@@ -1,5 +1,6 @@
 const mockDelinkedCalculation1 = {
   applicationId: 1810909,
+  applicationReference: 1810909,
   calculationId: 123456789,
   calculationReference: 123456789,
   sbi: 123456789,
@@ -26,6 +27,7 @@ const mockDelinkedCalculation1 = {
 
 const mockDelinkedCalculation2 = {
   applicationId: 1810908,
+  applicationReference: 1810908,
   calculationId: 123456788,
   calculationReference: 123456788,
   sbi: 123456788,
@@ -51,6 +53,7 @@ const mockDelinkedCalculation2 = {
 }
 const mockDelinkedCalculation3 = {
   applicationId: 1810907,
+  applicationReference: 1810907,
   calculationId: 123456787,
   calculationReference: 123456787,
   sbi: 123456787,

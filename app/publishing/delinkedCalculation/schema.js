@@ -31,6 +31,11 @@ module.exports = Joi.object({
     'number.integer': `calculationId ${messages.number.integer}`,
     'any.required': `The field calculationId ${messages.number.required}`
   }),
+  applicationReference: numberRequired.messages({
+    'number.base': `applicationId ${messages.number.base}`,
+    'number.integer': `applicationId ${messages.number.integer}`,
+    'any.required': `The field applicationId ${messages.number.required}`
+  }),
   sbi: numberRequired.min(minSbi).max(maxSbi).messages({
     'number.base': `sbi ${messages.number.base}`,
     'number.integer': `sbi ${messages.number.integer}`,

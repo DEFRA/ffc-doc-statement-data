@@ -10,7 +10,8 @@ const getUnpublished = async (transaction) => {
     if (item.calculationReference) {
       unpublished.push({
         ...item,
-        calculationId: item.calculationReference // Map calculationReference to calculationId
+        calculationId: item.calculationReference, // Map calculationReference to calculationId
+        applicationId: item.applicationReference // Map applicationReference to applicationId
       })
     } else {
       console.error('Missing calculationReference for item:', item)
@@ -18,8 +19,8 @@ const getUnpublished = async (transaction) => {
   }
 
   for (const item of unpublished) {
-    console.log('Updating item with calculationId:', item.calculationId)
-    await updatePublished(item.calculationId, transaction)
+    console.log('Updating item with calculationReference:', item.calculationReference)
+    await updatePublished(item.calculationReference, transaction)
   }
 
   return unpublished
