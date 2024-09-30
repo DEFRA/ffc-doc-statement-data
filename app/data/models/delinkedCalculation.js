@@ -1,13 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-  const number0 = 0
-  const number11 = 11
   const number16 = 16
-  const number38 = 38
 
   const delinkedCalculation = sequelize.define('delinkedCalculation', {
-    applicationId: { type: DataTypes.NUMBER(number11, number0), allowNull: false },
-    calculationId: { type: DataTypes.NUMBER(number11, number0), primaryKey: true, allowNull: false },
-    sbi: { type: DataTypes.NUMBER(number38, number0), allowNull: false },
+    applicationId: { type: DataTypes.INTEGER, allowNull: false },
+    calculationId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
+    sbi: { type: DataTypes.INTEGER, allowNull: false },
     frn: { type: DataTypes.STRING(number16), allowNull: false },
     paymentBand1: { type: DataTypes.STRING, allowNull: false },
     paymentBand2: { type: DataTypes.STRING, allowNull: false },
@@ -35,9 +32,9 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   delinkedCalculation.associate = function (models) {
-    delinkedCalculation.hasMany(models.dax, {
+    delinkedCalculation.hasMany(models.d365, {
       foreignKey: 'calculationId',
-      as: 'daxEntries'
+      as: 'd365Entries'
     })
     delinkedCalculation.belongsTo(models.organisation, {
       foreignKey: 'sbi',

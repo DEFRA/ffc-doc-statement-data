@@ -19,6 +19,11 @@ channels:
     messages:
       publish.message:
         $ref: '#/components/messages/Dax'
+  d365:
+    address: d365
+    messages:
+      publish.message:
+        $ref: '#/components/messages/D365'
   demographicsUpdate:
     address: demographicsUpdate
     messages:
@@ -98,6 +103,11 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/Dax'
+    D365:
+      name: D365
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/D365'
     Totals:
       name: Totals
       contentType: application/json
@@ -196,6 +206,21 @@ components:
           $ref: '#/components/schemas/TransactionDate'
         type:
           $ref: '#/components/schemas/TypeDax'
+    D365:
+      type: object
+      properties:
+        paymentReference:
+          $ref: '#/components/schemas/PaymentReference'
+        calculationReference:
+          $ref: '#/components/schemas/CalculationId'
+        paymentPeriod:
+          $ref: '#/components/schemas/PaymentPeriod'
+        paymentAmount:
+          $ref: '#/components/schemas/PaymentAmount'
+        transactionDate:
+          $ref: '#/components/schemas/TransactionDate'
+        type:
+          $ref: '#/components/schemas/TypeD365'
     DemographicsUpdate:
       type: object
       properties:
@@ -849,8 +874,12 @@ components:
       example: calculation
     TypeDax:
       type: string
-      description: Constant DAX
+      description: Constant Dax
       example: dax
+    TypeD365:
+      type: string
+      description: Constant D365
+      example: d365
     TypeOrganisation:
       type: string
       description: Constant ORGANISATION
