@@ -1,37 +1,48 @@
 const Joi = require('joi')
 const { D365 } = require('../types')
-const number30 = 30
-const number200 = 200
+
+const paymentReferenceChars = 30
+const paymentPeriodChars = 200
+
+// Common message definitions
+const stringBaseMessage = (field) => `${field} should be a type of string`
+const numberBaseMessage = (field) => `${field} should be a type of number`
+const requiredMessage = (field) => `The field ${field} is not present but it is required`
+const maxLengthMessage = (field, length) => `${field} should have a maximum length of ${length}`
+const integerMessage = (field) => `${field} should be an integer`
+const dateBaseMessage = (field) => `${field} should be a type of date`
+const allowOnlyMessage = (field) => `${field} can only be empty string or null`
+const typeOnlyMessage = (field, type) => `${field} must be : ${type}`
 
 module.exports = Joi.object({
-  paymentReference: Joi.string().max(number30).required().messages({
-    'string.base': 'paymentReference should be a type of string',
-    'string.max': `paymentReference should have a maximum length of ${number30}`,
-    'any.required': 'The field paymentReference is not present but it is required'
+  paymentReference: Joi.string().max(paymentReferenceChars).required().messages({
+    'string.base': stringBaseMessage('paymentReference'),
+    'string.max': maxLengthMessage('paymentReference', paymentReferenceChars),
+    'any.required': requiredMessage('paymentReference')
   }),
   calculationReference: Joi.number().integer().messages({
-    'number.base': 'calculationReference should be a type of number',
-    'number.integer': 'calculationReference should be an integer'
+    'number.base': numberBaseMessage('calculationReference'),
+    'number.integer': integerMessage('calculationReference')
   }),
-  paymentPeriod: Joi.string().max(number200).allow('', null).optional().messages({
-    'string.base': 'paymentPeriod should be a type of string',
-    'string.max': `paymentPeriod should have a maximum length of ${number200}`,
-    'any.allowOnly': 'paymentPeriod can only be empty string or null'
+  paymentPeriod: Joi.string().max(paymentPeriodChars).allow('', null).optional().messages({
+    'string.base': stringBaseMessage('paymentPeriod'),
+    'string.max': maxLengthMessage('paymentPeriod', paymentPeriodChars),
+    'any.allowOnly': allowOnlyMessage('paymentPeriod')
   }),
   paymentAmount: Joi.number().required().messages({
-    'number.base': 'paymentAmount should be a type of number',
-    'any.required': 'The field paymentAmount is not present but it is required'
+    'number.base': numberBaseMessage('paymentAmount'),
+    'any.required': requiredMessage('paymentAmount')
   }),
   transactionDate: Joi.date().required().messages({
-    'date.base': 'transactionDate should be a type of date',
-    'any.required': 'The field transactionDate is not present but it is required'
+    'date.base': dateBaseMessage('transactionDate'),
+    'any.required': requiredMessage('transactionDate')
   }),
   datePublished: Joi.date().messages({
-    'date.base': 'datePublished should be a type of date'
+    'date.base': dateBaseMessage('datePublished')
   }),
   type: Joi.string().required().allow(D365).messages({
-    'string.base': 'type should be a type of string',
-    'any.required': 'The field type is not present but it is required',
-    'any.only': `type must be : ${D365}`
+    'string.base': stringBaseMessage('type'),
+    'any.required': requiredMessage('type'),
+    'any.only': typeOnlyMessage('type', D365)
   })
 })
