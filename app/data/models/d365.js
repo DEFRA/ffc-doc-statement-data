@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   d365.associate = function (models) {
     d365.belongsTo(models.delinkedCalculation, {
       foreignKey: 'calculationId',
-      as: 'd365Entries'
+      as: 'delinkedCalculation'
     })
   }
   return d365

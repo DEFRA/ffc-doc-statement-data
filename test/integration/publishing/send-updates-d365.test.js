@@ -68,8 +68,9 @@ describe('send d365 updates', () => {
 
     test('should publish d365 transactionDate', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.transactionDate).toBe(mockD3651.transactionDate.toISOString())
+      expect(mockSendMessage.mock.calls[0][0].body.transactionDate).toBe(mockD3651.transactionDate.toISOString().split('T')[0])
     })
+
     test('should call a console log with number of datasets published for d365s', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
       await publish.start()

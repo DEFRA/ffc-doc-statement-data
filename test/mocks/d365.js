@@ -4,12 +4,12 @@ const mockD3651 = {
   paymentPeriod: '1st May 2024 to 31st July 2024',
   paymentAmount: -3495,
   transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120),
-  type: 'dax'
+  type: 'd365'
 }
 
 const mockD3652 = {
   paymentReference: 'IN0056990',
-  calculationId: 1234569,
+  calculationReference: 1234569,
   paymentPeriod: '1st May 2024 to 31st July 2024',
   paymentAmount: -4495,
   transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120),
@@ -18,7 +18,7 @@ const mockD3652 = {
 
 const mockD3653 = {
   paymentReference: 'IN0056991',
-  calculationId: 1234568,
+  calculationReference: 1234568,
   paymentPeriod: '1st May 2024 to 31st July 2024',
   paymentAmount: -5495,
   transactionDate: new Date(2022, 7, 5, 15, 30, 10, 120)
