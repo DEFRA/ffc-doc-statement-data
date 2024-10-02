@@ -6,10 +6,8 @@ module.exports = async function stage_organisation() {
 
   const etl = new Etl.Etl()
   const columns = [
-    "ORGANISATION_WID",
-    "PARTY_WID_FK",
-    "REF_BUSINESS_TYPE_WID_FK",
-    "REF_LEGAL_STATUS_TYPE_WID_FK",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "PARTY_ID",
     "ORGANISATION_NAME",
     "CONFIRMED_FLG",
@@ -20,10 +18,6 @@ module.exports = async function stage_organisation() {
     "BUSINESS_REFERENCE",
     "BUSINESS_TYPE_ID",
     "VENDOR_NUMBER",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID",
-    "INTEGRATION_ID",
     "LAND_DETAILS_CONFIRMED_DT_KEY",
     "BUSINESS_DET_CONFIRMED_DT_KEY",
     "REGISTRATION_DATE",
@@ -48,6 +42,13 @@ module.exports = async function stage_organisation() {
             faker: "company.name"
           }]
         }))
+        .transform(new Transformers.StringReplaceTransformer(
+          [{
+            column: "ORGANISATION_NAME",
+            find: "'",
+            replace: "''"
+          }]
+        ))
         .destination(new Destinations.PostgresDestination({
           username: process.env.POSTGRES_USERNAME,
           password: process.env.POSTGRES_PASSWORD,
@@ -57,24 +58,15 @@ module.exports = async function stage_organisation() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
-              column: "ORGANISATION_WID",
-              targetColumn: "organisation_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
             },
             {
-              column: "PARTY_WID_FK",
-              targetColumn: "party_wid_fk",
-              targetType: "number"
-            },
-            {
-              column: "REF_BUSINESS_TYPE_WID_FK",
-              targetColumn: "ref_business_type_wid_fk",
-              targetType: "number"
-            },
-            {
-              column: "REF_LEGAL_STATUS_TYPE_WID_FK",
-              targetColumn: "ref_legal_status_type_wid_fk",
-              targetType: "number"
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "PARTY_ID",
@@ -127,26 +119,6 @@ module.exports = async function stage_organisation() {
               targetType: "varchar"
             },
             {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
-              targetType: "varchar"
-            },
-            {
               column: "LAND_DETAILS_CONFIRMED_DT_KEY",
               targetColumn: "land_details_confirmed_dt_key",
               targetType: "number"
@@ -159,7 +131,8 @@ module.exports = async function stage_organisation() {
             {
               column: "REGISTRATION_DATE",
               targetColumn: "registration_date",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "CHARITY_COMMISSION_REGNUM",
@@ -189,7 +162,8 @@ module.exports = async function stage_organisation() {
             {
               column: "DATE_STARTED_FARMING",
               targetColumn: "date_started_farming",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "ACCOUNTABLE_PEOPLE_COMPLETED",
@@ -209,7 +183,8 @@ module.exports = async function stage_organisation() {
             {
               column: "LAST_UPDATED_ON",
               targetColumn: "last_updated_on",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             }
           ],
           includeErrors: false

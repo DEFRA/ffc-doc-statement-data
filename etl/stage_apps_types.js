@@ -7,7 +7,8 @@ module.exports = async function stage_apps_types() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "APPS_TYPES_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "APP_TYPE_ID",
     "SECTOR_P_CODE",
     "SECTOR_S_CODE",
@@ -15,10 +16,7 @@ module.exports = async function stage_apps_types() {
     "EXT_DESCRIPTION",
     "YEAR",
     "WIN_OPEN_DATE",
-    "WIN_CLOSE_DATE",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID", "INTEGRATION_ID"
+    "WIN_CLOSE_DATE"
   ]
   return new Promise((res, rej) => {
     try {
@@ -33,9 +31,15 @@ module.exports = async function stage_apps_types() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
-              column: "APPS_TYPES_WID",
-              targetColumn: "apps_types_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "APP_TYPE_ID",
@@ -70,32 +74,14 @@ module.exports = async function stage_apps_types() {
             {
               column: "WIN_OPEN_DATE",
               targetColumn: "win_open_date",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "WIN_CLOSE_DATE",
               targetColumn: "win_close_date",
-              targetType: "varchar"
-            },
-            {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             }
           ],
           includeErrors: false

@@ -7,7 +7,8 @@ module.exports = async function stage_css_options() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "CSS_OPTION_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "OPTION_TYPE_ID",
     "OPTION_DESCRIPTION",
     "OPTION_LONG_DESCRIPTION",
@@ -16,11 +17,7 @@ module.exports = async function stage_css_options() {
     "CONTRACT_TYPE_ID",
     "START_DT",
     "END_DT",
-    "GROUP_ID",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID",
-    "INTEGRATION_ID"
+    "GROUP_ID"
   ]
   return new Promise((res, rej) => {
     try {
@@ -33,12 +30,17 @@ module.exports = async function stage_css_options() {
           host: "host.docker.internal",
           port: 5482,
           database: "ffc_doc_statement_data",
-
           mapping: [
             {
-              column: "CSS_OPTION_WID",
-              targetColumn: "css_option_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "OPTION_TYPE_ID",
@@ -48,12 +50,12 @@ module.exports = async function stage_css_options() {
             {
               column: "OPTION_DESCRIPTION",
               targetColumn: "option_description",
-              targetType: "string"
+              targetType: "varchar"
             },
             {
               column: "OPTION_LONG_DESCRIPTION",
               targetColumn: "option_long_description",
-              targetType: "string"
+              targetType: "varchar"
             },
             {
               column: "DURATION",
@@ -63,48 +65,31 @@ module.exports = async function stage_css_options() {
             {
               column: "OPTION_CODE",
               targetColumn: "option_code",
-              targetType: "string"
+              targetType: "varchar"
             },
             {
               column: "CONTRACT_TYPE_ID",
-              targetColumn: "contact_type_id",
+              targetColumn: "contract_type_id",
               targetType: "number"
             },
             {
               column: "START_DT",
               targetColumn: "start_dt",
-              targetType: "string"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "END_DT",
               targetColumn: "end_dt",
-              targetType: "string"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "GROUP_ID",
               targetColumn: "group_id",
-              targetType: "string"
-            },
-            {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "string"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "string"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
-              targetType: "string"
-            }],
+              targetType: "varchar"
+            }
+          ],
           includeErrors: false
         }))
         .pump()

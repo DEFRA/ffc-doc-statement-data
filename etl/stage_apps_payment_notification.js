@@ -7,17 +7,14 @@ module.exports = function stage_apps_payment_notifications() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "APPS_PAYMENT_NOTIFICATION_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "APPLICATION_ID",
     "ID_CLC_HEADER",
     "NOTIFICATION_DT",
     "NOTIFICATION_FLAG",
     "NOTIFIER_KEY",
     "NOTIFICATION_TEXT",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID",
-    "INTEGRATION_ID",
     "INVOICE_NUMBER",
     "REQUEST_INVOICE_NUMBER",
     "PILLAR",
@@ -37,9 +34,15 @@ module.exports = function stage_apps_payment_notifications() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
-              column: "APPS_PAYMENT_NOTIFICATION_WID",
-              targetColumn: "apps_payment_notification_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "APPLICATION_ID",
@@ -54,7 +57,8 @@ module.exports = function stage_apps_payment_notifications() {
             {
               column: "NOTIFICATION_DT",
               targetColumn: "notification_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "NOTIFICATION_FLAG",
@@ -69,26 +73,6 @@ module.exports = function stage_apps_payment_notifications() {
             {
               column: "NOTIFICATION_TEXT",
               targetColumn: "notification_text",
-              targetType: "varchar"
-            },
-            {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
               targetType: "varchar"
             },
             {

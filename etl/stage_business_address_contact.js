@@ -7,6 +7,8 @@ module.exports = async function stage_business_address_contacts() {
   const etl = new Etl.Etl()
 
   const columns = [
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "SBI",
     "FRN",
     "BUSINESS_NAME",
@@ -61,6 +63,33 @@ module.exports = async function stage_business_address_contacts() {
             faker: "internet.email"
           }]
         }))
+        .transform(new Transformers.StringReplaceTransformer(
+          [{
+            column: "BUSINESS_NAME",
+            find: "'",
+            replace: "''"
+          },
+          {
+            column: "BUSINESS_ADDRESS1",
+            find: "'",
+            replace: "''"
+          },
+          {
+            column: "BUSINESS_ADDRESS2",
+            find: "'",
+            replace: "''"
+          },
+          {
+            column: "BUSINESS_ADDRESS3",
+            find: "'",
+            replace: "''"
+          },
+          {
+            column: "BUSINESS_CITY",
+            find: "'",
+            replace: "''"
+          }]
+        ))
         .destination(new Destinations.PostgresDestination({
           username: process.env.POSTGRES_USERNAME,
           password: process.env.POSTGRES_PASSWORD,
@@ -69,6 +98,17 @@ module.exports = async function stage_business_address_contacts() {
           port: 5482,
           database: "ffc_doc_statement_data",
           mapping: [
+            {
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
+            },
             {
               column: "SBI",
               targetColumn: "sbi",

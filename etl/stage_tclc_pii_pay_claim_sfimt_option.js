@@ -7,7 +7,8 @@ module.exports = async function stage_tclc_pii_pay_claim_sfimt_option() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "TCLC_PII_PAY_CLAIM_SFIMT_OPTION_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "APPLICATION_ID",
     "CALCULATION_ID",
     "OP_CODE",
@@ -20,11 +21,7 @@ module.exports = async function stage_tclc_pii_pay_claim_sfimt_option() {
     "FOUND_AMOUNT",
     "OVERD_REDUCT_AMOUNT",
     "OVERD_PENALTY_AMOUNT",
-    "NET1_AMOUNT",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID",
-    "INTEGRATION_ID"
+    "NET1_AMOUNT"
   ]
 
   return new Promise((res, rej) => {
@@ -40,9 +37,15 @@ module.exports = async function stage_tclc_pii_pay_claim_sfimt_option() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
-              column: "TCLC_PII_PAY_CLAIM_SFIMT_OPTION_WID",
-              targetColumn: "tclc_pii_pay_claim_sfimt_option_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "APPLICATION_ID",
@@ -108,26 +111,6 @@ module.exports = async function stage_tclc_pii_pay_claim_sfimt_option() {
               column: "NET1_AMOUNT",
               targetColumn: "net1_amount",
               targetType: "number"
-            },
-            {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
-              targetType: "varchar"
             }
           ],
           includeErrors: false

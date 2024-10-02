@@ -7,6 +7,8 @@ module.exports = async function stage_calculation_details() {
   const etl = new Etl.Etl()
 
   const columns = [
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "APPLICATION_ID",
     "ID_CLC_HEADER",
     "CALCULATION_ID",
@@ -26,6 +28,17 @@ module.exports = async function stage_calculation_details() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
+            },
+            {
               column: "APPLICATION_ID",
               targetColumn: "application_id",
               targetType: "number"
@@ -43,7 +56,8 @@ module.exports = async function stage_calculation_details() {
             {
               column: "CALCULATION_DT",
               targetColumn: "calculation_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "RANKED",

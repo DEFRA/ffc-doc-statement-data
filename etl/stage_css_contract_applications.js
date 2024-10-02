@@ -7,7 +7,8 @@ module.exports = async function stage_css_contract_applications() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "CSS_CONTRACT_APPLICATION_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "PKID",
     "INSERT_DT",
     "DELETE_DT",
@@ -24,11 +25,7 @@ module.exports = async function stage_css_contract_applications() {
     "START_ACT_ID",
     "END_ACT_ID",
     "LAST_UPDATE_DT",
-    "USER",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID",
-    "INTEGRATION_ID"
+    "USER_FLD"
   ]
   return new Promise((res, rej) => {
     try {
@@ -43,9 +40,15 @@ module.exports = async function stage_css_contract_applications() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
-              column: "CSS_CONTRACT_APPLICATION_WID",
-              targetColumn: "css_contract_application_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "PKID",
@@ -55,12 +58,14 @@ module.exports = async function stage_css_contract_applications() {
             {
               column: "INSERT_DT",
               targetColumn: "insert_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "DELETE_DT",
               targetColumn: "delete_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "CONTRACT_ID",
@@ -95,12 +100,14 @@ module.exports = async function stage_css_contract_applications() {
             {
               column: "START_DT",
               targetColumn: "start_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "END_DT",
               targetColumn: "end_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "VALID_START_FLAG",
@@ -125,31 +132,12 @@ module.exports = async function stage_css_contract_applications() {
             {
               column: "LAST_UPDATE_DT",
               targetColumn: "last_update_dt",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
-              column: "USER",
+              column: "USER_FLD",
               targetColumn: "USER",
-              targetType: "varchar"
-            },
-            {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
               targetType: "varchar"
             }
           ],

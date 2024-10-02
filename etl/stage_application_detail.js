@@ -5,7 +5,8 @@ module.exports = async function stage_application_details() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "APPLICATION_DETAIL_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "PKID",
     "DT_INSERT",
     "DT_DELETE",
@@ -27,11 +28,7 @@ module.exports = async function stage_application_details() {
     "APP_ID_START",
     "APP_ID_END",
     "DT_REC_UPDATE",
-    "USER_ID",
-    "W_INSERT_DT",
-    "W_UPDATE_DT",
-    "ETL_PROC_WID",
-    "INTEGRATION_ID"
+    "USER_ID"
   ]
   return new Promise((res, rej) => {
     try {
@@ -47,9 +44,15 @@ module.exports = async function stage_application_details() {
           includeErrors: false,
           mapping: [
             {
-              column: "APPLICATION_DETAIL_WID",
-              targetColumn: "application_detail_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "PKID",
@@ -59,12 +62,14 @@ module.exports = async function stage_application_details() {
             {
               column: "DT_INSERT",
               targetColumn: "dt_insert",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "DT_DELETE",
               targetColumn: "dt_delete",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "SUBJECT_ID",
@@ -124,12 +129,14 @@ module.exports = async function stage_application_details() {
             {
               column: "DT_START",
               targetColumn: "dt_start",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "DT_END",
               targetColumn: "dt_end",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "VALID_START_FLG",
@@ -154,31 +161,12 @@ module.exports = async function stage_application_details() {
             {
               column: "DT_REC_UPDATE",
               targetColumn: "dt_rec_update",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "USER_ID",
               targetColumn: "user_id",
-              targetType: "varchar"
-            },
-            {
-              column: "W_INSERT_DT",
-              targetColumn: "w_insert_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "W_UPDATE_DT",
-              targetColumn: "w_update_dt",
-              targetType: "varchar"
-            },
-            {
-              column: "ETL_PROC_WID",
-              targetColumn: "etl_proc_wid",
-              targetType: "number"
-            },
-            {
-              column: "INTEGRATION_ID",
-              targetColumn: "integration_id",
               targetType: "varchar"
             }
           ],

@@ -7,7 +7,8 @@ module.exports = async function stage_finance_dax() {
   const etl = new Etl.Etl()
 
   const columns = [
-    "FINANCE_DAX_WID",
+    "CHANGE_TYPE",
+    "CHANGE_TIME",
     "TRANSDATE",
     "ACCOUNTTYPE",
     "INVOICEID",
@@ -46,7 +47,7 @@ module.exports = async function stage_finance_dax() {
     "CREATEDDATETIME",
     "CREATEDBY",
     "DATAAREAID",
-    "PARTITION",
+    "PARTITION_FLD",
     "RECID",
     "EURUNNUMBER",
     "ACCRUALLEDGERDIMENSIONACCOUNT",
@@ -98,14 +99,21 @@ module.exports = async function stage_finance_dax() {
           database: "ffc_doc_statement_data",
           mapping: [
             {
-              column: "FINANCE_DAX_WID",
-              targetColumn: "finance_dax_wid",
-              targetType: "number"
+              column: "CHANGE_TYPE",
+              targetColumn: "change_type",
+              targetType: "varchar"
+            },
+            {
+              column: "CHANGE_TIME",
+              targetColumn: "change_time",
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "TRANSDATE",
               targetColumn: "transdate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "ACCOUNTTYPE",
@@ -120,7 +128,8 @@ module.exports = async function stage_finance_dax() {
             {
               column: "INVOICEDATE",
               targetColumn: "invoicedate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "SCHEME",
@@ -270,7 +279,8 @@ module.exports = async function stage_finance_dax() {
             {
               column: "MODIFIEDDATETIME",
               targetColumn: "modifieddatetime",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "MODIFIEDBY",
@@ -280,7 +290,8 @@ module.exports = async function stage_finance_dax() {
             {
               column: "CREATEDDATETIME",
               targetColumn: "createddatetime",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "CREATEDBY",
@@ -293,7 +304,7 @@ module.exports = async function stage_finance_dax() {
               targetType: "varchar"
             },
             {
-              column: "PARTITION",
+              column: "PARTITION_FLD",
               targetColumn: "partition",
               targetType: "varchar"
             },
@@ -330,7 +341,8 @@ module.exports = async function stage_finance_dax() {
             {
               column: "CLAIMSETTLEMENTDATE",
               targetColumn: "claimsettlementdate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "CLAIMREFNUM",
@@ -350,12 +362,14 @@ module.exports = async function stage_finance_dax() {
             {
               column: "EUYEARSTARTDATE",
               targetColumn: "euyearstartdate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "EUYEARENDDATE",
               targetColumn: "euyearenddate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "YEARENDRUNNUMBER",
@@ -375,7 +389,8 @@ module.exports = async function stage_finance_dax() {
             {
               column: "POSTINGDATE",
               targetColumn: "postingdate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "DATAWAREHOUSERUNNUM",
@@ -455,7 +470,8 @@ module.exports = async function stage_finance_dax() {
             {
               column: "OEDATE",
               targetColumn: "oedate",
-              targetType: "varchar"
+              targetType: "date",
+              format: "DD-MM-YYYY HH24:MI:SS"
             },
             {
               column: "SETTLEMENTVOUCHER1",

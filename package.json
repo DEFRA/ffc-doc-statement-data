@@ -12,7 +12,8 @@
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --coverage=false --onlyChanged --watch --runInBand --no-cache",
     "start:watch": "nodemon --inspect=0.0.0.0 --ext js --legacy-watch app/index.js",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js",
-    "stage": "node ./etl/stage_extracts.js"
+    "stage": "node ./etl/stage_extracts.js",
+    "extract": "node ./etl/extract_extracts.js"
   },
   "author": "Defra",
   "contributors": [
@@ -28,9 +29,10 @@
     "@topcli/spinner": "^2.1.2",
     "applicationinsights": "2.3.3",
     "ffc-messaging": "2.9.1",
-    "ffc-pay-etl-framework": "^0.0.11",
+    "ffc-pay-etl-framework": "0.1.13-alpha.13",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
+    "node-stream-zip": "^1.15.0",
     "pg": "8.7.3",
     "pg-hstore": "2.3.4",
     "sequelize": "6.31.1"
