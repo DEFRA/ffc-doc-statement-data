@@ -1,11 +1,11 @@
 const db = require('../../data')
 
-const updatePublished = async (calculationReference, transaction) => {
+const updatePublished = async (calculationId, transaction) => {
   await db.delinkedCalculation.update(
     { datePublished: new Date() },
     {
       where: {
-        calculationId: calculationReference
+        calculationId
       },
       transaction
     }
