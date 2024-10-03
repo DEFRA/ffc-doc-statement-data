@@ -212,7 +212,7 @@ components:
         paymentReference:
           $ref: '#/components/schemas/PaymentReference'
         calculationReference:
-          $ref: '#/components/schemas/CalculationId'
+          $ref: '#/components/schemas/CalculationReference'
         paymentPeriod:
           $ref: '#/components/schemas/PaymentPeriod'
         paymentAmount:

@@ -2,7 +2,7 @@ const { start } = require('../../../app/publishing')
 jest.mock('../../../app/publishing/send-updates')
 const sendUpdates = require('../../../app/publishing/send-updates')
 const { publishingConfig } = require('../../../app/config')
-const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX } = require('../../../app/publishing/types')
+const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('../../../app/publishing/types')
 
 describe('start publishing', () => {
   const originalPollingInterval = publishingConfig.pollingInterval
@@ -28,6 +28,7 @@ describe('start publishing', () => {
     expect(sendUpdates).toHaveBeenCalledWith(CALCULATION)
     expect(sendUpdates).toHaveBeenCalledWith(TOTAL)
     expect(sendUpdates).toHaveBeenCalledWith(DAX)
+    expect(sendUpdates).toHaveBeenCalledWith(D365)
   })
 
   test('logs success message when all updates are sent', async () => {
