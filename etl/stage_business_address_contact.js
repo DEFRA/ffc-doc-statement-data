@@ -67,27 +67,32 @@ module.exports = async function stage_business_address_contacts() {
           [{
             column: "BUSINESS_NAME",
             find: "'",
-            replace: "''"
+            replace: "''",
+            all: true
           },
           {
             column: "BUSINESS_ADDRESS1",
             find: "'",
-            replace: "''"
+            replace: "''",
+            all: true
           },
           {
             column: "BUSINESS_ADDRESS2",
             find: "'",
-            replace: "''"
+            replace: "''",
+            all: true
           },
           {
             column: "BUSINESS_ADDRESS3",
             find: "'",
-            replace: "''"
+            replace: "''",
+            all: true
           },
           {
             column: "BUSINESS_CITY",
             find: "'",
-            replace: "''"
+            replace: "''",
+            all: true
           }]
         ))
         .destination(new Destinations.PostgresDestination({

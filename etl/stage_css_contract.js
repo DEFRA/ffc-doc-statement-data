@@ -34,6 +34,12 @@ module.exports = async function stage_css_contract() {
     try {
       etl
         .loader(new Loaders.CSVLoader({ path: csvFile, columns: columns }))
+        .transform(new Transformers.StringReplaceTransformer([{
+          column: 'CONTRACT_DESCRIPTION',
+          find: "'",
+          replace: "''",
+          all: true
+        }]))
         .destination(new Destinations.PostgresDestination({
           username: process.env.POSTGRES_USERNAME,
           password: process.env.POSTGRES_PASSWORD,

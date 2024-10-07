@@ -46,7 +46,8 @@ module.exports = async function stage_organisation() {
           [{
             column: "ORGANISATION_NAME",
             find: "'",
-            replace: "''"
+            replace: "''",
+            all: true
           }]
         ))
         .destination(new Destinations.PostgresDestination({
