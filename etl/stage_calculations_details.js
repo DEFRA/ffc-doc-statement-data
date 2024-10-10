@@ -1,4 +1,4 @@
-const { Etl, Loaders, Destinations } = require("ffc-pay-etl-framework")
+const { Etl, Loaders, Destinations, Connections } = require("ffc-pay-etl-framework")
 
 module.exports = async function stage_calculation_details() {
 
@@ -15,17 +15,21 @@ module.exports = async function stage_calculation_details() {
     "CALCULATION_DT",
     "RANKED"
   ]
-  return new Promise((res, rej) => {
+  return new Promise(async (res, rej) => {
     try {
       etl
-        .loader(new Loaders.CSVLoader({ path: csvFile, columns: columns }))
-        .destination(new Destinations.PostgresDestination({
+        .connection(await new Connections.PostgresDatabaseConnection({
           username: process.env.POSTGRES_USERNAME,
           password: process.env.POSTGRES_PASSWORD,
-          table: "etl_stage_calculation_details",
           host: "host.docker.internal",
-          port: 5482,
           database: "ffc_doc_statement_data",
+          port: 5482,
+          name: "postgresConnection"
+        }))
+        .loader(new Loaders.CSVLoader({ path: csvFile, columns: columns }))
+        .destination(new Destinations.PostgresDestination({
+          connection: "postgresConnection",
+          table: "etl_stage_calculation_details",
           mapping: [
             {
               column: "CHANGE_TYPE",

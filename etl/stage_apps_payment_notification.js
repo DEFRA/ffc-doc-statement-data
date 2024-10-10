@@ -1,4 +1,4 @@
-const { Etl, Loaders, Validators, Transformers, Destinations } = require("ffc-pay-etl-framework")
+const { Etl, Loaders, Validators, Transformers, Destinations, Connections } = require("ffc-pay-etl-framework")
 
 module.exports = function stage_apps_payment_notifications() {
 
@@ -21,17 +21,21 @@ module.exports = function stage_apps_payment_notifications() {
     "DELIVERY_BODY_CODE",
     "PAYMENT_PREFERENCE_CURRENCY"
   ]
-  return new Promise((res, rej) => {
+  return new Promise(async (res, rej) => {
     try {
       etl
-        .loader(new Loaders.CSVLoader({ path: csvFile, columns: columns }))
-        .destination(new Destinations.PostgresDestination({
+        .connection(await new Connections.PostgresDatabaseConnection({
           username: process.env.POSTGRES_USERNAME,
           password: process.env.POSTGRES_PASSWORD,
-          table: "etl_stage_apps_payment_notification",
           host: "host.docker.internal",
-          port: 5482,
           database: "ffc_doc_statement_data",
+          port: 5482,
+          name: "postgresConnection"
+        }))
+        .loader(new Loaders.CSVLoader({ path: csvFile, columns: columns }))
+        .destination(new Destinations.PostgresDestination({
+          table: "etl_stage_apps_payment_notification",
+          connection: "postgresConnection",
           mapping: [
             {
               column: "CHANGE_TYPE",

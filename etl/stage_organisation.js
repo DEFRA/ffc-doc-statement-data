@@ -1,4 +1,4 @@
-const { Etl, Loaders, Validators, Transformers, Destinations } = require("ffc-pay-etl-framework")
+const { Etl, Loaders, Validators, Transformers, Destinations, Connections } = require("ffc-pay-etl-framework")
 
 module.exports = async function stage_organisation() {
 
@@ -32,9 +32,17 @@ module.exports = async function stage_organisation() {
     "CORR_AS_BUSINESS_ADDR",
     "LAST_UPDATED_ON"
   ]
-  return new Promise((res, rej) => {
+  return new Promise(async (res, rej) => {
     try {
       etl
+        .connection(await new Connections.PostgresDatabaseConnection({
+          username: process.env.POSTGRES_USERNAME,
+          password: process.env.POSTGRES_PASSWORD,
+          host: "host.docker.internal",
+          database: "ffc_doc_statement_data",
+          port: 5482,
+          name: "postgresConnection"
+        }))
         .loader(new Loaders.CSVLoader({ path: csvFile, columns: columns }))
         .transform(new Transformers.FakerTransformer({
           columns: [{
@@ -51,12 +59,8 @@ module.exports = async function stage_organisation() {
           }]
         ))
         .destination(new Destinations.PostgresDestination({
-          username: process.env.POSTGRES_USERNAME,
-          password: process.env.POSTGRES_PASSWORD,
+          connection: "postgresConnection",
           table: "etl_stage_organisation",
-          host: "host.docker.internal",
-          port: 5482,
-          database: "ffc_doc_statement_data",
           mapping: [
             {
               column: "CHANGE_TYPE",
