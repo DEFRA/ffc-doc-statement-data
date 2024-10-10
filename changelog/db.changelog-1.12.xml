@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+   
+    <changeSet id ="1" author="Harsh Vasudev">
+         <tagDatabase tag="v1.12" />
+    </changeSet>                                   
+
+    <changeSet  id="2" author="Harsh Vasudev">
+        <modifyDataType tableName="organisations" columnName="addressLine1" newDataType="VARCHAR(240)" />
+        <modifyDataType tableName="organisations" columnName="addressLine2" newDataType="VARCHAR(240)" />
+        <modifyDataType tableName="organisations" columnName="addressLine3" newDataType="VARCHAR(240)" />
+        <modifyDataType tableName="organisations" columnName="city" newDataType="VARCHAR(60)" />
+        <modifyDataType tableName="organisations" columnName="name" newDataType="VARCHAR(160)" />
+    </changeSet>
+
+</databaseChangeLog>
