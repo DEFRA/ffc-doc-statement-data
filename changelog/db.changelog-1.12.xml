@@ -12,7 +12,6 @@
         <modifyDataType tableName="organisations" columnName="addressLine1" newDataType="VARCHAR(240)" />
         <modifyDataType tableName="organisations" columnName="addressLine2" newDataType="VARCHAR(240)" />
         <modifyDataType tableName="organisations" columnName="addressLine3" newDataType="VARCHAR(240)" />
-        <modifyDataType tableName="organisations" columnName="city" newDataType="VARCHAR(60)" />
         <modifyDataType tableName="organisations" columnName="name" newDataType="VARCHAR(160)" />
         <modifyDataType tableName="organisations" columnName="emailAddress" newDataType="VARCHAR(260)" />
     </changeSet>
