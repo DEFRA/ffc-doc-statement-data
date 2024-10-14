@@ -38,7 +38,7 @@ class ZipEntry {
 }
 
 function openExtractsZipFile() {
-  const zipFilePath = path.join(process.cwd(), 'etl/dwh_extracts/OneDrive_1_01-10-2024.zip')
+  const zipFilePath = path.join(process.cwd(), 'etl/dwh_extracts/extracts.zip')
   zip = new StreamZip.async({ file: zipFilePath })
 }
 
@@ -172,6 +172,6 @@ async function flushExtractDirectories() {
   //extractZipFileToTempFolder()
   //closeExtractsZipFile()
   flushExtractDirectories()
-  processZipFile('./extracted/20240919_163748.zip')
+  processZipFile('./etl/dwh_extracts/extracts.zip')
   //flushExtractDirectories()
 })()

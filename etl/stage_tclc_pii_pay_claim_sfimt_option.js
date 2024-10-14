@@ -1,3 +1,4 @@
+const fs = require("fs")
 const { Etl, Loaders, Validators, Transformers, Destinations, Connections } = require("ffc-pay-etl-framework")
 
 module.exports = async function stage_tclc_pii_pay_claim_sfimt_option() {
@@ -25,6 +26,9 @@ module.exports = async function stage_tclc_pii_pay_claim_sfimt_option() {
   ]
 
   return new Promise(async (res, rej) => {
+    if (!fs.existsSync(csvFile)) {
+      return res(true)
+    }
     try {
       etl
         .connection(await new Connections.PostgresDatabaseConnection({

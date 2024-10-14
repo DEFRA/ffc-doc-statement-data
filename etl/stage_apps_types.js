@@ -1,3 +1,4 @@
+const fs = require("fs")
 const { Etl, Loaders, Validators, Transformers, Destinations, Connections } = require("ffc-pay-etl-framework")
 
 module.exports = async function stage_apps_types() {
@@ -19,6 +20,9 @@ module.exports = async function stage_apps_types() {
     "WIN_CLOSE_DATE"
   ]
   return new Promise(async (res, rej) => {
+    if (!fs.existsSync(csvFile)) {
+      return res(true)
+    }
     try {
       etl
         .connection(await new Connections.PostgresDatabaseConnection({
