@@ -33,6 +33,10 @@ container:
   dataTopicAddress: ffc-doc-statement-data
   demographicsTopicAddress: ffc-pay-demographics-extract
   demographicsSubscriptionAddress: ffc-doc-demographics
+  azureStorageConnectionString: dummy
+  azureStorageAccountName: ffcdoc
+  azureStorageUseConnectionString: false
+  azureStorageCreateContainers: false
 
 postgresService:
   postgresDb: ffc_doc_statement_data

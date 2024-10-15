@@ -1,6 +1,6 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 
-function isProd() {
+function isProd () {
   return process.env.NODE_ENV === 'production'
 }
 
