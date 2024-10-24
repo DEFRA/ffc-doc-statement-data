@@ -4,11 +4,13 @@ const dbConfig = require('./database')
 const publishingConfig = require('./publishing')
 
 const schema = Joi.object({
-  env: Joi.string().valid('development', 'test', 'production').default('development')
+  env: Joi.string().valid('development', 'test', 'production').default('development'),
+  demographicsActive: Joi.boolean().default(true)
 })
 
 const config = {
-  env: process.env.NODE_ENV
+  env: process.env.NODE_ENV,
+  demographicsActive: process.env.DEMOGRAPHICS_ACTIVE
 }
 
 const result = schema.validate(config, {
