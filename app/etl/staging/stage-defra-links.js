@@ -6,8 +6,10 @@ const { defraLinksTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageDefraLinks = async () => {
+  const filename = `${storageConfig.defraLinks.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `defraLinks-${uuidv4()}.csv`)
-  await storage.downloadFile(`${storageConfig.defraLinks.folder}/export.csv`, tempFilePath)
+  await storage.downloadFile(filename, tempFilePath)
+  await storage.deleteFile(filename)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',

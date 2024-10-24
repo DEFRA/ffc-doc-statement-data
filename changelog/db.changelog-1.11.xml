@@ -8,7 +8,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -18,10 +18,10 @@
         <column name="PKID" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name="DT_INSERT" type="DATE">
+        <column name="DT_INSERT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name="DT_DELETE" type="DATE">
+        <column name="DT_DELETE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name="SUBJECT_ID" type="INTEGER">
@@ -75,7 +75,7 @@
         <column name="APP_ID_END" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name="DT_REC_UPDATE" type="DATE">
+        <column name="DT_REC_UPDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name="USER_ID" type="VARCHAR">
@@ -86,7 +86,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -99,7 +99,7 @@
         <column name="ID_CLC_HEADER" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name="NOTIFICATION_DT" type="DATE">
+        <column name="NOTIFICATION_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name="NOTIFICATION_FLAG" type="VARCHAR">
@@ -131,7 +131,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -156,10 +156,10 @@
         <column name = "YEAR" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name = "WIN_OPEN_DATE" type="DATE">
+        <column name = "WIN_OPEN_DATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name = "WIN_CLOSE_DATE" type="DATE">
+        <column name = "WIN_CLOSE_DATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
     </createTable>
@@ -167,7 +167,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -257,7 +257,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -273,7 +273,7 @@
         <column name = "CALCULATION_ID" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name = "CALCULATION_DT" type="DATE">
+        <column name = "CALCULATION_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "RANKED" type="INTEGER">
@@ -284,7 +284,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -338,7 +338,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -351,10 +351,10 @@
         <column name = "PKID" type="DECIMAL(11,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "INSERT_DT" type="DATE">
+        <column name = "INSERT_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>    
-        <column name = "DELETE_DT" type="DATE">
+        <column name = "DELETE_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "CONTRACT_ID" type="DECIMAL(11,0)">
@@ -384,10 +384,10 @@
         <column name = "DATA_SOURCE_S_CODE" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "START_DT" type="DATE">
+        <column name = "START_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name = "END_DT" type="DATE">
+        <column name = "END_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "VALID_START_FLAG" type="VARCHAR">
@@ -402,7 +402,7 @@
         <column name = "END_ACT_ID" type="NUMBER(11,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "LAST_UPDATE_DT" type="DATE">
+        <column name = "LAST_UPDATE_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "USER" type="VARCHAR">
@@ -413,7 +413,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -426,10 +426,10 @@
         <column name = "PKID" type="NUMBER(11,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "INSERT_DT" type="DATE">
+        <column name = "INSERT_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name = "DELETE_DT" type="DATE">
+        <column name = "DELETE_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "CONTRACT_ID" type="NUMBER(11,0)">
@@ -450,10 +450,10 @@
         <column name = "DATA_SOURCE_S_CODE" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "START_DT" type="DATE">
+        <column name = "START_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name = "END_DT" type="DATE">
+        <column name = "END_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "VALID_START_FLAG" type="VARCHAR">
@@ -468,7 +468,7 @@
         <column name = "END_ACT_ID" type="NUMBER(11,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "LAST_UPDATE_DT" type="DATE">
+        <column name = "LAST_UPDATE_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "USER" type="VARCHAR">
@@ -479,7 +479,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -507,10 +507,10 @@
         <column name = "CONTRACT_TYPE_ID" type="NUMBER(11,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "START_DT" type="DATE">
+        <column name = "START_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name = "END_DT" type="DATE">
+        <column name = "END_DT" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "GROUP_ID" type="VARCHAR">
@@ -521,7 +521,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -548,7 +548,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -558,7 +558,7 @@
         <column name = "FINANCE_DAX_WID" type="NUMBER(19,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "TRANSDATE" type="DATE">
+        <column name = "TRANSDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "ACCOUNTTYPE" type="NUMBER(10,0)">
@@ -567,7 +567,7 @@
         <column name = "INVOICEID" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "INVOICEDATE" type="DATE">
+        <column name = "INVOICEDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "SCHEME" type="VARCHAR">
@@ -657,13 +657,13 @@
         <column name = "CUSTVENDAC" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "MODIFIEDDATETIME" type="DATE">
+        <column name = "MODIFIEDDATETIME" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "MODIFIEDBY" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "CREATEDDATETIME" type="DATE">
+        <column name = "CREATEDDATETIME" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "CREATEDBY" type="VARCHAR">
@@ -693,7 +693,7 @@
         <column name = "LEGACYFARMERACCOUNT" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "CLAIMSETTLEMENTDATE" type="DATE">
+        <column name = "CLAIMSETTLEMENTDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>     
         <column name = "CLAIMREFNUM" type="VARCHAR">
@@ -705,10 +705,10 @@
         <column name = "FUNDEDBY" type="NUMBER(10,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "EUYEARSTARTDATE" type="DATE">
+        <column name = "EUYEARSTARTDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
-        <column name = "EUYEARENDDATE" type="DATE">
+        <column name = "EUYEARENDDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "YEARENDRUNNUMBER" type="VARCHAR">
@@ -720,7 +720,7 @@
         <column name = "EXCHRATECALCTYPE" type="NUMBER(10,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "POSTINGDATE" type="DATE">
+        <column name = "POSTINGDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "DATAWAREHOUSERUNNUM" type="VARCHAR">
@@ -768,7 +768,7 @@
         <column name = "AGREEMENTREFERENCE" type="VARCHAR">
             <constraints nullable="true" />
         </column>
-        <column name = "OEDATE" type="DATE">
+        <column name = "OEDATE" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
         <column name = "SETTLEMENTVOUCHER1" type="VARCHAR">
@@ -791,7 +791,7 @@
         <column name="CHANGE_TYPE" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="DATE">
+        <column name="CHANGE_TIME" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "ETL_ID" type="BIGSERIAL">
@@ -867,7 +867,7 @@
         <column name = "CORR_AS_BUSINESS_ADDR" type="NUMBER(1,0)">
             <constraints nullable="true" />
         </column>
-        <column name = "LAST_UPDATED_ON" type="VARCHAR">
+        <column name = "LAST_UPDATED_ON" type="TIMESTAMP">
             <constraints nullable="true" />
         </column>
     </createTable>
@@ -878,7 +878,7 @@
         <column name = "CALCULATION_ID" type="INTEGER">
             <constraints nullable="false" />
         </column>
-        <column name = "CALCULATION_DATE" type="DATE">
+        <column name = "CALCULATION_DATE" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "SBI" type="INTEGER">
@@ -923,7 +923,7 @@
         <column name = "NAME" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name = "UPDATED" type="DATE">
+        <column name = "UPDATED" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
@@ -944,10 +944,10 @@
         <column name = "CONTRACT_ID" type="INTEGER">
             <constraints nullable="false" />
         </column>
-        <column name = "AGREEMENTSTART" type="DATE">
+        <column name = "AGREEMENTSTART" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
-        <column name = "AGREEMENTEND" type="DATE">
+        <column name = "AGREEMENTEND" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "APPLICATION_ID" type="INTEGER">
@@ -971,7 +971,7 @@
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
     <createTable tableName = "ETL_INTERM_FINANCE_DAX">
-        <column name = "TRANSDATE" type="DATE">
+        <column name = "TRANSDATE" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "INVOICEID" type="VARCHAR">
@@ -1019,7 +1019,7 @@
         <column name = "TOTAL_AMOUNT" type="NUMERIC">
             <constraints nullable="false" />
         </column>
-        <column name = "TRANSDATE" type="DATE">
+        <column name = "TRANSDATE" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name = "CALCULATION_ID" type="BIGSERIAL">
@@ -1046,10 +1046,10 @@
         <column name = "PAYMENT_REF" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name = "AGREEMENTSTART" type="DATE">
+        <column name = "AGREEMENTSTART" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
-        <column name = "AGREEMENTEND" type="DATE">
+        <column name = "AGREEMENTEND" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>

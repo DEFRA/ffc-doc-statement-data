@@ -73,7 +73,7 @@ const loadETLData = async () => {
     SELECT O.sbi, A.business_address1 as addressLine1, A.business_address2 as addressLine2,
       A.business_address3 as addressLine3, A.business_city as city, A.business_county as county, 
       A.business_post_code as postcode, A.business_email_addr as emailaddress, A.frn, 
-      A. business_name as name, TO_DATE(O.last_updated_on, 'DD-MON-YY') as updated 
+      A. business_name as name, O.last_updated_on::date as updated 
       FROM etl_stage_organisation O 
       LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi;
 
@@ -250,6 +250,8 @@ const loadETLData = async () => {
       raw: true,
       transaction
     })
+    await transaction.commit()
+    console.log('ETL data successfully loaded')
   } catch (error) {
     await transaction.rollback()
     throw error

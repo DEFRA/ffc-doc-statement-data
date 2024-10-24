@@ -6,8 +6,10 @@ const { runEtlProcess } = require('../run-etl-process')
 const { financeDAXTable } = require('../../constants/tables')
 
 const stageFinanceDAX = async () => {
-  const tempFilePath = path.join(__dirname, `defraLinks-${uuidv4()}.csv`)
-  await storage.downloadFile(`${storageConfig.financeDAX.folder}/export.csv`, tempFilePath)
+  const filename = `${storageConfig.financeDAX.folder}/export.csv`
+  const tempFilePath = path.join(__dirname, `financeDAX-${uuidv4()}.csv`)
+  await storage.downloadFile(filename, tempFilePath)
+  await storage.deleteFile(filename)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
