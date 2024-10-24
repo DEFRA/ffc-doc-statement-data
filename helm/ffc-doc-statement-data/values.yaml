@@ -33,6 +33,7 @@ container:
   dataTopicAddress: ffc-doc-statement-data
   demographicsTopicAddress: ffc-pay-demographics-extract
   demographicsSubscriptionAddress: ffc-doc-demographics
+  demographicsActive: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

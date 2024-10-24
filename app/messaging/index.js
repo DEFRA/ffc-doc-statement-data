@@ -4,14 +4,20 @@ const processDemographicsMessage = require('./process-demographics-message')
 let updateReceiver
 
 const start = async () => {
-  const updateAction = message => processDemographicsMessage(message, updateReceiver)
-  updateReceiver = new MessageReceiver(config.updatesSubscription, updateAction)
-  await updateReceiver.subscribe()
-  console.info('Receiver ready to receive demographics updates')
+  if (config.demographicsActive) {
+    const updateAction = message => processDemographicsMessage(message, updateReceiver)
+    updateReceiver = new MessageReceiver(config.updatesSubscription, updateAction)
+    await updateReceiver.subscribe()
+    console.info('Receiver ready to receive demographics updates')
+  } else {
+    console.info('Demographics updates not live in this environment')
+  }
 }
 
 const stop = async () => {
-  await updateReceiver.closeConnection()
+  if (updateReceiver) {
+    await updateReceiver.closeConnection()
+  }
 }
 
 module.exports = { start, stop }

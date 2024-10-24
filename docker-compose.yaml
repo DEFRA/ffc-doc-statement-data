@@ -22,6 +22,7 @@ services:
       POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
       DEMOGRAPHICS_TOPIC_ADDRESS: ${DEMOGRAPHICS_TOPIC_ADDRESS:-ffc-pay-demographics-extract}${MESSAGE_QUEUE_SUFFIX}
       DEMOGRAPHICS_SUBSCRIPTION_ADDRESS: ${DEMOGRAPHICS_SUBSCRIPTION_ADDRESS:-ffc-doc-demographics}${MESSAGE_QUEUE_SUFFIX}
+      DEMOGRAPHICS_ACTIVE: ${DEMOGRAPHICS_ACTIVE:-true}
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine

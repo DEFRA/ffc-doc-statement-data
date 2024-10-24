@@ -16,4 +16,5 @@ data:
   POSTGRES_PORT: {{ quote .Values.postgresService.postgresPort }}
   POSTGRES_SCHEMA_NAME: {{ quote .Values.postgresService.postgresSchema }}
   DEMOGRAPHICS_SUBSCRIPTION_ADDRESS: {{ quote .Values.container.demographicsSubscriptionAddress }}
+  DEMOGRAPHICS_ACTIVE: {{ quote .Values.container.demographicsActive }}
 {{- end -}}
