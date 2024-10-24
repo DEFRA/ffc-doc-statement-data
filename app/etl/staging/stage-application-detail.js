@@ -6,8 +6,10 @@ const { applicationDetailTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageApplicationDetails = async () => {
+  const filename = `${storageConfig.applicationDetail.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `applicationDetails-${uuidv4()}.csv`)
-  await storage.downloadFile(`${storageConfig.applicationDetail.folder}/export.csv`, tempFilePath)
+  await storage.downloadFile(filename, tempFilePath)
+  await storage.deleteFile(filename)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',

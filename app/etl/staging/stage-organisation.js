@@ -4,10 +4,13 @@ const storage = require('../../storage')
 const storageConfig = require('../../config/storage')
 const { runEtlProcess } = require('../run-etl-process')
 const { organisationTable } = require('../../constants/tables')
+const config = require('../../config')
 
 const stageOrganisation = async () => {
+  const filename = `${storageConfig.organisation.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `organisation-${uuidv4()}.csv`)
-  await storage.downloadFile(`${storageConfig.organisation.folder}/export.csv`, tempFilePath)
+  await storage.downloadFile(filename, tempFilePath)
+  await storage.deleteFile(filename)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -177,7 +180,17 @@ const stageOrganisation = async () => {
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: organisationTable, mapping, transformer })
+  let nonProdTransformer = []
+  if (!config.isProd) {
+    nonProdTransformer = [
+      {
+        name: 'ORGANISATION_NAME',
+        faker: 'company.name'
+      }
+    ]
+  }
+
+  return runEtlProcess({ tempFilePath, columns, table: organisationTable, mapping, transformer, nonProdTransformer })
 }
 
 module.exports = {

@@ -78,6 +78,17 @@ const downloadFile = async (filename, tempFilePath) => {
   return blob.downloadToFile(tempFilePath)
 }
 
+const deleteFile = async (filename) => {
+  const blob = await getBlob(filename)
+  try {
+    await blob.delete()
+    return true
+  } catch (e) {
+    console.log(`An error occurred trying to delete blob: ${e.message}`)
+    return false
+  }
+}
+
 const getDWHExtracts = async () => {
   containersInitialised ?? await initialiseContainers()
   const fileList = []
@@ -106,6 +117,7 @@ const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destina
 module.exports = {
   getFileList,
   downloadFile,
+  deleteFile,
   getDWHExtracts,
   moveFile
 }

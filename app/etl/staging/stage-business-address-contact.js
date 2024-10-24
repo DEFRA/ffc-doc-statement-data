@@ -1,13 +1,16 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../storage')
+const config = require('../../config')
 const storageConfig = require('../../config/storage')
 const { businessAddressTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageBusinessAddressContacts = async () => {
+  const filename = `${storageConfig.businessAddress.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `businessAddressContacts-${uuidv4()}.csv`)
-  await storage.downloadFile(`${storageConfig.businessAddress.folder}/export.csv`, tempFilePath)
+  await storage.downloadFile(filename, tempFilePath)
+  await storage.deleteFile(filename)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -186,37 +189,62 @@ const stageBusinessAddressContacts = async () => {
   const transformer = [
     {
       column: 'BUSINESS_NAME',
-      find: '\'',
-      replace: '\'\'',
+      find: "'",
+      replace: "''",
       all: true
     },
     {
       column: 'BUSINESS_ADDRESS1',
-      find: '\'',
-      replace: '\'\'',
+      find: "'",
+      replace: "''",
       all: true
     },
     {
       column: 'BUSINESS_ADDRESS2',
-      find: '\'',
-      replace: '\'\'',
+      find: "'",
+      replace: "''",
       all: true
     },
     {
       column: 'BUSINESS_ADDRESS3',
-      find: '\'',
-      replace: '\'\'',
+      find: "'",
+      replace: "''",
       all: true
     },
     {
       column: 'BUSINESS_CITY',
-      find: '\'',
-      replace: '\'\'',
+      find: "'",
+      replace: "''",
       all: true
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: businessAddressTable, mapping, transformer })
+  let nonProdTransformer = []
+  if (!config.isProd) {
+    nonProdTransformer = [
+      {
+        name: 'BUSINESS_NAME',
+        faker: 'company.name'
+      },
+      {
+        name: 'BUSINESS_ADDRESS1',
+        faker: 'location.street'
+      },
+      {
+        name: 'BUSINESS_POST_CODE',
+        faker: 'location.zipCode'
+      },
+      {
+        name: 'BUSINESS_CITY',
+        faker: 'location.city'
+      },
+      {
+        name: 'BUSINESS_EMAIL_ADDR',
+        faker: 'internet.email'
+      }
+    ]
+  }
+  return runEtlProcess({ tempFilePath, columns, table: businessAddressTable, mapping, transformer, nonProdTransformer })
 }
 
 module.exports = {

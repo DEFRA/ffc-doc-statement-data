@@ -16,7 +16,7 @@ const checkComplete = async () => {
   } else {
     console.log('All ETL extracts loaded')
     fs.writeFileSync('result.log', JSON.stringify(global.results, null, 2))
-    await loadETLData()
+    // await loadETLData()
   }
 }
 
@@ -51,9 +51,9 @@ const stageExtracts = async () => {
           .finally(() => {
             completed += 1
           })
-        await checkComplete()
       }
     }
+    await checkComplete()
   } else {
     console.info('No DWH files identified for processing')
   }

@@ -6,8 +6,10 @@ const { runEtlProcess } = require('../run-etl-process')
 const { tclcOptionTable } = require('../../constants/tables')
 
 const stageTCLCOption = async () => {
+  const filename = `${storageConfig.tclcOption.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `tclcOption-${uuidv4()}.csv`)
-  await storage.downloadFile(`${storageConfig.tclcOption.folder}/export.csv`, tempFilePath)
+  await storage.downloadFile(filename, tempFilePath)
+  await storage.deleteFile(filename)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
