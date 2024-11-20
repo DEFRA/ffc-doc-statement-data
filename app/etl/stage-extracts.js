@@ -1,4 +1,5 @@
-const fs = require('fs')
+const { writeToString } = require('@fast-csv/format')
+const moment = require('moment')
 const storage = require('../storage')
 const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
@@ -9,14 +10,17 @@ let completed = 0
 global.results = []
 
 let total
+let startDate
 
 const checkComplete = async () => {
   if (completed < total) {
     setTimeout(checkComplete, 5000)
   } else {
     console.log('All ETL extracts loaded')
-    fs.writeFileSync('result.log', JSON.stringify(global.results, null, 2))
-    // await loadETLData()
+    const body = await writeToString(global.results)
+    const outboundBlobClient = await storage.getBlob(`${storageConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
+    await outboundBlobClient.upload(body, body.length)
+    await loadETLData(startDate)
   }
 }
 
@@ -36,6 +40,7 @@ const stageFunctions = [
 ]
 
 const stageExtracts = async () => {
+  startDate = new Date()
   const etlFiles = await storage.getFileList()
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
   total = foldersToStage.length

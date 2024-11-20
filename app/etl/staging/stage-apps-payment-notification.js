@@ -6,10 +6,9 @@ const { appsPaymentNotificationTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageAppsPaymentNotifications = async () => {
-  const filename = `${storageConfig.appsPaymentNotification.folder}/export.csv`
+  const file = `${storageConfig.appsPaymentNotification.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `appsPaymentNotifications-${uuidv4()}.csv`)
-  await storage.downloadFile(filename, tempFilePath)
-  await storage.deleteFile(filename)
+  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -95,7 +94,7 @@ const stageAppsPaymentNotifications = async () => {
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: appsPaymentNotificationTable, mapping })
+  return runEtlProcess({ tempFilePath, columns, table: appsPaymentNotificationTable, mapping, file })
 }
 module.exports = {
   stageAppsPaymentNotifications

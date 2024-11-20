@@ -923,6 +923,9 @@
         <column name = "NAME" type="VARCHAR">
             <constraints nullable="false" />
         </column>
+        <column name = "PARTY_ID" type="INTEGER">
+            <constraints nullable="false" />
+        </column>
         <column name = "UPDATED" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
@@ -938,6 +941,9 @@
         <column name = "AGREEMENT_ID" type="INTEGER">
             <constraints nullable="false" />
         </column>
+        <column name = "PKID" type="INTEGER">
+            <constraints nullable="false" />
+        </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
     <createTable tableName = "ETL_INTERM_APPLICATION_CONTRACT">
@@ -951,6 +957,9 @@
             <constraints nullable="false" />
         </column>
         <column name = "APPLICATION_ID" type="INTEGER">
+            <constraints nullable="false" />
+        </column>
+        <column name = "PKID" type="INTEGER">
             <constraints nullable="false" />
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
@@ -1005,6 +1014,9 @@
             <constraints nullable="false" />
         </column>
         <column name = "PAYMENT_REF" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name = "RECID" type="NUMBER(19,0)">
             <constraints nullable="false" />
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
@@ -1138,8 +1150,8 @@
         </column>
     </createTable>
     <createTable tableName = "ETL_STAGE_LOG">
-        <column name = "ETL_ID" type="BIGSERIAL">
-            <constraints nullable="false" />
+        <column autoIncrement="true" name = "ETL_ID" type="INTEGER">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="etlId_pkey" />
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         <column name = "FILE" type="VARCHAR">

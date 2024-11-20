@@ -6,6 +6,7 @@ const schema = Joi.object({
   storageAccount: Joi.string().required(),
   container: Joi.string().required(),
   dwhExtractsFolder: Joi.string().required(),
+  etlLogsFolder: Joi.string().required(),
   applicationDetail: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
@@ -67,6 +68,7 @@ const config = {
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   container: 'etl',
   dwhExtractsFolder: 'dwh_extracts',
+  etlLogsFolder: 'logs',
   applicationDetail: {
     folder: applicationDetailFolder,
     fileMask: 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'

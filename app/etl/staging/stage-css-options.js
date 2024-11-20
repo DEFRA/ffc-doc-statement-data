@@ -6,10 +6,9 @@ const { cssOptionsTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageCSSOptions = async () => {
-  const filename = `${storageConfig.cssOptions.folder}/export.csv`
+  const file = `${storageConfig.cssOptions.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `cssOptions-${uuidv4()}.csv`)
-  await storage.downloadFile(filename, tempFilePath)
-  await storage.deleteFile(filename)
+  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -84,7 +83,7 @@ const stageCSSOptions = async () => {
       targetType: 'varchar'
     }
   ]
-  return runEtlProcess({ tempFilePath, columns, table: cssOptionsTable, mapping })
+  return runEtlProcess({ tempFilePath, columns, table: cssOptionsTable, mapping, file })
 }
 
 module.exports = {

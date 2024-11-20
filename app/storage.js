@@ -17,8 +17,7 @@ const folderList = [
   config.defraLinks.folder,
   config.financeDAX.folder,
   config.organisation.folder,
-  config.tclcOption.folder,
-  config.dwhExtractsFolder
+  config.tclcOption.folder
 ]
 
 if (config.useConnectionStr) {
@@ -45,10 +44,8 @@ const initialiseContainers = async () => {
 const initialiseFolders = async () => {
   console.log('Making sure folders exist')
   const placeHolderText = 'Placeholder'
-  for (const folder of folderList) {
-    const blobClient = container.getBlockBlobClient(`${folder}/default.txt`)
-    await blobClient.upload(placeHolderText, placeHolderText.length)
-  }
+  const blobClient = container.getBlockBlobClient(`${config.dwhExtractsFolder}/default.txt`)
+  await blobClient.upload(placeHolderText, placeHolderText.length)
   foldersInitialised = true
   console.log('Folders ready')
 }
@@ -119,5 +116,6 @@ module.exports = {
   downloadFile,
   deleteFile,
   getDWHExtracts,
-  moveFile
+  moveFile,
+  getBlob
 }

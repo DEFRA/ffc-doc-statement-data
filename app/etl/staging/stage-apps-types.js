@@ -6,10 +6,9 @@ const { appsTypesTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageAppsTypes = async () => {
-  const filename = `${storageConfig.appsTypes.folder}/export.csv`
+  const file = `${storageConfig.appsTypes.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `appsTypes-${uuidv4()}.csv`)
-  await storage.downloadFile(filename, tempFilePath)
-  await storage.deleteFile(filename)
+  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -78,7 +77,7 @@ const stageAppsTypes = async () => {
       format: 'DD-MM-YYYY HH24:MI:SS'
     }
   ]
-  return runEtlProcess({ tempFilePath, columns, table: appsTypesTable, mapping })
+  return runEtlProcess({ tempFilePath, columns, table: appsTypesTable, mapping, file })
 }
 
 module.exports = {

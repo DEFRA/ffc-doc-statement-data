@@ -6,10 +6,9 @@ const { cssContractApplicationsTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
 const stageCSSContractApplications = async () => {
-  const filename = `${storageConfig.cssContractApplications.folder}/export.csv`
+  const file = `${storageConfig.cssContractApplications.folder}/export.csv`
   const tempFilePath = path.join(__dirname, `cssContractApplications-${uuidv4()}.csv`)
-  await storage.downloadFile(filename, tempFilePath)
-  await storage.deleteFile(filename)
+  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -136,7 +135,7 @@ const stageCSSContractApplications = async () => {
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: cssContractApplicationsTable, mapping })
+  return runEtlProcess({ tempFilePath, columns, table: cssContractApplicationsTable, mapping, file })
 }
 
 module.exports = {
