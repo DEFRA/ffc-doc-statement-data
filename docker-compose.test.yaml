@@ -5,6 +5,8 @@ services:
   ffc-doc-statement-data:
     build:
       target: development
+    depends_on:
+      - ffc-doc-statement-data-azurite
     image: ffc-doc-statement-data-development
     container_name: ffc-doc-statement-data-test
     command: npm run test
@@ -14,6 +16,12 @@ services:
       - ./test-output:/home/node/test-output
       - ./jest.config.js:/home/node/jest.config.js
       - ./package.json:/home/node/package.json
+    environment:
+      AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://ffc-doc-statement-data:10000/devstoreaccount1;
+
+  ffc-doc-statement-data:
+    labels:
+      com.docker.compose.pay.role: test
 
   ffc-doc-statement-data-postgres:
     volumes:

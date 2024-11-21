@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const mqConfig = require('./message')
 const dbConfig = require('./database')
+const storageConfig = require('./storage')
 const publishingConfig = require('./publishing')
 
 const schema = Joi.object({
@@ -30,5 +31,6 @@ value.dataTopic = mqConfig.dataTopic
 value.updatesSubscription = mqConfig.updatesSubscription
 value.dbConfig = dbConfig
 value.publishingConfig = publishingConfig
+value.storageConfig = storageConfig
 
 module.exports = value

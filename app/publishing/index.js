@@ -1,10 +1,13 @@
 const { publishingConfig } = require('../config')
+const { renameExtracts, stageExtracts } = require('../etl')
 const sendUpdates = require('./send-updates')
 const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('./types')
 
 const start = async () => {
   try {
     console.log('Ready to publish data')
+    await renameExtracts()
+    await stageExtracts()
     await sendUpdates(ORGANISATION)
     await sendUpdates(DELINKED)
     await sendUpdates(CALCULATION)

@@ -11,7 +11,8 @@
     "test:lint": "standard",
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --coverage=false --onlyChanged --watch --runInBand --no-cache",
     "start:watch": "nodemon --inspect=0.0.0.0 --ext js --legacy-watch app/index.js",
-    "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js"
+    "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js",
+    "stage": "node ./etl/stage_extracts.js"
   },
   "author": "Defra",
   "contributors": [
@@ -24,13 +25,21 @@
   "license": "OGL-UK-3.0",
   "dependencies": {
     "@azure/identity": "4.3.0",
+    "@azure/storage-blob": "12.13.0",
+    "@fast-csv/format": "5.0.2",
+    "@topcli/spinner": "2.1.2",
     "applicationinsights": "2.9.6",
+    "csv-parse": "5.5.6",
     "ffc-messaging": "2.9.1",
+    "ffc-pay-etl-framework": "1.1.1",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
+    "moment": "2.30.1",
+    "node-stream-zip": "1.15.0",
     "pg": "8.7.3",
     "pg-hstore": "2.3.4",
-    "sequelize": "6.31.1"
+    "sequelize": "6.31.1",
+    "uuid": "10.0.0"
   },
   "devDependencies": {
     "jest": "29.6.4",
