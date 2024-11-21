@@ -1048,12 +1048,6 @@
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
-    <addUniqueConstraint  
-        columnNames="payment_ref, claim_id"
-        constraintName="uq_payment_ref_claim_id"
-        schemaName="public"
-        tableName="ETL_INTERM_TOTAL_CLAIM"
-        validate="true"/>
     <createTable tableName = "ETL_INTERM_PAYMENTREF_AGREEMENT_DATES">
         <column name = "PAYMENT_REF" type="VARCHAR">
             <constraints nullable="false" />
@@ -1066,12 +1060,6 @@
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
-    <addUniqueConstraint  
-        columnNames="payment_ref, agreementstart, agreementend"
-        constraintName="uq_payment_ref_agreement_date"
-        schemaName="public"
-        tableName="ETL_INTERM_PAYMENTREF_AGREEMENT_DATES"
-        validate="true"/>
     <createTable tableName = "ETL_INTERM_PAYMENTREF_ORG">
         <column name = "PAYMENT_REF" type="VARCHAR">
             <constraints nullable="false" />
@@ -1084,12 +1072,6 @@
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
-    <addUniqueConstraint
-        columnNames="payment_ref, sbi, frn"
-        constraintName="uq_paymentref_org"
-        schemaName="public"
-        tableName="ETL_INTERM_PAYMENTREF_ORG"
-        validate="true"/>
     <createTable tableName = "ETL_INTERM_PAYMENTREF_APPLICATION">
         <column name = "PAYMENT_REF" type="VARCHAR">
             <constraints nullable="false" />
@@ -1099,12 +1081,6 @@
         </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
-    <addUniqueConstraint
-        columnNames="payment_ref, application_id"
-        constraintName="uq_paymentref_application"
-        schemaName="public"
-        tableName="ETL_INTERM_PAYMENTREF_APPLICATION"
-        validate="true"/>
     <createTable tableName = "ETL_STAGE_SETTLEMENT">
         <column name = "SETTLEMENT_ID" type="INTEGER">
             <constraints nullable="false" />
@@ -1177,4 +1153,36 @@
         </column>
     </createTable>
    </changeSet>
+   <changeSet id="3" author="Leigh Godson">
+   <addUniqueConstraint  
+        columnNames="payment_ref, claim_id"
+        constraintName="uq_payment_ref_claim_id"
+        schemaName="public"
+        tableName="ETL_INTERM_TOTAL_CLAIM"
+        validate="true"/>
+        </changeSet>
+   <changeSet id="4" author="Leigh Godson">
+    <addUniqueConstraint  
+        columnNames="payment_ref, agreementstart, agreementend"
+        constraintName="uq_payment_ref_agreement_date"
+        schemaName="public"
+        tableName="ETL_INTERM_PAYMENTREF_AGREEMENT_DATES"
+        validate="true"/>
+        </changeSet>
+   <changeSet id="5" author="Leigh Godson"> 
+    <addUniqueConstraint
+        columnNames="payment_ref, sbi, frn"
+        constraintName="uq_paymentref_org"
+        schemaName="public"
+        tableName="ETL_INTERM_PAYMENTREF_ORG"
+        validate="true"/>
+        </changeSet>
+   <changeSet id="6" author="Leigh Godson">
+    <addUniqueConstraint
+        columnNames="payment_ref, application_id"
+        constraintName="uq_paymentref_application"
+        schemaName="public"
+        tableName="ETL_INTERM_PAYMENTREF_APPLICATION"
+        validate="true"/>
+        </changeSet>
 </databaseChangeLog>
