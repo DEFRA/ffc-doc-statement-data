@@ -46,14 +46,7 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
         AND CD.ranked = 1
       WHERE APN.notification_flag = 'P'
         AND APN.etl_id BETWEEN :idFrom AND :idTo
-      GROUP BY
-        CD.calculation_id,
-        BAC.sbi,
-        BAC.frn, 
-        CD.application_id,
-        CD.calculation_dt,
-        CD.id_clc_header,
-        APN.change_type
+      GROUP BY CD.calculation_id, BAC.sbi, BAC.frn, CD.application_id, CD.calculation_dt, CD.id_clc_header, APN.change_type
     ),
     updated_rows AS (
       UPDATE etl_interm_calc_org interm
