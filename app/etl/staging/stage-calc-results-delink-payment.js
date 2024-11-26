@@ -2,12 +2,12 @@ const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../storage')
 const storageConfig = require('../../config/storage')
-const { calcResultsDelinkPaymentTable } = require('../../constants/tables')
+const { calcResultsDelinkPaymentsTable } = require('../../constants/tables')
 const { runEtlProcess } = require('../run-etl-process')
 
-const stageCalcResultsDelinkPayment = async () => {
-  const file = `${storageConfig.calcResultsDelinkPayment.folder}/export.csv`
-  const tempFilePath = path.join(__dirname, `calcResultsDelinkPayment-${uuidv4()}.csv`)
+const stageCalcResultsDelinkPayments = async () => {
+  const file = `${storageConfig.calcResultsDelinkPayments.folder}/export.csv`
+  const tempFilePath = path.join(__dirname, `calcResultsDelinkPayments-${uuidv4()}.csv`)
   await storage.downloadFile(file, tempFilePath)
   const columns = [
     'APPLICATION_CALC_RESULT_WID',
@@ -30,7 +30,7 @@ const stageCalcResultsDelinkPayment = async () => {
     {
       column: 'CALCULATION_ID',
       targetColumn: 'calculation_id',
-      targetType: 'number',
+      targetType: 'number'
     },
     {
       column: 'VARIABLE_NAME',
@@ -40,7 +40,7 @@ const stageCalcResultsDelinkPayment = async () => {
     {
       column: 'PROG_LINE',
       targetColumn: 'prog_line',
-      targetType: 'number',
+      targetType: 'number'
     },
     {
       column: 'W_INSERT_DT',
@@ -66,9 +66,9 @@ const stageCalcResultsDelinkPayment = async () => {
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: calcResultsDelinkPaymentTable, mapping, file })
+  return runEtlProcess({ tempFilePath, columns, table: calcResultsDelinkPaymentsTable, mapping, file })
 }
 
 module.exports = {
-  stageCalcResultsDelinkPayment
+  stageCalcResultsDelinkPayments
 }

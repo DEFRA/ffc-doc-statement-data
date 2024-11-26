@@ -11,14 +11,15 @@ const folderList = [
   config.appsTypes.folder,
   config.businessAddress.folder,
   config.calculationsDetails.folder,
-  config.calcResultsDelinkPayment.folder,
+  config.calcResultsDelinkPayments.folder,
   config.cssContractApplications.folder,
   config.cssContract.folder,
   config.cssOptions.folder,
   config.defraLinks.folder,
   config.financeDAX.folder,
   config.organisation.folder,
-  config.tclcOption.folder
+  config.tclcOption.folder,
+  config.tdeLinkingFolder
 ]
 
 if (config.useConnectionStr) {

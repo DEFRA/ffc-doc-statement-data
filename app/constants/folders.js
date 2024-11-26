@@ -4,7 +4,7 @@ module.exports = {
   appsTypesFolder: 'Apps_Types',
   businessAddressFolder: 'Business_address_contact_v',
   calculationsDetailsFolder: 'Calculations_Details_MV',
-  calcResultsDelinkPaymentFolder: 'Calc_Results_Delink_Payment',
+  calcResultsDelinkPaymentsFolder: 'Calc_Results_Delink_Payments',
   cssContractApplicationsFolder: 'CSS_Contract_Applications',
   cssContractFolder: 'CSS_Contract',
   cssOptionsFolder: 'CSS_Options',
@@ -12,5 +12,6 @@ module.exports = {
   financeDAXFolder: 'Finance_Dax',
   organisationFolder: 'Organization',
   tclcOptionFolder: 'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option',
-  tclcFolder: 'tclc_pii_pay_claim_sfimt'
+  tclcFolder: 'tclc_pii_pay_claim_sfimt',
+  tdeLinkingFolder: 'TDE_Linking'
 }

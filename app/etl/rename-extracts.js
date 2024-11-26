@@ -7,7 +7,7 @@ const FILE_PATH_LOOKUP = {
   [storageConfig.appsTypes.fileMask]: storageConfig.appsTypes.folder,
   [storageConfig.businessAddress.fileMask]: storageConfig.businessAddress.folder,
   [storageConfig.calculationsDetails.fileMask]: storageConfig.calculationsDetails.folder,
-  [storageConfig.calcResultsDelinkPayment.fileMask]: storageConfig.calcResultsDelinkPayment.folder,
+  [storageConfig.calcResultsDelinkPayments.fileMask]: storageConfig.calcResultsDelinkPayments.folder,
   [storageConfig.cssContractApplications.fileMask]: storageConfig.cssContractApplications.folder,
   [storageConfig.cssContract.fileMask]: storageConfig.cssContract.folder,
   [storageConfig.cssOptions.fileMask]: storageConfig.cssOptions.folder,

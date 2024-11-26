@@ -1,5 +1,5 @@
 module.exports = {
-  calcResultsDelinkPaymentTable: 'etl_stage_application_calc_results_delink_payment',
+  calcResultsDelinkPaymentsTable: 'etl_stage_application_calc_results_delink_payments',
   applicationDetailTable: 'etl_stage_application_detail',
   appsPaymentNotificationTable: 'etl_stage_apps_payment_notification',
   appsTypesTable: 'etl_stage_apps_types',
@@ -13,5 +13,6 @@ module.exports = {
   organisationTable: 'etl_stage_organisation',
   settlementTable: 'etl_stage_settlement',
   tclcOptionTable: 'etl_stage_tclc_pii_pay_claim_sfimt_option',
-  tclcTable: 'etl_stage_tclc_pii_pay_claim_sfimt'
+  tclcTable: 'etl_stage_tclc_pii_pay_claim_sfimt',
+  tdeLinkingTable: 'etl_stage_tde_linking'
 }
