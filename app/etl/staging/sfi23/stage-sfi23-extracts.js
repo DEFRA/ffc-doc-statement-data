@@ -39,7 +39,7 @@ const stageFunctions = [
   { fn: stageTCLCOption, label: sfi23StorageConfig.tclcOption.folder }
 ]
 
-const stageExtracts = async () => {
+const stageSfi23Extracts = async () => {
   startDate = new Date()
   const etlFiles = await storage.getFileList()
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
@@ -65,5 +65,5 @@ const stageExtracts = async () => {
 }
 
 module.exports = {
-  stageExtracts
+  stageSfi23Extracts
 }

@@ -4,7 +4,6 @@ module.exports = {
   etl_stage_apps_types: 'etlStageAppsTypes',
   etl_stage_business_address_contact_v: 'etlStageBusinessAddressContactV',
   etl_stage_calculation_details: 'etlStageCalculationDetails',
-  etl_stage_calc_results_delink_payments: 'etlStageCalcResultsDelinkPayments',
   etl_stage_css_contract_applications: 'etlStageCssContractApplications',
   etl_stage_css_contracts: 'etlStageCssContracts',
   etl_stage_css_options: 'etlStageCssOptions',

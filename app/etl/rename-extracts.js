@@ -21,7 +21,8 @@ const FILE_PATH_LOOKUP = {
   [storageConfig.financeDAX.fileMask]: storageConfig.financeDAX.folder,
   [storageConfig.organisation.fileMask]: storageConfig.organisation.folder,
   [storageConfig.tclcOption.fileMask]: storageConfig.tclcOption.folder,
-  [storageConfig.tclc.fileMask]: storageConfig.tclc.folder
+  [storageConfig.tclc.fileMask]: storageConfig.tclc.folder,
+  [storageConfig.tdeLinking.fileMask]: storageConfig.tdeLinking.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {
