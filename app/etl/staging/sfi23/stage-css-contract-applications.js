@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../storage')
 const storageConfig = require('../../../config/sfi23-storage')
 const { cssContractApplicationsTable } = require('../../../constants/tables')
-const { runEtlProcess } = require('../../run-etl-process')
+const { runEtlProcess } = require('../delinked/run-etl-process')
 
 const stageCSSContractApplications = async () => {
   const file = `${storageConfig.cssContractApplications.folder}/export.csv`

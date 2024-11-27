@@ -1,11 +1,11 @@
 const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-pay-etl-framework')
 const fs = require('fs')
-const config = require('../config')
+const config = require('../../../config')
 const dbConfig = config.dbConfig[config.env]
-const storage = require('../storage')
-const db = require('../data')
-const { getRowCount } = require('./get-row-count')
-const tableMappings = require('../constants/table-mappings')
+const storage = require('../../../storage')
+const db = require('../../../data')
+const { getRowCount } = require('../../get-row-count')
+const tableMappings = require('../../../constants/delinked-mappings')
 
 const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transformer, nonProdTransformer, file }) => {
   const etl = new Etl.Etl()

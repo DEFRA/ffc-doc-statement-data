@@ -1,9 +1,9 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const storageConfig = require('../../config/sfi23-storage')
-const { calcResultsDelinkPaymentsTable } = require('../../constants/tables')
-const { runEtlProcess } = require('../run-etl-process')
+const storage = require('../../../storage')
+const storageConfig = require('../../../config/sfi23-storage')
+const { calcResultsDelinkPaymentsTable } = require('../../../constants/tables')
+const { runEtlProcess } = require('./run-etl-process')
 
 const stageCalcResultsDelinkPayments = async () => {
   const file = `${storageConfig.calcResultsDelinkPayments.folder}/export.csv`
