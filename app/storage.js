@@ -1,6 +1,6 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
-const sfi23Config = require('./config/storage')
+const sfi23Config = require('./config/sfi23-storage')
 const delinkedConfig = require('./config/delinked-storage')
 
 const config = {
@@ -25,7 +25,7 @@ const folderList = [
   config.financeDAX.folder,
   config.organisation.folder,
   config.tclcOption.folder,
-  config.tdeLinkingFolder
+  config.tdeLinking.folder
 ]
 
 if (config.useConnectionStr) {
@@ -97,10 +97,18 @@ const deleteFile = async (filename) => {
 const getDWHExtracts = async () => {
   containersInitialised ?? await initialiseContainers()
   const fileList = []
-  for await (const file of container.listBlobsFlat({ prefix: config.dwhExtractsFolder })) {
-    if (file.name.endsWith('.csv')) {
-      console.log(`Identified DWH extract: ${file.name}`)
-      fileList.push(file.name)
+
+  const foldersToCheck = [
+    sfi23Config.dwhExtractsFolder,
+    delinkedConfig.dwhExtractsFolder
+  ].filter(Boolean)
+
+  for (const folder of foldersToCheck) {
+    for await (const file of container.listBlobsFlat({ prefix: folder })) {
+      if (file.name.endsWith('.csv')) {
+        console.log(`Identified DWH extract: ${file.name}`)
+        fileList.push(file.name)
+      }
     }
   }
   return fileList

@@ -1,9 +1,9 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const storageConfig = require('../../config/storage')
-const { runEtlProcess } = require('../run-etl-process')
-const { tclcOptionTable } = require('../../constants/tables')
+const storage = require('../../../storage')
+const storageConfig = require('../../../config/sfi23-storage')
+const { runEtlProcess } = require('../../run-etl-process')
+const { tclcOptionTable } = require('../../../constants/tables')
 
 const stageTCLCOption = async () => {
   const file = `${storageConfig.tclcOption.folder}/export.csv`

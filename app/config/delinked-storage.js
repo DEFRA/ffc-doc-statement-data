@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { applicationDetailFolder, appsPaymentNotificationFolder, appsTypesFolder, businessAddressFolder, calculationsDetailsFolder, calcResultsDelinkPaymentsFolder, defraLinksFolder, financeDAXFolder, organisationFolder, tdeLinkingFolder } = require('../constants/folders')
+const { applicationDetailFolder, appsPaymentNotificationFolder, appsTypesFolder, businessAddressFolder, calculationsDetailsFolder, calcResultsDelinkPaymentsFolder, defraLinksFolder, financeDAXFolder, organisationFolder, tdeLinkingFolder } = require('../constants/delinked-folders')
 
 const schema = Joi.object({
   connectionStr: Joi.string().when('useConnectionStr', { is: true, then: Joi.required(), otherwise: Joi.allow('').optional() }),
@@ -55,7 +55,7 @@ const config = {
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   container: 'etl',
-  dwhExtractsFolder: 'dwh_extracts',
+  dwhExtractsFolder: 'dwh_extracts/delinked',
   etlLogsFolder: 'logs',
   applicationDetail: {
     folder: applicationDetailFolder,

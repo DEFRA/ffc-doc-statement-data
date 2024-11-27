@@ -1,13 +1,13 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const storageConfig = require('../../config/storage')
-const { cssContractTable } = require('../../constants/tables')
-const { runEtlProcess } = require('../run-etl-process')
+const storage = require('../../../storage')
+const storageConfig = require('../../../config/sfi23-storage')
+const { cssContractApplicationsTable } = require('../../../constants/tables')
+const { runEtlProcess } = require('../../run-etl-process')
 
-const stageCSSContract = async () => {
-  const file = `${storageConfig.cssContract.folder}/export.csv`
-  const tempFilePath = path.join(__dirname, `cssContract-${uuidv4()}.csv`)
+const stageCSSContractApplications = async () => {
+  const file = `${storageConfig.cssContractApplications.folder}/export.csv`
+  const tempFilePath = path.join(__dirname, `cssContractApplications-${uuidv4()}.csv`)
   await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
@@ -16,12 +16,9 @@ const stageCSSContract = async () => {
     'INSERT_DT',
     'DELETE_DT',
     'CONTRACT_ID',
-    'CONTRACT_CODE',
-    'CONTRACT_TYPE_ID',
-    'CONTRACT_TYPE_DESCRIPTION',
-    'CONTRACT_DESCRIPTION',
-    'CONTRACT_STATE_P_CODE',
-    'CONTRACT_STATE_S_CODE',
+    'APPLICATION_ID',
+    'TYPE_P_CODE',
+    'TYPE_S_CODE',
     'DATA_SOURCE_P_CODE',
     'DATA_SOURCE_S_CODE',
     'START_DT',
@@ -69,33 +66,18 @@ const stageCSSContract = async () => {
       targetType: 'number'
     },
     {
-      column: 'CONTRACT_CODE',
-      targetColumn: 'contract_code',
-      targetType: 'varchar'
-    },
-    {
-      column: 'CONTRACT_TYPE_ID',
-      targetColumn: 'contract_type_id',
+      column: 'APPLICATION_ID',
+      targetColumn: 'application_id',
       targetType: 'number'
     },
     {
-      column: 'CONTRACT_TYPE_DESCRIPTION',
-      targetColumn: 'contract_type_description',
+      column: 'TYPE_P_CODE',
+      targetColumn: 'type_p_code',
       targetType: 'varchar'
     },
     {
-      column: 'CONTRACT_DESCRIPTION',
-      targetColumn: 'contract_description',
-      targetType: 'varchar'
-    },
-    {
-      column: 'CONTRACT_STATE_P_CODE',
-      targetColumn: 'contract_state_p_code',
-      targetType: 'varchar'
-    },
-    {
-      column: 'CONTRACT_STATE_S_CODE',
-      targetColumn: 'contract_state_s_code',
+      column: 'TYPE_S_CODE',
+      targetColumn: 'type_s_code',
       targetType: 'varchar'
     },
     {
@@ -153,18 +135,9 @@ const stageCSSContract = async () => {
     }
   ]
 
-  const transformer = [
-    {
-      column: 'CONTRACT_DESCRIPTION',
-      find: "'",
-      replace: "''",
-      all: true
-    }
-  ]
-
-  return runEtlProcess({ tempFilePath, columns, table: cssContractTable, mapping, transformer, file })
+  return runEtlProcess({ tempFilePath, columns, table: cssContractApplicationsTable, mapping, file })
 }
 
 module.exports = {
-  stageCSSContract
+  stageCSSContractApplications
 }

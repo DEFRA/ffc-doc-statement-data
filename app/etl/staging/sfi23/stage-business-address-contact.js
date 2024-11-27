@@ -1,10 +1,10 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const config = require('../../config')
-const storageConfig = require('../../config/storage')
-const { businessAddressTable } = require('../../constants/tables')
-const { runEtlProcess } = require('../run-etl-process')
+const storage = require('../../../storage')
+const config = require('../../../config')
+const storageConfig = require('../../../config/sfi23-storage')
+const { businessAddressTable } = require('../../../constants/tables')
+const { runEtlProcess } = require('../../run-etl-process')
 
 const stageBusinessAddressContacts = async () => {
   const file = `${storageConfig.businessAddress.folder}/export.csv`

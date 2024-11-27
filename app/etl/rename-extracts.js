@@ -1,4 +1,4 @@
-const sfi23Config = require('../config/storage')
+const sfi23Config = require('../config/sfi23-storage')
 const delinkedConfig = require('../config/delinked-storage')
 const { getDWHExtracts, moveFile } = require('../storage')
 
