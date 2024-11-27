@@ -1,6 +1,12 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
-const config = require('./config/storage')
+const sfi23Config = require('./config/storage')
+const delinkedConfig = require('./config/delinked-storage')
+
+const config = {
+  ...sfi23Config,
+  ...delinkedConfig
+}
 
 let blobServiceClient
 let containersInitialised

@@ -1,5 +1,11 @@
-const { storageConfig } = require('../config')
+const sfi23Config = require('../config/storage')
+const delinkedConfig = require('../config/delinked-storage')
 const { getDWHExtracts, moveFile } = require('../storage')
+
+const storageConfig = {
+  ...sfi23Config,
+  ...delinkedConfig
+}
 
 const FILE_PATH_LOOKUP = {
   [storageConfig.applicationDetail.fileMask]: storageConfig.applicationDetail.folder,

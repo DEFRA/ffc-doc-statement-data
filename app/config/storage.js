@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { applicationDetailFolder, appsPaymentNotificationFolder, appsTypesFolder, businessAddressFolder, calculationsDetailsFolder, calcResultsDelinkPaymentFolder, cssContractApplicationsFolder, cssContractFolder, cssOptionsFolder, defraLinksFolder, financeDAXFolder, organisationFolder, tclcOptionFolder, tclcFolder } = require('../constants/folders')
+const { applicationDetailFolder, appsPaymentNotificationFolder, appsTypesFolder, businessAddressFolder, calculationsDetailsFolder, cssContractApplicationsFolder, cssContractFolder, cssOptionsFolder, defraLinksFolder, financeDAXFolder, organisationFolder, tclcOptionFolder, tclcFolder } = require('../constants/folders')
 
 const schema = Joi.object({
   connectionStr: Joi.string().when('useConnectionStr', { is: true, then: Joi.required(), otherwise: Joi.allow('').optional() }),
@@ -24,10 +24,6 @@ const schema = Joi.object({
     fileMask: Joi.string().required()
   }).required(),
   calculationsDetails: Joi.object({
-    folder: Joi.string().required(),
-    fileMask: Joi.string().required()
-  }).required(),
-  calcResultsDelinkPayment: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
   }).required(),
@@ -92,10 +88,6 @@ const config = {
   calculationsDetails: {
     folder: calculationsDetailsFolder,
     fileMask: 'SFI23_STMT_CALCULATION_DETAILS_MV_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
-  },
-  calcResultsDelinkPayment: {
-    folder: calcResultsDelinkPaymentFolder,
-    fileMask: 'DP_STMT_CALC_RESULTS_DELINK_PAYMENT_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
   },
   cssContractApplications: {
     folder: cssContractApplicationsFolder,
