@@ -1,7 +1,7 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../storage')
-const storageConfig = require('../../../config/sfi23-storage')
+const storageConfig = require('../../../config/delinked-storage')
 const { appsTypesTable } = require('../../../constants/tables')
 const { runEtlProcess } = require('./run-etl-process')
 

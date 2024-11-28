@@ -12,7 +12,8 @@
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --coverage=false --onlyChanged --watch --runInBand --no-cache",
     "start:watch": "nodemon --inspect=0.0.0.0 --ext js --legacy-watch app/index.js",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js",
-    "stage": "node ./etl/stage_extracts.js"
+    "stageSFI23": "node ./app/etl/staging/sfi23/stage-sfi23-extracts.js",
+    "stage": "node ./app/etl/stage-selector.js"
   },
   "author": "Defra",
   "contributors": [

@@ -1,7 +1,7 @@
 const { writeToString } = require('@fast-csv/format')
 const moment = require('moment')
 const storage = require('../../../storage')
-const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageCalcResultsDelinkPayments } = require('.')
+const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageCalcResultsDelinkPayments, stageTdeLinking } = require('.')
 const { loadETLData } = require('../../load-etl-data')
 const { delinkedStorageConfig } = require('../../../config')
 
@@ -33,8 +33,8 @@ const stageFunctions = [
   { fn: stageCalcResultsDelinkPayments, label: delinkedStorageConfig.calcResultsDelinkPayments.folder },
   { fn: stageDefraLinks, label: delinkedStorageConfig.defraLinks.folder },
   { fn: stageFinanceDAX, label: delinkedStorageConfig.financeDAX.folder },
-  { fn: stageOrganisation, label: delinkedStorageConfig.organisation.folder }
-  // { fn: stageTdeLinking, label: delinkedStorageConfig.tdeLinkingFolder.folder }
+  { fn: stageOrganisation, label: delinkedStorageConfig.organisation.folder },
+  { fn: stageTdeLinking, label: delinkedStorageConfig.tdeLinking.folder }
 ]
 
 const stageDelinkedExtracts = async () => {

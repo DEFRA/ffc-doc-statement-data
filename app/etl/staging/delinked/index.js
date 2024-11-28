@@ -7,7 +7,7 @@ const { stageCalcResultsDelinkPayments } = require('./stage-calc-results-delink-
 const { stageDefraLinks } = require('./stage-defra-links')
 const { stageFinanceDAX } = require('./stage-finance-dax')
 const { stageOrganisation } = require('./stage-organisation')
-// const { stageTdeLinking } = require('./stage-tde-linking')
+const { stageTdeLinking } = require('./stage-tde-linking')
 
 module.exports = {
   stageApplicationDetails,
@@ -18,5 +18,6 @@ module.exports = {
   stageCalcResultsDelinkPayments,
   stageDefraLinks,
   stageFinanceDAX,
-  stageOrganisation
+  stageOrganisation,
+  stageTdeLinking
 }
