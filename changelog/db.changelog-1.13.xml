@@ -1153,22 +1153,34 @@
         </column>
     </createTable>
    </changeSet>
-   <changeSet id="3" author="Leigh Godson">
-   <addUniqueConstraint  
+<changeSet id="3" author="Leigh Godson">
+    <preConditions onFail="MARK_RAN">
+        <tableExists schemaName="public" tableName="etl_interm_total_claim"/>
+    </preConditions>
+    <addUniqueConstraint  
         columnNames="payment_ref, claim_id"
         constraintName="uq_payment_ref_claim_id"
         schemaName="public"
         tableName="ETL_INTERM_TOTAL_CLAIM"
         validate="true"/>
-        </changeSet>
-   <changeSet id="4" author="Leigh Godson">
+</changeSet>
+<changeSet id="4" author="Leigh Godson">
+    <preConditions onFail="MARK_RAN">
+        <tableExists schemaName="public" tableName="etl_interm_paymentref_agreement_dates"/>
+        <not>
+            <uniqueConstraintExists 
+                schemaName="public" 
+                tableName="etl_interm_paymentref_agreement_dates"
+                constraintName="uq_payment_ref_agreement_date"/>
+        </not>
+    </preConditions>
     <addUniqueConstraint  
         columnNames="payment_ref, agreementstart, agreementend"
         constraintName="uq_payment_ref_agreement_date"
         schemaName="public"
-        tableName="ETL_INTERM_PAYMENTREF_AGREEMENT_DATES"
+        tableName="etl_interm_paymentref_agreement_dates"
         validate="true"/>
-        </changeSet>
+</changeSet>
    <changeSet id="5" author="Leigh Godson"> 
     <addUniqueConstraint
         columnNames="payment_ref, sbi, frn"
