@@ -71,55 +71,55 @@ const config = {
   etlLogsFolder: 'logs',
   applicationDetail: {
     folder: applicationDetailFolder,
-    fileMask: 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   appsPaymentNotification: {
     folder: appsPaymentNotificationFolder,
-    fileMask: 'SFI23_STMT_APPS_PAYMENT_NOTIFICATIONS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_APPS_PAYMENT_NOTIFICATIONS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   appsTypes: {
     folder: appsTypesFolder,
-    fileMask: 'SFI23_STMT_APPS_TYPES_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_APPS_TYPES_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   businessAddress: {
     folder: businessAddressFolder,
-    fileMask: 'SFI23_STMT_BUSINESS_ADDRESS_CONTACT_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_BUSINESS_ADDRESS_CONTACT_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   calculationsDetails: {
     folder: calculationsDetailsFolder,
-    fileMask: 'SFI23_STMT_CALCULATION_DETAILS_MV_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_CALCULATION_DETAILS_MV_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   cssContractApplications: {
     folder: cssContractApplicationsFolder,
-    fileMask: 'SFI23_STMT_CSS_CONTRACT_APPLICATIONS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_CSS_CONTRACT_APPLICATIONS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   cssContract: {
     folder: cssContractFolder,
-    fileMask: 'SFI23_STMT_CSS_CONTRACTS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_CSS_CONTRACTS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   cssOptions: {
     folder: cssOptionsFolder,
-    fileMask: 'SFI23_STMT_CSS_OPTIONS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_CSS_OPTIONS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   defraLinks: {
     folder: defraLinksFolder,
-    fileMask: 'SFI23_STMT_DEFRA_LINKS_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_DEFRA_LINKS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   financeDAX: {
     folder: financeDAXFolder,
-    fileMask: 'SFI23_STMT_FINANCE_DAX_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_FINANCE_DAX_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   organisation: {
     folder: organisationFolder,
-    fileMask: 'SFI23_STMT_ORGANISATION_SFI_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_ORGANISATION_SFI_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   tclcOption: {
     folder: tclcOptionFolder,
-    fileMask: 'SFI23_STMT_TCLC_PII_PAY_CLAIM_SFIMT_OPTION_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_TCLC_PII_PAY_CLAIM_SFIMT_OPTION_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   tclc: {
     folder: tclcFolder,
-    fileMask: 'SFI23_STMT_TCLC_PII_PAY_CLAIM_SFIMT_V_CHANGE_LOG_\\d{8}_\\d{6}.csv'
+    fileMask: 'SFI23_STMT_TCLC_PII_PAY_CLAIM_SFIMT_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS

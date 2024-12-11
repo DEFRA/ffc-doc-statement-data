@@ -21,8 +21,8 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
     WITH new_data AS (
       SELECT
         cc.contract_id,
-        cc.start_dt AS agreementStart,
-        cc.end_dt AS agreementEnd,
+        MIN(cc.start_dt) AS agreementStart,
+        MIN(cc.end_dt) AS agreementEnd,
         ca.application_id,
         cl.change_type,
         cl.pkid
@@ -31,7 +31,7 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
       LEFT JOIN etl_stage_css_contracts cc ON cl.contract_id = cc.contract_id AND cc.contract_state_s_code = '000020'
       WHERE cl.data_source_s_code = 'CAPCLM'
         AND cl.etl_id BETWEEN :idFrom AND :idTo
-      GROUP BY cc.contract_id, cc.start_dt, cc.end_dt, ca.application_id, cl.change_type, cl.pkid
+      GROUP BY cc.contract_id, ca.application_id, cl.change_type, cl.pkid
     ),
     updated_rows AS (
       UPDATE etl_interm_application_contract interm

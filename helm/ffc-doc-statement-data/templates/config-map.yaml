@@ -20,4 +20,5 @@ data:
   AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
   AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}
   AZURE_STORAGE_CREATE_CONTAINERS: {{ quote .Values.container.azureStorageCreateContainers }}
+  DEMOGRAPHICS_ACTIVE: {{ quote .Values.container.demographicsActive }}
 {{- end -}}

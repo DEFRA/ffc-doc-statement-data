@@ -37,6 +37,7 @@ container:
   azureStorageAccountName: ffcdoc
   azureStorageUseConnectionString: false
   azureStorageCreateContainers: false
+  demographicsActive: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data
