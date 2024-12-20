@@ -47,7 +47,7 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
         settlementvoucher AS PAYMENT_REF,
         change_type,
         recid
-      FROM etl_stage_finance_dax
+      FROM etl_stage_finance_dax D
       WHERE LENGTH(accountnum) = 10
         AND etl_id BETWEEN :idFrom AND :idTo
         AND invoiceid LIKE 'S%Z%'

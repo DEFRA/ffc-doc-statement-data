@@ -493,7 +493,16 @@ const stageFinanceDAX = async () => {
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: financeDAXTable, mapping, file })
+  const transformer = [
+    {
+      column: 'TRANSTXT',
+      find: "'.",
+      replace: '',
+      all: true
+    }
+  ]
+
+  return runEtlProcess({ tempFilePath, columns, table: financeDAXTable, mapping, transformer, file })
 }
 
 module.exports = {
