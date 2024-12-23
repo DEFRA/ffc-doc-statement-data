@@ -28,8 +28,8 @@
     "@azure/storage-blob": "12.13.0",
     "@fast-csv/format": "5.0.2",
     "@topcli/spinner": "2.1.2",
-    "csv-parse": "5.5.6",
     "applicationinsights": "2.9.6",
+    "csv-parse": "5.5.6",
     "ffc-messaging": "2.9.1",
     "ffc-pay-etl-framework": "1.1.4",
     "joi": "17.6.0",
@@ -45,6 +45,7 @@
     "jest": "29.6.4",
     "jest-junit": "14.0.0",
     "nodemon": "3.0.1",
+    "sqlite3": "^5.1.7",
     "standard": "17.0.0"
   },
   "standard": {
