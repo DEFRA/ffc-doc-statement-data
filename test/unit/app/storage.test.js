@@ -1,8 +1,8 @@
-const { BlobServiceClient } = require('@azure/storage-blob')
-const { getFileList, downloadFile, deleteFile, getDWHExtracts, moveFile } = require('../../../app/storage')
-
 jest.mock('@azure/identity')
 jest.mock('@azure/storage-blob')
+
+const { BlobServiceClient } = require('@azure/storage-blob')
+const { getFileList, downloadFile, deleteFile, getDWHExtracts, moveFile } = require('../../../app/storage')
 
 describe('Azure Blob Storage Utilities', () => {
   let mockBlobServiceClient
