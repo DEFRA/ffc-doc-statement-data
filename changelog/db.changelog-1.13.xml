@@ -1051,7 +1051,6 @@
     <addUniqueConstraint  
         columnNames="payment_ref, claim_id"
         constraintName="uq_payment_ref_claim_id"
-        schemaName="public"
         tableName="ETL_INTERM_TOTAL_CLAIM"
         validate="true"/>
     <createTable tableName = "ETL_INTERM_PAYMENTREF_AGREEMENT_DATES">
@@ -1069,7 +1068,6 @@
     <addUniqueConstraint  
         columnNames="payment_ref, agreementstart, agreementend"
         constraintName="uq_payment_ref_agreement_date"
-        schemaName="public"
         tableName="ETL_INTERM_PAYMENTREF_AGREEMENT_DATES"
         validate="true"/>
     <createTable tableName = "ETL_INTERM_PAYMENTREF_ORG">
@@ -1087,7 +1085,6 @@
     <addUniqueConstraint
         columnNames="payment_ref, sbi, frn"
         constraintName="uq_paymentref_org"
-        schemaName="public"
         tableName="ETL_INTERM_PAYMENTREF_ORG"
         validate="true"/>
     <createTable tableName = "ETL_INTERM_PAYMENTREF_APPLICATION">
@@ -1102,7 +1099,6 @@
     <addUniqueConstraint
         columnNames="payment_ref, application_id"
         constraintName="uq_paymentref_application"
-        schemaName="public"
         tableName="ETL_INTERM_PAYMENTREF_APPLICATION"
         validate="true"/>
     <createTable tableName = "ETL_STAGE_SETTLEMENT">
