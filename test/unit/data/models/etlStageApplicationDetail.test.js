@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = new Sequelize('f::memory:')
+const sequelize = new Sequelize('sqlite::memory:')
 
 const defineModel = require('../../../../app/data/models/etlStageApplicationDetail')
 
