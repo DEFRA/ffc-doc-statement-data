@@ -1,9 +1,12 @@
 const db = require('../../data')
+const { publishingConfig } = require('../../config')
 
 const getUnpublished = async (transaction) => {
   return db.organisation.findAll({
     lock: true,
     skipLocked: true,
+    // todo add limit back in otherwise tests started failing. is it needed?
+    limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
     where: {
       [db.Sequelize.Op.or]: [
         {
