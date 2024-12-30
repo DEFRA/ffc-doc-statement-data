@@ -1,27 +1,27 @@
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const storage = require('../../../../app/storage');
-const { cssContractApplicationsTable } = require('../../../../app/constants/tables');
-const { stageCSSContractApplications } = require('../../../../app/etl/staging/stage-css-contract-applications');
+const path = require('path')
+const { v4: uuidv4 } = require('uuid')
+const storage = require('../../../../app/storage')
+const { cssContractApplicationsTable } = require('../../../../app/constants/tables')
+const { stageCSSContractApplications } = require('../../../../app/etl/staging/stage-css-contract-applications')
 
-jest.mock('uuid');
-jest.mock('../../../../app/storage');
-jest.mock('../../../../app/config/storage');
-jest.mock('../../../../app/constants/tables');
-jest.mock('../../../../app/etl/run-etl-process');
+jest.mock('uuid')
+jest.mock('../../../../app/storage')
+jest.mock('../../../../app/config/storage')
+jest.mock('../../../../app/constants/tables')
+jest.mock('../../../../app/etl/run-etl-process')
 
 describe('stageCSSContractApplications', () => {
-  let runEtlProcess;
+  let runEtlProcess
 
   beforeAll(() => {
-    runEtlProcess = require('../../../../app/etl/run-etl-process').runEtlProcess;
-    jest.spyOn(require('../../../../app/etl/run-etl-process'), 'runEtlProcess').mockResolvedValue();
-  });
+    runEtlProcess = require('../../../../app/etl/run-etl-process').runEtlProcess
+    jest.spyOn(require('../../../../app/etl/run-etl-process'), 'runEtlProcess').mockResolvedValue()
+  })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'CSS_Contract_Applications/export.csv';
-    const mockTempFilePath = 'mock-temp-file-path';
-    const mockUuid = 'mock-uuid';
+    const mockFile = 'CSS_Contract_Applications/export.csv'
+    const mockTempFilePath = 'mock-temp-file-path'
+    const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
       'CHANGE_TIME',
@@ -42,7 +42,7 @@ describe('stageCSSContractApplications', () => {
       'END_ACT_ID',
       'LAST_UPDATE_DT',
       'USER_FLD'
-    ];
+    ]
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
@@ -145,23 +145,23 @@ describe('stageCSSContractApplications', () => {
         targetColumn: 'USER',
         targetType: 'varchar'
       }
-    ];
+    ]
 
-    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath);
-    uuidv4.mockReturnValue(mockUuid);
-    storage.downloadFile = jest.fn().mockResolvedValue();
+    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath)
+    uuidv4.mockReturnValue(mockUuid)
+    storage.downloadFile = jest.fn().mockResolvedValue()
 
-    await stageCSSContractApplications();
+    await stageCSSContractApplications()
 
-    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging';
-    expect(path.join).toHaveBeenCalledWith(parentDir, `cssContractApplications-${mockUuid}.csv`);
-    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath);
+    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging'
+    expect(path.join).toHaveBeenCalledWith(parentDir, `cssContractApplications-${mockUuid}.csv`)
+    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath)
     expect(runEtlProcess).toHaveBeenCalledWith({
       tempFilePath: mockTempFilePath,
       columns: mockColumns,
       table: cssContractApplicationsTable,
       mapping: mockMapping,
       file: mockFile
-    });
-  });
-});
+    })
+  })
+})
