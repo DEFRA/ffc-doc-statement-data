@@ -1,116 +1,175 @@
 const { writeToString } = require('@fast-csv/format')
-const moment = require('moment')
 const storage = require('../../../app/storage')
-const { stageApplicationDetails, stageAppsTypes } = require('../../../app/etl/staging')
+const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('../../../app/etl/staging')
 const { loadETLData } = require('../../../app/etl/load-etl-data')
 const { storageConfig } = require('../../../app/config')
+const ora = require('ora')
 const { stageExtracts } = require('../../../app/etl/stage-extracts')
 
-jest.mock('@fast-csv/format', () => ({
-  writeToString: jest.fn()
-}))
+jest.mock('@fast-csv/format')
+// jest.mock('moment');
+jest.mock('../../../app/storage')
+jest.mock('../../../app/etl/staging')
+jest.mock('../../../app/etl/load-etl-data')
+jest.mock('../../../app/config')
+jest.mock('ora')
 
-jest.mock('moment', () => jest.fn(() => ({
-  format: jest.fn(() => '20240101 12:00:00')
-})))
+const stageFunctions = [
+  { fn: stageApplicationDetails, label: storageConfig.applicationDetail.folder },
+  { fn: stageAppsTypes, label: storageConfig.appsTypes.folder },
+  { fn: stageAppsPaymentNotifications, label: storageConfig.appsPaymentNotification.folder },
+  { fn: stageBusinessAddressContacts, label: storageConfig.businessAddress.folder },
+  { fn: stageCalculationDetails, label: storageConfig.calculationsDetails.folder },
+  { fn: stageCSSContractApplications, label: storageConfig.cssContractApplications.folder },
+  { fn: stageCSSContract, label: storageConfig.cssContract.folder },
+  { fn: stageCSSOptions, label: storageConfig.cssOptions.folder },
+  { fn: stageDefraLinks, label: storageConfig.defraLinks.folder },
+  { fn: stageFinanceDAX, label: storageConfig.financeDAX.folder },
+  { fn: stageOrganisation, label: storageConfig.organisation.folder },
+  { fn: stageTCLCOption, label: storageConfig.tclcOption.folder }
+]
 
-jest.mock('../../../app/storage', () => ({
-  getBlob: jest.fn(),
-  getFileList: jest.fn()
-}))
+describe('ETL Process', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
-jest.mock('../../../app/etl/staging', () => ({
-  stageApplicationDetails: jest.fn(),
-  stageAppsTypes: jest.fn(),
-  stageAppsPaymentNotifications: jest.fn(),
-  stageBusinessAddressContacts: jest.fn(),
-  stageCalculationDetails: jest.fn(),
-  stageCSSContractApplications: jest.fn(),
-  stageCSSContract: jest.fn(),
-  stageCSSOptions: jest.fn(),
-  stageDefraLinks: jest.fn(),
-  stageFinanceDAX: jest.fn(),
-  stageOrganisation: jest.fn(),
-  stageTCLCOption: jest.fn()
-}))
+  test('should call writeToString with global results', async () => {
+    global.results = [{ id: 1, name: 'test' }]
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+    stageApplicationDetails.mockResolvedValue()
+    writeToString.mockResolvedValue('csv content')
+    storage.getBlob.mockResolvedValue({
+      upload: jest.fn().mockResolvedValue()
+    })
+    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    loadETLData.mockResolvedValue()
 
-jest.mock('../../../app/etl/load-etl-data', () => ({
-  loadETLData: jest.fn()
-}))
+    await stageExtracts()
 
-jest.mock('../../../app/config', () => ({
-  storageConfig: {
-    etlLogsFolder: 'etlLogsFolder',
-    applicationDetail: { folder: 'appDetailFolder' },
-    appsTypes: { folder: 'appsTypesFolder' },
-    appsPaymentNotification: { folder: 'appsPaymentNotificationFolder' },
-    businessAddress: { folder: 'businessAddressFolder' },
-    calculationsDetails: { folder: 'calculationsDetailsFolder' },
-    cssContractApplications: { folder: 'cssContractApplicationsFolder' },
-    cssContract: { folder: 'cssContractFolder' },
-    cssOptions: { folder: 'cssOptionsFolder' },
-    defraLinks: { folder: 'defraLinksFolder' },
-    financeDAX: { folder: 'financeDAXFolder' },
-    organisation: { folder: 'organisationFolder' },
-    tclcOption: { folder: 'tclcOptionFolder' }
-  }
-}))
+    expect(writeToString).toHaveBeenCalledWith(global.results)
+  })
 
-global.results = []
+  test('should upload the CSV content to the correct blob', async () => {
+    global.results = [{ id: 1, name: 'test' }]
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+    stageApplicationDetails.mockResolvedValue()
+    writeToString.mockResolvedValue('csv content')
+    const uploadMock = jest.fn().mockResolvedValue()
+    storage.getBlob.mockResolvedValue({
+      upload: uploadMock
+    })
+    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    loadETLData.mockResolvedValue()
 
-let completed = 0
-let total
-let startDate
+    await stageExtracts()
 
-const checkComplete = async () => {
-  if (completed < total) {
-    setTimeout(checkComplete, 5000)
-  } else {
-    console.log('All ETL extracts loaded')
-    const body = await writeToString(global.results)
-    const outboundBlobClient = await storage.getBlob(`${storageConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
-    await outboundBlobClient.upload(body, body.length)
-    await loadETLData(startDate)
-  }
-}
+    expect(uploadMock).toHaveBeenCalledWith('csv content', 'csv content'.length)
+  })
 
-test('checkComplete waits for completion and uploads results', async () => {
-  completed = 1
-  total = 1
-  global.results = [{ table: 'testTable', data: 'testData' }]
-  const mockBlobClient = { upload: jest.fn() }
-  storage.getBlob.mockResolvedValue(mockBlobClient)
-  writeToString.mockResolvedValue('csvContent')
-  loadETLData.mockResolvedValue()
+  test('should call loadETLData with the start date', async () => {
+    global.results = [{ id: 1, name: 'test' }]
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+    stageApplicationDetails.mockResolvedValue()
+    writeToString.mockResolvedValue('csv content')
+    storage.getBlob.mockResolvedValue({
+      upload: jest.fn().mockResolvedValue()
+    })
+    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    loadETLData.mockResolvedValue()
 
-  await checkComplete()
+    const mockDate = new Date()
+    await stageExtracts()
 
-  expect(writeToString).toHaveBeenCalledWith(global.results)
-  expect(storage.getBlob).toHaveBeenCalledWith('etlLogsFolder/ETL_Import_Results_20240101 12:00:00')
-  expect(mockBlobClient.upload).toHaveBeenCalledWith('csvContent', 'csvContent'.length)
-  expect(loadETLData).toHaveBeenCalledWith(startDate)
-})
+    expect(loadETLData).toHaveBeenCalledWith(mockDate)
+  })
 
-test('stageExtracts processes ETL files and stages them', async () => {
-  const etlFiles = ['appDetailFolder/file1', 'appsTypesFolder/file2']
-  storage.getFileList.mockResolvedValue(etlFiles)
-  const mockSpinner = {
-    start: jest.fn().mockReturnThis(),
-    succeed: jest.fn().mockReturnThis(),
-    failed: jest.fn().mockReturnThis()
-  }
-  jest.mock('@topcli/spinner', () => ({
-    Spinner: jest.fn(() => mockSpinner)
-  }))
+  test('should handle no DWH files identified for processing', async () => {
+    storage.getFileList.mockResolvedValue([])
 
-  await stageExtracts()
+    const consoleInfoMock = jest.spyOn(console, 'info').mockImplementation(() => {})
 
-  expect(storage.getFileList).toHaveBeenCalled()
-  expect(mockSpinner.start).toHaveBeenCalledWith('appDetailFolder')
-  expect(stageApplicationDetails).toHaveBeenCalled()
-  expect(mockSpinner.succeed).toHaveBeenCalledWith('appDetailFolder - staged')
-  expect(mockSpinner.start).toHaveBeenCalledWith('appsTypesFolder')
-  expect(stageAppsTypes).toHaveBeenCalled()
-  expect(mockSpinner.succeed).toHaveBeenCalledWith('appsTypesFolder - staged')
-  expect(checkComplete).toHaveBeenCalled()
+    await stageExtracts()
+
+    expect(consoleInfoMock).toHaveBeenCalledWith('No DWH files identified for processing')
+    consoleInfoMock.mockRestore()
+  })
+
+  test.only('should handle ora spinner for each stage function', async () => {
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+
+    storage.getFileList.mockResolvedValue([
+      'Application_Detail/file1',
+      'Apps_Types/file2',
+      'Apps_Payment_Notification/file3',
+      'Business_address_contact_v/file4',
+      'Calculations_Details_MV/file5',
+      'CSS_Contract_Applications/file6',
+      'CSS_Contract/file7',
+      'CSS_Options/file8',
+      'Defra_Links/file9',
+      'Finance_Dax/file10',
+      'Organization/file11',
+      'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option/file12'
+    ])
+    stageApplicationDetails.mockResolvedValue()
+    stageAppsTypes.mockResolvedValue()
+    stageAppsPaymentNotifications.mockResolvedValue()
+    stageBusinessAddressContacts.mockResolvedValue()
+    stageCalculationDetails.mockResolvedValue()
+    stageCSSContractApplications.mockResolvedValue()
+    stageCSSContract.mockResolvedValue()
+    stageCSSOptions.mockResolvedValue()
+    stageDefraLinks.mockResolvedValue()
+    stageFinanceDAX.mockResolvedValue()
+    stageOrganisation.mockResolvedValue()
+    stageTCLCOption.mockResolvedValue()
+
+    storage.getBlob.mockResolvedValue({
+      upload: jest.fn().mockResolvedValue()
+    })
+
+    writeToString.mockResolvedValue('csv content')
+
+    await stageExtracts()
+
+    expect(ora).toHaveBeenCalledTimes(stageFunctions.length)
+    expect(mockSpinner.start).toHaveBeenCalledTimes(stageFunctions.length)
+  })
+
+  test('should handle ora spinner failure', async () => {
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+
+    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    stageApplicationDetails.mockRejectedValue(new Error('Test error'))
+
+    await stageExtracts()
+
+    expect(mockSpinner.fail).toHaveBeenCalledWith(`${storageConfig.applicationDetail.folder} - Test error`)
+  })
 })

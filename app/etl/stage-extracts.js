@@ -4,7 +4,7 @@ const storage = require('../storage')
 const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { storageConfig } = require('../config')
-const { Spinner } = require('@topcli/spinner')
+const ora = require('ora')
 
 let completed = 0
 
@@ -49,10 +49,10 @@ const stageExtracts = async () => {
   if (etlFiles.length) {
     for (const { fn, label } of stageFunctions) {
       if (foldersToStage.includes(label)) {
-        const spinner = new Spinner().start(label)
+        const spinner = ora(label).start()
         await fn()
           .then(() => spinner.succeed(`${label} - staged`))
-          .catch((e) => spinner.failed(`${label} - ${e.message}`))
+          .catch((e) => spinner.fail(`${label} - ${e.message}`))
           .finally(() => {
             completed += 1
           })
