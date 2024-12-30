@@ -8,6 +8,7 @@ jest.mock('uuid');
 jest.mock('../../../../app/storage');
 jest.mock('../../../../app/config/storage');
 jest.mock('../../../../app/constants/tables');
+jest.mock('../../../../app/etl/run-etl-process');
 
 describe('stageDefraLinks', () => {
   let runEtlProcess;
@@ -18,7 +19,7 @@ describe('stageDefraLinks', () => {
   });
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'mock-folder/export.csv';
+    const mockFile = 'Defra_Links/export.csv';
     const mockTempFilePath = 'mock-temp-file-path';
     const mockUuid = 'mock-uuid';
     const mockColumns = [
