@@ -4,6 +4,7 @@ const storage = require('../storage')
 const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { storageConfig } = require('../config')
+const { Spinner } = require('@topcli/spinner');
 
 let completed = 0
 
@@ -46,7 +47,6 @@ const stageExtracts = async () => {
   total = foldersToStage.length
 
   if (etlFiles.length) {
-    const { Spinner } = await import('@topcli/spinner')
     for (const { fn, label } of stageFunctions) {
       if (foldersToStage.includes(label)) {
         const spinner = new Spinner().start(label)
