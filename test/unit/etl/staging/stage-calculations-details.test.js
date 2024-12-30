@@ -1,22 +1,27 @@
-const path = require('path')
-const { v4: uuidv4 } = require('uuid')
-const storage = require('../../../../app/storage')
-const { calculationsDetailsTable } = require('../../../../app/constants/tables')
-const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
-const { stageCalculationDetails } = require('../../../../app/etl/staging/stage-calculations-details')
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const storage = require('../../../../app/storage');
+const { calculationsDetailsTable } = require('../../../../app/constants/tables');
+const { stageCalculationDetails } = require('../../../../app/etl/staging/stage-calculations-details');
 
-jest.mock('path')
-jest.mock('uuid')
-jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/storage')
-jest.mock('../../../../app/etl/run-etl-process')
-jest.mock('../../../../app/constants/tables')
+jest.mock('uuid');
+jest.mock('../../../../app/storage');
+jest.mock('../../../../app/config/storage');
+jest.mock('../../../../app/constants/tables');
+jest.mock('../../../../app/etl/run-etl-process');
 
 describe('stageCalculationDetails', () => {
+  let runEtlProcess;
+
+  beforeAll(() => {
+    runEtlProcess = require('../../../../app/etl/run-etl-process').runEtlProcess;
+    jest.spyOn(require('../../../../app/etl/run-etl-process'), 'runEtlProcess').mockResolvedValue();
+  });
+
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'mock-folder/export.csv'
-    const mockTempFilePath = 'mock-temp-file-path'
-    const mockUuid = 'mock-uuid'
+    const mockFile = 'Calculations_Details_MV/export.csv';
+    const mockTempFilePath = 'mock-temp-file-path';
+    const mockUuid = 'mock-uuid';
     const mockColumns = [
       'CHANGE_TYPE',
       'CHANGE_TIME',
@@ -25,7 +30,7 @@ describe('stageCalculationDetails', () => {
       'CALCULATION_ID',
       'CALCULATION_DT',
       'RANKED'
-    ]
+    ];
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
@@ -64,23 +69,23 @@ describe('stageCalculationDetails', () => {
         targetColumn: 'ranked',
         targetType: 'number'
       }
-    ]
+    ];
 
-    path.join.mockReturnValue(mockTempFilePath)
-    uuidv4.mockReturnValue(mockUuid)
-    storage.downloadFile = jest.fn().mockResolvedValue()
-    runEtlProcess.mockResolvedValue()
+    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath);
+    uuidv4.mockReturnValue(mockUuid);
+    storage.downloadFile = jest.fn().mockResolvedValue();
 
-    await stageCalculationDetails()
+    await stageCalculationDetails();
 
-    expect(path.join).toHaveBeenCalledWith(__dirname, `calculationDetails-${mockUuid}.csv`)
-    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath)
+    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging';
+    expect(path.join).toHaveBeenCalledWith(parentDir, `calculationDetails-${mockUuid}.csv`);
+    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath);
     expect(runEtlProcess).toHaveBeenCalledWith({
       tempFilePath: mockTempFilePath,
       columns: mockColumns,
       table: calculationsDetailsTable,
       mapping: mockMapping,
       file: mockFile
-    })
-  })
-})
+    });
+  });
+});
