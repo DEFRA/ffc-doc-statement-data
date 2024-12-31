@@ -112,5 +112,7 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
 }
 
 module.exports = {
-  runEtlProcess
+  runEtlProcess,
+  removeFirstLine,
+  getFirstLineNumber
 }
