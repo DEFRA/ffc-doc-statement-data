@@ -2,6 +2,7 @@ const Joi = require('joi')
 const { applicationDetailFolder, appsPaymentNotificationFolder, appsTypesFolder, businessAddressFolder, calculationsDetailsFolder, cssContractApplicationsFolder, cssContractFolder, cssOptionsFolder, defraLinksFolder, financeDAXFolder, organisationFolder, tclcOptionFolder, tclcFolder } = require('../constants/folders')
 
 const schema = Joi.object({
+  checkCompleteTimeoutMs: Joi.number().required(),
   connectionStr: Joi.string().when('useConnectionStr', { is: true, then: Joi.required(), otherwise: Joi.allow('').optional() }),
   storageAccount: Joi.string().required(),
   container: Joi.string().required(),
@@ -64,6 +65,7 @@ const schema = Joi.object({
 })
 
 const config = {
+  checkCompleteTimeoutMs: 5000,
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   container: 'etl',

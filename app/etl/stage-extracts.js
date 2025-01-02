@@ -15,7 +15,7 @@ let startDate
 
 const checkComplete = async () => {
   if (completed < total) {
-    setTimeout(checkComplete, 5000)
+    setTimeout(checkComplete, storageConfig.checkCompleteTimeoutMs)
   } else {
     console.log('All ETL extracts loaded')
     const body = await writeToString(global.results)
