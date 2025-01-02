@@ -1,217 +1,147 @@
+/* eslint-disable n/no-callback-literal */
+const { runEtlProcess } = require('../../../app/etl/run-etl-process')
 const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-pay-etl-framework')
 const fs = require('fs')
-const readline = require('readline')
 const storage = require('../../../app/storage')
-const tableMappings = require('../../../app/constants/table-mappings')
-const { getFirstLineNumber, removeFirstLine, runEtlProcess } = require('../../../app/etl/run-etl-process')
+const db = require('../../../app/data')
+const { removeFirstLine, getFirstLineNumber } = require('../../../app/etl/file-utils')
 
+jest.mock('ffc-pay-etl-framework')
 jest.mock('fs')
-jest.mock('readline')
 jest.mock('../../../app/config')
 jest.mock('../../../app/storage')
 jest.mock('../../../app/data', () => ({
-  __esModule: true,
-  default: {
-    sequelize: {
-      authenticate: jest.fn(),
-      close: jest.fn()
-    },
-    Sequelize: jest.fn(),
-    etlStageLog: {
-      create: jest.fn(),
-      update: jest.fn()
-    }
+  sequelize: {
+    authenticate: jest.fn(),
+    close: jest.fn()
+  },
+  Sequelize: jest.fn(),
+  etlStageLog: {
+    create: jest.fn(),
+    update: jest.fn()
   }
 }))
-jest.mock('ffc-pay-etl-framework')
-
+jest.mock('../../../app/constants/table-mappings')
+jest.mock('../../../app/etl/file-utils')
 fs.promises = {
   readFile: jest.fn(),
   writeFile: jest.fn(),
   unlink: jest.fn()
 }
 
-describe('ETL Process', () => {
+describe('runEtlProcess', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    global.results = []
   })
 
-  describe('getFirstLineNumber', () => {
-    test('should return the first line number from the file', async () => {
-      const filePath = 'test-file-path'
-      const mockReadable = { destroy: jest.fn() }
-      const mockReader = { on: jest.fn(), close: jest.fn() }
+  test('should resolve true if tempFilePath does not exist', async () => {
+    fs.existsSync.mockReturnValue(false)
 
-      fs.createReadStream.mockReturnValue(mockReadable)
-      readline.createInterface.mockReturnValue(mockReader)
+    const result = await runEtlProcess({ tempFilePath: 'path/to/temp/file' })
 
-      let lineCallback
-      mockReader.on.mockImplementation((event, callback) => {
-        if (event === 'line') {
-          lineCallback = callback
-        }
-      })
-
-      const promise = getFirstLineNumber(filePath)
-
-      lineCallback('42')
-
-      const result = await promise
-
-      expect(result).toBe(42)
-      expect(mockReader.close).toHaveBeenCalled()
-      expect(mockReadable.destroy).toHaveBeenCalled()
-    })
-
-    test('should handle errors', async () => {
-      const filePath = 'test-file-path'
-      const mockReadable = { destroy: jest.fn() }
-      const mockReader = { on: jest.fn(), close: jest.fn() }
-
-      fs.createReadStream.mockReturnValue(mockReadable)
-      readline.createInterface.mockReturnValue(mockReader)
-
-      let errorCallback
-      mockReader.on.mockImplementation((event, callback) => {
-        if (event === 'error') {
-          errorCallback = callback
-        }
-      })
-
-      const promise = getFirstLineNumber(filePath)
-
-      const error = new Error('Test error')
-      errorCallback(error)
-
-      await expect(promise).rejects.toThrow('Test error')
-      expect(mockReadable.destroy).toHaveBeenCalled()
-    })
+    expect(result).toBe(true)
   })
 
-  describe('removeFirstLine', () => {
-    test('should remove the first line from the file', async () => {
-      const filePath = 'test-file-path'
-      const fileContent = 'first line\nsecond line\nthird line'
-      const expectedContent = 'second line\nthird line'
+  test('should handle ETL process correctly', async () => {
+    fs.existsSync.mockReturnValue(true)
+    fs.promises.unlink.mockResolvedValue()
+    storage.deleteFile.mockResolvedValue()
+    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
+    db.etlStageLog.update.mockResolvedValue()
+    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
+    getFirstLineNumber.mockResolvedValue(10)
+    removeFirstLine.mockResolvedValue()
 
-      fs.promises.readFile.mockResolvedValue(fileContent)
-      fs.promises.writeFile.mockResolvedValue()
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, callback) => {
+        if (event === 'finish') {
+          callback([])
+        }
+        if (event === 'result') {
+          callback([])
+        }
+        return mockEtl
+      })
+    }
 
-      await removeFirstLine(filePath)
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.PostgresDatabaseConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
 
-      expect(fs.promises.readFile).toHaveBeenCalledWith(filePath, 'utf8')
-      expect(fs.promises.writeFile).toHaveBeenCalledWith(filePath, expectedContent)
+    const result = await runEtlProcess({
+      tempFilePath: 'path/to/temp/file',
+      columns: [],
+      table: 'someTable',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
     })
+
+    expect(result).toEqual([])
+    expect(fs.promises.unlink).toHaveBeenCalledWith('path/to/temp/file')
+    expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
+    expect(db.etlStageLog.update).toHaveBeenCalled()
   })
 
-  describe('runEtlProcess', () => {
-    beforeEach(() => {
-      jest.mock('../../../app/etl/run-etl-process', () => {
-        const originalModule = jest.requireActual('../../../app/etl/run-etl-process')
-        return {
-          ...originalModule,
-          getFirstLineNumber: jest.fn().mockResolvedValue(100)
+  test('should reject if an error occurs', async () => {
+    fs.existsSync.mockReturnValue(true)
+    fs.promises.unlink.mockResolvedValue()
+    storage.deleteFile.mockResolvedValue()
+    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
+    db.etlStageLog.update.mockResolvedValue()
+    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
+    getFirstLineNumber.mockResolvedValue(10)
+    removeFirstLine.mockResolvedValue()
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, callback) => {
+        if (event === 'finish') {
+          callback([])
         }
+        if (event === 'result') {
+          callback([])
+        }
+        return mockEtl
       })
+    }
+
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.PostgresDatabaseConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
+
+    const error = new Error('Test error')
+    mockEtl.pump.mockImplementationOnce(() => {
+      throw error
     })
 
-    afterEach(() => {
-      jest.resetModules()
-    })
+    await expect(runEtlProcess({
+      tempFilePath: 'path/to/temp/file',
+      columns: [],
+      table: 'someTable',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
+    })).rejects.toThrow('Test error')
 
-    test.skip('should run the ETL process successfully', async (done) => {
-      const params = {
-        tempFilePath: 'test-temp-file-path',
-        columns: ['col1', 'col2'],
-        table: 'testTable',
-        mapping: {},
-        transformer: {},
-        nonProdTransformer: {},
-        file: 'test-file'
-      }
-
-      const mockEtl = {
-        connection: jest.fn().mockReturnThis(),
-        loader: jest.fn().mockReturnThis(),
-        transform: jest.fn().mockReturnThis(),
-        destination: jest.fn().mockReturnThis(),
-        pump: jest.fn().mockReturnThis(),
-        on: jest.fn().mockReturnThis()
-      }
-
-      Etl.Etl.mockImplementation(() => mockEtl)
-      Connections.PostgresDatabaseConnection.mockResolvedValue({})
-      Loaders.CSVLoader.mockImplementation(() => {})
-      Transformers.FakerTransformer.mockImplementation(() => {})
-      Transformers.StringReplaceTransformer.mockImplementation(() => {})
-      Destinations.PostgresDestination.mockImplementation(() => {})
-
-      const db = require('../../../app/data').default
-      db[tableMappings[params.table]] = {
-        count: jest.fn().mockResolvedValue(0),
-        max: jest.fn().mockResolvedValue(0)
-      }
-
-      fs.existsSync.mockReturnValue(true)
-      fs.promises.unlink.mockResolvedValue()
-      storage.deleteFile.mockResolvedValue()
-
-      const result = await runEtlProcess(params)
-
-      expect(result).toBeDefined()
-      expect(mockEtl.connection).toHaveBeenCalled()
-      expect(mockEtl.loader).toHaveBeenCalled()
-      expect(mockEtl.transform).toHaveBeenCalled()
-      expect(mockEtl.destination).toHaveBeenCalled()
-      expect(mockEtl.pump).toHaveBeenCalled()
-      done()
-    })
-
-    test.skip('should handle errors during the ETL process', async (done) => {
-      const params = {
-        tempFilePath: 'test-temp-file-path',
-        columns: ['col1', 'col2'],
-        table: 'testTable',
-        mapping: {},
-        transformer: {},
-        nonProdTransformer: {},
-        file: 'test-file'
-      }
-
-      const mockEtl = {
-        connection: jest.fn().mockReturnThis(),
-        loader: jest.fn().mockReturnThis(),
-        transform: jest.fn().mockReturnThis(),
-        destination: jest.fn().mockReturnThis(),
-        pump: jest.fn().mockReturnThis(),
-        on: jest.fn().mockReturnThis()
-      }
-
-      Etl.Etl.mockImplementation(() => mockEtl)
-      Connections.PostgresDatabaseConnection.mockResolvedValue({})
-      Loaders.CSVLoader.mockImplementation(() => {})
-      Transformers.FakerTransformer.mockImplementation(() => {})
-      Transformers.StringReplaceTransformer.mockImplementation(() => {})
-      Destinations.PostgresDestination.mockImplementation(() => {})
-
-      const db = require('../../../app/data').default
-      db[tableMappings[params.table]] = {
-        count: jest.fn().mockResolvedValue(0),
-        max: jest.fn().mockResolvedValue(0)
-      }
-
-      fs.existsSync.mockReturnValue(true)
-      fs.promises.unlink.mockResolvedValue()
-      storage.deleteFile.mockResolvedValue()
-
-      const error = new Error('Test error')
-      mockEtl.pump.mockImplementationOnce(() => {
-        throw error
-      })
-
-      await expect(runEtlProcess(params)).rejects.toThrow('Test error')
-      expect(fs.promises.unlink).toHaveBeenCalledWith(params.tempFilePath)
-      done()
-    })
+    expect(fs.promises.unlink).toHaveBeenCalledWith('path/to/temp/file')
   })
 })
