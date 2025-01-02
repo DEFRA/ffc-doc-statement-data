@@ -14,9 +14,9 @@ const getEtlStageLogs = async (startDate, folder) => {
     throw new Error(`Multiple records found for updates to ${folder}, expected only one`)
   } else if (etlStageLogs.length === 0) {
     return null
+  } else {
+    return etlStageLogs[0]
   }
-
-  return etlStageLogs[0]
 }
 
 const executeQuery = async (query, replacements, transaction) => {
