@@ -15,15 +15,13 @@ describe('loadOrganisations', () => {
     const startDate = new Date('2023-01-01')
 
     await loadOrganisations(startDate, mockTransaction)
-
-    expect(db.sequelize.query).toHaveBeenCalledWith(
-      `
+    const expected = `
     INSERT INTO organisations (
       sbi, "addressLine1", "addressLine2",
       "addressLine3", city, county,
       postcode, "emailAddress", frn,
       "name", updated
-      )
+    )
     SELECT
       sbi, addressLine1, addressLine2,
       addressLine3, city, county,
@@ -31,7 +29,9 @@ describe('loadOrganisations', () => {
       "name", NOW()
     FROM etl_interm_org O
     WHERE O.etl_inserted_dt > :startDate;
-  `,
+  `
+
+    expect(db.sequelize.query).toHaveBeenCalledWith(expected,
       {
         replacements: { startDate },
         raw: true,

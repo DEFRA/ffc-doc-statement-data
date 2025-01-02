@@ -1,7 +1,7 @@
-const db = require('../../data')
+const { executeQuery } = require('./load-interm-utils')
 
 const loadIntermTotal = async (startDate, transaction) => {
-  await db.sequelize.query(`
+  const query = `
     INSERT INTO etl_interm_total (
       payment_ref, quarter, total_amount,
       transdate
@@ -15,13 +15,11 @@ const loadIntermTotal = async (startDate, transaction) => {
       AND D.etl_inserted_dt > :startDate
     GROUP BY transdate, quarter, payment_ref
     ORDER BY payment_ref;
-  `, {
-    replacements: {
-      startDate
-    },
-    raw: true,
-    transaction
-  })
+  `
+
+  await executeQuery(query, {
+    startDate
+  }, transaction)
 }
 
 module.exports = {

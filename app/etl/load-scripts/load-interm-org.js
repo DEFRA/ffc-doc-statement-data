@@ -1,23 +1,12 @@
 const { storageConfig } = require('../../config')
-const db = require('../../data')
+const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermOrg = async (startDate, transaction) => {
-  const etlStageLogs = await db.etlStageLog.findAll({
-    where: {
-      file: `${storageConfig.organisation.folder}/export.csv`,
-      ended_at: {
-        [db.Sequelize.Op.gt]: startDate
-      }
-    }
-  })
+  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.organisation.folder)
 
-  if (etlStageLogs.length > 1) {
-    throw new Error(`Multiple records found for updates to ${storageConfig.organisation.folder}, expected only one`)
-  } else if (etlStageLogs.length === 0) {
-    return
-  }
+  if (!etlStageLog) return
 
-  await db.sequelize.query(`
+  const query = `
     WITH new_data AS (
       SELECT
         O.sbi,
@@ -87,14 +76,12 @@ const loadIntermOrg = async (startDate, transaction) => {
     FROM new_data
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
-  `, {
-    replacements: {
-      idFrom: etlStageLogs[0].id_from,
-      idTo: etlStageLogs[0].id_to
-    },
-    raw: true,
-    transaction
-  })
+  `
+
+  await executeQuery(query, {
+    idFrom: etlStageLog.id_from,
+    idTo: etlStageLog.id_to
+  }, transaction)
 }
 
 module.exports = {

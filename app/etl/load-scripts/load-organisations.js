@@ -1,13 +1,13 @@
-const db = require('../../data')
+const { executeQuery } = require('./load-interm-utils')
 
 const loadOrganisations = async (startDate, transaction) => {
-  await db.sequelize.query(`
+  const query = `
     INSERT INTO organisations (
       sbi, "addressLine1", "addressLine2",
       "addressLine3", city, county,
       postcode, "emailAddress", frn,
       "name", updated
-      )
+    )
     SELECT
       sbi, addressLine1, addressLine2,
       addressLine3, city, county,
@@ -15,13 +15,11 @@ const loadOrganisations = async (startDate, transaction) => {
       "name", NOW()
     FROM etl_interm_org O
     WHERE O.etl_inserted_dt > :startDate;
-  `, {
-    replacements: {
-      startDate
-    },
-    raw: true,
-    transaction
-  })
+  `
+
+  await executeQuery(query, {
+    startDate
+  }, transaction)
 }
 
 module.exports = {
