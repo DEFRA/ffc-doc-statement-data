@@ -4,7 +4,9 @@ const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 const loadIntermOrg = async (startDate, transaction) => {
   const etlStageLog = await getEtlStageLogs(startDate, storageConfig.organisation.folder)
 
-  if (!etlStageLog) return
+  if (!etlStageLog) {
+    return
+  }
 
   const query = `
     WITH new_data AS (
