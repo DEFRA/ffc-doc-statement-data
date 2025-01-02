@@ -1,5 +1,5 @@
 const { applicationDetailTable } = require('../../constants/tables')
-const { downloadAndProcessFile } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageApplicationDetails = async () => {
   const columns = [
@@ -8,10 +8,10 @@ const stageApplicationDetails = async () => {
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
     { column: 'PKID', targetColumn: 'pkid', targetType: 'number' },
-    { column: 'DT_INSERT', targetColumn: 'dt_insert', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'DT_DELETE', targetColumn: 'dt_delete', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_INSERT', targetColumn: 'dt_insert', targetType: 'date', format: dateTimeFormat },
+    { column: 'DT_DELETE', targetColumn: 'dt_delete', targetType: 'date', format: dateTimeFormat },
     { column: 'SUBJECT_ID', targetColumn: 'subject_id', targetType: 'number' },
     { column: 'UTE_ID', targetColumn: 'ute_id', targetType: 'number' },
     { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
@@ -23,13 +23,13 @@ const stageApplicationDetails = async () => {
     { column: 'STATUS_S_CODE', targetColumn: 'status_s_code', targetType: 'varchar' },
     { column: 'SOURCE_P_CODE', targetColumn: 'source_p_code', targetType: 'varchar' },
     { column: 'SOURCE_S_CODE', targetColumn: 'source_s_code', targetType: 'varchar' },
-    { column: 'DT_START', targetColumn: 'dt_start', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'DT_END', targetColumn: 'dt_end', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_START', targetColumn: 'dt_start', targetType: 'date', format: dateTimeFormat },
+    { column: 'DT_END', targetColumn: 'dt_end', targetType: 'date', format: dateTimeFormat },
     { column: 'VALID_START_FLG', targetColumn: 'valid_start_flg', targetType: 'varchar' },
     { column: 'VALID_END_FLG', targetColumn: 'valid_end_flg', targetType: 'varchar' },
     { column: 'APP_ID_START', targetColumn: 'app_id_start', targetType: 'number' },
     { column: 'APP_ID_END', targetColumn: 'app_id_end', targetType: 'number' },
-    { column: 'DT_REC_UPDATE', targetColumn: 'dt_rec_update', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_REC_UPDATE', targetColumn: 'dt_rec_update', targetType: 'date', format: dateTimeFormat },
     { column: 'USER_ID', targetColumn: 'user_id', targetType: 'varchar' }
   ]
 

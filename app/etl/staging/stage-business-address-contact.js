@@ -1,5 +1,5 @@
 const { businessAddressTable } = require('../../constants/tables')
-const { downloadAndProcessFile } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 const config = require('../../config')
 
 const stageBusinessAddressContacts = async () => {
@@ -9,7 +9,7 @@ const stageBusinessAddressContacts = async () => {
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
     { column: 'SBI', targetColumn: 'sbi', targetType: 'number' },
     { column: 'FRN', targetColumn: 'frn', targetType: 'varchar' },
     { column: 'BUSINESS_NAME', targetColumn: 'business_name', targetType: 'varchar' },

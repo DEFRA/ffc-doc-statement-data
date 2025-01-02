@@ -1,6 +1,6 @@
 const { organisationTable } = require('../../constants/tables')
 const config = require('../../config')
-const { downloadAndProcessFile } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageOrganisation = async () => {
   const columns = [
@@ -41,7 +41,7 @@ const stageOrganisation = async () => {
       column: 'CHANGE_TIME',
       targetColumn: 'change_time',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     },
     {
       column: 'PARTY_ID',
@@ -107,7 +107,7 @@ const stageOrganisation = async () => {
       column: 'REGISTRATION_DATE',
       targetColumn: 'registration_date',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     },
     {
       column: 'CHARITY_COMMISSION_REGNUM',
@@ -138,7 +138,7 @@ const stageOrganisation = async () => {
       column: 'DATE_STARTED_FARMING',
       targetColumn: 'date_started_farming',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     },
     {
       column: 'ACCOUNTABLE_PEOPLE_COMPLETED',
@@ -159,7 +159,7 @@ const stageOrganisation = async () => {
       column: 'LAST_UPDATED_ON',
       targetColumn: 'last_updated_on',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     }
   ]
 

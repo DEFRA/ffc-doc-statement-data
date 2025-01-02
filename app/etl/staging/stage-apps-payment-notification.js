@@ -1,5 +1,5 @@
 const { appsPaymentNotificationTable } = require('../../constants/tables')
-const { downloadAndProcessFile } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageAppsPaymentNotifications = async () => {
   const columns = [
@@ -8,10 +8,10 @@ const stageAppsPaymentNotifications = async () => {
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
     { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
     { column: 'ID_CLC_HEADER', targetColumn: 'id_clc_header', targetType: 'number' },
-    { column: 'NOTIFICATION_DT', targetColumn: 'notification_dt', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'NOTIFICATION_DT', targetColumn: 'notification_dt', targetType: 'date', format: dateTimeFormat },
     { column: 'NOTIFICATION_FLAG', targetColumn: 'notification_flag', targetType: 'varchar' },
     { column: 'NOTIFIER_KEY', targetColumn: 'notifier_key', targetType: 'number' },
     { column: 'NOTIFICATION_TEXT', targetColumn: 'notification_text', targetType: 'varchar' },
