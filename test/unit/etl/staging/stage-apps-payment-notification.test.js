@@ -51,7 +51,7 @@ test('stageAppsPaymentNotifications downloads file and runs ETL process', async 
     { column: 'NOTIFICATION_FLAG', targetColumn: 'notification_flag', targetType: 'varchar' },
     { column: 'NOTIFIER_KEY', targetColumn: 'notifier_key', targetType: 'number' },
     { column: 'NOTIFICATION_TEXT', targetColumn: 'notification_text', targetType: 'varchar' },
-    { column: 'INVOICE_NUMBER', targetColumn: 'INVOICE_NUMBER', targetType: 'varchar' },
+    { column: 'INVOICE_NUMBER', targetColumn: 'invoice_number', targetType: 'varchar' },
     { column: 'REQUEST_INVOICE_NUMBER', targetColumn: 'request_invoice_number', targetType: 'varchar' },
     { column: 'PILLAR', targetColumn: 'pillar', targetType: 'varchar' },
     { column: 'DELIVERY_BODY_CODE', targetColumn: 'delivery_body_code', targetType: 'varchar' },

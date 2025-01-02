@@ -1,14 +1,7 @@
-const path = require('path')
-const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const storageConfig = require('../../config/storage')
-const { runEtlProcess } = require('../run-etl-process')
 const { financeDAXTable } = require('../../constants/tables')
+const { downloadAndProcessFile } = require('./stage-utils')
 
 const stageFinanceDAX = async () => {
-  const file = `${storageConfig.financeDAX.folder}/export.csv`
-  const tempFilePath = path.join(__dirname, `financeDAX-${uuidv4()}.csv`)
-  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -502,7 +495,7 @@ const stageFinanceDAX = async () => {
     }
   ]
 
-  return runEtlProcess({ tempFilePath, columns, table: financeDAXTable, mapping, transformer, file })
+  return downloadAndProcessFile('financeDAX', 'financeDAX', financeDAXTable, columns, mapping, transformer)
 }
 
 module.exports = {

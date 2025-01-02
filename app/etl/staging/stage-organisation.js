@@ -1,15 +1,8 @@
-const path = require('path')
-const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const storageConfig = require('../../config/storage')
-const { runEtlProcess } = require('../run-etl-process')
 const { organisationTable } = require('../../constants/tables')
 const config = require('../../config')
+const { downloadAndProcessFile } = require('./stage-utils')
 
 const stageOrganisation = async () => {
-  const file = `${storageConfig.organisation.folder}/export.csv`
-  const tempFilePath = path.join(__dirname, `organisation-${uuidv4()}.csv`)
-  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -189,7 +182,7 @@ const stageOrganisation = async () => {
     ]
   }
 
-  return runEtlProcess({ tempFilePath, columns, table: organisationTable, mapping, transformer, nonProdTransformer, file })
+  return downloadAndProcessFile('organisation', 'organisations', organisationTable, columns, mapping, transformer, nonProdTransformer)
 }
 
 module.exports = {
