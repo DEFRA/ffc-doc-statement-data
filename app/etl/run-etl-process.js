@@ -76,11 +76,11 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
               },
               { where: { etl_id: fileInProcess.etl_id } }
             )
-            resolve(data)
+            return resolve(data)
           })
       } catch (e) {
         await fs.promises.unlink(tempFilePath)
-        reject(e)
+        return reject(e)
       }
     })()
   })
