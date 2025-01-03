@@ -1,5 +1,5 @@
 const { tclcOptionTable } = require('../../constants/tables')
-const { downloadAndProcessFile } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageTCLCOption = async () => {
   const columns = [
@@ -8,7 +8,7 @@ const stageTCLCOption = async () => {
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
     { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
     { column: 'CALCULATION_ID', targetColumn: 'calculation_id', targetType: 'number' },
     { column: 'OP_CODE', targetColumn: 'op_code', targetType: 'varchar' },
