@@ -7,3 +7,5 @@ resources:
       role: sender
     - name: ffc-pay-demographics-extract
       role: receiver
+      subscriptions:
+        - name: ffc-doc-demographics
