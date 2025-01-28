@@ -2,7 +2,7 @@ resources:
   identity: doc-statement-data
   postgreSql:
     name: ffc-doc-statement-data
-  topic:
+  topics:
     - name: ffc-doc-statement-data
       role: sender
     - name: ffc-pay-demographics-extract
