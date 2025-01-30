@@ -1,7 +1,7 @@
-const db = require('../../data')
+const { executeQuery } = require('./load-interm-utils')
 
 const loadIntermPaymentrefAgreementDates = async (startDate, transaction) => {
-  await db.sequelize.query(`
+  const query = `
     INSERT INTO etl_interm_paymentref_agreement_dates (
       payment_ref, agreementStart, agreementEnd
     )
@@ -16,13 +16,12 @@ const loadIntermPaymentrefAgreementDates = async (startDate, transaction) => {
       AND IAC.agreementStart IS NOT NULL
       AND IAC.agreementEnd IS NOT NULL
     GROUP BY DA.payment_ref, CA.contract_id
-  `, {
-    replacements: {
-      startDate
-    },
-    raw: true,
-    transaction
-  })
+    ON CONFLICT (payment_ref, agreementStart, agreementEnd) DO NOTHING;
+  `
+
+  await executeQuery(query, {
+    startDate
+  }, transaction)
 }
 
 module.exports = {

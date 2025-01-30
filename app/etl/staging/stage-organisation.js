@@ -1,15 +1,8 @@
-const path = require('path')
-const { v4: uuidv4 } = require('uuid')
-const storage = require('../../storage')
-const storageConfig = require('../../config/storage')
-const { runEtlProcess } = require('../run-etl-process')
 const { organisationTable } = require('../../constants/tables')
 const config = require('../../config')
+const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageOrganisation = async () => {
-  const file = `${storageConfig.organisation.folder}/export.csv`
-  const tempFilePath = path.join(__dirname, `organisation-${uuidv4()}.csv`)
-  await storage.downloadFile(file, tempFilePath)
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -48,7 +41,7 @@ const stageOrganisation = async () => {
       column: 'CHANGE_TIME',
       targetColumn: 'change_time',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     },
     {
       column: 'PARTY_ID',
@@ -114,7 +107,7 @@ const stageOrganisation = async () => {
       column: 'REGISTRATION_DATE',
       targetColumn: 'registration_date',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     },
     {
       column: 'CHARITY_COMMISSION_REGNUM',
@@ -145,7 +138,7 @@ const stageOrganisation = async () => {
       column: 'DATE_STARTED_FARMING',
       targetColumn: 'date_started_farming',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     },
     {
       column: 'ACCOUNTABLE_PEOPLE_COMPLETED',
@@ -166,7 +159,7 @@ const stageOrganisation = async () => {
       column: 'LAST_UPDATED_ON',
       targetColumn: 'last_updated_on',
       targetType: 'date',
-      format: 'DD-MM-YYYY HH24:MI:SS'
+      format: dateTimeFormat
     }
   ]
 
@@ -189,7 +182,7 @@ const stageOrganisation = async () => {
     ]
   }
 
-  return runEtlProcess({ tempFilePath, columns, table: organisationTable, mapping, transformer, nonProdTransformer, file })
+  return downloadAndProcessFile('organisation', 'organisations', organisationTable, columns, mapping, transformer, nonProdTransformer)
 }
 
 module.exports = {

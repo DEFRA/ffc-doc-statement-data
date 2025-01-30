@@ -50,7 +50,7 @@ describe('send organisation updates', () => {
 
     test('should publish organisation frn', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn.toString())
+      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn)
     })
 
     test('should publish organisation name', async () => {
