@@ -6,6 +6,7 @@ const storage = require('../storage')
 const db = require('../data')
 const tableMappings = require('../constants/table-mappings')
 const { removeFirstLine, getFirstLineNumber } = require('./file-utils')
+const publishEtlProcessError = require('../messaging/publish-etl-process-error')
 
 const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transformer, nonProdTransformer, file }) => {
   const etl = new Etl.Etl()
@@ -80,6 +81,8 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
           })
       } catch (e) {
         await fs.promises.unlink(tempFilePath)
+        await publishEtlProcessError(file, e)
+        console.error('Unable to run ETL process:', e)
         return reject(e)
       }
     })()
