@@ -1,6 +1,6 @@
 const util = require('util')
 const { ETL_PROCESS_ERROR } = require('../constants/message-types')
-const sendMessage = require('../messaging/send-message')
+const sendMessage = require('./send-message')
 const config = require('../config')
 const { v4: uuidv4 } = require('uuid')
 
