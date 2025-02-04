@@ -1,3 +1,11 @@
 resources:
+  identity: doc-statement-data
+  postgreSql:
+    name: ffc-doc-statement-data
   topics:
-    - name: data
+    - name: ffc-doc-statement-data
+      role: sender
+    - name: ffc-pay-demographics-extract
+      role: receiver
+      subscriptions:
+        - name: ffc-doc-demographics
