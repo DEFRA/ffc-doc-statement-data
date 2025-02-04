@@ -1,0 +1,3 @@
+---
+container.dataTopicAddress: queue:ffc-doc-statement-data
+container.demographicsTopicAddress: queue:ffc-pay-demographics-extract
