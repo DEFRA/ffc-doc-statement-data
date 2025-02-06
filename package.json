@@ -25,8 +25,11 @@
   "license": "OGL-UK-3.0",
   "dependencies": {
     "@azure/identity": "4.4.1",
+    "@azure/storage-blob": "12.10.0",
+    "@fast-csv/format": "^5.0.2",
     "applicationinsights": "2.9.6",
     "ffc-messaging": "2.10.1",
+    "ffc-pay-etl-framework": "^1.1.5",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
     "moment": "2.30.1",
