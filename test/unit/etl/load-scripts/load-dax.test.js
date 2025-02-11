@@ -18,26 +18,7 @@ describe('loadDAX', () => {
   test('should call sequelize.query with correct SQL and parameters', async () => {
     await loadDAX(startDate, transaction)
 
-    expect(db.sequelize.query).toHaveBeenCalledWith(`
-    INSERT INTO dax (
-      "paymentReference", "calculationId", "paymentPeriod",
-      "paymentAmount", "transactionDate"
-    )
-    SELECT
-      T.payment_ref AS paymentReference,
-      T.calculation_id AS calculationId,
-      T.quarter AS paymentPeriod, 
-      T.total_amount AS paymentAmount,
-      T.transdate AS transactionDate 
-    FROM etl_interm_total T
-    WHERE T.etl_inserted_dt > :startDate;
-  `, {
-      replacements: {
-        startDate
-      },
-      raw: true,
-      transaction
-    })
+    expect(db.sequelize.query).toMatchSnapshot()
   })
 
   test('should handle errors thrown by sequelize.query', async () => {

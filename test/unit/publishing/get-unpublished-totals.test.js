@@ -16,23 +16,6 @@ describe('getUnpublishedTotals', () => {
     const result = await getUnpublishedTotals(transaction)
     expect(result).toEqual([mockTotal1, mockTotal2, mockTotal3])
 
-    expect(db.total.findAll).toHaveBeenCalledWith({
-      lock: true,
-      skipLocked: true,
-      limit: expect.any(Number),
-      where: {
-        [db.Sequelize.Op.or]: [
-          {
-            datePublished: null
-          },
-          {
-            datePublished: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') }
-          }
-        ]
-      },
-      attributes: ['calculationId', ['calculationId', 'calculationReference'], ['calculationId', 'totalsId'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'claimReference'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
-      raw: true,
-      transaction
-    })
+    expect(db.total.findAll).toMatchSnapshot()
   })
 })
