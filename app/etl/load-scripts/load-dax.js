@@ -13,8 +13,7 @@ const loadDAX = async (startDate, transaction) => {
       T.total_amount AS paymentAmount,
       T.transdate AS transactionDate 
     FROM etl_interm_total T
-    WHERE T.etl_inserted_dt > :startDate
-    ON CONFLICT ("paymentReference") DO NOTHING;
+    WHERE T.etl_inserted_dt > :startDate;
   `, {
     replacements: {
       startDate

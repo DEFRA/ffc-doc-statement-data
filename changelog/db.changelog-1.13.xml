@@ -1037,6 +1037,9 @@
         <column name = "CALCULATION_ID" type="BIGSERIAL">
             <constraints nullable="false" />
         </column>
+        <column name = "INVOICEID" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
         <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
     <createTable tableName = "ETL_INTERM_TOTAL_CLAIM">

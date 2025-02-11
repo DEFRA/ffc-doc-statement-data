@@ -4,7 +4,7 @@ const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 const loadIntermFinanceDAX = async (startDate, transaction) => {
   const etlStageLog = await getEtlStageLogs(startDate, storageConfig.financeDAX.folder)
 
-  if (!etlStageLog) {
+  if (!etlStageLog[0]) {
     return
   }
 
@@ -97,8 +97,8 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
       OR (change_type = 'UPDATE' AND recid NOT IN (SELECT recid FROM updated_rows));
   `
   const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
+  const idFrom = etlStageLog[0].id_from
+  const idTo = etlStageLog[0].id_to
   for (let i = idFrom; i <= idTo; i += batchSize) {
     console.log(`Processing financeDAX records ${i} to ${Math.min(i + batchSize - 1, idTo)}`)
     await executeQuery(query, {

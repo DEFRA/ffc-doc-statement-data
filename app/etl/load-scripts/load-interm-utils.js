@@ -1,22 +1,27 @@
 const db = require('../../data')
 
 const getEtlStageLogs = async (startDate, folder) => {
-  const etlStageLogs = await db.etlStageLog.findAll({
-    where: {
-      file: `${folder}/export.csv`,
-      ended_at: {
-        [db.Sequelize.Op.gt]: startDate
-      }
-    }
-  })
+  const folders = Array.isArray(folder) ? folder : [folder]
 
-  if (etlStageLogs.length > 1) {
-    throw new Error(`Multiple records found for updates to ${folder}, expected only one`)
-  } else if (etlStageLogs.length === 0) {
-    return null
-  } else {
-    return etlStageLogs[0]
-  }
+  const logsByFolder = await Promise.all(
+    folders.map(async (f) => {
+      const logs = await db.etlStageLog.findAll({
+        where: {
+          file: `${f}/export.csv`,
+          ended_at: {
+            [db.Sequelize.Op.gt]: startDate
+          }
+        }
+      })
+
+      if (logs.length > 1) {
+        throw new Error(`Multiple records found for updates to ${f}, expected only one`)
+      }
+      return logs.length === 0 ? null : logs[0]
+    })
+  )
+
+  return logsByFolder.filter(log => log !== null)
 }
 
 const executeQuery = async (query, replacements, transaction) => {

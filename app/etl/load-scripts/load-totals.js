@@ -17,7 +17,7 @@ const loadTotals = async (startDate, transaction) => {
       PA.application_id AS claimId,
       'SFI-23' AS schemeType,
       NOW() AS calculationDate,
-      'N/A' AS invoiceNumber,
+      T.invoiceid AS invoiceNumber,
       IPAD.agreementStart,
       IPAD.agreementEnd,
       T.total_amount AS totalAdditionalPayments,
@@ -32,6 +32,10 @@ const loadTotals = async (startDate, transaction) => {
     INNER JOIN etl_stage_css_contract_applications CA2 ON CA.contract_id = CA2.contract_id AND CA2.data_source_s_code = '000001'
     INNER JOIN etl_interm_paymentref_agreement_dates IPAD ON IPAD.payment_ref = T.payment_ref
     WHERE T.etl_inserted_dt > :startDate
+      OR PO.etl_inserted_dt > :startDate
+      OR PA.etl_inserted_dt > :startDate
+      OR CA.etl_inserted_dt > :startDate
+      OR IPAD.etl_inserted_dt > :startDate
     ON CONFLICT ("calculationId") DO NOTHING;
   `
 

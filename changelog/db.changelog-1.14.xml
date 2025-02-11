@@ -3,11 +3,9 @@
     <changeSet id ="1" author="Sam Plackett">
         <tagDatabase tag="v1.14.0" />
     </changeSet>                                   
-
     <changeSet  id="2" author="Sam Plackett">
         <modifyDataType tableName="organisations" columnName="frn" newDataType="INTEGER" />
         <modifyDataType tableName="calculations" columnName="frn" newDataType="INTEGER" />
         <modifyDataType tableName="totals" columnName="frn" newDataType="INTEGER" />
     </changeSet>
-
 </databaseChangeLog>

@@ -2,13 +2,29 @@ const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermCalcOrg = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.appsPaymentNotification.folder)
+  const tablesToCheck = [
+    storageConfig.appsPaymentNotification.folder,
+    storageConfig.cssContractApplications.folder,
+    storageConfig.financeDAX.folder,
+    storageConfig.businessAddress.folder,
+    storageConfig.calculationsDetails.folder
+  ]
 
-  if (!etlStageLog) {
+  const folderToAliasMap = {
+    [storageConfig.appsPaymentNotification.folder]: 'APN',
+    [storageConfig.cssContractApplications.folder]: 'APP',
+    [storageConfig.financeDAX.folder]: 'SD',
+    [storageConfig.businessAddress.folder]: 'BAC',
+    [storageConfig.calculationsDetails.folder]: 'CD'
+  }
+
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
     return
   }
 
-  const query = `
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     WITH new_data AS (
       SELECT
         CD.calculation_id,
@@ -17,7 +33,7 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
         CD.application_id,
         CD.calculation_dt,
         CD.id_clc_header,
-        APN.change_type
+        ${tableAlias}.change_type
       FROM etl_stage_apps_payment_notification APN
       INNER JOIN etl_stage_css_contract_applications CLAIM 
         ON CLAIM.application_id = APN.application_id 
@@ -36,8 +52,9 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
         AND CD.id_clc_header = APN.id_clc_header
         AND CD.ranked = 1
       WHERE APN.notification_flag = 'P'
-        AND APN.etl_id BETWEEN :idFrom AND :idTo
-      GROUP BY CD.calculation_id, BAC.sbi, BAC.frn, CD.application_id, CD.calculation_dt, CD.id_clc_header, APN.change_type
+        AND ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
+        ${exclusionCondition}
+      GROUP BY CD.calculation_id, BAC.sbi, BAC.frn, CD.application_id, CD.calculation_dt, CD.id_clc_header, ${tableAlias}.change_type
     ),
     updated_rows AS (
       UPDATE etl_interm_calc_org interm
@@ -73,14 +90,24 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
   `
 
   const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
-  for (let i = idFrom; i <= idTo; i += batchSize) {
-    console.log(`Processing calcOrg records ${i} - ${Math.min(i + batchSize - 1, idTo)}`)
-    await executeQuery(query, {
-      idFrom,
-      idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+
+  for (const log of etlStageLogs) {
+    const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
+    const folder = folderMatch ? folderMatch[1] : ''
+    const tableAlias = folderToAliasMap[folder]
+
+    const folderIndex = tablesToCheck.indexOf(folder)
+    let exclusionCondition = ''
+    for (let i = 0; i < folderIndex; i++) {
+      const priorFolder = tablesToCheck[i]
+      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
+    }
+
+    for (let i = log.id_from; i <= log.id_to; i += batchSize) {
+      console.log(`Processing calcOrg records for ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
+      await executeQuery(query, {}, transaction)
+    }
   }
 }
 

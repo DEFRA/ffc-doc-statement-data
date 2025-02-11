@@ -2,13 +2,23 @@ const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermOrg = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.organisation.folder)
+  const tablesToCheck = [
+    storageConfig.organisation.folder,
+    storageConfig.businessAddress.folder
+  ]
 
-  if (!etlStageLog) {
+  const folderToAliasMap = {
+    [storageConfig.organisation.folder]: 'O',
+    [storageConfig.businessAddress.folder]: 'A'
+  }
+
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
     return
   }
 
-  const query = `
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     WITH new_data AS (
       SELECT
         O.sbi,
@@ -22,11 +32,13 @@ const loadIntermOrg = async (startDate, transaction) => {
         A.frn,
         A.business_name AS name,
         O.last_updated_on::date AS updated,
-        O.change_type,
-        O.party_id
+        O.party_id,
+        ${tableAlias}.change_type
       FROM etl_stage_organisation O
       LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi
-      WHERE O.etl_id BETWEEN :idFrom AND :idTo
+      WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
+        ${exclusionCondition}
+
     ),
     updated_rows AS (
       UPDATE etl_interm_org interm
@@ -80,14 +92,23 @@ const loadIntermOrg = async (startDate, transaction) => {
       OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
   `
   const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
-  for (let i = idFrom; i <= idTo; i += batchSize) {
-    console.log(`Processing org records ${i} - ${Math.min(i + batchSize - 1, idTo)}`)
-    await executeQuery(query, {
-      idFrom,
-      idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+  for (const log of etlStageLogs) {
+    const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
+    const folder = folderMatch ? folderMatch[1] : ''
+    const tableAlias = folderToAliasMap[folder]
+
+    const folderIndex = tablesToCheck.indexOf(folder)
+    let exclusionCondition = ''
+    for (let i = 0; i < folderIndex; i++) {
+      const priorFolder = tablesToCheck[i]
+      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
+    }
+
+    for (let i = log.id_from; i <= log.id_to; i += batchSize) {
+      console.log(`Processing org records for folder ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
+      await executeQuery(query, {}, transaction)
+    }
   }
 }
 
