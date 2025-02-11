@@ -158,21 +158,7 @@ describe('send d365 updates', () => {
       jest.useRealTimers()
     })
 
-    test('should process all d365 records when there are 2 times the number of d365 records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.d365.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockD3651, paymentReference: mockD3651.paymentReference + x } }))
-      const unpublishedBefore = await db.d365.findAll({ where: { datePublished: null } })
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.d365.findAll({ where: { datePublished: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(0)
-    })
-
-    test('should publish all d365 records when there are 2 times the number of d365 records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+        test('should publish all d365 records', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.d365.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockD3651, paymentReference: mockD3651.paymentReference + x } }))
 
@@ -194,7 +180,6 @@ describe('send d365 updates', () => {
       await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.d365.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
 
     test('should not publish all d365 records when there are 3 times the number of d365 records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {

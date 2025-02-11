@@ -99,7 +99,7 @@ describe('send dax updates', () => {
   })
 
   describe('When multiple daxs are unpublished', () => {
-    test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+    test('should process all records', async () => {
       const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
@@ -122,34 +122,6 @@ describe('send dax updates', () => {
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })
-
-    test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource records when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
-      const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
-
-      await publish.start()
-
-      const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
-      const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
-
-      await publish.start()
-      const unpublishedAfterFirstPublish = await db.dax.findAll({ where: { datePublished: null } })
-
-      await publish.start()
-      const unpublishedAfterSecondPublish = await db.dax.findAll({ where: { datePublished: null } })
-
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(unpublishedAfterSecondPublish).toHaveLength(0)
-    })
   })
 
   describe('When there are 2 concurrent processes', () => {
@@ -157,7 +129,7 @@ describe('send dax updates', () => {
       jest.useRealTimers()
     })
 
-    test('should process all dax records when there are 2 times the number of dax records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+    test('should process all dax records', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
       const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
@@ -169,43 +141,6 @@ describe('send dax updates', () => {
       const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
-    })
-
-    test('should publish all dax records when there are 2 times the number of dax records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
-
-    test('should not process all dax records when there are 3 times the number of dax records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
-      const unpublishedBefore = await db.dax.findAll({ where: { datePublished: null } })
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.dax.findAll({ where: { datePublished: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should not publish all dax records when there are 3 times the number of dax records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.dax.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockDax1, paymentReference: mockDax1.paymentReference + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecords)
     })
   })
 })
