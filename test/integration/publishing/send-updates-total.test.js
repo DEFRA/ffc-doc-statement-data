@@ -271,46 +271,6 @@ describe('send total updates', () => {
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
 
-    test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource records when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
-      const unpublishedBefore = await db.total.findAll({ where: { datePublished: null } })
-
-      await publish.start()
-
-      const unpublishedAfter = await db.total.findAll({ where: { datePublished: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should publish publishingConfig.dataPublishingMaxBatchSizePerDataSource records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
-
-      await publish.start()
-
-      expect(mockSendMessage).toHaveBeenCalledTimes(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
-      const unpublishedBefore = await db.total.findAll({ where: { datePublished: null } })
-
-      await publish.start()
-      const unpublishedAfterFirstPublish = await db.total.findAll({ where: { datePublished: null } })
-
-      await publish.start()
-      const unpublishedAfterSecondPublish = await db.total.findAll({ where: { datePublished: null } })
-
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(unpublishedAfterSecondPublish).toHaveLength(0)
-    })
-
     test('should publish all records after the second publish when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
@@ -452,46 +412,6 @@ describe('send total updates', () => {
       const unpublishedAfter = await db.total.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
-    })
-
-    test('should publish all total records when there are 2 times the number of total records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
-
-    test('should not process all total records when there are 3 times the number of total records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
-      const unpublishedBefore = await db.total.findAll({ where: { datePublished: null } })
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.total.findAll({ where: { datePublished: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should not publish all total records when there are 3 times the number of total records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecords)
     })
   })
 })

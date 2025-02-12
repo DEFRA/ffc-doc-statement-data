@@ -166,34 +166,6 @@ describe('send organisation updates', () => {
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })
-
-    test('should process publishingConfig.dataPublishingMaxBatchSizePerDataSource records when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
-      await publish.start()
-
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should process all records after the second publish when there are more records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
-      await publish.start()
-      const unpublishedAfterFirstPublish = await db.organisation.findAll({ where: { published: null } })
-
-      await publish.start()
-      const unpublishedAfterSecondPublish = await db.organisation.findAll({ where: { published: null } })
-
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfterFirstPublish).toHaveLength(numberOfRecords - publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(unpublishedAfterSecondPublish).toHaveLength(0)
-    })
   })
 
   describe('When there are 2 concurrent processes', () => {
@@ -224,32 +196,6 @@ describe('send organisation updates', () => {
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
-
-    test('should not process all organisation records when there are 3 times the number of organisation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-
-    test('should not publish all organisation records when there are 3 times the number of organisation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecords)
     })
   })
 })

@@ -158,7 +158,7 @@ describe('send d365 updates', () => {
       jest.useRealTimers()
     })
 
-        test('should publish all d365 records', async () => {
+    test('should publish all d365 records', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.d365.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockD3651, paymentReference: mockD3651.paymentReference + x } }))
 
@@ -178,7 +178,6 @@ describe('send d365 updates', () => {
       publish.start()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.d365.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
     })
 
