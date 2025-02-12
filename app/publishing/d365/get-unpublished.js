@@ -5,7 +5,6 @@ const getUnpublishedD365 = async (transaction) => {
   return db.d365.findAll({
     lock: true,
     skipLocked: true,
-    limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
     where: {
       [db.Sequelize.Op.or]: [
         {
