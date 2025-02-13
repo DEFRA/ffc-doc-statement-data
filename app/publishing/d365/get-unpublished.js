@@ -1,5 +1,4 @@
 const db = require('../../data')
-const { publishingConfig } = require('../../config')
 
 const getUnpublishedD365 = async (transaction) => {
   return db.d365.findAll({

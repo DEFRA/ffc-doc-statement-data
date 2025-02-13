@@ -1,5 +1,4 @@
 const db = require('../../data')
-const { publishingConfig } = require('../../config')
 
 const getUnpublishedDelinked = async (transaction) => {
   return db.delinkedCalculation.findAll({
