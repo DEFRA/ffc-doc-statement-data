@@ -2,7 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const number30 = 30
   const number200 = 200
   const dax = sequelize.define('dax', {
-    paymentReference: { type: DataTypes.STRING(number30), primaryKey: true, allowNull: false },
+    daxId: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true, allowNull: false },
+    paymentReference: { type: DataTypes.STRING(number30), allowNull: false },
     calculationId: { type: DataTypes.INTEGER },
     paymentPeriod: { type: DataTypes.STRING(number200), allowNull: true },
     paymentAmount: { type: DataTypes.DECIMAL, allowNull: false },

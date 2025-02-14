@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+    INSERT INTO dax (
+      "paymentReference", "calculationId", "paymentPeriod",
+      "paymentAmount", "transactionDate"
+    )
+    SELECT DISTINCT
+      T.payment_ref AS paymentReference,
+      T.calculation_id AS calculationId,
+      T.quarter AS paymentPeriod, 
+      T.total_amount AS paymentAmount,
+      T.transdate AS transactionDate 
+    FROM etl_interm_total T
+    WHERE T.etl_inserted_dt > :startDate
+    ON CONFLICT ("paymentReference") DO NOTHING;
+  ",
+      {
+        "raw": true,
+        "replacements": {
+          "startDate": "2023-01-01",
+        },
+        "transaction": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

@@ -1,12 +1,9 @@
 const db = require('../../data')
 
-const { publishingConfig } = require('../../config')
-
 const getUnpublished = async (transaction) => {
   return db.organisation.findAll({
     lock: true,
     skipLocked: true,
-    limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
     where: {
       [db.Sequelize.Op.or]: [
         {
