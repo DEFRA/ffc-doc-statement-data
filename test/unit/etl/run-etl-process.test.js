@@ -5,6 +5,7 @@ const fs = require('fs')
 const storage = require('../../../app/storage')
 const db = require('../../../app/data')
 const { removeFirstLine, getFirstLineNumber } = require('../../../app/etl/file-utils')
+const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
 
 jest.mock('ffc-pay-etl-framework')
 jest.mock('fs')
@@ -23,6 +24,8 @@ jest.mock('../../../app/data', () => ({
 }))
 jest.mock('../../../app/constants/table-mappings')
 jest.mock('../../../app/etl/file-utils')
+jest.mock('../../../app/messaging/publish-etl-process-error')
+
 fs.promises = {
   readFile: jest.fn(),
   writeFile: jest.fn(),
@@ -33,6 +36,7 @@ describe('runEtlProcess', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     global.results = []
+    jest.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   test('should resolve true if tempFilePath does not exist', async () => {
@@ -91,6 +95,7 @@ describe('runEtlProcess', () => {
     expect(fs.promises.unlink).toHaveBeenCalledWith('path/to/temp/file')
     expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
     expect(db.etlStageLog.update).toHaveBeenCalled()
+    expect(publishEtlProcessError).not.toHaveBeenCalled()
   })
 
   test('should reject if an error occurs', async () => {
@@ -143,5 +148,6 @@ describe('runEtlProcess', () => {
     })).rejects.toThrow('Test error')
 
     expect(fs.promises.unlink).toHaveBeenCalledWith('path/to/temp/file')
+    expect(publishEtlProcessError).toHaveBeenCalled()
   })
 })

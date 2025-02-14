@@ -32,5 +32,6 @@ value.updatesSubscription = mqConfig.updatesSubscription
 value.dbConfig = dbConfig
 value.publishingConfig = publishingConfig
 value.storageConfig = storageConfig
+value.publishEtlProcessError = mqConfig.publishEtlProcessError
 
 module.exports = value
