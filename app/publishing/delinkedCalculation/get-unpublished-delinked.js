@@ -1,11 +1,9 @@
 const db = require('../../data')
-const { publishingConfig } = require('../../config')
 
 const getUnpublishedDelinked = async (transaction) => {
   return db.delinkedCalculation.findAll({
     lock: true,
     skipLocked: true,
-    limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
     where: {
       [db.Sequelize.Op.or]: [
         {

@@ -19,7 +19,6 @@ describe('getUnpublishedTotals', () => {
     expect(db.total.findAll).toHaveBeenCalledWith({
       lock: true,
       skipLocked: true,
-      limit: expect.any(Number),
       where: {
         [db.Sequelize.Op.or]: [
           {
