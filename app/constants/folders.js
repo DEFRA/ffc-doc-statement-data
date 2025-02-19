@@ -11,5 +11,18 @@ module.exports = {
   financeDAXFolder: 'Finance_Dax',
   organisationFolder: 'Organization',
   tclcOptionFolder: 'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option',
-  tclcFolder: 'tclc_pii_pay_claim_sfimt'
+  tclcFolder: 'tclc_pii_pay_claim_sfimt',
+  applicationDetailDelinkedFolder: 'Application_Detail_Delinked',
+  appsPaymentNotificationDelinkedFolder: 'Apps_Payment_Notification_Delinked',
+  appsTypesDelinkedFolder: 'Apps_Types_Delinked',
+  businessAddressDelinkedFolder: 'Business_address_contact_v_Delinked',
+  calculationsDetailsDelinkedFolder: 'Calculations_Details_MV_Delinked',
+  cssContractApplicationsDelinkedFolder: 'CSS_Contract_Applications_Delinked',
+  cssContractDelinkedFolder: 'CSS_Contract_Delinked',
+  cssOptionsDelinkedFolder: 'CSS_Options_Delinked',
+  defraLinksDelinkedFolder: 'Defra_Links_Delinked',
+  financeDAXDelinkedFolder: 'Finance_Dax_Delinked',
+  organisationDelinkedFolder: 'Organization_Delinked',
+  tclcOptionDelinkedFolder: 'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option_Delinked',
+  tclcDelinkedFolder: 'tclc_pii_pay_claim_sfimt_Delinked'
 }

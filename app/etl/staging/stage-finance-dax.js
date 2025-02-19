@@ -1,7 +1,9 @@
 const { financeDAXTable } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageFinanceDAX = async () => {
+const stageFinanceDAX = async (monthDayFormat = false, folder = 'financeDAX') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -93,13 +95,13 @@ const stageFinanceDAX = async () => {
       column: 'CHANGE_TIME',
       targetColumn: 'change_time',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'TRANSDATE',
       targetColumn: 'transdate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'ACCOUNTTYPE',
@@ -115,7 +117,7 @@ const stageFinanceDAX = async () => {
       column: 'INVOICEDATE',
       targetColumn: 'invoicedate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'SCHEME',
@@ -266,7 +268,7 @@ const stageFinanceDAX = async () => {
       column: 'MODIFIEDDATETIME',
       targetColumn: 'modifieddatetime',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'MODIFIEDBY',
@@ -277,7 +279,7 @@ const stageFinanceDAX = async () => {
       column: 'CREATEDDATETIME',
       targetColumn: 'createddatetime',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'CREATEDBY',
@@ -328,7 +330,7 @@ const stageFinanceDAX = async () => {
       column: 'CLAIMSETTLEMENTDATE',
       targetColumn: 'claimsettlementdate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'CLAIMREFNUM',
@@ -349,13 +351,13 @@ const stageFinanceDAX = async () => {
       column: 'EUYEARSTARTDATE',
       targetColumn: 'euyearstartdate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'EUYEARENDDATE',
       targetColumn: 'euyearenddate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'YEARENDRUNNUMBER',
@@ -376,7 +378,7 @@ const stageFinanceDAX = async () => {
       column: 'POSTINGDATE',
       targetColumn: 'postingdate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'DATAWAREHOUSERUNNUM',
@@ -457,7 +459,7 @@ const stageFinanceDAX = async () => {
       column: 'OEDATE',
       targetColumn: 'oedate',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'SETTLEMENTVOUCHER1',
@@ -495,9 +497,14 @@ const stageFinanceDAX = async () => {
     }
   ]
 
-  return downloadAndProcessFile('financeDAX', 'financeDAX', financeDAXTable, columns, mapping, transformer)
+  return downloadAndProcessFile(folder, 'financeDAX', financeDAXTable, columns, mapping, transformer)
+}
+
+const stageFinanceDAXDelinked = async () => {
+  return stageFinanceDAX(true, 'financeDAXDelinked')
 }
 
 module.exports = {
-  stageFinanceDAX
+  stageFinanceDAX,
+  stageFinanceDAXDelinked
 }

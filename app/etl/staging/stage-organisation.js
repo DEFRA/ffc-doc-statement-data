@@ -1,8 +1,10 @@
 const { organisationTable } = require('../../constants/tables')
 const config = require('../../config')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageOrganisation = async () => {
+const stageOrganisation = async (monthDayFormat = false, folder = 'organisation') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+
   const columns = [
     'CHANGE_TYPE',
     'CHANGE_TIME',
@@ -41,7 +43,7 @@ const stageOrganisation = async () => {
       column: 'CHANGE_TIME',
       targetColumn: 'change_time',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'PARTY_ID',
@@ -107,7 +109,7 @@ const stageOrganisation = async () => {
       column: 'REGISTRATION_DATE',
       targetColumn: 'registration_date',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'CHARITY_COMMISSION_REGNUM',
@@ -138,7 +140,7 @@ const stageOrganisation = async () => {
       column: 'DATE_STARTED_FARMING',
       targetColumn: 'date_started_farming',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     },
     {
       column: 'ACCOUNTABLE_PEOPLE_COMPLETED',
@@ -159,7 +161,7 @@ const stageOrganisation = async () => {
       column: 'LAST_UPDATED_ON',
       targetColumn: 'last_updated_on',
       targetType: 'date',
-      format: dateTimeFormat
+      format
     }
   ]
 
@@ -182,9 +184,14 @@ const stageOrganisation = async () => {
     ]
   }
 
-  return downloadAndProcessFile('organisation', 'organisations', organisationTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile(folder, 'organisations', organisationTable, columns, mapping, transformer, nonProdTransformer)
+}
+
+const stageOrganisationDelinked = async () => {
+  return stageOrganisation(true, 'organisationsDelinked')
 }
 
 module.exports = {
-  stageOrganisation
+  stageOrganisation,
+  stageOrganisationDelinked
 }

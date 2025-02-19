@@ -1,15 +1,17 @@
 const { businessAddressTable } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 const config = require('../../config')
 
-const stageBusinessAddressContacts = async () => {
+const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'businessAddress') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+
   const columns = [
     'CHANGE_TYPE', 'CHANGE_TIME', 'SBI', 'FRN', 'BUSINESS_NAME', 'ACCOUNTABLE_PEOPLE_COMPLETED', 'FINANCIAL_TO_BUSINESS_ADDR', 'CORR_AS_BUSINESS_ADDR', 'BUSINESS_ADDRESS1', 'BUSINESS_ADDRESS2', 'BUSINESS_ADDRESS3', 'BUSINESS_CITY', 'BUSINESS_COUNTY', 'BUSINESS_COUNTRY', 'BUSINESS_POST_CODE', 'BUSINESS_LANDLINE', 'BUSINESS_MOBILE', 'BUSINESS_EMAIL_ADDR', 'CORRESPONDENCE_ADDRESS1', 'CORRESPONDENCE_ADDRESS2', 'CORRESPONDENCE_ADDRESS3', 'CORRESPONDENCE_CITY', 'CORRESPONDENCE_COUNTY', 'CORRESPONDENCE_COUNTRY', 'CORRESPONDENCE_POST_CODE', 'CORRESPONDENCE_LANDLINE', 'CORRESPONDENCE_MOBILE', 'CORRESPONDENCE_EMAIL_ADDR'
   ]
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format },
     { column: 'SBI', targetColumn: 'sbi', targetType: 'number' },
     { column: 'FRN', targetColumn: 'frn', targetType: 'varchar' },
     { column: 'BUSINESS_NAME', targetColumn: 'business_name', targetType: 'varchar' },
@@ -57,9 +59,14 @@ const stageBusinessAddressContacts = async () => {
     ]
   }
 
-  return downloadAndProcessFile('businessAddress', 'businessAddress', businessAddressTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile(folder, 'businessAddress', businessAddressTable, columns, mapping, transformer, nonProdTransformer)
+}
+
+const stageBusinessAddressContactsDelinked = async () => {
+  return stageBusinessAddressContacts(true, 'businessAddressDelinked')
 }
 
 module.exports = {
-  stageBusinessAddressContacts
+  stageBusinessAddressContacts,
+  stageBusinessAddressContactsDelinked
 }

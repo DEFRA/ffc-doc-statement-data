@@ -1,24 +1,31 @@
 const { calculationsDetailsTable } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageCalculationDetails = async () => {
+const stageCalculationDetails = async (monthDayFormat = false, folder = 'calculationsDetails') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+
   const columns = [
     'CHANGE_TYPE', 'CHANGE_TIME', 'APPLICATION_ID', 'ID_CLC_HEADER', 'CALCULATION_ID', 'CALCULATION_DT', 'RANKED'
   ]
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format },
     { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
     { column: 'ID_CLC_HEADER', targetColumn: 'id_clc_header', targetType: 'number' },
     { column: 'CALCULATION_ID', targetColumn: 'calculation_id', targetType: 'number' },
-    { column: 'CALCULATION_DT', targetColumn: 'calculation_dt', targetType: 'date', format: dateTimeFormat },
+    { column: 'CALCULATION_DT', targetColumn: 'calculation_dt', targetType: 'date', format },
     { column: 'RANKED', targetColumn: 'ranked', targetType: 'number' }
   ]
 
-  return downloadAndProcessFile('calculationsDetails', 'calculationDetails', calculationsDetailsTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'calculationDetails', calculationsDetailsTable, columns, mapping)
+}
+
+const stageCalculationDetailsDelinked = async () => {
+  return stageCalculationDetails(true, 'calculationsDetailsDelinked')
 }
 
 module.exports = {
-  stageCalculationDetails
+  stageCalculationDetails,
+  stageCalculationDetailsDelinked
 }

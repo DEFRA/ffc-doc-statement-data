@@ -14,7 +14,20 @@ const FILE_PATH_LOOKUP = {
   [storageConfig.financeDAX.fileMask]: storageConfig.financeDAX.folder,
   [storageConfig.organisation.fileMask]: storageConfig.organisation.folder,
   [storageConfig.tclcOption.fileMask]: storageConfig.tclcOption.folder,
-  [storageConfig.tclc.fileMask]: storageConfig.tclc.folder
+  [storageConfig.tclc.fileMask]: storageConfig.tclc.folder,
+  [storageConfig.applicationDetailDelinked.fileMask]: storageConfig.applicationDetailDelinked.folder,
+  [storageConfig.appsPaymentNotificationDelinked.fileMask]: storageConfig.appsPaymentNotificationDelinked.folder,
+  [storageConfig.appsTypesDelinked.fileMask]: storageConfig.appsTypesDelinked.folder,
+  [storageConfig.businessAddressDelinked.fileMask]: storageConfig.businessAddressDelinked.folder,
+  [storageConfig.calculationsDetailsDelinked.fileMask]: storageConfig.calculationsDetailsDelinked.folder,
+  [storageConfig.cssContractApplicationsDelinked.fileMask]: storageConfig.cssContractApplicationsDelinked.folder,
+  [storageConfig.cssContractDelinked.fileMask]: storageConfig.cssContractDelinked.folder,
+  [storageConfig.cssOptionsDelinked.fileMask]: storageConfig.cssOptionsDelinked.folder,
+  [storageConfig.defraLinksDelinked.fileMask]: storageConfig.defraLinksDelinked.folder,
+  [storageConfig.financeDAXDelinked.fileMask]: storageConfig.financeDAXDelinked.folder,
+  [storageConfig.organisationDelinked.fileMask]: storageConfig.organisationDelinked.folder,
+  [storageConfig.tclcOptionDelinked.fileMask]: storageConfig.tclcOptionDelinked.folder,
+  [storageConfig.tclcDelinked.fileMask]: storageConfig.tclcDelinked.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {

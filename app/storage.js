@@ -5,6 +5,7 @@ const config = require('./config/storage')
 let blobServiceClient
 let containersInitialised
 let foldersInitialised
+console.log('config.applicationDetailDelinked.folder', config.applicationDetailDelinked.folder)
 const folderList = [
   config.applicationDetail.folder,
   config.appsPaymentNotification.folder,
@@ -17,7 +18,20 @@ const folderList = [
   config.defraLinks.folder,
   config.financeDAX.folder,
   config.organisation.folder,
-  config.tclcOption.folder
+  config.tclcOption.folder,
+  config.applicationDetailDelinked.folder,
+  config.appsPaymentNotificationDelinked.folder,
+  config.appsTypesDelinked.folder,
+  config.businessAddressDelinked.folder,
+  config.calculationsDetailsDelinked.folder,
+  config.cssContractApplicationsDelinked.folder,
+  config.cssContractDelinked.folder,
+  config.cssOptionsDelinked.folder,
+  config.defraLinksDelinked.folder,
+  config.financeDAXDelinked.folder,
+  config.organisationDelinked.folder,
+  config.tclcOptionDelinked.folder,
+  config.tclcDelinked.folder
 ]
 
 if (config.useConnectionStr) {
