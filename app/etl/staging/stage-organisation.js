@@ -188,7 +188,7 @@ const stageOrganisation = async (monthDayFormat = false, folder = 'organisation'
 }
 
 const stageOrganisationDelinked = async () => {
-  return stageOrganisation(true, 'organisationsDelinked')
+  return stageOrganisation(true, 'organisationDelinked')
 }
 
 module.exports = {
