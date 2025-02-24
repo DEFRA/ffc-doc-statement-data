@@ -12,6 +12,7 @@ const { loadIntermTotal } = require('./load-interm-total')
 const { loadIntermTotalClaim } = require('./load-interm-total-claim')
 const { loadOrganisations } = require('./load-organisations')
 const { loadTotals } = require('./load-totals')
+const { loadDelinkedCalculation } = require('./load-delinked-calculation')
 
 module.exports = {
   loadIntermFinanceDAX,
@@ -22,6 +23,9 @@ module.exports = {
   loadIntermApplicationPayment,
   loadIntermTotal,
   loadDAX,
+  // loadIntermAppCalcResultsDelinkPayment, //todo probably better to do the grouping at this stage
+  // loadIntermTdeLinkTransferTransactions,
+  loadDelinkedCalculation,
   loadIntermTotalClaim,
   loadIntermPaymentrefApplication,
   loadIntermPaymentrefOrg,
