@@ -27,7 +27,9 @@ const FILE_PATH_LOOKUP = {
   [storageConfig.financeDAXDelinked.fileMask]: storageConfig.financeDAXDelinked.folder,
   [storageConfig.organisationDelinked.fileMask]: storageConfig.organisationDelinked.folder,
   [storageConfig.tclcOptionDelinked.fileMask]: storageConfig.tclcOptionDelinked.folder,
-  [storageConfig.tclcDelinked.fileMask]: storageConfig.tclcDelinked.folder
+  [storageConfig.tclcDelinked.fileMask]: storageConfig.tclcDelinked.folder,
+  [storageConfig.appCalculationResultsDelinkPayments.fileMask]: storageConfig.appCalculationResultsDelinkPayments.folder,
+  [storageConfig.tdeLinkingTransferTransactions.fileMask]: storageConfig.tdeLinkingTransferTransactions.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {

@@ -1,7 +1,8 @@
 const Joi = require('joi')
 const {
   applicationDetailFolder, appsPaymentNotificationFolder, appsTypesFolder, businessAddressFolder, calculationsDetailsFolder, cssContractApplicationsFolder, cssContractFolder, cssOptionsFolder, defraLinksFolder, financeDAXFolder, organisationFolder, tclcOptionFolder, tclcFolder,
-  applicationDetailDelinkedFolder, appsPaymentNotificationDelinkedFolder, appsTypesDelinkedFolder, businessAddressDelinkedFolder, calculationsDetailsDelinkedFolder, cssContractApplicationsDelinkedFolder, cssContractDelinkedFolder, cssOptionsDelinkedFolder, defraLinksDelinkedFolder, financeDAXDelinkedFolder, organisationDelinkedFolder, tclcOptionDelinkedFolder, tclcDelinkedFolder
+  applicationDetailDelinkedFolder, appsPaymentNotificationDelinkedFolder, appsTypesDelinkedFolder, businessAddressDelinkedFolder, calculationsDetailsDelinkedFolder, cssContractApplicationsDelinkedFolder, cssContractDelinkedFolder, cssOptionsDelinkedFolder, defraLinksDelinkedFolder, financeDAXDelinkedFolder, organisationDelinkedFolder, tclcOptionDelinkedFolder, tclcDelinkedFolder,
+  appCalculationResultsDelinkPaymentsFolder, tdeLinkingTransferTransactionsFolder
 } = require('../constants/folders')
 
 const schema = Joi.object({
@@ -113,6 +114,14 @@ const schema = Joi.object({
     fileMask: Joi.string().required()
   }).required(),
   tclcDelinked: Joi.object({
+    folder: Joi.string().required(),
+    fileMask: Joi.string().required()
+  }).required(),
+  appCalculationResultsDelinkPayments: Joi.object({
+    folder: Joi.string().required(),
+    fileMask: Joi.string().required()
+  }).required(),
+  tdeLinkingTransferTransactions: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
   }).required(),
@@ -232,8 +241,14 @@ const config = {
     folder: tclcDelinkedFolder,
     fileMask: 'DELINKED_STMT_TCLC_PII_PAY_CLAIM_SFIMT_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
-  // todo TDELINKING
-  // todo CALC_RESULTS
+  appCalculationResultsDelinkPayments: {
+    folder: appCalculationResultsDelinkPaymentsFolder,
+    fileMask: 'DELINKED_STMT_APPLICATION_CALC_RESULTS_DELINKPAYMENTS(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
+  },
+  tdeLinkingTransferTransactions: {
+    folder: tdeLinkingTransferTransactionsFolder,
+    fileMask: 'DELINKED_STMT_TDELINKING_TRANSFER_TRANSACTIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
+  },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS
 }

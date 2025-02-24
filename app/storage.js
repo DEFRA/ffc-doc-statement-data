@@ -31,7 +31,9 @@ const folderList = [
   config.financeDAXDelinked.folder,
   config.organisationDelinked.folder,
   config.tclcOptionDelinked.folder,
-  config.tclcDelinked.folder
+  config.tclcDelinked.folder,
+  config.appCalculationResultsDelinkPayments.folder,
+  config.tdeLinkingTransferTransactions.folder
 ]
 
 if (config.useConnectionStr) {

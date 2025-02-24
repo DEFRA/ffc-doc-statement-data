@@ -24,5 +24,7 @@ module.exports = {
   financeDAXDelinkedFolder: 'Finance_Dax_Delinked',
   organisationDelinkedFolder: 'Organization_Delinked',
   tclcOptionDelinkedFolder: 'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option_Delinked',
-  tclcDelinkedFolder: 'tclc_pii_pay_claim_sfimt_Delinked'
+  tclcDelinkedFolder: 'tclc_pii_pay_claim_sfimt_Delinked',
+  appCalculationResultsDelinkPaymentsFolder: 'app_calc_results_delink_payments',
+  tdeLinkingTransferTransactionsFolder: 'tde_linking_transfer_transactions'
 }

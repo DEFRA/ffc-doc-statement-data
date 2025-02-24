@@ -10,6 +10,8 @@ const { stageDefraLinks, stageDefraLinksDelinked } = require('./stage-defra-link
 const { stageFinanceDAX, stageFinanceDAXDelinked } = require('./stage-finance-dax')
 const { stageOrganisation, stageOrganisationDelinked } = require('./stage-organisation')
 const { stageTCLCOption, stageTCLCOptionDelinked } = require('./stage-tclc-option')
+const { stageTdeLinkingTransferTransactions } = require('./stage-tde-linking-transfer-transactions')
+const { stageAppCalcResultsDelinkPayments } = require('./stage-app-calc-results-delink-payments')
 
 module.exports = {
   stageApplicationDetails,
@@ -35,5 +37,7 @@ module.exports = {
   stageDefraLinksDelinked,
   stageFinanceDAXDelinked,
   stageOrganisationDelinked,
-  stageTCLCOptionDelinked
+  stageTCLCOptionDelinked,
+  stageTdeLinkingTransferTransactions,
+  stageAppCalcResultsDelinkPayments
 }

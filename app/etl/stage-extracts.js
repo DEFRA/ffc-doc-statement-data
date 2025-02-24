@@ -3,7 +3,8 @@ const moment = require('moment')
 const storage = require('../storage')
 const {
   stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption,
-  stageApplicationDetailsDelinked, stageAppsTypesDelinked, stageAppsPaymentNotificationsDelinked, stageBusinessAddressContactsDelinked, stageCalculationDetailsDelinked, stageCSSContractApplicationsDelinked, stageCSSContractDelinked, stageCSSOptionsDelinked, stageDefraLinksDelinked, stageFinanceDAXDelinked, stageOrganisationDelinked, stageTCLCOptionDelinked
+  stageApplicationDetailsDelinked, stageAppsTypesDelinked, stageAppsPaymentNotificationsDelinked, stageBusinessAddressContactsDelinked, stageCalculationDetailsDelinked, stageCSSContractApplicationsDelinked, stageCSSContractDelinked, stageCSSOptionsDelinked, stageDefraLinksDelinked, stageFinanceDAXDelinked, stageOrganisationDelinked, stageTCLCOptionDelinked,
+  stageAppCalcResultsDelinkPayments, stageTdeLinkingTransferTransactions
 } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { storageConfig } = require('../config')
@@ -52,12 +53,14 @@ const stageFunctions = [
   { fn: stageDefraLinksDelinked, label: storageConfig.defraLinksDelinked.folder },
   { fn: stageFinanceDAXDelinked, label: storageConfig.financeDAXDelinked.folder },
   { fn: stageOrganisationDelinked, label: storageConfig.organisationDelinked.folder },
-  { fn: stageTCLCOptionDelinked, label: storageConfig.tclcOptionDelinked.folder }
+  { fn: stageTCLCOptionDelinked, label: storageConfig.tclcOptionDelinked.folder },
+  { fn: stageAppCalcResultsDelinkPayments, label: storageConfig.appCalculationResultsDelinkPayments.folder },
+  { fn: stageTdeLinkingTransferTransactions, label: storageConfig.tdeLinkingTransferTransactions.folder }
 ]
 
 const stageExtracts = async () => {
   startDate = new Date()
-  const etlFiles = await storage.getFileList()// todo different folders?
+  const etlFiles = await storage.getFileList()
   console.log('etlFiles', etlFiles)
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
   total = foldersToStage.length

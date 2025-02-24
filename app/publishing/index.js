@@ -6,8 +6,8 @@ const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('./typ
 const start = async () => {
   try {
     console.log('Ready to publish data')
-    await renameExtracts()// todo update
-    await stageExtracts()// todo update
+    await renameExtracts()
+    await stageExtracts()
     await sendUpdates(ORGANISATION)
     await sendUpdates(DELINKED)
     await sendUpdates(CALCULATION)
