@@ -1,6 +1,6 @@
 const db = require('../../data')
 
-//TODO missing sbi and frn... need to find what to join on to get these
+// TODO missing sbi and frn... need to find what to join on to get these
 // also mapping needs to be looked at
 // could     referenceAmount: "CUR_REF_AMOUNT" or "CUR_TOT_REF_AMO"?
 

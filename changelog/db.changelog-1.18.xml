@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet id ="1" author="John Barnard">
+    <tagDatabase tag="v1.16.0" />
+  </changeSet>
+  <changeSet id="2" author="John Barnard">
+    <createTable tableName = "ETL_INTERM_APP_CALC_RESULTS_DELINK_PAYMENTS">
+        <column name="calculation_id" type="INTEGER">
+            <constraints nullable="true" />
+        </column>
+        <column name="application_id" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
+        <column name="paymentBand1" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
+        <column name="paymentBand2" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
+        <column name="paymentBand3" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
+        <column name="paymentBand4" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
+        <column name="percentageReduction1" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="percentageReduction2" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="percentageReduction3" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="percentageReduction4" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="progressiveReductions1" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="progressiveReductions2" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="progressiveReductions3" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="progressiveReductions4" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="referenceAmount" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="totalProgressiveReduction" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="totalDelinkedPayment" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="paymentAmountCalculated" type="NUMERIC(15,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+    </createTable>
+   </changeSet>
+</databaseChangeLog>
