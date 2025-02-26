@@ -5,12 +5,16 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
   console.log('loadIntermAppCalcResultsDelinkPayment!!!')
   const tablesToCheck = [
     storageConfig.appCalculationResultsDelinkPayments.folder,
-    storageConfig.calculationsDetails.folder
+    storageConfig.calculationsDetailsDelinked.folder,
+    storageConfig.tdeLinkingTransferTransactions.folder,
+    storageConfig.businessAddressDelinked.folder
   ]
 
   const folderToAliasMap = {
     [storageConfig.appCalculationResultsDelinkPayments.folder]: 'DP',
-    [storageConfig.calculationsDetails.folder]: 'CD'
+    [storageConfig.calculationsDetailsDelinked.folder]: 'CD',
+    [storageConfig.tdeLinkingTransferTransactions.folder]: 'TLT',
+    [storageConfig.businessAddressDelinked.folder]: 'BAC'
   }
 
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
@@ -37,7 +41,9 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
     '"referenceAmount"',
     '"totalProgressiveReduction"',
     '"totalDelinkedPayment"',
-    '"paymentAmountCalculated"'
+    '"paymentAmountCalculated"',
+    '"sbi"',
+    '"frn"'
   ]
 
   const fieldsString = fields.join(', ')
@@ -63,12 +69,16 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
         MAX(CASE WHEN DP.variable_name = 'TOT_PRO_RED_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalProgressiveReduction",
         MAX(CASE WHEN DP.variable_name = 'CUR_TOT_REF_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalDelinkedPayment",
         MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentAmountCalculated",
+        CAST(TLT.transferor_sbi AS INTEGER) AS sbi,
+        CAST(BAC.frn AS INTEGER) AS frn,
         ${tableAlias}.change_type
       FROM etl_stage_app_calc_results_delink_payments DP
       JOIN etl_stage_calculation_details CD ON DP.calculation_id = CD.calculation_id
+      JOIN etl_stage_tde_linking_transfer_transactions TLT ON CD.application_id = CAST(TLT.transfer_application_id AS integer)
+      JOIN etl_stage_business_address_contact_v BAC ON CAST(TLT.transferor_sbi AS integer) = BAC.sbi
       WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY DP.calculation_id, CD.application_id, ${tableAlias}.change_type
+      GROUP BY DP.calculation_id, CD.application_id, TLT.transferor_sbi, BAC.frn, ${tableAlias}.change_type
     ),
     updated_rows AS (
       UPDATE etl_interm_app_calc_results_delink_payments interm
@@ -91,6 +101,8 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
         "totalProgressiveReduction" = new_data."totalProgressiveReduction",
         "totalDelinkedPayment" = new_data."totalDelinkedPayment",
         "paymentAmountCalculated" = new_data."paymentAmountCalculated",
+        sbi = new_data.sbi,
+        frn = new_data.frn,
         etl_inserted_dt = NOW()
       FROM new_data
       WHERE new_data.change_type = 'UPDATE'

@@ -11,6 +11,12 @@
         <column name="application_id" type="INTEGER">
             <constraints nullable="false"/>
         </column>
+        <column name="frn" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
+        <column name="sbi" type="INTEGER">
+            <constraints nullable="false"/>
+        </column>
         <column name="paymentBand1" type="INTEGER">
             <constraints nullable="false"/>
         </column>
