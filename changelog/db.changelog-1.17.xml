@@ -21,7 +21,7 @@
         <column name="TRANSFEROR_CUAA" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEROR_PK_CUAA" type="INTEGER">
+        <column name="TRANSFEROR_PK_CUAA" type="VARCHAR">
             <constraints nullable="false" />
         </column>
         <column name="TRANSFEREE_SBI" type="VARCHAR">
@@ -30,7 +30,7 @@
         <column name="TRANSFEREE_CUAA" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEREE_PK_CUAA" type="INTEGER">
+        <column name="TRANSFEREE_PK_CUAA" type="VARCHAR">
             <constraints nullable="false" />
         </column>
         <column name="TOTAL_AMOUNT_TRANSFERRED" type="DOUBLE">
