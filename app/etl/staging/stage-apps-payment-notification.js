@@ -1,17 +1,19 @@
 const { appsPaymentNotificationTable } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageAppsPaymentNotifications = async () => {
+const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'appsPaymentNotification') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+
   const columns = [
     'CHANGE_TYPE', 'CHANGE_TIME', 'APPLICATION_ID', 'ID_CLC_HEADER', 'NOTIFICATION_DT', 'NOTIFICATION_FLAG', 'NOTIFIER_KEY', 'NOTIFICATION_TEXT', 'INVOICE_NUMBER', 'REQUEST_INVOICE_NUMBER', 'PILLAR', 'DELIVERY_BODY_CODE', 'PAYMENT_PREFERENCE_CURRENCY'
   ]
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
+    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format },
     { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
     { column: 'ID_CLC_HEADER', targetColumn: 'id_clc_header', targetType: 'number' },
-    { column: 'NOTIFICATION_DT', targetColumn: 'notification_dt', targetType: 'date', format: dateTimeFormat },
+    { column: 'NOTIFICATION_DT', targetColumn: 'notification_dt', targetType: 'date', format },
     { column: 'NOTIFICATION_FLAG', targetColumn: 'notification_flag', targetType: 'varchar' },
     { column: 'NOTIFIER_KEY', targetColumn: 'notifier_key', targetType: 'number' },
     { column: 'NOTIFICATION_TEXT', targetColumn: 'notification_text', targetType: 'varchar' },
@@ -22,9 +24,14 @@ const stageAppsPaymentNotifications = async () => {
     { column: 'PAYMENT_PREFERENCE_CURRENCY', targetColumn: 'payment_preference_currency', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile('appsPaymentNotification', 'appsPaymentNotifications', appsPaymentNotificationTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'appsPaymentNotifications', appsPaymentNotificationTable, columns, mapping)
+}
+
+const stageAppsPaymentNotificationsDelinked = async () => {
+  return stageAppsPaymentNotifications(true, 'appsPaymentNotificationDelinked')
 }
 
 module.exports = {
-  stageAppsPaymentNotifications
+  stageAppsPaymentNotifications,
+  stageAppsPaymentNotificationsDelinked
 }

@@ -12,5 +12,7 @@ module.exports = {
   organisationTable: 'etl_stage_organisation',
   settlementTable: 'etl_stage_settlement',
   tclcOptionTable: 'etl_stage_tclc_pii_pay_claim_sfimt_option',
-  tclcTable: 'etl_stage_tclc_pii_pay_claim_sfimt'
+  tclcTable: 'etl_stage_tclc_pii_pay_claim_sfimt',
+  appCalcResultsDelinkPayments: 'etl_stage_app_calc_results_delink_payments',
+  tdeLinkingTransferTransactions: 'etl_stage_tde_linking_transfer_transactions'
 }

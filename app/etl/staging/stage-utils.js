@@ -5,6 +5,7 @@ const storageConfig = require('../../config/storage')
 const { runEtlProcess } = require('../run-etl-process')
 
 const dateTimeFormat = 'DD-MM-YYYY HH24:MI:SS'
+const monthDayYearDateTimeFormat = 'MM-DD-YYYY HH24:MI:SS'
 
 const filterNullProperties = (obj) => {
   return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null))
@@ -20,5 +21,6 @@ const downloadAndProcessFile = async (folder, filePrefix, table, columns, mappin
 
 module.exports = {
   downloadAndProcessFile,
-  dateTimeFormat
+  dateTimeFormat,
+  monthDayYearDateTimeFormat
 }
