@@ -17,7 +17,7 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
     [storageConfig.businessAddressDelinked.folder]: 'BAC',
     [storageConfig.applicationDetailDelinked.folder]: 'AD',
     [storageConfig.defraLinksDelinked.folder]: 'DL',
-    [storageConfig.organisationDelinked.folder]: 'O',
+    [storageConfig.organisationDelinked.folder]: 'O'
   }
 
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
