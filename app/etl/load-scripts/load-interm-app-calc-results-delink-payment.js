@@ -2,19 +2,22 @@ const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => {
-  console.log('loadIntermAppCalcResultsDelinkPayment!!!')
   const tablesToCheck = [
     storageConfig.appCalculationResultsDelinkPayments.folder,
     storageConfig.calculationsDetailsDelinked.folder,
-    storageConfig.tdeLinkingTransferTransactions.folder,
-    storageConfig.businessAddressDelinked.folder
+    storageConfig.businessAddressDelinked.folder,
+    storageConfig.applicationDetailDelinked.folder,
+    storageConfig.defraLinksDelinked.folder,
+    storageConfig.organisationDelinked.folder
   ]
 
   const folderToAliasMap = {
     [storageConfig.appCalculationResultsDelinkPayments.folder]: 'DP',
     [storageConfig.calculationsDetailsDelinked.folder]: 'CD',
-    [storageConfig.tdeLinkingTransferTransactions.folder]: 'TLT',
-    [storageConfig.businessAddressDelinked.folder]: 'BAC'
+    [storageConfig.businessAddressDelinked.folder]: 'BAC',
+    [storageConfig.applicationDetailDelinked.folder]: 'AD',
+    [storageConfig.defraLinksDelinked.folder]: 'DL',
+    [storageConfig.organisationDelinked.folder]: 'O',
   }
 
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
@@ -69,16 +72,18 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
         MAX(CASE WHEN DP.variable_name = 'TOT_PRO_RED_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalProgressiveReduction",
         MAX(CASE WHEN DP.variable_name = 'CUR_TOT_REF_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalDelinkedPayment",
         MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentAmountCalculated",
-        CAST(TLT.transferor_sbi AS INTEGER) AS sbi,
+        O.sbi,
         CAST(BAC.frn AS INTEGER) AS frn,
         ${tableAlias}.change_type
       FROM etl_stage_app_calc_results_delink_payments DP
       JOIN etl_stage_calculation_details CD ON DP.calculation_id = CD.calculation_id
-      JOIN etl_stage_tde_linking_transfer_transactions TLT ON CD.application_id = CAST(TLT.transfer_application_id AS integer)
-      JOIN etl_stage_business_address_contact_v BAC ON CAST(TLT.transferor_sbi AS integer) = BAC.sbi
+      JOIN etl_stage_application_detail AD ON AD.application_id = CD.application_id
+      JOIN etl_stage_defra_links DL ON DL.subject_id = AD.subject_id
+      LEFT JOIN etl_stage_organisation O ON O.party_id = DL.defra_id
+      LEFT JOIN etl_stage_business_address_contact_v BAC ON BAC.sbi = O.sbi
       WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY DP.calculation_id, CD.application_id, TLT.transferor_sbi, BAC.frn, ${tableAlias}.change_type
+      GROUP BY DP.calculation_id, CD.application_id, O.sbi, BAC.frn, ${tableAlias}.change_type
     ),
     updated_rows AS (
       UPDATE etl_interm_app_calc_results_delink_payments interm
@@ -135,6 +140,7 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing app calculation results delink payments records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
+      console.log('query', query)
       await executeQuery(query, {}, transaction)
     }
   }
