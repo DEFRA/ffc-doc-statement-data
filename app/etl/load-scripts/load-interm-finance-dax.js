@@ -1,8 +1,8 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermFinanceDAX = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.financeDAX.folder)
+const loadIntermFinanceDAX = async (startDate, transaction, folder = storageConfig.financeDAX.folder) => {
+  const etlStageLog = await getEtlStageLogs(startDate, folder)
 
   if (!etlStageLog[0]) {
     return
@@ -10,35 +10,35 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
 
   const query = `
     WITH new_data AS (
-      SELECT
-        transdate,
-        invoiceid,
-        scheme::integer,
-        fund,
-        marketingyear::integer,
-        "month",
-        quarter,
-        CAST(
-          COALESCE(
-            (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
-              FROM (
-                SELECT
-                  value,
-                  COALESCE(LAG(value, 1) OVER ( ORDER BY S.settlement_date ASC),0) AS lag,
-                  S.reference
-                  FROM etl_stage_settlement S 
-                  WHERE S.invoice_number = D.invoiceid
-                  ORDER BY value
-              ) B WHERE B.reference = D.settlementvoucher),
-            lineamountmstgbp)
-          AS DECIMAL(10,2)) AS TRANSACTION_AMOUNT,
-        agreementreference,
-        substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS siti_invoice_id,
-        substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS claim_id,
-        settlementvoucher AS PAYMENT_REF,
-        change_type,
-        recid
-      FROM etl_stage_finance_dax D
+    SELECT
+      transdate,
+      invoiceid,
+      COALESCE(NULLIF(scheme, '')::integer, 0) AS scheme,
+      fund,
+      COALESCE(NULLIF(marketingyear, '')::integer, 0) AS marketingyear,
+      "month",
+      quarter,
+      CAST(
+        COALESCE(
+          (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
+            FROM (
+              SELECT
+                value,
+                COALESCE(LAG(value, 1) OVER ( ORDER BY S.settlement_date ASC),0) AS lag,
+                S.reference
+                FROM etl_stage_settlement S 
+                WHERE S.invoice_number = D.invoiceid
+                ORDER BY value
+            ) B WHERE B.reference = D.settlementvoucher),
+          lineamountmstgbp)
+        AS DECIMAL(10,2)) AS TRANSACTION_AMOUNT,
+      agreementreference,
+      COALESCE(NULLIF(substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)), '')::integer, 0) AS siti_invoice_id,
+      COALESCE(NULLIF(substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1)), '')::integer, 0) AS claim_id,
+      settlementvoucher AS PAYMENT_REF,
+      change_type,
+      recid
+    FROM etl_stage_finance_dax D
       WHERE LENGTH(accountnum) = 10
         AND etl_id BETWEEN :idFrom AND :idTo
         AND invoiceid LIKE 'S%Z%'
@@ -101,6 +101,9 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
   const idTo = etlStageLog[0].id_to
   for (let i = idFrom; i <= idTo; i += batchSize) {
     console.log(`Processing financeDAX records ${i} to ${Math.min(i + batchSize - 1, idTo)}`)
+
+    console.log('query: ', query)
+
     await executeQuery(query, {
       idFrom,
       idTo: Math.min(i + batchSize - 1, idTo)
@@ -108,6 +111,11 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
   }
 }
 
+const loadIntermFinanceDAXDelinked = async (startDate, transaction) => {
+  return loadIntermFinanceDAX(startDate, transaction, storageConfig.financeDAXDelinked.folder)
+}
+
 module.exports = {
-  loadIntermFinanceDAX
+  loadIntermFinanceDAX,
+  loadIntermFinanceDAXDelinked
 }

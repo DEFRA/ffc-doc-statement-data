@@ -79,8 +79,8 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
       JOIN etl_stage_calculation_details CD ON DP.calculation_id = CD.calculation_id
       JOIN etl_stage_application_detail AD ON AD.application_id = CD.application_id
       JOIN etl_stage_defra_links DL ON DL.subject_id = AD.subject_id
-      LEFT JOIN etl_stage_organisation O ON O.party_id = DL.defra_id
-      LEFT JOIN etl_stage_business_address_contact_v BAC ON BAC.sbi = O.sbi
+      JOIN etl_stage_organisation O ON O.party_id = DL.defra_id
+      JOIN etl_stage_business_address_contact_v BAC ON BAC.sbi = O.sbi
       WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
       GROUP BY DP.calculation_id, CD.application_id, O.sbi, BAC.frn, ${tableAlias}.change_type

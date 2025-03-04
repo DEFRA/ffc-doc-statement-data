@@ -1,28 +1,14 @@
 const db = require('../../data')
 
-const loadDelinkedCalculation = async (startDate, transaction) => {
+const loadD365 = async (startDate, transaction) => {
   await db.sequelize.query(`
-INSERT INTO "delinkedCalculation" (
+INSERT INTO "d365" (
+    "paymentReference",
     "calculationId",
-    "applicationId",
-    "sbi",
-    "frn",
-    "paymentBand1",
-    "paymentBand2",
-    "paymentBand3",
-    "paymentBand4",
-    "percentageReduction1",
-    "percentageReduction2",
-    "percentageReduction3",
-    "percentageReduction4",
-    "progressiveReductions1",
-    "progressiveReductions2",
-    "progressiveReductions3",
-    "progressiveReductions4",
-    "referenceAmount",
-    "totalProgressiveReduction",
-    "totalDelinkedPayment",
-    "paymentAmountCalculated"
+    "paymentPeriod",
+    "paymentAmount",
+    "transactionDate",
+    "datePublished"
 )
 SELECT 
     P."calculation_id" AS "calculationId",
@@ -59,5 +45,5 @@ WHERE
 }
 
 module.exports = {
-  loadDelinkedCalculation
+  loadD365
 }
