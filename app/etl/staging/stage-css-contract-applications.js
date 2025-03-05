@@ -1,4 +1,4 @@
-const { cssContractApplicationsTable } = require('../../constants/tables')
+const { cssContractApplications } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageCSSContractApplications = async () => {
@@ -28,7 +28,7 @@ const stageCSSContractApplications = async () => {
     { column: 'USER_FLD', targetColumn: 'USER', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile('cssContractApplications', 'cssContractApplications', cssContractApplicationsTable, columns, mapping)
+  return downloadAndProcessFile('cssContractApplications', 'cssContractApplications', cssContractApplications, columns, mapping)
 }
 
 module.exports = {

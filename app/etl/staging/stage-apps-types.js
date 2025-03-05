@@ -1,4 +1,4 @@
-const { appsTypesTable } = require('../../constants/tables')
+const { appsTypes } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageAppsTypes = async () => {
@@ -19,7 +19,7 @@ const stageAppsTypes = async () => {
     { column: 'WIN_CLOSE_DATE', targetColumn: 'win_close_date', targetType: 'date', format: dateTimeFormat }
   ]
 
-  return downloadAndProcessFile('appsTypes', 'appsTypes', appsTypesTable, columns, mapping)
+  return downloadAndProcessFile('appsTypes', 'appsTypes', appsTypes, columns, mapping)
 }
 
 module.exports = {

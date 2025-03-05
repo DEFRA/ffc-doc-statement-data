@@ -24,7 +24,7 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
               FROM (
                 SELECT
                   value,
-                  COALESCE(LAG(value, 1) OVER ( ORDER BY S.settlement_date ASC),0) AS lag,
+                  COALESCE(LAG(value, 1) OVER (ORDER BY S.settlement_date ASC, S.value ASC),0) AS lag,
                   S.reference
                   FROM etl_stage_settlement S 
                   WHERE S.invoice_number = D.invoiceid

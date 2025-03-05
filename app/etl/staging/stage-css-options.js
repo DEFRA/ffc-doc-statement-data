@@ -1,4 +1,4 @@
-const { cssOptionsTable } = require('../../constants/tables')
+const { cssOptions } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageCSSOptions = async () => {
@@ -20,7 +20,7 @@ const stageCSSOptions = async () => {
     { column: 'GROUP_ID', targetColumn: 'group_id', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile('cssOptions', 'cssOptions', cssOptionsTable, columns, mapping)
+  return downloadAndProcessFile('cssOptions', 'cssOptions', cssOptions, columns, mapping)
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-const { applicationDetailTable } = require('../../constants/tables')
+const { applicationDetail } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageApplicationDetails = async () => {
@@ -33,7 +33,7 @@ const stageApplicationDetails = async () => {
     { column: 'USER_ID', targetColumn: 'user_id', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile('applicationDetail', 'applicationDetails', applicationDetailTable, columns, mapping)
+  return downloadAndProcessFile('applicationDetail', 'applicationDetails', applicationDetail, columns, mapping)
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-const { businessAddressTable } = require('../../constants/tables')
+const { businessAddress } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 const config = require('../../config')
 
@@ -57,7 +57,7 @@ const stageBusinessAddressContacts = async () => {
     ]
   }
 
-  return downloadAndProcessFile('businessAddress', 'businessAddress', businessAddressTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile('businessAddress', 'businessAddress', businessAddress, columns, mapping, transformer, nonProdTransformer)
 }
 
 module.exports = {

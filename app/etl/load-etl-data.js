@@ -1,6 +1,7 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations } = require('./load-scripts')
+const { deleteETLRecords } = require('./delete-etl-records')
 
 const loadETLData = async (startDate) => {
   const transaction = await db.sequelize.transaction({
@@ -25,6 +26,7 @@ const loadETLData = async (startDate) => {
     console.log('ETL data successfully loaded')
   } catch (error) {
     console.error('Error loading ETL data', error)
+    await deleteETLRecords(startDate)
     await transaction.rollback()
     throw error
   }

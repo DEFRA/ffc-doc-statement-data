@@ -1,4 +1,4 @@
-const { appsPaymentNotificationTable } = require('../../constants/tables')
+const { appsPaymentNotification } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageAppsPaymentNotifications = async () => {
@@ -22,7 +22,7 @@ const stageAppsPaymentNotifications = async () => {
     { column: 'PAYMENT_PREFERENCE_CURRENCY', targetColumn: 'payment_preference_currency', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile('appsPaymentNotification', 'appsPaymentNotifications', appsPaymentNotificationTable, columns, mapping)
+  return downloadAndProcessFile('appsPaymentNotification', 'appsPaymentNotifications', appsPaymentNotification, columns, mapping)
 }
 
 module.exports = {

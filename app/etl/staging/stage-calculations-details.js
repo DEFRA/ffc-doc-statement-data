@@ -1,4 +1,4 @@
-const { calculationsDetailsTable } = require('../../constants/tables')
+const { calculationsDetails } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageCalculationDetails = async () => {
@@ -16,7 +16,7 @@ const stageCalculationDetails = async () => {
     { column: 'RANKED', targetColumn: 'ranked', targetType: 'number' }
   ]
 
-  return downloadAndProcessFile('calculationsDetails', 'calculationDetails', calculationsDetailsTable, columns, mapping)
+  return downloadAndProcessFile('calculationsDetails', 'calculationDetails', calculationsDetails, columns, mapping)
 }
 
 module.exports = {

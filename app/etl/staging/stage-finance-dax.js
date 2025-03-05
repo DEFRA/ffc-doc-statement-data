@@ -1,4 +1,4 @@
-const { financeDAXTable } = require('../../constants/tables')
+const { financeDAX } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageFinanceDAX = async () => {
@@ -495,7 +495,7 @@ const stageFinanceDAX = async () => {
     }
   ]
 
-  return downloadAndProcessFile('financeDAX', 'financeDAX', financeDAXTable, columns, mapping, transformer)
+  return downloadAndProcessFile('financeDAX', 'financeDAX', financeDAX, columns, mapping, transformer)
 }
 
 module.exports = {

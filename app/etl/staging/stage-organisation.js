@@ -1,4 +1,4 @@
-const { organisationTable } = require('../../constants/tables')
+const { organisation } = require('../../constants/tables')
 const config = require('../../config')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
@@ -182,7 +182,7 @@ const stageOrganisation = async () => {
     ]
   }
 
-  return downloadAndProcessFile('organisation', 'organisations', organisationTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile('organisation', 'organisations', organisation, columns, mapping, transformer, nonProdTransformer)
 }
 
 module.exports = {

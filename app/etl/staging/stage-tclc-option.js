@@ -1,4 +1,4 @@
-const { tclcOptionTable } = require('../../constants/tables')
+const { tclcOption } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageTCLCOption = async () => {
@@ -24,7 +24,7 @@ const stageTCLCOption = async () => {
     { column: 'NET1_AMOUNT', targetColumn: 'net1_amount', targetType: 'number' }
   ]
 
-  return downloadAndProcessFile('tclcOption', 'tclcOptions', tclcOptionTable, columns, mapping)
+  return downloadAndProcessFile('tclcOption', 'tclcOptions', tclcOption, columns, mapping)
 }
 
 module.exports = {

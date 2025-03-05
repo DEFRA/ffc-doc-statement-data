@@ -1,4 +1,4 @@
-const { cssContractTable } = require('../../constants/tables')
+const { cssContract } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageCSSContract = async () => {
@@ -35,7 +35,7 @@ const stageCSSContract = async () => {
     { column: 'CONTRACT_DESCRIPTION', find: "'", replace: "''", all: true }
   ]
 
-  return downloadAndProcessFile('cssContract', 'cssContract', cssContractTable, columns, mapping, transformer)
+  return downloadAndProcessFile('cssContract', 'cssContract', cssContract, columns, mapping, transformer)
 }
 
 module.exports = {
