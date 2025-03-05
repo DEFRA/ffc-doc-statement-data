@@ -1,17 +1,17 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermApplicationClaim = async (startDate, transaction) => {
-  const tablesToCheck = [
-    storageConfig.cssContractApplications.folder,
-    storageConfig.cssContract.folder
-  ]
+const defaultTablesToCheck = [
+  storageConfig.cssContractApplications.folder,
+  storageConfig.cssContract.folder
+]
 
-  const folderToAliasMap = {
-    [storageConfig.cssContractApplications.folder]: 'cl',
-    [storageConfig.cssContract.folder]: 'cc'
-  }
+const defaultFolderToAliasMap = {
+  [storageConfig.cssContractApplications.folder]: 'cl',
+  [storageConfig.cssContract.folder]: 'cc'
+}
 
+const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -75,6 +75,21 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
   }
 }
 
+const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
+  const tablesToCheck = [
+    storageConfig.cssContractApplicationsDelinked.folder,
+    storageConfig.cssContractDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [storageConfig.cssContractApplicationsDelinked.folder]: 'cl',
+    [storageConfig.cssContractDelinked.folder]: 'cc'
+  }
+  
+  return loadIntermApplicationClaim(startDate, transaction, tablesToCheck, folderToAliasMap)
+}
+
 module.exports = {
-  loadIntermApplicationClaim
+  loadIntermApplicationClaim,
+  loadIntermApplicationClaimDelinked
 }

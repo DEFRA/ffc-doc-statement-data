@@ -1,5 +1,5 @@
 const { loadDAX } = require('./load-dax')
-const { loadIntermApplicationClaim } = require('./load-interm-application-claim')
+const { loadIntermApplicationClaim, loadIntermApplicationClaimDelinked } = require('./load-interm-application-claim')
 const { loadIntermApplicationContract } = require('./load-interm-application-contract')
 const { loadIntermApplicationPayment } = require('./load-interm-application-payment')
 const { loadIntermCalcOrg } = require('./load-interm-calc-org')
@@ -22,6 +22,7 @@ module.exports = {
   loadIntermCalcOrg,
   loadIntermOrg,
   loadIntermApplicationClaim,
+  loadIntermApplicationClaimDelinked,
   loadIntermApplicationContract,
   loadIntermApplicationPayment,
   loadIntermTotal,

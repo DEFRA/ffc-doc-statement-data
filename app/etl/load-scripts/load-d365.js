@@ -15,12 +15,12 @@ const loadD365 = async (startDate, transaction) => {
       FROM etl_interm_total T
       WHERE T.etl_inserted_dt > :startDate;
     `, {
-      replacements: {
-        startDate
-      },
-      raw: true,
-      transaction
-    })
+    replacements: {
+      startDate
+    },
+    raw: true,
+    transaction
+  })
 }
 
 module.exports = {
