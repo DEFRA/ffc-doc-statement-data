@@ -85,7 +85,7 @@ const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
     [storageConfig.cssContractApplicationsDelinked.folder]: 'cl',
     [storageConfig.cssContractDelinked.folder]: 'cc'
   }
-  
+
   return loadIntermApplicationClaim(startDate, transaction, tablesToCheck, folderToAliasMap)
 }
 
