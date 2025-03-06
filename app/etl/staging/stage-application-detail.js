@@ -1,4 +1,4 @@
-const { applicationDetailTable } = require('../../constants/tables')
+const { applicationDetail } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageApplicationDetails = async (monthDayFormat = false, folder = 'applicationDetail') => {
@@ -35,7 +35,7 @@ const stageApplicationDetails = async (monthDayFormat = false, folder = 'applica
     { column: 'USER_ID', targetColumn: 'user_id', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile(folder, 'applicationDetails', applicationDetailTable, columns, mapping)
+  return downloadAndProcessFile('applicationDetail', 'applicationDetails', applicationDetail, columns, mapping)
 }
 
 const stageApplicationDetailsDelinked = async () => {

@@ -1,4 +1,4 @@
-const { appsPaymentNotificationTable } = require('../../constants/tables')
+const { appsPaymentNotification } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'appsPaymentNotification') => {
@@ -24,7 +24,7 @@ const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'a
     { column: 'PAYMENT_PREFERENCE_CURRENCY', targetColumn: 'payment_preference_currency', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile(folder, 'appsPaymentNotifications', appsPaymentNotificationTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'appsPaymentNotifications', appsPaymentNotification, columns, mapping)
 }
 
 const stageAppsPaymentNotificationsDelinked = async () => {

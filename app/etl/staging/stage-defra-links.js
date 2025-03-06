@@ -1,4 +1,4 @@
-const { defraLinksTable } = require('../../constants/tables')
+const { defraLinks } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageDefraLinks = async (monthDayFormat = false, folder = 'defraLinks') => {
@@ -17,7 +17,7 @@ const stageDefraLinks = async (monthDayFormat = false, folder = 'defraLinks') =>
     { column: 'MDM_ID', targetColumn: 'mdm_id', targetType: 'number' }
   ]
 
-  return downloadAndProcessFile(folder, 'defraLinks', defraLinksTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'defraLinks', defraLinks, columns, mapping)
 }
 
 const stageDefraLinksDelinked = async () => {

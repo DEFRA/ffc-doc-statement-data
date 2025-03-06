@@ -1,4 +1,4 @@
-const { appsTypesTable } = require('../../constants/tables')
+const { appsTypes } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
@@ -21,7 +21,7 @@ const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
     { column: 'WIN_CLOSE_DATE', targetColumn: 'win_close_date', targetType: 'date', format }
   ]
 
-  return downloadAndProcessFile(folder, 'appsTypes', appsTypesTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'appsTypes', appsTypes, columns, mapping)
 }
 
 const stageAppsTypesDelinked = async () => {

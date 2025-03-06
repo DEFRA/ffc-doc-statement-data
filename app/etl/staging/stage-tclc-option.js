@@ -1,4 +1,4 @@
-const { tclcOptionTable } = require('../../constants/tables')
+const { tclcOption } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') => {
@@ -26,7 +26,7 @@ const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') =>
     { column: 'NET1_AMOUNT', targetColumn: 'net1_amount', targetType: 'number' }
   ]
 
-  return downloadAndProcessFile(folder, 'tclcOptions', tclcOptionTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'tclcOptions', tclcOption, columns, mapping)
 }
 
 const stageTCLCOptionDelinked = async () => {

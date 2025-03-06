@@ -1,4 +1,4 @@
-const { cssContractApplicationsTable } = require('../../constants/tables')
+const { cssContractApplications } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageCSSContractApplications = async (monthDayFormat = false, folder = 'cssContractApplications') => {
@@ -30,7 +30,7 @@ const stageCSSContractApplications = async (monthDayFormat = false, folder = 'cs
     { column: 'USER_FLD', targetColumn: 'USER', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile(folder, 'cssContractApplications', cssContractApplicationsTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'cssContractApplications', cssContractApplications, columns, mapping)
 }
 
 const stageCSSContractApplicationsDelinked = async () => {

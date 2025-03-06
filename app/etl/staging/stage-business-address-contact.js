@@ -1,4 +1,4 @@
-const { businessAddressTable } = require('../../constants/tables')
+const { businessAddress } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 const config = require('../../config')
 
@@ -59,7 +59,7 @@ const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'bu
     ]
   }
 
-  return downloadAndProcessFile(folder, 'businessAddress', businessAddressTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile(folder, 'businessAddress', businessAddress, columns, mapping, transformer, nonProdTransformer)
 }
 
 const stageBusinessAddressContactsDelinked = async () => {

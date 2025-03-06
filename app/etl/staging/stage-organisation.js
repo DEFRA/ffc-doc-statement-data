@@ -1,4 +1,4 @@
-const { organisationTable } = require('../../constants/tables')
+const { organisation } = require('../../constants/tables')
 const config = require('../../config')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -184,7 +184,7 @@ const stageOrganisation = async (monthDayFormat = false, folder = 'organisation'
     ]
   }
 
-  return downloadAndProcessFile(folder, 'organisations', organisationTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile(folder, 'organisations', organisation, columns, mapping, transformer, nonProdTransformer)
 }
 
 const stageOrganisationDelinked = async () => {

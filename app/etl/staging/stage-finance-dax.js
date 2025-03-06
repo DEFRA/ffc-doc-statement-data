@@ -1,4 +1,4 @@
-const { financeDAXTable } = require('../../constants/tables')
+const { financeDAX } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageFinanceDAX = async (monthDayFormat = false, folder = 'financeDAX') => {
@@ -497,7 +497,7 @@ const stageFinanceDAX = async (monthDayFormat = false, folder = 'financeDAX') =>
     }
   ]
 
-  return downloadAndProcessFile(folder, 'financeDAX', financeDAXTable, columns, mapping, transformer)
+  return downloadAndProcessFile(folder, 'financeDAX', financeDAX, columns, mapping, transformer)
 }
 
 const stageFinanceDAXDelinked = async () => {

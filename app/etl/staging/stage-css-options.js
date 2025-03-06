@@ -1,4 +1,4 @@
-const { cssOptionsTable } = require('../../constants/tables')
+const { cssOptions } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageCSSOptions = async (monthDayFormat = false, folder = 'cssOptions') => {
@@ -22,7 +22,7 @@ const stageCSSOptions = async (monthDayFormat = false, folder = 'cssOptions') =>
     { column: 'GROUP_ID', targetColumn: 'group_id', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile(folder, 'cssOptions', cssOptionsTable, columns, mapping)
+  return downloadAndProcessFile(folder, 'cssOptions', cssOptions, columns, mapping)
 }
 
 const stageCSSOptionsDelinked = async () => {
