@@ -1,8 +1,8 @@
 const Joi = require('joi')
 const {
   applicationDetail, appsPaymentNotification, appsTypes, businessAddress, calculationsDetails, cssContractApplications, cssContract, cssOptions, defraLinks, financeDAX, organisation, tclcOption, tclc,
-  applicationDetailDelinkedFolder, appsPaymentNotificationDelinkedFolder, appsTypesDelinkedFolder, businessAddressDelinkedFolder, calculationsDetailsDelinkedFolder, cssContractApplicationsDelinkedFolder, cssContractDelinkedFolder, cssOptionsDelinkedFolder, defraLinksDelinkedFolder, financeDAXDelinkedFolder, organisationDelinkedFolder, tclcOptionDelinkedFolder, tclcDelinkedFolder,
-  appCalculationResultsDelinkPaymentsFolder, tdeLinkingTransferTransactionsFolder
+  applicationDetailDelinked, appsPaymentNotificationDelinked, appsTypesDelinked, businessAddressDelinked, calculationsDetailsDelinked, cssContractApplicationsDelinked, cssContractDelinked, cssOptionsDelinked, defraLinksDelinked, financeDAXDelinked, organisationDelinked, tclcOptionDelinked, tclcDelinked,
+  appCalculationResultsDelinkPayments, tdeLinkingTransferTransactions
 } = require('../constants/folders')
 
 const schema = Joi.object({
@@ -190,63 +190,63 @@ const config = {
     fileMask: 'SFI23_STMT_TCLC_PII_PAY_CLAIM_SFIMT_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   applicationDetailDelinked: {
-    folder: applicationDetailDelinkedFolder,
+    folder: applicationDetailDelinked,
     fileMask: 'DELINKED_STMT_APPLICATION_DETAILS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   appsPaymentNotificationDelinked: {
-    folder: appsPaymentNotificationDelinkedFolder,
+    folder: appsPaymentNotificationDelinked,
     fileMask: 'DELINKED_STMT_APPS_PAYMENT_NOTIFICATIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   appsTypesDelinked: {
-    folder: appsTypesDelinkedFolder,
+    folder: appsTypesDelinked,
     fileMask: 'DELINKED_STMT_APPS_TYPES_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   businessAddressDelinked: {
-    folder: businessAddressDelinkedFolder,
+    folder: businessAddressDelinked,
     fileMask: 'DELINKED_STMT_BUSINESS_ADDRESS_CONTACT_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   calculationsDetailsDelinked: {
-    folder: calculationsDetailsDelinkedFolder,
+    folder: calculationsDetailsDelinked,
     fileMask: 'DELINKED_STMT_CALCULATION_DETAILS_MV_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   cssContractApplicationsDelinked: {
-    folder: cssContractApplicationsDelinkedFolder,
+    folder: cssContractApplicationsDelinked,
     fileMask: 'DELINKED_STMT_CSS_CONTRACT_APPLICATIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   cssContractDelinked: {
-    folder: cssContractDelinkedFolder,
+    folder: cssContractDelinked,
     fileMask: 'DELINKED_STMT_CSS_CONTRACTS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   cssOptionsDelinked: {
-    folder: cssOptionsDelinkedFolder,
+    folder: cssOptionsDelinked,
     fileMask: 'DELINKED_STMT_CSS_OPTIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   defraLinksDelinked: {
-    folder: defraLinksDelinkedFolder,
+    folder: defraLinksDelinked,
     fileMask: 'DELINKED_STMT_DEFRA_LINKS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   financeDAXDelinked: {
-    folder: financeDAXDelinkedFolder,
+    folder: financeDAXDelinked,
     fileMask: 'DELINKED_STMT_FINANCE_DAX_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   organisationDelinked: {
-    folder: organisationDelinkedFolder,
+    folder: organisationDelinked,
     fileMask: 'DELINKED_STMT_ORGANISATION_SFI_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   tclcOptionDelinked: {
-    folder: tclcOptionDelinkedFolder,
+    folder: tclcOptionDelinked,
     fileMask: 'DELINKED_STMT_TCLC_PII_PAY_CLAIM_SFIMT_OPTION_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   tclcDelinked: {
-    folder: tclcDelinkedFolder,
+    folder: tclcDelinked,
     fileMask: 'DELINKED_STMT_TCLC_PII_PAY_CLAIM_SFIMT_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   appCalculationResultsDelinkPayments: {
-    folder: appCalculationResultsDelinkPaymentsFolder,
+    folder: appCalculationResultsDelinkPayments,
     fileMask: 'DELINKED_STMT_APPLICATION_CALC_RESULTS_DELINKPAYMENTS(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   tdeLinkingTransferTransactions: {
-    folder: tdeLinkingTransferTransactionsFolder,
+    folder: tdeLinkingTransferTransactions,
     fileMask: 'DELINKED_STMT_TDELINKING_TRANSFER_TRANSACTIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
