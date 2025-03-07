@@ -8,7 +8,7 @@ const schema = Joi.object({
   container: Joi.string().required(),
   dwhExtractsFolder: Joi.string().required(),
   etlLogsFolder: Joi.string().required(),
-  etlBatchSize: Joi.number().default(20000),
+  etlBatchSize: Joi.number().default(2000),
   applicationDetail: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
@@ -72,7 +72,7 @@ const config = {
   container: 'etl',
   dwhExtractsFolder: 'dwh_extracts',
   etlLogsFolder: 'logs',
-  etlBatchSize: 100000,
+  etlBatchSize: 2000,
   applicationDetail: {
     folder: applicationDetail,
     fileMask: 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'

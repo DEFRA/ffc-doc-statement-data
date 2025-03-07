@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermCalcOrg = async (startDate, transaction) => {
+const loadIntermCalcOrg = async (startDate) => {
   const tablesToCheck = [
     storageConfig.appsPaymentNotification.folder,
     storageConfig.cssContractApplications.folder,
@@ -90,24 +90,20 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
   `
 
   const batchSize = storageConfig.etlBatchSize
-
+  let exclusionCondition = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    const folderIndex = tablesToCheck.indexOf(folder)
-    let exclusionCondition = ''
-    for (let i = 0; i < folderIndex; i++) {
-      const priorFolder = tablesToCheck[i]
-      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
-    }
-
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing calcOrg records for ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
-      await executeQuery(query, {}, transaction)
+      await executeQuery(query, {})
     }
+
+    console.log(`Processed calcOrg records for ${folder}`)
+    exclusionCondition += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
   }
 }
 

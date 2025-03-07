@@ -32,7 +32,28 @@ const executeQuery = async (query, replacements, transaction) => {
   })
 }
 
+const limitConcurrency = async (promises, maxConcurrent) => {
+  const results = []
+  const executing = []
+
+  for (const promise of promises) {
+    const p = promise().then(result => {
+      executing.splice(executing.indexOf(p), 1)
+      return result
+    })
+    results.push(p)
+    executing.push(p)
+
+    if (executing.length >= maxConcurrent) {
+      await Promise.race(executing)
+    }
+  }
+
+  return Promise.all(results)
+}
+
 module.exports = {
   getEtlStageLogs,
-  executeQuery
+  executeQuery,
+  limitConcurrency
 }

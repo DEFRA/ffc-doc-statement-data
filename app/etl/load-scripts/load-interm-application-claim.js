@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermApplicationClaim = async (startDate, transaction) => {
+const loadIntermApplicationClaim = async (startDate) => {
   const tablesToCheck = [
     storageConfig.cssContractApplications.folder,
     storageConfig.cssContract.folder
@@ -54,24 +54,22 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updated_rows));
   `
-  const batchSize = storageConfig.etlBatchSize
 
+  const batchSize = storageConfig.etlBatchSize
+  let exclusionCondition = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    const folderIndex = tablesToCheck.indexOf(folder)
-    let exclusionCondition = ''
-    for (let i = 0; i < folderIndex; i++) {
-      const priorFolder = tablesToCheck[i]
-      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
-    }
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing application claim records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
-      await executeQuery(query, {}, transaction)
+      await executeQuery(query, {})
     }
+
+    console.log(`Processed application claim records for ${folder}`)
+    exclusionCondition += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
   }
 }
 

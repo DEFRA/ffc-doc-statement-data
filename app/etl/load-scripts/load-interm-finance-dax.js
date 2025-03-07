@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermFinanceDAX = async (startDate, transaction) => {
+const loadIntermFinanceDAX = async (startDate) => {
   const etlStageLog = await getEtlStageLogs(startDate, storageConfig.financeDAX.folder)
 
   if (!etlStageLog[0]) {
@@ -104,7 +104,7 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
     await executeQuery(query, {
       idFrom,
       idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+    })
   }
 }
 

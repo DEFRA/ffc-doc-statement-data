@@ -23,7 +23,7 @@ const retry = {
   match: [/SequelizeConnectionError/],
   max: 10,
   name: 'connection',
-  timeout: 12000000
+  timeout: 24000000
 }
 
 const dbConfig = {
