@@ -1,6 +1,5 @@
 const mockSendMessage = jest.fn()
 const mockCloseConnection = jest.fn()
-const zero = 0
 jest.mock('ffc-messaging', () => {
   return {
     MessageSender: jest.fn().mockImplementation(() => {
@@ -376,7 +375,7 @@ describe('send calculation and organisation updates', () => {
 
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecordsOrganisation)
-      expect(unpublishedAfter).toHaveLength(zero)
+      expect(unpublishedAfter).toHaveLength(0)
     })
   })
 
