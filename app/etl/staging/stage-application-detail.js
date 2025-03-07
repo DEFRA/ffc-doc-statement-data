@@ -35,7 +35,7 @@ const stageApplicationDetails = async (monthDayFormat = false, folder = 'applica
     { column: 'USER_ID', targetColumn: 'user_id', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile('applicationDetail', 'applicationDetails', applicationDetail, columns, mapping)
+  return downloadAndProcessFile(folder, 'applicationDetails', applicationDetail, columns, mapping)
 }
 
 const stageApplicationDetailsDelinked = async () => {

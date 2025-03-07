@@ -40,11 +40,11 @@ const stageCSSContract = async (monthDayFormat = false, folder = 'cssContract') 
   return downloadAndProcessFile(folder, 'cssContract', cssContract, columns, mapping, transformer)
 }
 
-const stageCSSContractsDelinked = async () => {
+const stageCSSContractDelinked = async () => {
   return stageCSSContract(true, 'cssContractDelinked')
 }
 
 module.exports = {
   stageCSSContract,
-  stageCSSContractsDelinked
+  stageCSSContractDelinked
 }
