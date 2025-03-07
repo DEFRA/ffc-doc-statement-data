@@ -413,7 +413,7 @@ describe('send total updates', () => {
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })
-    
+
     test('should publish all total records when there are 2 times the number of total records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
       await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
