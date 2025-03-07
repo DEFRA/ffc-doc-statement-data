@@ -62,7 +62,8 @@ const schema = Joi.object({
     fileMask: Joi.string().required()
   }).required(),
   useConnectionStr: Joi.boolean().default(false),
-  createContainers: Joi.boolean().default(false)
+  createContainers: Joi.boolean().default(false),
+  managedIdentityClientId: Joi.string().optional()
 })
 
 const config = {
@@ -126,7 +127,8 @@ const config = {
     fileMask: 'SFI23_STMT_TCLC_PII_PAY_CLAIM_SFIMT_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
-  createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS
+  createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,
+  managedIdentityClientId: process.env.AZURE_CLIENT_ID
 }
 
 const result = schema.validate(config, {
