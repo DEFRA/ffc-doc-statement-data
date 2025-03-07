@@ -1,7 +1,7 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { defraLinksTable } = require('../../../../app/constants/tables')
+const { defraLinks } = require('../../../../app/constants/tables')
 const { stageDefraLinks } = require('../../../../app/etl/staging/stage-defra-links')
 
 jest.mock('uuid')
@@ -76,7 +76,7 @@ describe('stageDefraLinks', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       tempFilePath: mockTempFilePath,
       columns: mockColumns,
-      table: defraLinksTable,
+      table: defraLinks,
       mapping: mockMapping,
       file: mockFile
     })

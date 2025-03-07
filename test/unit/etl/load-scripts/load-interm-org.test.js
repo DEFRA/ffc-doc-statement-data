@@ -18,7 +18,6 @@ jest.mock('../../../../app/data', () => ({
 
 describe('loadIntermOrg', () => {
   const startDate = '2023-01-01'
-  const transaction = {}
 
   beforeEach(() => {
     db.etlStageLog.findAll.mockClear()
@@ -26,9 +25,9 @@ describe('loadIntermOrg', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }, { id_from: 3, id_to: 4 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization/export.csv', id_from: 1, id_to: 2 }, { file: 'Organization/export.csv', id_from: 3, id_to: 4 }])
 
-    await expect(loadIntermOrg(startDate, transaction)).rejects.toThrow(
+    await expect(loadIntermOrg(startDate)).rejects.toThrow(
       `Multiple records found for updates to ${storageConfig.organisation.folder}, expected only one`
     )
   })
@@ -36,14 +35,14 @@ describe('loadIntermOrg', () => {
   test('should return if no records are found', async () => {
     db.etlStageLog.findAll.mockResolvedValue([])
 
-    await expect(loadIntermOrg(startDate, transaction)).resolves.toBeUndefined()
+    await expect(loadIntermOrg(startDate)).resolves.toBeUndefined()
     expect(db.sequelize.query).not.toHaveBeenCalled()
   })
 
   test('should call sequelize.query with correct SQL and parameters', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization/export.csv', id_from: 1, id_to: 2 }])
 
-    await loadIntermOrg(startDate, transaction)
+    await loadIntermOrg(startDate)
 
     expect(db.sequelize.query).toHaveBeenCalledWith(`
     WITH new_data AS (
@@ -59,11 +58,12 @@ describe('loadIntermOrg', () => {
         A.frn,
         A.business_name AS name,
         O.last_updated_on::date AS updated,
-        O.change_type,
-        O.party_id
+        O.party_id,
+        O.change_type
       FROM etl_stage_organisation O
       LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi
-      WHERE O.etl_id BETWEEN :idFrom AND :idTo
+      WHERE O.etl_id BETWEEN 1 AND 2
+        
     ),
     updated_rows AS (
       UPDATE etl_interm_org interm
@@ -116,19 +116,16 @@ describe('loadIntermOrg', () => {
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
   `, {
-      replacements: {
-        idFrom: 1,
-        idTo: 2
-      },
+      replacements: {},
       raw: true,
-      transaction
+      transaction: undefined
     })
   })
 
   test('should handle errors thrown by sequelize.query', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization/export.csv', id_from: 1, id_to: 2 }])
     db.sequelize.query.mockRejectedValue(new Error('Query failed'))
 
-    await expect(loadIntermOrg(startDate, transaction)).rejects.toThrow('Query failed')
+    await expect(loadIntermOrg(startDate)).rejects.toThrow('Query failed')
   })
 })

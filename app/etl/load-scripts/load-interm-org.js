@@ -38,7 +38,6 @@ const loadIntermOrg = async (startDate) => {
       LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi
       WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-
     ),
     updated_rows AS (
       UPDATE etl_interm_org interm

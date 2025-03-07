@@ -18,7 +18,6 @@ jest.mock('../../../../app/data', () => ({
 
 describe('loadIntermCalcOrg', () => {
   const startDate = '2023-01-01'
-  const transaction = {}
 
   beforeEach(() => {
     db.etlStageLog.findAll.mockClear()
@@ -26,9 +25,9 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }, { id_from: 3, id_to: 4 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', id_from: 1, id_to: 2 }, { file: 'Apps_Payment_Notification/export.csv', id_from: 3, id_to: 4 }])
 
-    await expect(loadIntermCalcOrg(startDate, transaction)).rejects.toThrow(
+    await expect(loadIntermCalcOrg(startDate)).rejects.toThrow(
       `Multiple records found for updates to ${storageConfig.appsPaymentNotification.folder}, expected only one`
     )
   })
@@ -36,14 +35,14 @@ describe('loadIntermCalcOrg', () => {
   test('should return if no records are found', async () => {
     db.etlStageLog.findAll.mockResolvedValue([])
 
-    await expect(loadIntermCalcOrg(startDate, transaction)).resolves.toBeUndefined()
+    await expect(loadIntermCalcOrg(startDate)).resolves.toBeUndefined()
     expect(db.sequelize.query).not.toHaveBeenCalled()
   })
 
   test('should call sequelize.query with correct SQL and parameters', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', id_from: 1, id_to: 2 }])
 
-    await loadIntermCalcOrg(startDate, transaction)
+    await loadIntermCalcOrg(startDate)
 
     expect(db.sequelize.query).toHaveBeenCalledWith(`
     WITH new_data AS (
@@ -73,7 +72,8 @@ describe('loadIntermCalcOrg', () => {
         AND CD.id_clc_header = APN.id_clc_header
         AND CD.ranked = 1
       WHERE APN.notification_flag = 'P'
-        AND APN.etl_id BETWEEN :idFrom AND :idTo
+        AND APN.etl_id BETWEEN 1 AND 2
+        
       GROUP BY CD.calculation_id, BAC.sbi, BAC.frn, CD.application_id, CD.calculation_dt, CD.id_clc_header, APN.change_type
     ),
     updated_rows AS (
@@ -108,19 +108,16 @@ describe('loadIntermCalcOrg', () => {
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND (calculation_id, id_clc_header) NOT IN (SELECT calculation_id, id_clc_header FROM updated_rows));
   `, {
-      replacements: {
-        idFrom: 1,
-        idTo: 2
-      },
+      replacements: {},
       raw: true,
-      transaction
+      transaction: undefined
     })
   })
 
   test('should handle errors thrown by sequelize.query', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', id_from: 1, id_to: 2 }])
     db.sequelize.query.mockRejectedValue(new Error('Query failed'))
 
-    await expect(loadIntermCalcOrg(startDate, transaction)).rejects.toThrow('Query failed')
+    await expect(loadIntermCalcOrg(startDate)).rejects.toThrow('Query failed')
   })
 })

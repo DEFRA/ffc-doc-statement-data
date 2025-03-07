@@ -1,7 +1,7 @@
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { calculationsDetailsTable } = require('../../../../app/constants/tables')
+const { calculationsDetails } = require('../../../../app/constants/tables')
 const { stageCalculationDetails } = require('../../../../app/etl/staging/stage-calculations-details')
 
 jest.mock('uuid')
@@ -83,7 +83,7 @@ describe('stageCalculationDetails', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       tempFilePath: mockTempFilePath,
       columns: mockColumns,
-      table: calculationsDetailsTable,
+      table: calculationsDetails,
       mapping: mockMapping,
       file: mockFile
     })

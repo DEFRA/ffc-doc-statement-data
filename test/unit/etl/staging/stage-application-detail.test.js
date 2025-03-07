@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageApplicationDetails } = require('../../../../app/etl/staging/stage-application-detail')
+const { applicationDetail } = require('../../../../app/constants/tables')
 
 jest.mock('path')
 jest.mock('uuid', () => ({ v4: jest.fn() }))
@@ -86,7 +87,7 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
   expect(runEtlProcess).toHaveBeenCalledWith({
     tempFilePath: mockTempFilePath,
     columns,
-    table: 'applicationDetailTable',
+    table: applicationDetail,
     mapping,
     file: 'appDetailFolder/export.csv'
   })
