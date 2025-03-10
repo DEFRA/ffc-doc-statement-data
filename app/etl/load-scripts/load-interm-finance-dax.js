@@ -1,11 +1,9 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
-const defaultAccountNumber = 10
-const delinkedAccountNumber = 6
-const defaultInvoicePattern = 'S%Z%'
-const delinkedInvoicePattern = 'D%Z%'
+const accountNumber = 10
+const invoicePattern = 'S%Z%'
 
-const loadIntermFinanceDAX = async (startDate, transaction, folder = storageConfig.financeDAX.folder, accountnum = defaultAccountNumber, invoicePattern = defaultInvoicePattern) => {
+const loadIntermFinanceDAX = async (startDate, transaction, folder = storageConfig.financeDAX.folder) => {
   const etlStageLog = await getEtlStageLogs(startDate, folder)
 
   const query = `
@@ -39,7 +37,7 @@ WITH new_data AS (
       change_type,
       recid
     FROM etl_stage_finance_dax D
-    WHERE LENGTH(accountnum) = ${accountnum}
+    WHERE LENGTH(accountnum) = ${accountNumber}
       AND etl_id BETWEEN :idFrom AND :idTo
       AND invoiceid LIKE '${invoicePattern}'
   ),
@@ -115,7 +113,7 @@ WITH new_data AS (
 }
 
 const loadIntermFinanceDAXDelinked = async (startDate, transaction) => {
-  return loadIntermFinanceDAX(startDate, transaction, storageConfig.financeDAXDelinked.folder, delinkedAccountNumber, delinkedInvoicePattern)
+  return loadIntermFinanceDAX(startDate, transaction, storageConfig.financeDAXDelinked.folder)
 }
 
 module.exports = {
