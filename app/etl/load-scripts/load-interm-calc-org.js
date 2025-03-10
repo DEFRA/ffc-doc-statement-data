@@ -1,23 +1,23 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
+const tablesToCheck = [
+  storageConfig.appsPaymentNotification.folder,
+  storageConfig.cssContractApplications.folder,
+  storageConfig.financeDAX.folder,
+  storageConfig.businessAddress.folder,
+  storageConfig.calculationsDetails.folder
+]
+
+const folderToAliasMap = {
+  [storageConfig.appsPaymentNotification.folder]: 'APN',
+  [storageConfig.cssContractApplications.folder]: 'APP',
+  [storageConfig.financeDAX.folder]: 'SD',
+  [storageConfig.businessAddress.folder]: 'BAC',
+  [storageConfig.calculationsDetails.folder]: 'CD'
+}
+
 const loadIntermCalcOrg = async (startDate) => {
-  const tablesToCheck = [
-    storageConfig.appsPaymentNotification.folder,
-    storageConfig.cssContractApplications.folder,
-    storageConfig.financeDAX.folder,
-    storageConfig.businessAddress.folder,
-    storageConfig.calculationsDetails.folder
-  ]
-
-  const folderToAliasMap = {
-    [storageConfig.appsPaymentNotification.folder]: 'APN',
-    [storageConfig.cssContractApplications.folder]: 'APP',
-    [storageConfig.financeDAX.folder]: 'SD',
-    [storageConfig.businessAddress.folder]: 'BAC',
-    [storageConfig.calculationsDetails.folder]: 'CD'
-  }
-
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
