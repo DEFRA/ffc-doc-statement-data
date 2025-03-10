@@ -4,7 +4,7 @@ const { loadIntermApplicationContract } = require('./load-interm-application-con
 const { loadIntermApplicationPayment } = require('./load-interm-application-payment')
 const { loadIntermCalcOrg } = require('./load-interm-calc-org')
 const { loadIntermFinanceDAX, loadIntermFinanceDAXDelinked } = require('./load-interm-finance-dax')
-const { loadIntermOrg } = require('./load-interm-org')
+const { loadIntermOrg, loadIntermOrgDelinked } = require('./load-interm-org')
 const { loadIntermPaymentrefAgreementDates } = require('./load-interm-paymentref-agreement-dates')
 const { loadIntermPaymentrefApplication } = require('./load-interm-paymentref-application')
 const { loadIntermPaymentrefOrg } = require('./load-interm-paymentref-org')
@@ -21,6 +21,7 @@ module.exports = {
   loadIntermFinanceDAXDelinked,
   loadIntermCalcOrg,
   loadIntermOrg,
+  loadIntermOrgDelinked,
   loadIntermApplicationClaim,
   loadIntermApplicationClaimDelinked,
   loadIntermApplicationContract,
