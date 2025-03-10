@@ -1,18 +1,26 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
 const { defraLinks } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
 const stageDefraLinks = async () => {
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'SUBJECT_ID', 'DEFRA_ID', 'DEFRA_TYPE', 'MDM_ID'
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME,
+    sourceColumnNames.SUBJECT_ID,
+    sourceColumnNames.DEFRA_ID,
+    sourceColumnNames.DEFRA_TYPE,
+    sourceColumnNames.MDM_ID
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
-    { column: 'SUBJECT_ID', targetColumn: 'subject_id', targetType: 'number' },
-    { column: 'DEFRA_ID', targetColumn: 'defra_id', targetType: 'varchar' },
-    { column: 'DEFRA_TYPE', targetColumn: 'defra_type', targetType: 'varchar' },
-    { column: 'MDM_ID', targetColumn: 'mdm_id', targetType: 'number' }
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.SUBJECT_ID, targetColumn: targetColumnNames.subjectId, targetType: NUMBER },
+    { column: sourceColumnNames.DEFRA_ID, targetColumn: targetColumnNames.defraId, targetType: VARCHAR },
+    { column: sourceColumnNames.DEFRA_TYPE, targetColumn: targetColumnNames.defraType, targetType: VARCHAR },
+    { column: sourceColumnNames.MDM_ID, targetColumn: targetColumnNames.mdmId, targetType: NUMBER }
   ]
 
   return downloadAndProcessFile('defraLinks', 'defraLinks', defraLinks, columns, mapping)

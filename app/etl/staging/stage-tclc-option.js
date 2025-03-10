@@ -1,27 +1,44 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
 const { tclcOption } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
 const stageTCLCOption = async () => {
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'APPLICATION_ID', 'CALCULATION_ID', 'OP_CODE', 'SCO_UOM', 'COMMITMENT', 'COMMITMENT_VAL', 'AGREE_AMOUNT', 'CLAIMED_PAY_AMOUNT', 'VERIF_PAY_AMOUNT', 'FOUND_AMOUNT', 'OVERD_REDUCT_AMOUNT', 'OVERD_PENALTY_AMOUNT', 'NET1_AMOUNT'
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME,
+    sourceColumnNames.APPLICATION_ID,
+    sourceColumnNames.CALCULATION_ID,
+    sourceColumnNames.OP_CODE,
+    sourceColumnNames.SCO_UOM,
+    sourceColumnNames.COMMITMENT,
+    sourceColumnNames.COMMITMENT_VAL,
+    sourceColumnNames.AGREE_AMOUNT,
+    sourceColumnNames.CLAIMED_PAY_AMOUNT,
+    sourceColumnNames.VERIF_PAY_AMOUNT,
+    sourceColumnNames.FOUND_AMOUNT,
+    sourceColumnNames.OVERD_REDUCT_AMOUNT,
+    sourceColumnNames.OVERD_PENALTY_AMOUNT,
+    sourceColumnNames.NET1_AMOUNT
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
-    { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
-    { column: 'CALCULATION_ID', targetColumn: 'calculation_id', targetType: 'number' },
-    { column: 'OP_CODE', targetColumn: 'op_code', targetType: 'varchar' },
-    { column: 'SCO_UOM', targetColumn: 'sco_uom', targetType: 'varchar' },
-    { column: 'COMMITMENT', targetColumn: 'commitment', targetType: 'number' },
-    { column: 'COMMITMENT_VAL', targetColumn: 'commitment_val', targetType: 'number' },
-    { column: 'AGREE_AMOUNT', targetColumn: 'agree_amount', targetType: 'number' },
-    { column: 'CLAIMED_PAY_AMOUNT', targetColumn: 'claimed_pay_amount', targetType: 'number' },
-    { column: 'VERIF_PAY_AMOUNT', targetColumn: 'verify_pay_amount', targetType: 'number' },
-    { column: 'FOUND_AMOUNT', targetColumn: 'found_amount', targetType: 'number' },
-    { column: 'OVERD_REDUCT_AMOUNT', targetColumn: 'overd_reduct_amount', targetType: 'number' },
-    { column: 'OVERD_PENALTY_AMOUNT', targetColumn: 'overd_penalty_amount', targetType: 'number' },
-    { column: 'NET1_AMOUNT', targetColumn: 'net1_amount', targetType: 'number' }
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
+    { column: sourceColumnNames.CALCULATION_ID, targetColumn: targetColumnNames.calculationId, targetType: NUMBER },
+    { column: sourceColumnNames.OP_CODE, targetColumn: targetColumnNames.opCode, targetType: VARCHAR },
+    { column: sourceColumnNames.SCO_UOM, targetColumn: targetColumnNames.scoUom, targetType: VARCHAR },
+    { column: sourceColumnNames.COMMITMENT, targetColumn: targetColumnNames.commitment, targetType: NUMBER },
+    { column: sourceColumnNames.COMMITMENT_VAL, targetColumn: targetColumnNames.commitmentVal, targetType: NUMBER },
+    { column: sourceColumnNames.AGREE_AMOUNT, targetColumn: targetColumnNames.agreeAmount, targetType: NUMBER },
+    { column: sourceColumnNames.CLAIMED_PAY_AMOUNT, targetColumn: targetColumnNames.claimedPayAmount, targetType: NUMBER },
+    { column: sourceColumnNames.VERIF_PAY_AMOUNT, targetColumn: targetColumnNames.verifyPayAmount, targetType: NUMBER },
+    { column: sourceColumnNames.FOUND_AMOUNT, targetColumn: targetColumnNames.foundAmount, targetType: NUMBER },
+    { column: sourceColumnNames.OVERD_REDUCT_AMOUNT, targetColumn: targetColumnNames.overdReductAmount, targetType: NUMBER },
+    { column: sourceColumnNames.OVERD_PENALTY_AMOUNT, targetColumn: targetColumnNames.overdPenaltyAmount, targetType: NUMBER },
+    { column: sourceColumnNames.NET1_AMOUNT, targetColumn: targetColumnNames.net1Amount, targetType: NUMBER }
   ]
 
   return downloadAndProcessFile('tclcOption', 'tclcOptions', tclcOption, columns, mapping)

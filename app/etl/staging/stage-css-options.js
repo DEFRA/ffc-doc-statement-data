@@ -1,23 +1,36 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
 const { cssOptions } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
 const stageCSSOptions = async () => {
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'OPTION_TYPE_ID', 'OPTION_DESCRIPTION', 'OPTION_LONG_DESCRIPTION', 'DURATION', 'OPTION_CODE', 'CONTRACT_TYPE_ID', 'START_DT', 'END_DT', 'GROUP_ID'
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME,
+    sourceColumnNames.OPTION_TYPE_ID,
+    sourceColumnNames.OPTION_DESCRIPTION,
+    sourceColumnNames.OPTION_LONG_DESCRIPTION,
+    sourceColumnNames.DURATION,
+    sourceColumnNames.OPTION_CODE,
+    sourceColumnNames.CONTRACT_TYPE_ID,
+    sourceColumnNames.START_DT,
+    sourceColumnNames.END_DT,
+    sourceColumnNames.GROUP_ID
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
-    { column: 'OPTION_TYPE_ID', targetColumn: 'option_type_id', targetType: 'number' },
-    { column: 'OPTION_DESCRIPTION', targetColumn: 'option_description', targetType: 'varchar' },
-    { column: 'OPTION_LONG_DESCRIPTION', targetColumn: 'option_long_description', targetType: 'varchar' },
-    { column: 'DURATION', targetColumn: 'duration', targetType: 'number' },
-    { column: 'OPTION_CODE', targetColumn: 'option_code', targetType: 'varchar' },
-    { column: 'CONTRACT_TYPE_ID', targetColumn: 'contract_type_id', targetType: 'number' },
-    { column: 'START_DT', targetColumn: 'start_dt', targetType: 'date', format: dateTimeFormat },
-    { column: 'END_DT', targetColumn: 'end_dt', targetType: 'date', format: dateTimeFormat },
-    { column: 'GROUP_ID', targetColumn: 'group_id', targetType: 'varchar' }
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.OPTION_TYPE_ID, targetColumn: targetColumnNames.optionTypeId, targetType: NUMBER },
+    { column: sourceColumnNames.OPTION_DESCRIPTION, targetColumn: targetColumnNames.optionDescription, targetType: VARCHAR },
+    { column: sourceColumnNames.OPTION_LONG_DESCRIPTION, targetColumn: targetColumnNames.optionLongDescription, targetType: VARCHAR },
+    { column: sourceColumnNames.DURATION, targetColumn: targetColumnNames.duration, targetType: NUMBER },
+    { column: sourceColumnNames.OPTION_CODE, targetColumn: targetColumnNames.optionCode, targetType: VARCHAR },
+    { column: sourceColumnNames.CONTRACT_TYPE_ID, targetColumn: targetColumnNames.contractTypeId, targetType: NUMBER },
+    { column: sourceColumnNames.START_DT, targetColumn: targetColumnNames.startDt, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.END_DT, targetColumn: targetColumnNames.endDt, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.GROUP_ID, targetColumn: targetColumnNames.groupId, targetType: VARCHAR }
   ]
 
   return downloadAndProcessFile('cssOptions', 'cssOptions', cssOptions, columns, mapping)
