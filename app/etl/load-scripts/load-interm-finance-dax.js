@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 const defaultAccountNumber = 10
-const delinkedAccountNumber = 6
+const delinkedAccountNumber = 10
 const defaultInvoicePattern = 'S%Z%'
 const delinkedInvoicePattern = 'D%Z%'
 
