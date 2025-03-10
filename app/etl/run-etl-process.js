@@ -22,10 +22,10 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
 
   return new Promise((resolve, reject) => {
     (async () => {
-      if (!fs.existsSync(tempFilePath)) {
-        return resolve(true)
-      }
       try {
+        if (!fs.existsSync(tempFilePath)) {
+          return resolve(true)
+        }
         const etlFlow = etl
           .connection(await new Connections.PostgresDatabaseConnection({
             username: dbConfig.username,

@@ -17,14 +17,7 @@ const folderToAliasMap = {
   [storageConfig.calculationsDetails.folder]: 'CD'
 }
 
-const loadIntermCalcOrg = async (startDate) => {
-  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
-
-  if (!etlStageLogs.length) {
-    return
-  }
-
-  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     WITH new_data AS (
       SELECT
         CD.calculation_id,
@@ -88,6 +81,12 @@ const loadIntermCalcOrg = async (startDate) => {
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND (calculation_id, id_clc_header) NOT IN (SELECT calculation_id, id_clc_header FROM updated_rows));
   `
+const loadIntermCalcOrg = async (startDate) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
+    return
+  }
 
   const batchSize = storageConfig.etlBatchSize
   let exclusionScript = ''

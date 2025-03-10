@@ -1,36 +1,62 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
 const { applicationDetail } = require('../../constants/tables')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 
 const stageApplicationDetails = async () => {
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'PKID', 'DT_INSERT', 'DT_DELETE', 'SUBJECT_ID', 'UTE_ID', 'APPLICATION_ID', 'APPLICATION_CODE', 'AMENDED_APP_ID', 'APP_TYPE_ID', 'PROXY_ID', 'STATUS_P_CODE', 'STATUS_S_CODE', 'SOURCE_P_CODE', 'SOURCE_S_CODE', 'DT_START', 'DT_END', 'VALID_START_FLG', 'VALID_END_FLG', 'APP_ID_START', 'APP_ID_END', 'DT_REC_UPDATE', 'USER_ID'
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME,
+    sourceColumnNames.PKID,
+    sourceColumnNames.DT_INSERT,
+    sourceColumnNames.DT_DELETE,
+    sourceColumnNames.SUBJECT_ID,
+    sourceColumnNames.UTE_ID,
+    sourceColumnNames.APPLICATION_ID,
+    sourceColumnNames.APPLICATION_CODE,
+    sourceColumnNames.AMENDED_APP_ID,
+    sourceColumnNames.APP_TYPE_ID,
+    sourceColumnNames.PROXY_ID,
+    sourceColumnNames.STATUS_P_CODE,
+    sourceColumnNames.STATUS_S_CODE,
+    sourceColumnNames.SOURCE_P_CODE,
+    sourceColumnNames.SOURCE_S_CODE,
+    sourceColumnNames.DT_START,
+    sourceColumnNames.DT_END,
+    sourceColumnNames.VALID_START_FLG,
+    sourceColumnNames.VALID_END_FLG,
+    sourceColumnNames.APP_ID_START,
+    sourceColumnNames.APP_ID_END,
+    sourceColumnNames.DT_REC_UPDATE,
+    sourceColumnNames.USER_ID
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
-    { column: 'PKID', targetColumn: 'pkid', targetType: 'number' },
-    { column: 'DT_INSERT', targetColumn: 'dt_insert', targetType: 'date', format: dateTimeFormat },
-    { column: 'DT_DELETE', targetColumn: 'dt_delete', targetType: 'date', format: dateTimeFormat },
-    { column: 'SUBJECT_ID', targetColumn: 'subject_id', targetType: 'number' },
-    { column: 'UTE_ID', targetColumn: 'ute_id', targetType: 'number' },
-    { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
-    { column: 'APPLICATION_CODE', targetColumn: 'application_code', targetType: 'varchar' },
-    { column: 'AMENDED_APP_ID', targetColumn: 'amended_app_id', targetType: 'number' },
-    { column: 'APP_TYPE_ID', targetColumn: 'app_type_id', targetType: 'number' },
-    { column: 'PROXY_ID', targetColumn: 'proxy_id', targetType: 'number' },
-    { column: 'STATUS_P_CODE', targetColumn: 'status_p_code', targetType: 'varchar' },
-    { column: 'STATUS_S_CODE', targetColumn: 'status_s_code', targetType: 'varchar' },
-    { column: 'SOURCE_P_CODE', targetColumn: 'source_p_code', targetType: 'varchar' },
-    { column: 'SOURCE_S_CODE', targetColumn: 'source_s_code', targetType: 'varchar' },
-    { column: 'DT_START', targetColumn: 'dt_start', targetType: 'date', format: dateTimeFormat },
-    { column: 'DT_END', targetColumn: 'dt_end', targetType: 'date', format: dateTimeFormat },
-    { column: 'VALID_START_FLG', targetColumn: 'valid_start_flg', targetType: 'varchar' },
-    { column: 'VALID_END_FLG', targetColumn: 'valid_end_flg', targetType: 'varchar' },
-    { column: 'APP_ID_START', targetColumn: 'app_id_start', targetType: 'number' },
-    { column: 'APP_ID_END', targetColumn: 'app_id_end', targetType: 'number' },
-    { column: 'DT_REC_UPDATE', targetColumn: 'dt_rec_update', targetType: 'date', format: dateTimeFormat },
-    { column: 'USER_ID', targetColumn: 'user_id', targetType: 'varchar' }
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.PKID, targetColumn: targetColumnNames.pkid, targetType: NUMBER },
+    { column: sourceColumnNames.DT_INSERT, targetColumn: targetColumnNames.dtInsert, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.DT_DELETE, targetColumn: targetColumnNames.dtDelete, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.SUBJECT_ID, targetColumn: targetColumnNames.subjectId, targetType: NUMBER },
+    { column: sourceColumnNames.UTE_ID, targetColumn: targetColumnNames.uteId, targetType: NUMBER },
+    { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
+    { column: sourceColumnNames.APPLICATION_CODE, targetColumn: targetColumnNames.applicationCode, targetType: VARCHAR },
+    { column: sourceColumnNames.AMENDED_APP_ID, targetColumn: targetColumnNames.amendedAppId, targetType: NUMBER },
+    { column: sourceColumnNames.APP_TYPE_ID, targetColumn: targetColumnNames.appTypeId, targetType: NUMBER },
+    { column: sourceColumnNames.PROXY_ID, targetColumn: targetColumnNames.proxyId, targetType: NUMBER },
+    { column: sourceColumnNames.STATUS_P_CODE, targetColumn: targetColumnNames.statusPCode, targetType: VARCHAR },
+    { column: sourceColumnNames.STATUS_S_CODE, targetColumn: targetColumnNames.statusSCode, targetType: VARCHAR },
+    { column: sourceColumnNames.SOURCE_P_CODE, targetColumn: targetColumnNames.sourcePCode, targetType: VARCHAR },
+    { column: sourceColumnNames.SOURCE_S_CODE, targetColumn: targetColumnNames.sourceSCode, targetType: VARCHAR },
+    { column: sourceColumnNames.DT_START, targetColumn: targetColumnNames.dtStart, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.DT_END, targetColumn: targetColumnNames.dtEnd, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.VALID_START_FLG, targetColumn: targetColumnNames.validStartFlg, targetType: VARCHAR },
+    { column: sourceColumnNames.VALID_END_FLG, targetColumn: targetColumnNames.validEndFlg, targetType: VARCHAR },
+    { column: sourceColumnNames.APP_ID_START, targetColumn: targetColumnNames.appIdStart, targetType: NUMBER },
+    { column: sourceColumnNames.APP_ID_END, targetColumn: targetColumnNames.appIdEnd, targetType: NUMBER },
+    { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
 
   return downloadAndProcessFile('applicationDetail', 'applicationDetails', applicationDetail, columns, mapping)
