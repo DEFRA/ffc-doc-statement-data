@@ -1,3 +1,9 @@
+const properties = {
+  tableName: 'etl_stage_finance_dax',
+  freezeTableName: true,
+  timestamps: false
+}
+
 module.exports = (sequelize, DataTypes) => {
   const etlStageFinanceDax = sequelize.define('etlStageFinanceDax', {
     change_type: DataTypes.STRING,
@@ -81,10 +87,7 @@ module.exports = (sequelize, DataTypes) => {
     schemetype: DataTypes.INTEGER,
     applicationreference: DataTypes.STRING
   },
-  {
-    tableName: 'etl_stage_finance_dax',
-    freezeTableName: true,
-    timestamps: false
-  })
+  properties
+  )
   return etlStageFinanceDax
 }

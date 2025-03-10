@@ -56,7 +56,7 @@ const loadIntermApplicationClaim = async (startDate) => {
   `
 
   const batchSize = storageConfig.etlBatchSize
-  let exclusionCondition = ''
+  let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
@@ -64,12 +64,12 @@ const loadIntermApplicationClaim = async (startDate) => {
 
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing application claim records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.id_to)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
       await executeQuery(query, {})
     }
 
     console.log(`Processed application claim records for ${folder}`)
-    exclusionCondition += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
+    exclusionScript += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
   }
 }
 

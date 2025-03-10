@@ -91,7 +91,7 @@ const loadIntermOrg = async (startDate) => {
       OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
   `
   const batchSize = storageConfig.etlBatchSize
-  let exclusionCondition = ''
+  let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
@@ -99,12 +99,12 @@ const loadIntermOrg = async (startDate) => {
 
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing org records for folder ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
       await executeQuery(query, {})
     }
 
     console.log(`Processed org records for folder ${folder}`)
-    exclusionCondition += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
+    exclusionScript += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
   }
 }
 
