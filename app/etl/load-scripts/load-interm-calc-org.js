@@ -1,23 +1,23 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermCalcOrg = async (startDate, transaction) => {
-  const tablesToCheck = [
-    storageConfig.appsPaymentNotification.folder,
-    storageConfig.cssContractApplications.folder,
-    storageConfig.financeDAX.folder,
-    storageConfig.businessAddress.folder,
-    storageConfig.calculationsDetails.folder
-  ]
+const defaultTablesToCheck = [
+  storageConfig.appsPaymentNotification.folder,
+  storageConfig.cssContractApplications.folder,
+  storageConfig.financeDAX.folder,
+  storageConfig.businessAddress.folder,
+  storageConfig.calculationsDetails.folder
+]
 
-  const folderToAliasMap = {
-    [storageConfig.appsPaymentNotification.folder]: 'APN',
-    [storageConfig.cssContractApplications.folder]: 'APP',
-    [storageConfig.financeDAX.folder]: 'SD',
-    [storageConfig.businessAddress.folder]: 'BAC',
-    [storageConfig.calculationsDetails.folder]: 'CD'
-  }
+const defaultFolderToAliasMap = {
+  [storageConfig.appsPaymentNotification.folder]: 'APN',
+  [storageConfig.cssContractApplications.folder]: 'APP',
+  [storageConfig.financeDAX.folder]: 'SD',
+  [storageConfig.businessAddress.folder]: 'BAC',
+  [storageConfig.calculationsDetails.folder]: 'CD'
+}
 
+const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -111,6 +111,27 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
   }
 }
 
+const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
+  const tablesToCheck = [
+    storageConfig.appsPaymentNotificationDelinked.folder,
+    storageConfig.cssContractApplicationsDelinked.folder,
+    storageConfig.financeDAXDelinked.folder,
+    storageConfig.businessAddressDelinked.folder,
+    storageConfig.calculationsDetailsDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [storageConfig.appsPaymentNotificationDelinked.folder]: 'APN',
+    [storageConfig.cssContractApplicationsDelinked.folder]: 'APP',
+    [storageConfig.financeDAXDelinked.folder]: 'SD',
+    [storageConfig.businessAddressDelinked.folder]: 'BAC',
+    [storageConfig.calculationsDetailsDelinked.folder]: 'CD'
+  }
+  
+  return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
+}
+
 module.exports = {
-  loadIntermCalcOrg
+  loadIntermCalcOrg,
+  loadIntermCalcOrgDelinked
 }

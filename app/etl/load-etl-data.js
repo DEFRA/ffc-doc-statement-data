@@ -1,6 +1,6 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked } = require('./load-scripts')
+const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked} = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 
 const loadETLData = async (startDate) => {
@@ -12,6 +12,7 @@ const loadETLData = async (startDate) => {
     await loadIntermFinanceDAXDelinked(startDate, transaction)
     await loadIntermCalcOrg(startDate, transaction)
     await loadIntermOrg(startDate, transaction)
+    await loadIntermCalcOrgDelinked(startDate, transaction)
     await loadIntermOrgDelinked(startDate, transaction)
     await loadIntermApplicationClaim(startDate, transaction)
     await loadIntermApplicationClaimDelinked(startDate, transaction)

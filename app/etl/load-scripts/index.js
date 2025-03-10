@@ -2,7 +2,7 @@ const { loadDAX } = require('./load-dax')
 const { loadIntermApplicationClaim, loadIntermApplicationClaimDelinked } = require('./load-interm-application-claim')
 const { loadIntermApplicationContract } = require('./load-interm-application-contract')
 const { loadIntermApplicationPayment } = require('./load-interm-application-payment')
-const { loadIntermCalcOrg } = require('./load-interm-calc-org')
+const { loadIntermCalcOrg, loadIntermCalcOrgDelinked } = require('./load-interm-calc-org')
 const { loadIntermFinanceDAX, loadIntermFinanceDAXDelinked } = require('./load-interm-finance-dax')
 const { loadIntermOrg, loadIntermOrgDelinked } = require('./load-interm-org')
 const { loadIntermPaymentrefAgreementDates } = require('./load-interm-paymentref-agreement-dates')
@@ -20,6 +20,7 @@ module.exports = {
   loadIntermFinanceDAX,
   loadIntermFinanceDAXDelinked,
   loadIntermCalcOrg,
+  loadIntermCalcOrgDelinked,
   loadIntermOrg,
   loadIntermOrgDelinked,
   loadIntermApplicationClaim,

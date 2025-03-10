@@ -129,8 +129,7 @@ WHERE change_type = 'INSERT'
 
 const loadIntermOrgDelinked = async (startDate, transaction) => {
     const tablesToCheck = [
-    storageConfig.organisationDelinked.folder,
-    storageConfig.businessAddressDelinked.folder
+    storageConfig.organisationDelinked.folder
   ]
 
   const folderToAliasMap = {
