@@ -3,12 +3,7 @@ const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => {
   const tablesToCheck = [
-    storageConfig.appCalculationResultsDelinkPayments.folder,
-    storageConfig.calculationsDetailsDelinked.folder,
-    storageConfig.businessAddressDelinked.folder,
-    storageConfig.applicationDetailDelinked.folder,
-    storageConfig.defraLinksDelinked.folder,
-    storageConfig.organisationDelinked.folder
+    storageConfig.appCalculationResultsDelinkPayments.folder
   ]
 
   const folderToAliasMap = {
