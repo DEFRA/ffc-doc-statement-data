@@ -39,7 +39,8 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
 
         if (nonProdTransformer && !config.isProd) {
           etlFlow.transform(new Transformers.FakerTransformer({
-            columns: nonProdTransformer
+            columns: nonProdTransformer,
+            locale: 'en_GB'
           }))
         }
 
