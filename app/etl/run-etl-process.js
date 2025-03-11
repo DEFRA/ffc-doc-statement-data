@@ -20,67 +20,69 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
     row_count: rowCount
   })
 
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (!fs.existsSync(tempFilePath)) {
-        return resolve(true)
-      }
-      const etlFlow = etl
-        .connection(await new Connections.PostgresDatabaseConnection({
-          username: dbConfig.username,
-          password: dbConfig.password,
-          host: dbConfig.host,
-          database: dbConfig.database,
-          port: dbConfig.port,
-          name: 'postgresConnection'
-        }))
-        .loader(new Loaders.CSVLoader({ path: tempFilePath, columns }))
-
-      if (nonProdTransformer && !config.isProd) {
-        etlFlow.transform(new Transformers.FakerTransformer({
-          columns: nonProdTransformer
-        }))
-      }
-
-      if (transformer) {
-        etlFlow.transform(new Transformers.StringReplaceTransformer(transformer))
-      }
-
-      etlFlow
-        .destination(new Destinations.PostgresDestination({
-          table,
-          connection: 'postgresConnection',
-          mapping,
-          includeErrors: false
-        }))
-        .pump()
-        .on('finish', async (data) => {
-          global.results.push({
-            table,
+  return new Promise((resolve, reject) => {
+    (async () => {
+      try {
+        if (!fs.existsSync(tempFilePath)) {
+          return resolve(true)
+        }
+        const etlFlow = etl
+          .connection(await new Connections.PostgresDatabaseConnection({
+            username: dbConfig.username,
+            password: dbConfig.password,
+            host: dbConfig.host,
             database: dbConfig.database,
-            data
+            port: dbConfig.port,
+            name: 'postgresConnection'
+          }))
+          .loader(new Loaders.CSVLoader({ path: tempFilePath, columns }))
+
+        if (nonProdTransformer && !config.isProd) {
+          etlFlow.transform(new Transformers.FakerTransformer({
+            columns: nonProdTransformer
+          }))
+        }
+
+        if (transformer) {
+          etlFlow.transform(new Transformers.StringReplaceTransformer(transformer))
+        }
+
+        etlFlow
+          .destination(new Destinations.PostgresDestination({
+            table,
+            connection: 'postgresConnection',
+            mapping,
+            includeErrors: false
+          }))
+          .pump()
+          .on('finish', async (data) => {
+            global.results.push({
+              table,
+              database: dbConfig.database,
+              data
+            })
           })
-        })
-        .on('result', async (data) => {
-          await fs.promises.unlink(tempFilePath)
-          await storage.deleteFile(file)
-          const newRowCount = await db[sequelizeModelName]?.count()
-          const idTo = await db[sequelizeModelName]?.max('etl_id') ?? 0
-          await db.etlStageLog.update(
-            {
-              rows_loaded_count: newRowCount - initialRowCount,
-              id_to: idTo,
-              id_from: idFrom < idTo ? idFrom : idTo,
-              ended_at: new Date()
-            },
-            { where: { etl_id: fileInProcess.etl_id } }
-          )
-          return resolve(data)
-        })
-    } catch (e) {
-      await fs.promises.unlink(tempFilePath)
-      return reject(e)
-    }
+          .on('result', async (data) => {
+            await fs.promises.unlink(tempFilePath)
+            await storage.deleteFile(file)
+            const newRowCount = await db[sequelizeModelName]?.count()
+            const idTo = await db[sequelizeModelName]?.max('etl_id') ?? 0
+            await db.etlStageLog.update(
+              {
+                rows_loaded_count: newRowCount - initialRowCount,
+                id_to: idTo,
+                id_from: idFrom < idTo ? idFrom : idTo,
+                ended_at: new Date()
+              },
+              { where: { etl_id: fileInProcess.etl_id } }
+            )
+            return resolve(data)
+          })
+      } catch (e) {
+        await fs.promises.unlink(tempFilePath)
+        return reject(e)
+      }
+    })()
   })
 }
 
