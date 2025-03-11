@@ -13,7 +13,7 @@ const getUnpublishedD365 = async (transaction) => {
         }
       ]
     },
-    attributes: ['paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
+    attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
     raw: true,
     transaction
   })
