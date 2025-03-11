@@ -127,7 +127,7 @@ const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
     [storageConfig.businessAddressDelinked.folder]: 'BAC',
     [storageConfig.calculationsDetailsDelinked.folder]: 'CD'
   }
-  
+
   return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
 }
 
