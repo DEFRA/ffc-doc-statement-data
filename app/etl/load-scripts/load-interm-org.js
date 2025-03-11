@@ -121,7 +121,6 @@ WHERE change_type = 'INSERT'
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing org records for folder ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
-      console.log('query', query)
       await executeQuery(query, {}, transaction)
     }
   }

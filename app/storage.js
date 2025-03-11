@@ -5,7 +5,7 @@ const config = require('./config/storage')
 let blobServiceClient
 let containersInitialised
 let foldersInitialised
-console.log('config.applicationDetailDelinked.folder', config.applicationDetailDelinked.folder)
+
 const folderList = [
   config.applicationDetail.folder,
   config.appsPaymentNotification.folder,

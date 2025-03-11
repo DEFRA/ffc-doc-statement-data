@@ -61,11 +61,8 @@ const stageFunctions = [
 const stageExtracts = async () => {
   startDate = new Date()
   const etlFiles = await storage.getFileList()
-  console.log('etlFiles', etlFiles)
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
   total = foldersToStage.length
-
-  console.log('folders to stage', foldersToStage)
 
   if (etlFiles.length) {
     for (const { fn, label } of stageFunctions) {
