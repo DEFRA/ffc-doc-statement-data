@@ -1,0 +1,114 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="1" author="John Barnard">
+        <tagDatabase tag="v1.21.0" />
+    </changeSet>
+
+    <changeSet id="2" author="John Barnard">
+        <createIndex indexName="idx_etlIntermTotalCalculationId" tableName="ETL_INTERM_TOTAL">
+            <column name="CALCULATION_ID"/>
+        </createIndex>
+        <createIndex indexName="idx_etlStageCalculationDetailsCalculationId" tableName="ETL_STAGE_CALCULATION_DETAILS">
+            <column name="CALCULATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsCalculationIdIdx" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="CALCULATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageCalculationDetailsApplicationIdIdx" tableName="ETL_STAGE_CALCULATION_DETAILS">
+            <column name="APPLICATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageOrganisationSbiIdx" tableName="ETL_STAGE_ORGANISATION">
+            <column name="SBI"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageBusinessAddressContactVFrnIdx" tableName="ETL_STAGE_BUSINESS_ADDRESS_CONTACT_V">
+            <column name="FRN"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlIntermTotalTotalAmountIdx" tableName="ETL_INTERM_TOTAL">
+            <column name="TOTAL_AMOUNT"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageDefraLinksSubjectId" tableName="ETL_STAGE_DEFRA_LINKS">
+            <column name="SUBJECT_ID"/>
+        </createIndex>
+
+       <createIndex indexName="idx_etlStageApplicationDetailApplicationId" tableName="ETL_STAGE_APPLICATION_DETAIL">
+            <column name="APPLICATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsVariableName" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="VARIABLE_NAME"/>
+        </createIndex>
+
+        <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsValue" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="VALUE"/>
+        </createIndex>
+
+        <createIndex indexName="idx_paymentBand1" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BAND1' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_paymentBand2" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BAND2' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_paymentBand3" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BAND3' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_paymentBand4" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BAND4' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_percentageReduction1" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BANDPRC1' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_percentageReduction2" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BANDPRC2' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_percentageReduction3" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BANDPRC3' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_percentageReduction4" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PI_BPS_BANDPRC4' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_progressiveReductions1" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PROG_RED_BAND_1' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_progressiveReductions2" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PROG_RED_BAND_2' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_progressiveReductions3" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PROG_RED_BAND_3' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_progressiveReductions4" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'PROG_RED_BAND_4' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_referenceAmount" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'CUR_REF_AMOUNT' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_totalProgressiveReduction" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'TOT_PRO_RED_AMO' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+        <createIndex indexName="idx_totalDelinkedPayment" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+            <column name="(CASE WHEN variable_name = 'NE_TOT_AMOUNT' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

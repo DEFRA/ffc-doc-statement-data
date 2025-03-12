@@ -31,7 +31,8 @@ SELECT DISTINCT
   CD.calculation_id
 FROM etl_interm_finance_dax D
 JOIN etl_stage_calculation_details CD ON D.claim_id = CD.application_id
-WHERE D.payment_ref LIKE 'PY%' 
+WHERE D.payment_ref LIKE 'PY%'
+    AND D.etl_inserted_dt > :startDate
 GROUP BY 
   D.transdate, 
   D.quarter, 
@@ -48,6 +49,7 @@ const loadIntermTotal = async (startDate, transaction, query = defaultQuery) => 
 }
 
 const loadIntermTotalDelinked = async (startDate, transaction) => {
+  console.log('load totals into interm total')
   return loadIntermTotal(startDate, transaction, delinkedQuery)
 }
 
