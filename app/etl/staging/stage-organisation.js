@@ -82,7 +82,7 @@ const stageOrganisation = async () => {
     ]
   }
 
-  return downloadAndProcessFile('organisation', 'organisations', organisation, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile('organisation', organisation, columns, mapping, transformer, nonProdTransformer)
 }
 
 module.exports = {

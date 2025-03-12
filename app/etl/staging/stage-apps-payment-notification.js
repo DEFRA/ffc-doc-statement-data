@@ -37,7 +37,7 @@ const stageAppsPaymentNotifications = async () => {
     { column: sourceColumnNames.PAYMENT_PREFERENCE_CURRENCY, targetColumn: targetColumnNames.paymentPreferenceCurrency, targetType: VARCHAR }
   ]
 
-  return downloadAndProcessFile('appsPaymentNotification', 'appsPaymentNotifications', appsPaymentNotification, columns, mapping)
+  return downloadAndProcessFile('appsPaymentNotification', appsPaymentNotification, columns, mapping)
 }
 
 module.exports = {

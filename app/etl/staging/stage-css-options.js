@@ -33,7 +33,7 @@ const stageCSSOptions = async () => {
     { column: sourceColumnNames.GROUP_ID, targetColumn: targetColumnNames.groupId, targetType: VARCHAR }
   ]
 
-  return downloadAndProcessFile('cssOptions', 'cssOptions', cssOptions, columns, mapping)
+  return downloadAndProcessFile('cssOptions', cssOptions, columns, mapping)
 }
 
 module.exports = {

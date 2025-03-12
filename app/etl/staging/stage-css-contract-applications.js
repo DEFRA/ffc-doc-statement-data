@@ -49,7 +49,7 @@ const stageCSSContractApplications = async () => {
     { column: sourceColumnNames.USER_FLD, targetColumn: targetColumnNames.userFld, targetType: VARCHAR }
   ]
 
-  return downloadAndProcessFile('cssContractApplications', 'cssContractApplications', cssContractApplications, columns, mapping)
+  return downloadAndProcessFile('cssContractApplications', cssContractApplications, columns, mapping)
 }
 
 module.exports = {

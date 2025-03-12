@@ -19,7 +19,7 @@ const removeFirstLine = (stream) => {
   let firstLineSkipped = false
 
   const transformStream = new Transform({
-    transform (chunk, encoding, callback) {
+    transform (chunk, _encoding, callback) {
       const lines = chunk.toString().split('\n')
 
       if (!firstLineSkipped) {

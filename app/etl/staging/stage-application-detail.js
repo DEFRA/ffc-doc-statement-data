@@ -59,7 +59,7 @@ const stageApplicationDetails = async () => {
     { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
 
-  return downloadAndProcessFile('applicationDetail', 'applicationDetails', applicationDetail, columns, mapping)
+  return downloadAndProcessFile('applicationDetail', applicationDetail, columns, mapping)
 }
 
 module.exports = {

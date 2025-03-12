@@ -8,7 +8,7 @@ const filterNullProperties = (obj) => {
   return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null))
 }
 
-const downloadAndProcessFile = async (folder, filePrefix, table, columns, mapping, transformer = null, nonProdTransformer = null) => {
+const downloadAndProcessFile = async (folder, table, columns, mapping, transformer = null, nonProdTransformer = null) => {
   const file = `${storageConfig[folder].folder}/export.csv`
   const fileStream = await storage.downloadFileAsStream(file)
   const params = filterNullProperties({ fileStream, columns, table, mapping, transformer, nonProdTransformer, file })

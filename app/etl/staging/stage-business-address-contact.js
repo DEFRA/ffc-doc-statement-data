@@ -88,7 +88,7 @@ const stageBusinessAddressContacts = async () => {
     ]
   }
 
-  return downloadAndProcessFile('businessAddress', 'businessAddress', businessAddress, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile('businessAddress', businessAddress, columns, mapping, transformer, nonProdTransformer)
 }
 
 module.exports = {

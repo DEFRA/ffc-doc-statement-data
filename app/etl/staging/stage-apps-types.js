@@ -31,7 +31,7 @@ const stageAppsTypes = async () => {
     { column: sourceColumnNames.WIN_CLOSE_DATE, targetColumn: targetColumnNames.winCloseDate, targetType: DATE, format: dateTimeFormat }
   ]
 
-  return downloadAndProcessFile('appsTypes', 'appsTypes', appsTypes, columns, mapping)
+  return downloadAndProcessFile('appsTypes', appsTypes, columns, mapping)
 }
 
 module.exports = {

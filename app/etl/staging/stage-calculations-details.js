@@ -25,7 +25,7 @@ const stageCalculationDetails = async () => {
     { column: sourceColumnNames.RANKED, targetColumn: targetColumnNames.ranked, targetType: NUMBER }
   ]
 
-  return downloadAndProcessFile('calculationsDetails', 'calculationDetails', calculationsDetails, columns, mapping)
+  return downloadAndProcessFile('calculationsDetails', calculationsDetails, columns, mapping)
 }
 
 module.exports = {

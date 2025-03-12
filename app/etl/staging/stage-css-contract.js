@@ -59,7 +59,7 @@ const stageCSSContract = async () => {
     { column: sourceColumnNames.CONTRACT_DESCRIPTION, find: "'", replace: "''", all: true }
   ]
 
-  return downloadAndProcessFile('cssContract', 'cssContract', cssContract, columns, mapping, transformer)
+  return downloadAndProcessFile('cssContract', cssContract, columns, mapping, transformer)
 }
 
 module.exports = {

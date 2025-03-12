@@ -176,7 +176,7 @@ const stageFinanceDAX = async () => {
     }
   ]
 
-  return downloadAndProcessFile('financeDAX', 'financeDAX', financeDAX, columns, mapping, transformer)
+  return downloadAndProcessFile('financeDAX', financeDAX, columns, mapping, transformer)
 }
 
 module.exports = {

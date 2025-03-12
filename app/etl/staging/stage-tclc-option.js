@@ -41,7 +41,7 @@ const stageTCLCOption = async () => {
     { column: sourceColumnNames.NET1_AMOUNT, targetColumn: targetColumnNames.net1Amount, targetType: NUMBER }
   ]
 
-  return downloadAndProcessFile('tclcOption', 'tclcOptions', tclcOption, columns, mapping)
+  return downloadAndProcessFile('tclcOption', tclcOption, columns, mapping)
 }
 
 module.exports = {

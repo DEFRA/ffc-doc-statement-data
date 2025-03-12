@@ -23,7 +23,7 @@ const stageDefraLinks = async () => {
     { column: sourceColumnNames.MDM_ID, targetColumn: targetColumnNames.mdmId, targetType: NUMBER }
   ]
 
-  return downloadAndProcessFile('defraLinks', 'defraLinks', defraLinks, columns, mapping)
+  return downloadAndProcessFile('defraLinks', defraLinks, columns, mapping)
 }
 
 module.exports = {
