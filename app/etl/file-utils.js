@@ -1,29 +1,35 @@
-const fs = require('fs')
-const readline = require('readline')
+const { Transform } = require('stream')
 
-const getFirstLineNumber = async (filePath) => {
-  const readable = fs.createReadStream(filePath)
-  const reader = readline.createInterface({ input: readable })
-
+const getFirstLineNumber = async (stream) => {
   return new Promise((resolve, reject) => {
+    const reader = require('readline').createInterface({ input: stream })
+
     reader.on('line', (line) => {
       reader.close()
-      readable.destroy()
       resolve(parseInt(line.trim(), 10))
     })
 
     reader.on('error', (err) => {
-      readable.destroy()
       reject(err)
     })
   })
 }
 
-const removeFirstLine = async (filePath) => {
-  const data = await fs.promises.readFile(filePath, 'utf8')
-  const lines = data.split('\n')
-  const output = lines.slice(1).join('\n')
-  await fs.promises.writeFile(filePath, output)
+const removeFirstLine = async (stream) => {
+  const transformStream = new Transform({
+    writableObjectMode: true,
+    readableObjectMode: true,
+    transform (chunk, encoding, callback) {
+      if (!this.firstLineRemoved) {
+        this.firstLineRemoved = true
+        callback()
+      } else {
+        callback(null, chunk)
+      }
+    }
+  })
+
+  return stream.pipe(transformStream)
 }
 
 module.exports = {
