@@ -15,13 +15,18 @@ const getFirstLineNumber = async (stream) => {
   })
 }
 
-const removeFirstLine = async (stream) => {
+const removeFirstLine = (stream) => {
+  let firstLineSkipped = false
+
   const transformStream = new Transform({
-    writableObjectMode: true,
-    readableObjectMode: true,
     transform (chunk, encoding, callback) {
-      if (!this.firstLineRemoved) {
-        this.firstLineRemoved = true
+      const lines = chunk.toString().split('\n')
+
+      if (!firstLineSkipped) {
+        firstLineSkipped = true
+        if (lines.length > 1) {
+          this.push(lines.slice(1).join('\n') + (lines[lines.length - 1] ? '\n' : ''))
+        }
         callback()
       } else {
         callback(null, chunk)
@@ -31,7 +36,6 @@ const removeFirstLine = async (stream) => {
 
   return stream.pipe(transformStream)
 }
-
 module.exports = {
   removeFirstLine,
   getFirstLineNumber

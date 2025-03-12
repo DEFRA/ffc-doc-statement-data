@@ -75,6 +75,12 @@ const downloadFile = async (filename, tempFilePath) => {
   return blob.downloadToFile(tempFilePath)
 }
 
+const downloadFileAsStream = async (filename) => {
+  const blob = await getBlob(filename)
+  const downloadResponse = await blob.download(0)
+  return downloadResponse.readableStreamBody
+}
+
 const deleteFile = async (filename) => {
   const blob = await getBlob(filename)
   try {
@@ -114,6 +120,7 @@ const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destina
 module.exports = {
   getFileList,
   downloadFile,
+  downloadFileAsStream,
   deleteFile,
   getDWHExtracts,
   moveFile,
