@@ -66,7 +66,7 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
         MAX(CASE WHEN DP.variable_name = 'CUR_REF_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "referenceAmount",
         MAX(CASE WHEN DP.variable_name = 'TOT_PRO_RED_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalProgressiveReduction",
         MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalDelinkedPayment",
-        T.total_amount AS "paymentAmountCalculated",
+        MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentAmountCalculated",
         O.sbi,
         CAST(BAC.frn AS INTEGER) AS frn,
         ${tableAlias}.change_type
@@ -76,10 +76,9 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
       JOIN etl_stage_defra_links DL ON DL.subject_id = AD.subject_id
       JOIN etl_stage_organisation O ON O.party_id = DL.defra_id
       JOIN etl_stage_business_address_contact_v BAC ON BAC.sbi = O.sbi
-      JOIN etl_interm_total T ON T.calculation_id = DP.calculation_id
       WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY DP.calculation_id, CD.application_id, O.sbi, BAC.frn, ${tableAlias}.change_type, T.total_amount
+      GROUP BY DP.calculation_id, CD.application_id, O.sbi, BAC.frn, ${tableAlias}.change_type
     ),
     updated_rows AS (
       UPDATE etl_interm_app_calc_results_delink_payments interm
