@@ -18,7 +18,7 @@ const stageAppCalcResultsDelinkPayments = async () => {
     { column: 'VALUE', targetColumn: 'value', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile(folder, 'appCalculationResultsDelinkPayments', appCalcResultsDelinkPayments, columns, mapping)
+  return downloadAndProcessFile(folder, appCalcResultsDelinkPayments, columns, mapping)
 }
 
 module.exports = {

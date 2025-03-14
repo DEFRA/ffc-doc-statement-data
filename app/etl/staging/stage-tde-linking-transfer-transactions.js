@@ -37,7 +37,7 @@ const stageTdeLinkingTransferTransactions = async () => {
     { column: 'DATA_SOURCE_S_CODE', targetColumn: 'data_source_s_code', targetType: 'varchar' }
   ]
 
-  return downloadAndProcessFile(folder, 'tdeLinkingTransferTransactions', tdeLinkingTransferTransactions, columns, mapping)
+  return downloadAndProcessFile(folder, tdeLinkingTransferTransactions, columns, mapping)
 }
 
 module.exports = {

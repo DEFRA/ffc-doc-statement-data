@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => {
+const loadIntermAppCalcResultsDelinkPayment = async (startDate) => {
   const tablesToCheck = [
     storageConfig.appCalculationResultsDelinkPayments.folder
   ]
@@ -137,7 +137,7 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
 
       console.log(query)
-      await executeQuery(query, {}, transaction)
+      await executeQuery(query, {})
     }
   }
 }

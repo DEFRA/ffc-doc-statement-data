@@ -11,7 +11,7 @@ const defaultFolderToAliasMap = {
   [storageConfig.businessAddress.folder]: 'A'
 }
 
-const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+const loadIntermOrg = async (startDate, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
