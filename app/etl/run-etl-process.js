@@ -23,13 +23,9 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
     (async () => {
       try {
         const etlFlow = etl
-          .connection(await new Connections.PostgresDatabaseConnection({
-            username: dbConfig.username,
-            password: dbConfig.password,
-            host: dbConfig.host,
-            database: dbConfig.database,
-            port: dbConfig.port,
-            name: 'postgresConnection'
+          .connection(await new Connections.ProvidedConnection({
+            name: 'postgresConnection',
+            sequelize: db.sequelize
           }))
           .loader(new Loaders.CSVLoader({ stream: fileStream, columns }))
 

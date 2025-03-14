@@ -60,7 +60,7 @@ describe('runEtlProcess', () => {
     }
 
     Etl.Etl.mockImplementation(() => mockEtl)
-    Connections.PostgresDatabaseConnection.mockResolvedValue({})
+    Connections.ProvidedConnection.mockResolvedValue({})
     Loaders.CSVLoader.mockImplementation(() => {})
     Transformers.FakerTransformer.mockImplementation(() => {})
     Transformers.StringReplaceTransformer.mockImplementation(() => {})
@@ -114,7 +114,7 @@ describe('runEtlProcess', () => {
     }
 
     Etl.Etl.mockImplementation(() => mockEtl)
-    Connections.PostgresDatabaseConnection.mockResolvedValue({})
+    Connections.ProvidedConnection.mockResolvedValue({})
     Loaders.CSVLoader.mockImplementation(() => {})
     Transformers.FakerTransformer.mockImplementation(() => {})
     Transformers.StringReplaceTransformer.mockImplementation(() => {})
