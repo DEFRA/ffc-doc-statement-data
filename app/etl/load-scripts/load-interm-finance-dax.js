@@ -9,6 +9,10 @@ const delinkedInvoicePattern = 'D%Z%'
 const loadIntermFinanceDAX = async (startDate, folder = storageConfig.financeDAX.folder, accountnum = defaultAccountNumber, invoicePattern = defaultInvoicePattern) => {
   const etlStageLog = await getEtlStageLogs(startDate, folder)
 
+  if (!etlStageLog[0]) {
+    return
+  }
+
   const query = intermFinanceDaxQuery(accountnum, invoicePattern)
   const batchSize = storageConfig.etlBatchSize
   const idFrom = etlStageLog[0].id_from
