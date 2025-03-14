@@ -2,14 +2,13 @@ const { Transaction } = require('sequelize')
 const db = require('../data')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
-const { createTempTables, clearTempTables, restoreIntermTablesFromTemp } = require('./manage-temp-tables')
+const { clearTempTables, restoreIntermTablesFromTemp } = require('./manage-temp-tables')
 
 const loadETLData = async (startDate) => {
   const transaction = await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
   })
   try {
-    await createTempTables()
     await loadIntermFinanceDAX(startDate)
     await loadIntermCalcOrg(startDate)
     await loadIntermOrg(startDate)
