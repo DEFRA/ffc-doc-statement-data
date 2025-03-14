@@ -47,7 +47,7 @@ const stageExtracts = async () => {
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
   total = foldersToStage.length
   await createTempTables()
-
+  console.log('temporary tables created')
   if (etlFiles.length) {
     for (const { fn, label } of stageFunctions) {
       if (foldersToStage.includes(label)) {
