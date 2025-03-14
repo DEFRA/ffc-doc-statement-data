@@ -1,8 +1,8 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { cssOptionsTable } = require('../../../../app/constants/tables')
+const { cssOptions } = require('../../../../app/constants/tables')
 const { stageCSSOptions } = require('../../../../app/etl/staging/stage-css-options')
+const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
@@ -20,7 +20,6 @@ describe('stageCSSOptions', () => {
 
   test('should download the file and run the ETL process', async () => {
     const mockFile = 'CSS_Options/export.csv'
-    const mockTempFilePath = 'mock-temp-file-path'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -96,19 +95,18 @@ describe('stageCSSOptions', () => {
       }
     ]
 
-    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath)
     uuidv4.mockReturnValue(mockUuid)
-    storage.downloadFile = jest.fn().mockResolvedValue()
+    const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+    const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+    storage.downloadFileAsStream = jest.fn().mockResolvedValue(mockReadableStream)
 
     await stageCSSOptions()
 
-    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging'
-    expect(path.join).toHaveBeenCalledWith(parentDir, `cssOptions-${mockUuid}.csv`)
-    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath)
+    expect(storage.downloadFileAsStream).toHaveBeenCalledWith(mockFile)
     expect(runEtlProcess).toHaveBeenCalledWith({
-      tempFilePath: mockTempFilePath,
+      fileStream: mockReadableStream,
       columns: mockColumns,
-      table: cssOptionsTable,
+      table: cssOptions,
       mapping: mockMapping,
       file: mockFile
     })

@@ -1,5 +1,4 @@
 const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-pay-etl-framework')
-const fs = require('fs')
 const config = require('../config')
 const dbConfig = config.dbConfig[config.env]
 const storage = require('../storage')
@@ -7,14 +6,14 @@ const db = require('../data')
 const tableMappings = require('../constants/table-mappings')
 const { removeFirstLine, getFirstLineNumber } = require('./file-utils')
 
-const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transformer, nonProdTransformer, file }) => {
+const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer, nonProdTransformer, file }) => {
   const etl = new Etl.Etl()
 
   const sequelizeModelName = tableMappings[table]
   const initialRowCount = await db[sequelizeModelName]?.count()
   const idFrom = (await db[sequelizeModelName]?.max('etl_id') ?? 0) + 1
-  const rowCount = await getFirstLineNumber(tempFilePath)
-  await removeFirstLine(tempFilePath)
+  const rowCount = await getFirstLineNumber(fileStream)
+  fileStream = await removeFirstLine(fileStream)
   const fileInProcess = await db.etlStageLog.create({
     file,
     row_count: rowCount
@@ -22,9 +21,6 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
 
   return new Promise((resolve, reject) => {
     (async () => {
-      if (!fs.existsSync(tempFilePath)) {
-        return resolve(true)
-      }
       try {
         const etlFlow = etl
           .connection(await new Connections.PostgresDatabaseConnection({
@@ -35,7 +31,7 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
             port: dbConfig.port,
             name: 'postgresConnection'
           }))
-          .loader(new Loaders.CSVLoader({ path: tempFilePath, columns }))
+          .loader(new Loaders.CSVLoader({ stream: fileStream, columns }))
 
         if (nonProdTransformer && !config.isProd) {
           etlFlow.transform(new Transformers.FakerTransformer({
@@ -64,7 +60,6 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
             })
           })
           .on('result', async (data) => {
-            await fs.promises.unlink(tempFilePath)
             await storage.deleteFile(file)
             const newRowCount = await db[sequelizeModelName]?.count()
             const idTo = await db[sequelizeModelName]?.max('etl_id') ?? 0
@@ -80,7 +75,6 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
             return resolve(data)
           })
       } catch (e) {
-        await fs.promises.unlink(tempFilePath)
         return reject(e)
       }
     })()

@@ -1,13 +1,13 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageBusinessAddressContacts } = require('../../../../app/etl/staging/stage-business-address-contact')
+const { businessAddress } = require('../../../../app/constants/tables')
+const { Readable } = require('stream')
 
-jest.mock('path')
 jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
-  downloadFile: jest.fn()
+  downloadFileAsStream: jest.fn()
 }))
 jest.mock('../../../../app/config', () => ({
   isProd: false
@@ -25,9 +25,9 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
 test('stageBusinessAddressContacts downloads file and runs ETL process', async () => {
   const mockUuid = '1234-5678-91011'
   uuidv4.mockReturnValue(mockUuid)
-  const mockTempFilePath = `businessAddressContacts-${mockUuid}.csv`
-  path.join.mockReturnValue(mockTempFilePath)
-  storage.downloadFile.mockResolvedValue()
+  const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+  const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+  storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
 
   const columns = [
     'CHANGE_TYPE',
@@ -109,11 +109,11 @@ test('stageBusinessAddressContacts downloads file and runs ETL process', async (
 
   await stageBusinessAddressContacts()
 
-  expect(storage.downloadFile).toHaveBeenCalledWith('businessAddressFolder/export.csv', mockTempFilePath)
+  expect(storage.downloadFileAsStream).toHaveBeenCalledWith('businessAddressFolder/export.csv')
   expect(runEtlProcess).toHaveBeenCalledWith({
-    tempFilePath: mockTempFilePath,
+    fileStream: mockReadableStream,
     columns,
-    table: 'businessAddressTable',
+    table: businessAddress,
     mapping,
     transformer,
     nonProdTransformer,

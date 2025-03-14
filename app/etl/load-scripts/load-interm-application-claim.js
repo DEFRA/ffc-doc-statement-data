@@ -11,7 +11,7 @@ const defaultFolderToAliasMap = {
   [storageConfig.cssContract.folder]: 'cc'
 }
 
-const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+const loadIntermApplicationClaim = async (startDate, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -54,28 +54,26 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updated_rows));
   `
-  const batchSize = storageConfig.etlBatchSize
 
+  const batchSize = storageConfig.etlBatchSize
+  let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    const folderIndex = tablesToCheck.indexOf(folder)
-    let exclusionCondition = ''
-    for (let i = 0; i < folderIndex; i++) {
-      const priorFolder = tablesToCheck[i]
-      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
-    }
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing application claim records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.id_to)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
-      await executeQuery(query, {}, transaction)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
+      await executeQuery(query, {})
     }
+
+    console.log(`Processed application claim records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
   }
 }
 
-const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
+const loadIntermApplicationClaimDelinked = async (startDate) => {
   const tablesToCheck = [
     storageConfig.cssContractApplicationsDelinked.folder,
     storageConfig.cssContractDelinked.folder
@@ -86,7 +84,7 @@ const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
     [storageConfig.cssContractDelinked.folder]: 'cc'
   }
 
-  return loadIntermApplicationClaim(startDate, transaction, tablesToCheck, folderToAliasMap)
+  return loadIntermApplicationClaim(startDate, tablesToCheck, folderToAliasMap)
 }
 
 module.exports = {

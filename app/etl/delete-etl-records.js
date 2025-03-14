@@ -27,7 +27,6 @@ const deleteETLRecords = async (startDate, transaction) => {
     for (const entry of stageEntries) {
       const { file, idFrom, idTo } = entry.dataValues
       const folderName = file.split('/')[0]
-
       const tableKey = Object.keys(folders).find(key => folders[key] === folderName)
       const tableName = tables[tableKey]
       const sequelizeTableName = tableMappings[tableName]

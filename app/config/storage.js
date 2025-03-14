@@ -12,7 +12,7 @@ const schema = Joi.object({
   container: Joi.string().required(),
   dwhExtractsFolder: Joi.string().required(),
   etlLogsFolder: Joi.string().required(),
-  etlBatchSize: Joi.number().default(20000),
+  etlBatchSize: Joi.number().default(2000),
   applicationDetail: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
@@ -126,7 +126,8 @@ const schema = Joi.object({
     fileMask: Joi.string().required()
   }).required(),
   useConnectionStr: Joi.boolean().default(false),
-  createContainers: Joi.boolean().default(false)
+  createContainers: Joi.boolean().default(false),
+  managedIdentityClientId: Joi.string().optional()
 })
 
 const config = {
@@ -134,9 +135,9 @@ const config = {
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   container: 'etl',
-  dwhExtractsFolder: 'dwh_extracts',
+  dwhExtractsFolder: 'dwh_extracts_sfi23',
   etlLogsFolder: 'logs',
-  etlBatchSize: 100000,
+  etlBatchSize: 2000,
   applicationDetail: {
     folder: applicationDetail,
     fileMask: 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'
@@ -250,7 +251,8 @@ const config = {
     fileMask: 'DELINKED_STMT_TDELINKING_TRANSFER_TRANSACTIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
-  createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS
+  createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,
+  managedIdentityClientId: process.env.AZURE_CLIENT_ID
 }
 
 const result = schema.validate(config, {

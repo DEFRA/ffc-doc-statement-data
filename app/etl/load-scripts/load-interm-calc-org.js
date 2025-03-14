@@ -17,7 +17,7 @@ const defaultFolderToAliasMap = {
   [storageConfig.calculationsDetails.folder]: 'CD'
 }
 
-const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+const loadIntermCalcOrg = async (startDate, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -90,28 +90,21 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
   `
 
   const batchSize = storageConfig.etlBatchSize
-
+  const exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    const folderIndex = tablesToCheck.indexOf(folder)
-    let exclusionCondition = ''
-    for (let i = 0; i < folderIndex; i++) {
-      const priorFolder = tablesToCheck[i]
-      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
-    }
-
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing calcOrg records for ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
-      await executeQuery(query, {}, transaction)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
+      await executeQuery(query, {})
     }
   }
 }
 
-const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
+const loadIntermCalcOrgDelinked = async (startDate) => {
   const tablesToCheck = [
     storageConfig.appsPaymentNotificationDelinked.folder,
     storageConfig.cssContractApplicationsDelinked.folder,
@@ -128,7 +121,7 @@ const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
     [storageConfig.calculationsDetailsDelinked.folder]: 'CD'
   }
 
-  return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
+  return loadIntermCalcOrg(startDate, tablesToCheck, folderToAliasMap)
 }
 
 module.exports = {

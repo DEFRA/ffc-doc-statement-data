@@ -16,8 +16,7 @@ exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`]
       T.total_amount AS paymentAmount,
       T.transdate AS transactionDate 
     FROM etl_interm_total T
-    WHERE T.etl_inserted_dt > :startDate
-    ON CONFLICT ("paymentReference") DO NOTHING;
+    WHERE T.etl_inserted_dt > :startDate;
   ",
       {
         "raw": true,

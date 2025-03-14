@@ -1,24 +1,33 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
 const { calculationsDetails } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageCalculationDetails = async (monthDayFormat = false, folder = 'calculationsDetails') => {
   const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'APPLICATION_ID', 'ID_CLC_HEADER', 'CALCULATION_ID', 'CALCULATION_DT', 'RANKED'
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME,
+    sourceColumnNames.APPLICATION_ID,
+    sourceColumnNames.ID_CLC_HEADER,
+    sourceColumnNames.CALCULATION_ID,
+    sourceColumnNames.CALCULATION_DT,
+    sourceColumnNames.RANKED
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format },
-    { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
-    { column: 'ID_CLC_HEADER', targetColumn: 'id_clc_header', targetType: 'number' },
-    { column: 'CALCULATION_ID', targetColumn: 'calculation_id', targetType: 'number' },
-    { column: 'CALCULATION_DT', targetColumn: 'calculation_dt', targetType: 'date', format },
-    { column: 'RANKED', targetColumn: 'ranked', targetType: 'number' }
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
+    { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
+    { column: sourceColumnNames.ID_CLC_HEADER, targetColumn: targetColumnNames.idClcHeader, targetType: NUMBER },
+    { column: sourceColumnNames.CALCULATION_ID, targetColumn: targetColumnNames.calculationId, targetType: NUMBER },
+    { column: sourceColumnNames.CALCULATION_DT, targetColumn: targetColumnNames.calculationDt, targetType: DATE, format },
+    { column: sourceColumnNames.RANKED, targetColumn: targetColumnNames.ranked, targetType: NUMBER }
   ]
 
-  return downloadAndProcessFile(folder, 'calculationDetails', calculationsDetails, columns, mapping)
+  return downloadAndProcessFile(folder, calculationsDetails, columns, mapping)
 }
 
 const stageCalculationDetailsDelinked = async () => {

@@ -15,9 +15,13 @@ exports[`loadIntermPaymentrefAgreementDates should call sequelize.query with cor
     FROM etl_interm_finance_dax DA
     INNER JOIN etl_stage_css_contract_applications CA ON CA.application_id = DA.claim_id
     INNER JOIN etl_interm_application_contract IAC ON IAC.contract_id = CA.contract_id
-    WHERE DA.etl_inserted_dt > :startDate
-      AND IAC.agreementStart IS NOT NULL
+    WHERE IAC.agreementStart IS NOT NULL
       AND IAC.agreementEnd IS NOT NULL
+      AND (
+        DA.etl_inserted_dt > :startDate
+        OR CA.etl_inserted_dt > :startDate
+        OR IAC.etl_inserted_dt > :startDate
+      )
     GROUP BY DA.payment_ref, CA.contract_id
     ON CONFLICT (payment_ref, agreementStart, agreementEnd) DO NOTHING;
   ",

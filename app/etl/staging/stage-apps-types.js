@@ -1,27 +1,39 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
 const { appsTypes } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
   const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'APP_TYPE_ID', 'SECTOR_P_CODE', 'SECTOR_S_CODE', 'SHORT_DESCRIPTION', 'EXT_DESCRIPTION', 'YEAR', 'WIN_OPEN_DATE', 'WIN_CLOSE_DATE'
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME,
+    sourceColumnNames.APP_TYPE_ID,
+    sourceColumnNames.SECTOR_P_CODE,
+    sourceColumnNames.SECTOR_S_CODE,
+    sourceColumnNames.SHORT_DESCRIPTION,
+    sourceColumnNames.EXT_DESCRIPTION,
+    sourceColumnNames.YEAR,
+    sourceColumnNames.WIN_OPEN_DATE,
+    sourceColumnNames.WIN_CLOSE_DATE
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format },
-    { column: 'APP_TYPE_ID', targetColumn: 'app_type_id', targetType: 'number' },
-    { column: 'SECTOR_P_CODE', targetColumn: 'sector_p_code', targetType: 'varchar' },
-    { column: 'SECTOR_S_CODE', targetColumn: 'sector_s_code', targetType: 'varchar' },
-    { column: 'SHORT_DESCRIPTION', targetColumn: 'short_description', targetType: 'varchar' },
-    { column: 'EXT_DESCRIPTION', targetColumn: 'ext_description', targetType: 'varchar' },
-    { column: 'YEAR', targetColumn: 'year', targetType: 'number' },
-    { column: 'WIN_OPEN_DATE', targetColumn: 'win_open_date', targetType: 'date', format },
-    { column: 'WIN_CLOSE_DATE', targetColumn: 'win_close_date', targetType: 'date', format }
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
+    { column: sourceColumnNames.APP_TYPE_ID, targetColumn: targetColumnNames.appTypeId, targetType: NUMBER },
+    { column: sourceColumnNames.SECTOR_P_CODE, targetColumn: targetColumnNames.sectorPCode, targetType: VARCHAR },
+    { column: sourceColumnNames.SECTOR_S_CODE, targetColumn: targetColumnNames.sectorSCode, targetType: VARCHAR },
+    { column: sourceColumnNames.SHORT_DESCRIPTION, targetColumn: targetColumnNames.shortDescription, targetType: VARCHAR },
+    { column: sourceColumnNames.EXT_DESCRIPTION, targetColumn: targetColumnNames.extDescription, targetType: VARCHAR },
+    { column: sourceColumnNames.YEAR, targetColumn: targetColumnNames.year, targetType: NUMBER },
+    { column: sourceColumnNames.WIN_OPEN_DATE, targetColumn: targetColumnNames.winOpenDate, targetType: DATE, format },
+    { column: sourceColumnNames.WIN_CLOSE_DATE, targetColumn: targetColumnNames.winCloseDate, targetType: DATE, format }
   ]
 
-  return downloadAndProcessFile(folder, 'appsTypes', appsTypes, columns, mapping)
+  return downloadAndProcessFile(folder, appsTypes, columns, mapping)
 }
 
 const stageAppsTypesDelinked = async () => {
