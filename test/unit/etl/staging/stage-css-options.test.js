@@ -37,28 +37,28 @@ describe('stageCSSOptions', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'OPTION_TYPE_ID',
-        targetColumn: 'option_type_id',
+        targetColumn: 'optionTypeId',
         targetType: 'number'
       },
       {
         column: 'OPTION_DESCRIPTION',
-        targetColumn: 'option_description',
+        targetColumn: 'optionDescription',
         targetType: 'varchar'
       },
       {
         column: 'OPTION_LONG_DESCRIPTION',
-        targetColumn: 'option_long_description',
+        targetColumn: 'optionLongDescription',
         targetType: 'varchar'
       },
       {
@@ -68,29 +68,29 @@ describe('stageCSSOptions', () => {
       },
       {
         column: 'OPTION_CODE',
-        targetColumn: 'option_code',
+        targetColumn: 'optionCode',
         targetType: 'varchar'
       },
       {
         column: 'CONTRACT_TYPE_ID',
-        targetColumn: 'contract_type_id',
+        targetColumn: 'contractTypeId',
         targetType: 'number'
       },
       {
         column: 'START_DT',
-        targetColumn: 'start_dt',
+        targetColumn: 'startDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'END_DT',
-        targetColumn: 'end_dt',
+        targetColumn: 'endDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'GROUP_ID',
-        targetColumn: 'group_id',
+        targetColumn: 'groupId',
         targetType: 'varchar'
       }
     ]

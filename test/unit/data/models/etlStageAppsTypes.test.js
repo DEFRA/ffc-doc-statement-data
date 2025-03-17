@@ -11,51 +11,51 @@ describe('etlStageAppsTypes Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageAppsTypes.getTableName()).toBe('etl_stage_apps_types')
+    expect(etlStageAppsTypes.getTableName()).toBe('etlStageAppsTypes')
   })
 
   test('should have correct attributes', () => {
     const attributes = etlStageAppsTypes.rawAttributes
 
-    expect(attributes.change_type).toBeDefined()
-    expect(attributes.change_type.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.changeType).toBeDefined()
+    expect(attributes.changeType.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.change_time).toBeDefined()
-    expect(attributes.change_time.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.changeTime).toBeDefined()
+    expect(attributes.changeTime.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.etl_id).toBeDefined()
-    expect(attributes.etl_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.etlId).toBeDefined()
+    expect(attributes.etlId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.etl_inserted_dt).toBeDefined()
-    expect(attributes.etl_inserted_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.etlInsertedDt).toBeDefined()
+    expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.app_type_id).toBeDefined()
-    expect(attributes.app_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.appTypeId).toBeDefined()
+    expect(attributes.appTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.sector_p_code).toBeDefined()
-    expect(attributes.sector_p_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.sectorPCode).toBeDefined()
+    expect(attributes.sectorPCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.sector_s_code).toBeDefined()
-    expect(attributes.sector_s_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.sectorSCode).toBeDefined()
+    expect(attributes.sectorSCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.short_description).toBeDefined()
-    expect(attributes.short_description.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.shortDescription).toBeDefined()
+    expect(attributes.shortDescription.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.ext_description).toBeDefined()
-    expect(attributes.ext_description.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.extDescription).toBeDefined()
+    expect(attributes.extDescription.type.key).toBe(DataTypes.STRING.key)
 
     expect(attributes.year).toBeDefined()
     expect(attributes.year.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.win_open_date).toBeDefined()
-    expect(attributes.win_open_date.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.winOpenDate).toBeDefined()
+    expect(attributes.winOpenDate.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.win_close_date).toBeDefined()
-    expect(attributes.win_close_date.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.winCloseDate).toBeDefined()
+    expect(attributes.winCloseDate.type.key).toBe(DataTypes.DATE.key)
   })
 
   test('should have correct options', () => {
-    expect(etlStageAppsTypes.options.tableName).toBe('etl_stage_apps_types')
+    expect(etlStageAppsTypes.options.tableName).toBe('etlStageAppsTypes')
     expect(etlStageAppsTypes.options.freezeTableName).toBe(true)
     expect(etlStageAppsTypes.options.timestamps).toBe(false)
   })

@@ -1,15 +1,15 @@
 const properties = {
-  tableName: 'etl_stage_finance_dax',
+  tableName: 'etlStageFinanceDax',
   freezeTableName: true,
   timestamps: false
 }
 
 const fields1 = (DataTypes) => ({
-  change_type: DataTypes.STRING,
-  change_time: DataTypes.DATE,
-  etl_id: DataTypes.INTEGER,
-  etl_inserted_dt: DataTypes.DATE,
-  finance_dax_wid: DataTypes.INTEGER,
+  changeType: DataTypes.STRING,
+  changeTime: DataTypes.DATE,
+  etlId: DataTypes.INTEGER,
+  etlInsertedDt: DataTypes.DATE,
+  financeDaxWid: DataTypes.INTEGER,
   transdate: DataTypes.DATE,
   accountype: DataTypes.INTEGER,
   invoiceid: DataTypes.STRING,

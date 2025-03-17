@@ -1,5 +1,5 @@
 module.exports = `
-  WITH new_data AS (
+  WITH newData AS (
     SELECT
       transdate,
       invoiceid,
@@ -14,46 +14,46 @@ module.exports = `
             FROM (
               SELECT
                 value,
-                COALESCE(LAG(value, 1) OVER (ORDER BY S.settlement_date ASC, S.value ASC),0) AS lag,
+                COALESCE(LAG(value, 1) OVER (ORDER BY S.settlementDate ASC, S.value ASC),0) AS lag,
                 S.reference
-                FROM etl_stage_settlement S 
-                WHERE S.invoice_number = D.invoiceid
+                FROM etlStageSettlement S 
+                WHERE S.invoiceNumber = D.invoiceid
                 ORDER BY value
             ) B WHERE B.reference = D.settlementvoucher),
           lineamountmstgbp)
-        AS DECIMAL(10,2)) AS TRANSACTION_AMOUNT,
+        AS DECIMAL(10,2)) AS TRANSACTIONAMOUNT,
       agreementreference,
-      substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS siti_invoice_id,
-      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS claim_id,
-      settlementvoucher AS PAYMENT_REF,
-      change_type,
+      substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS sitiInvoiceId,
+      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS claimId,
+      settlementvoucher AS PAYMENTREF,
+      changeType,
       recid
-    FROM etl_stage_finance_dax D
+    FROM etlStageFinanceDax D
     WHERE LENGTH(accountnum) = 10
-      AND etl_id BETWEEN :idFrom AND :idTo
+      AND etlId BETWEEN :idFrom AND :idTo
       AND invoiceid LIKE 'S%Z%'
   ),
-  updated_rows AS (
-    UPDATE etl_interm_finance_dax interm
+  updatedRows AS (
+    UPDATE etlIntermFinanceDax interm
     SET
-      transdate = new_data.transdate,
-      scheme = new_data.scheme,
-      fund = new_data.fund,
-      marketingyear = new_data.marketingyear,
-      "month" = new_data."month",
-      quarter = new_data.quarter,
-      TRANSACTION_AMOUNT = new_data.TRANSACTION_AMOUNT,
-      agreementreference = new_data.agreementreference,
-      siti_invoice_id = new_data.siti_invoice_id,
-      claim_id = new_data.claim_id,
-      invoiceid = new_data.invoiceid,
-      etl_inserted_dt = NOW()
-    FROM new_data
-    WHERE new_data.change_type = 'UPDATE'
-      AND interm.recid = new_data.recid
+      transdate = newData.transdate,
+      scheme = newData.scheme,
+      fund = newData.fund,
+      marketingyear = newData.marketingyear,
+      "month" = newData."month",
+      quarter = newData.quarter,
+      TRANSACTIONAMOUNT = newData.TRANSACTIONAMOUNT,
+      agreementreference = newData.agreementreference,
+      sitiInvoiceId = newData.sitiInvoiceId,
+      claimId = newData.claimId,
+      invoiceid = newData.invoiceid,
+      etlInsertedDt = NOW()
+    FROM newData
+    WHERE newData.changeType = 'UPDATE'
+      AND interm.recid = newData.recid
     RETURNING interm.recid
   )
-  INSERT INTO etl_interm_finance_dax (
+  INSERT INTO etlIntermFinanceDax (
     transdate,
     invoiceid,
     scheme,
@@ -61,11 +61,11 @@ module.exports = `
     marketingyear,
     "month",
     quarter,
-    TRANSACTION_AMOUNT,
+    TRANSACTIONAMOUNT,
     agreementreference,
-    siti_invoice_id,
-    claim_id,
-    PAYMENT_REF,
+    sitiInvoiceId,
+    claimId,
+    PAYMENTREF,
     recid
   )
   SELECT
@@ -76,13 +76,13 @@ module.exports = `
     marketingyear,
     "month",
     quarter,
-    TRANSACTION_AMOUNT,
+    TRANSACTIONAMOUNT,
     agreementreference,
-    siti_invoice_id,
-    claim_id,
-    PAYMENT_REF,
+    sitiInvoiceId,
+    claimId,
+    PAYMENTREF,
     recid
-  FROM new_data
-  WHERE change_type = 'INSERT'
-    OR (change_type = 'UPDATE' AND recid NOT IN (SELECT recid FROM updated_rows));
+  FROM newData
+  WHERE changeType = 'INSERT'
+    OR (changeType = 'UPDATE' AND recid NOT IN (SELECT recid FROM updatedRows));
 `

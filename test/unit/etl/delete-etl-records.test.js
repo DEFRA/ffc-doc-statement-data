@@ -102,16 +102,16 @@ describe('deleteETLRecords', () => {
 
     expect(db.etlStageLog.findAll).toHaveBeenCalled()
     expect(db.etlStageApplicationDetail.destroy).toHaveBeenCalledWith({
-      where: { etl_id: { [db.Sequelize.Op.between]: [1, 10] } },
+      where: { etlId: { [db.Sequelize.Op.between]: [1, 10] } },
       transaction
     })
     expect(db.etlStageAppsPaymentNotification.destroy).toHaveBeenCalledWith({
-      where: { etl_id: { [db.Sequelize.Op.between]: [11, 20] } },
+      where: { etlId: { [db.Sequelize.Op.between]: [11, 20] } },
       transaction
     })
     expect(db.etlStageLog.destroy).toHaveBeenCalledWith({
       where: {
-        started_at: { [db.Sequelize.Op.gte]: startDate }
+        startedAt: { [db.Sequelize.Op.gte]: startDate }
       },
       transaction
     })

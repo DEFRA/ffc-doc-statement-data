@@ -11,90 +11,90 @@ describe('etlStageCssContracts Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageCssContracts.getTableName()).toBe('etl_stage_css_contracts')
+    expect(etlStageCssContracts.getTableName()).toBe('etlStageCssContracts')
   })
 
   test('should have correct attributes', () => {
     const attributes = etlStageCssContracts.rawAttributes
 
-    expect(attributes.change_type).toBeDefined()
-    expect(attributes.change_type.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.changeType).toBeDefined()
+    expect(attributes.changeType.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.change_time).toBeDefined()
-    expect(attributes.change_time.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.changeTime).toBeDefined()
+    expect(attributes.changeTime.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.etl_id).toBeDefined()
-    expect(attributes.etl_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.etlId).toBeDefined()
+    expect(attributes.etlId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.etl_inserted_dt).toBeDefined()
-    expect(attributes.etl_inserted_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.etlInsertedDt).toBeDefined()
+    expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.css_contract_wid).toBeDefined()
-    expect(attributes.css_contract_wid.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.cssContractWid).toBeDefined()
+    expect(attributes.cssContractWid.type.key).toBe(DataTypes.INTEGER.key)
 
     expect(attributes.pkid).toBeDefined()
     expect(attributes.pkid.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.insert_dt).toBeDefined()
-    expect(attributes.insert_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.insertDt).toBeDefined()
+    expect(attributes.insertDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.delete_dt).toBeDefined()
-    expect(attributes.delete_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.deleteDt).toBeDefined()
+    expect(attributes.deleteDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.contract_id).toBeDefined()
-    expect(attributes.contract_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.contractId).toBeDefined()
+    expect(attributes.contractId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.contract_code).toBeDefined()
-    expect(attributes.contract_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.contractCode).toBeDefined()
+    expect(attributes.contractCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.contract_type_id).toBeDefined()
-    expect(attributes.contract_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.contractTypeId).toBeDefined()
+    expect(attributes.contractTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.contract_type_description).toBeDefined()
-    expect(attributes.contract_type_description.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.contractTypeDescription).toBeDefined()
+    expect(attributes.contractTypeDescription.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.contract_description).toBeDefined()
-    expect(attributes.contract_description.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.contractDescription).toBeDefined()
+    expect(attributes.contractDescription.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.contract_state_p_code).toBeDefined()
-    expect(attributes.contract_state_p_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.contractStatePCode).toBeDefined()
+    expect(attributes.contractStatePCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.contract_state_s_code).toBeDefined()
-    expect(attributes.contract_state_s_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.contractStateSCode).toBeDefined()
+    expect(attributes.contractStateSCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.data_source_p_code).toBeDefined()
-    expect(attributes.data_source_p_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.dataSourcePCode).toBeDefined()
+    expect(attributes.dataSourcePCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.data_source_s_code).toBeDefined()
-    expect(attributes.data_source_s_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.dataSourceSCode).toBeDefined()
+    expect(attributes.dataSourceSCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.start_dt).toBeDefined()
-    expect(attributes.start_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.startDt).toBeDefined()
+    expect(attributes.startDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.end_dt).toBeDefined()
-    expect(attributes.end_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.endDt).toBeDefined()
+    expect(attributes.endDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.valid_start_flag).toBeDefined()
-    expect(attributes.valid_start_flag.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.validStartFlag).toBeDefined()
+    expect(attributes.validStartFlag.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.valid_end_flag).toBeDefined()
-    expect(attributes.valid_end_flag.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.validEndFlag).toBeDefined()
+    expect(attributes.validEndFlag.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.start_act_id).toBeDefined()
-    expect(attributes.start_act_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.startActId).toBeDefined()
+    expect(attributes.startActId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.end_act_id).toBeDefined()
-    expect(attributes.end_act_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.endActId).toBeDefined()
+    expect(attributes.endActId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.last_update_dt).toBeDefined()
-    expect(attributes.last_update_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.lastUpdateDt).toBeDefined()
+    expect(attributes.lastUpdateDt.type.key).toBe(DataTypes.DATE.key)
 
     expect(attributes.user).toBeDefined()
     expect(attributes.user.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {
-    expect(etlStageCssContracts.options.tableName).toBe('etl_stage_css_contracts')
+    expect(etlStageCssContracts.options.tableName).toBe('etlStageCssContracts')
     expect(etlStageCssContracts.options.freezeTableName).toBe(true)
     expect(etlStageCssContracts.options.timestamps).toBe(false)
   })

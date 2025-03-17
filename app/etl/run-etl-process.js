@@ -31,42 +31,42 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
   const etl = new Etl.Etl()
   const sequelizeModelName = tableMappings[table]
   const initialRowCount = await db[sequelizeModelName]?.count()
-  const idFrom = (await db[sequelizeModelName]?.max('etl_id') ?? 0) + 1
+  const idFrom = (await db[sequelizeModelName]?.max('etlId') ?? 0) + 1
   const rowCount = await getFirstLineNumber(fileStream)
   const fileInProcess = await db.etlStageLog.create({
     file,
-    row_count: rowCount
+    rowCount
   })
 
   const { writable, getData } = collectData()
   fileStream.pipe(writable)
 
-  await db.sequelize.query(`INSERT INTO etl_stage_application_detail (
-    change_type,
-    change_time,
-    etl_id,
-    etl_inserted_dt,
+  await db.sequelize.query(`INSERT INTO etlStageApplicationDetail (
+    changeType,
+    changeTime,
+    etlId,
+    etlInsertedDt,
     pkid,
-    dt_insert,
-    dt_delete,
-    subject_id,
-    ute_id,
-    application_id,
-    application_code,
-    amended_app_id,
-    app_type_id,
-    proxy_id,
-    status_p_code,
-    status_s_code,
-    source_p_code,
-    source_s_code,
-    dt_start,
-    dt_end,
-    valid_start_flg,
-    valid_end_flg,
-    app_id_start,
-    app_id_end,
-    dt_rec_update
+    dtInsert,
+    dtDelete,
+    subjectId,
+    uteId,
+    applicationId,
+    applicationCode,
+    amendedAppId,
+    appTypeId,
+    proxyId,
+    statusPCode,
+    statusSCode,
+    sourcePCode,
+    sourceSCode,
+    dtStart,
+    dtEnd,
+    validStartFlg,
+    validEndFlg,
+    appIdStart,
+    appIdEnd,
+    dtRecUpdate
   )
   VALUES (
     'UPDATE',         
@@ -134,15 +134,15 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
           .on('result', async (data) => {
             await storage.deleteFile(file)
             const newRowCount = await db[sequelizeModelName]?.count()
-            const idTo = await db[sequelizeModelName]?.max('etl_id') ?? 0
+            const idTo = await db[sequelizeModelName]?.max('etlId') ?? 0
             await db.etlStageLog.update(
               {
-                rows_loaded_count: newRowCount - initialRowCount,
-                id_to: idTo,
-                id_from: idFrom < idTo ? idFrom : idTo,
-                ended_at: new Date()
+                rows_loadedCount: newRowCount - initialRowCount,
+                idTo,
+                idFrom: idFrom < idTo ? idFrom : idTo,
+                endedAt: new Date()
               },
-              { where: { etl_id: fileInProcess.etl_id } }
+              { where: { etlId: fileInProcess.etlId } }
             )
             return resolve(data)
           })

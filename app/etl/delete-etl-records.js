@@ -8,11 +8,11 @@ const deleteETLRecords = async (startDate, transaction) => {
     const stageEntries = await db.etlStageLog.findAll({
       attributes: [
         'file',
-        ['id_from', 'idFrom'],
-        ['id_to', 'idTo']
+        'idFrom',
+        'idTo'
       ],
       where: {
-        started_at: {
+        startedAt: {
           [db.Sequelize.Op.gte]: startDate
         }
       },
@@ -33,7 +33,7 @@ const deleteETLRecords = async (startDate, transaction) => {
 
       if (sequelizeTableName && db[sequelizeTableName]) {
         await db[sequelizeTableName].destroy({
-          where: { etl_id: { [db.Sequelize.Op.between]: [idFrom, idTo] } },
+          where: { etlId: { [db.Sequelize.Op.between]: [idFrom, idTo] } },
           transaction
         })
         console.log(`Deleted records from ${sequelizeTableName} for IDs between ${idFrom} and ${idTo}`)
@@ -44,7 +44,7 @@ const deleteETLRecords = async (startDate, transaction) => {
 
     await db.etlStageLog.destroy({
       where: {
-        started_at: { [db.Sequelize.Op.gte]: startDate }
+        startedAt: { [db.Sequelize.Op.gte]: startDate }
       },
       transaction
     })

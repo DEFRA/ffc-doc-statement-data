@@ -11,26 +11,26 @@ describe('etlStageFinanceDax Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageFinanceDax.getTableName()).toBe('etl_stage_finance_dax')
+    expect(etlStageFinanceDax.getTableName()).toBe('etlStageFinanceDax')
   })
 
   test('should have correct attributes', () => {
     const attributes = etlStageFinanceDax.rawAttributes
 
-    expect(attributes.change_type).toBeDefined()
-    expect(attributes.change_type.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.changeType).toBeDefined()
+    expect(attributes.changeType.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.change_time).toBeDefined()
-    expect(attributes.change_time.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.changeTime).toBeDefined()
+    expect(attributes.changeTime.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.etl_id).toBeDefined()
-    expect(attributes.etl_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.etlId).toBeDefined()
+    expect(attributes.etlId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.etl_inserted_dt).toBeDefined()
-    expect(attributes.etl_inserted_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.etlInsertedDt).toBeDefined()
+    expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.finance_dax_wid).toBeDefined()
-    expect(attributes.finance_dax_wid.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.financeDaxWid).toBeDefined()
+    expect(attributes.financeDaxWid.type.key).toBe(DataTypes.INTEGER.key)
 
     expect(attributes.transdate).toBeDefined()
     expect(attributes.transdate.type.key).toBe(DataTypes.DATE.key)
@@ -258,7 +258,7 @@ describe('etlStageFinanceDax Model', () => {
   })
 
   test('should have correct options', () => {
-    expect(etlStageFinanceDax.options.tableName).toBe('etl_stage_finance_dax')
+    expect(etlStageFinanceDax.options.tableName).toBe('etlStageFinanceDax')
     expect(etlStageFinanceDax.options.freezeTableName).toBe(true)
     expect(etlStageFinanceDax.options.timestamps).toBe(false)
   })

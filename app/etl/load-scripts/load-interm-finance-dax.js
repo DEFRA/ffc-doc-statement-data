@@ -11,8 +11,8 @@ const loadIntermFinanceDAX = async (startDate, transaction) => {
 
   const query = intermFinanceDaxQuery
   const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog[0].id_from
-  const idTo = etlStageLog[0].id_to
+  const idFrom = etlStageLog[0].idFrom
+  const idTo = etlStageLog[0].idTo
   for (let i = idFrom; i <= idTo; i += batchSize) {
     console.log(`Processing financeDAX records ${i} to ${Math.min(i + batchSize - 1, idTo)}`)
     await executeQuery(query, {

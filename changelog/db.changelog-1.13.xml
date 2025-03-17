@@ -1,1177 +1,1180 @@
-<?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
     <changeSet id ="1" author="Charlie Benger-Stevenson">
         <tagDatabase tag="v1.13.0" />
     </changeSet>
     <changeSet id="2" author="Charlie Benger-Stevenson">
-        <createTable tableName = "etl_stage_application_detail">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageApplicationDetail">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="pkid" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="dt_insert" type="TIMESTAMP">
+            <column name="dtInsert" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name="dt_delete" type="TIMESTAMP">
+            <column name="dtDelete" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name="subject_id" type="INTEGER">
+            <column name="subjectId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="ute_id" type="INTEGER">
+            <column name="uteId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="application_id" type="INTEGER">
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="application_code" type="VARCHAR">
+            <column name="applicationCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="amended_app_id" type="INTEGER">
+            <column name="amendedAppId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="app_type_id" type="INTEGER">
+            <column name="appTypeId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="proxy_id" type="INTEGER">
+            <column name="proxyId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="status_p_code" type="VARCHAR">
+            <column name="statusPCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="status_s_code" type="VARCHAR">
+            <column name="statusSCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="source_p_code" type="VARCHAR">
+            <column name="sourcePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="source_s_code" type="VARCHAR">
+            <column name="sourceSCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="dt_start" type="VARCHAR">
+            <column name="dtStart" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="dt_end" type="VARCHAR">
+            <column name="dtEnd" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="valid_start_flg" type="VARCHAR">
+            <column name="validStartFlg" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="valid_end_flg" type="VARCHAR">
+            <column name="validEndFlg" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="app_id_start" type="INTEGER">
+            <column name="appIdStart" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="app_id_end" type="INTEGER">
+            <column name="appIdEnd" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="dt_rec_update" type="TIMESTAMP">
+            <column name="dtRecUpdate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name="user_id" type="VARCHAR">
+            <column name="userId" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_apps_payment_notification">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageAppsPaymentNotification">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name="application_id" type="INTEGER">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="id_clc_header" type="INTEGER">
+            <column name="idClcHeader" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="notification_dt" type="TIMESTAMP">
+            <column name="notificationDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name="notification_flag" type="VARCHAR">
+            <column name="notificationFlag" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="notifier_key" type="NUMBER">
+            <column name="notifierKey" type="NUMBER">
                 <constraints nullable="true" />
             </column>
-            <column name="notification_text" type="VARCHAR">
+            <column name="notificationText" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="invoice_number" type="VARCHAR">
+            <column name="invoiceNumber" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="request_invoice_number" type="VARCHAR">
+            <column name="requestInvoiceNumber" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
             <column name="pillar" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="delivery_body_code" type="VARCHAR">
+            <column name="deliveryBodyCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="payment_preference_currency" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-        <createTable tableName = "etl_stage_apps_types">
-            <column name="change_type" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name="change_time" type="TIMESTAMP">
-                <constraints nullable="false" />
-            </column>
-            <column name = "etl_id" type="BIGSERIAL">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "app_type_id" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name = "sector_p_code" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "sector_s_code" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "short_description" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "ext_description" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "year" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name = "win_open_date" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "win_close_date" type="TIMESTAMP">
+            <column name="paymentPreferenceCurrency" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_business_address_contact_V">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageAppsTypes">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "sbi" type="NUMBER">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="appTypeId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "frn" type="VARCHAR">
+            <column name="sectorPCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_name" type="VARCHAR">
+            <column name="sectorSCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "accountable_people_completed" type="NUMBER">
+            <column name="shortDescription" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "financial_to_business_addr" type="NUMBER">
+            <column name="extDescription" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "corr_as_business_addr" type="NUMBER">
+            <column name="year" type="INTEGER">
+                <constraints nullable="true" />
+            </column>
+            <column name="winOpenDate" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+            <column name="winCloseDate" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+        <createTable tableName="etlStageBusinessAddressContactV">
+            <column name="changeType" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="changeTime" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlId" type="BIGSERIAL">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="sbi" type="NUMBER">
+                <constraints nullable="true" />
+            </column>
+            <column name="frn" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="businessName" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="accountablePeopleCompleted" type="NUMBER">
+                <constraints nullable="true" />
+            </column>
+            <column name="financialToBusinessAddr" type="NUMBER">
+                <constraints nullable="true" />
+            </column>
+            <column name="corrAsBusinessAddr" type="NUMBER">
                 <constraints nullable="true" />
             </column>    
-            <column name = "business_address1" type="VARCHAR">
+            <column name="businessAddress1" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_address2" type="VARCHAR">
+            <column name="businessAddress2" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_address3" type="VARCHAR">
+            <column name="businessAddress3" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_city" type="VARCHAR">
+            <column name="businessCity" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_county" type="VARCHAR">
+            <column name="businessCounty" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_country" type="VARCHAR">
+            <column name="businessCountry" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_post_code" type="VARCHAR">
+            <column name="businessPostCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_landline" type="VARCHAR">
+            <column name="businessLandline" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_mobile" type="VARCHAR">
+            <column name="businessMobile" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "business_email_addr" type="VARCHAR">
+            <column name="businessEmailAddr" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_address1" type="VARCHAR">
+            <column name="correspondenceAddress1" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_address2" type="VARCHAR">
+            <column name="correspondenceAddress2" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_address3" type="VARCHAR">
+            <column name="correspondenceAddress3" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_city" type="VARCHAR">
+            <column name="correspondenceCity" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_county" type="VARCHAR">
+            <column name="correspondenceCounty" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_country" type="VARCHAR">
+            <column name="correspondenceCountry" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_post_code" type="VARCHAR">
+            <column name="correspondencePostCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_landline" type="VARCHAR">
+            <column name="correspondenceLandline" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_mobile" type="VARCHAR">
+            <column name="correspondenceMobile" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "correspondence_email_addr" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-        <createTable tableName = "etl_stage_calculation_detailS">
-            <column name="change_type" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name="change_time" type="TIMESTAMP">
-                <constraints nullable="false" />
-            </column>
-            <column name = "etl_id" type="BIGSERIAL">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "application_id" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name = "id_clc_header" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name = "calculation_id" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name = "calculation_dt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "ranked" type="INTEGER">
+            <column name="correspondenceEmailAddr" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_tclc_pii_pay_claim_sfimt_option">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageCalculationDetails">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "tclc_pii_pay_claim_sfimt_option_wid" type="DECIMAL(20,0)">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "application_id" type="DECIMAL(11,0)">
+            <column name="idClcHeader" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "calculation_id" type="DECIMAL(11,0)">
+            <column name="calculationId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "op_code" type="VARCHAR">
+            <column name="calculationDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "sco_uom" type="VARCHAR">
+            <column name="ranked" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "commitment" type="DECIMAL(17,4)">
+        </createTable>
+        <createTable tableName="etlStageTclcPiiPayClaimSfimtOption">
+            <column name="changeType" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="changeTime" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlId" type="BIGSERIAL">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="tclcPiiPayClaimSfimtOptionWid" type="DECIMAL(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "commitment_val" type="DECIMAL(17,4)">
+            <column name="applicationId" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "agree_amount" type="DECIMAL(15,2)">
+            <column name="calculationId" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "claimed_pay_amount" type="DECIMAL(15,2)">
+            <column name="opCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "verify_pay_amount" type="DECIMAL(15,2)">
+            <column name="scoUom" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="commitment" type="DECIMAL(17,4)">
+                <constraints nullable="true" />
+            </column>
+            <column name="commitmentVal" type="DECIMAL(17,4)">
+                <constraints nullable="true" />
+            </column>
+            <column name="agreeAmount" type="DECIMAL(15,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="claimedPayAmount" type="DECIMAL(15,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="verifyPayAmount" type="DECIMAL(15,2)">
                 <constraints nullable="true" />
             </column>    
-            <column name = "found_amount" type="DECIMAL(15,2)">
+            <column name="foundAmount" type="DECIMAL(15,2)">
                 <constraints nullable="true" />
             </column>
-            <column name = "overd_reduct_amount" type="DECIMAL(15,2)">
+            <column name="overdReductAmount" type="DECIMAL(15,2)">
                 <constraints nullable="true" />
             </column>
-            <column name = "overd_penalty_amount" type="DECIMAL(15,2)">
+            <column name="overdPenaltyAmount" type="DECIMAL(15,2)">
                 <constraints nullable="true" />
             </column>
-            <column name = "net1_amount" type="DECIMAL(15,2)">
+            <column name="net1Amount" type="DECIMAL(15,2)">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_css_contracts">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageCssContracts">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "css_contract_wid" type="DECIMAL(20,0)">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="cssContractWid" type="DECIMAL(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "pkid" type="DECIMAL(11,0)">
+            <column name="pkid" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "insert_dt" type="TIMESTAMP">
+            <column name="insertDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>    
-            <column name = "delete_dt" type="TIMESTAMP">
+            <column name="deleteDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_id" type="DECIMAL(11,0)">
+            <column name="contractId" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_code" type="VARCHAR">
+            <column name="contractCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_type_id" type="DECIMAL(11,0)">
+            <column name="contractTypeId" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_type_description" type="VARCHAR">
+            <column name="contractTypeDescription" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_description" type="VARCHAR">
+            <column name="contractDescription" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_state_p_code" type="VARCHAR">
+            <column name="contractStatePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_state_s_code" type="VARCHAR">
+            <column name="contractStateSCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "data_source_p_code" type="VARCHAR">
+            <column name="dataSourcePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "data_source_s_code" type="VARCHAR">
+            <column name="dataSourceSCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "start_dt" type="TIMESTAMP">
+            <column name="startDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "end_dt" type="TIMESTAMP">
+            <column name="endDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "valid_start_flag" type="VARCHAR">
+            <column name="validStartFlag" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "valid_end_flag" type="VARCHAR">
+            <column name="validEndFlag" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "start_act_id" type="NUMBER(11,0)">
+            <column name="startActId" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "end_act_id" type="NUMBER(11,0)">
+            <column name="endActId" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "last_update_dt" type="TIMESTAMP">
+            <column name="lastUpdateDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "user" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-        <createTable tableName = "etl_stage_css_contract_applications">
-            <column name="change_type" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name="change_time" type="TIMESTAMP">
-                <constraints nullable="false" />
-            </column>
-            <column name = "etl_id" type="BIGSERIAL">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "css_contract_application_wid" type="NUMBER(20,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "pkid" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "insert_dt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "delete_dt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "contract_id" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "application_id" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "type_p_code" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "type_s_code" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "data_source_p_code" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "data_source_s_code" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "start_dt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "end_dt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "valid_start_flag" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "valid_end_flag" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "start_act_id" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "end_act_id" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "last_update_dt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name = "user" type="VARCHAR">
+            <column name="user" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_css_options">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageCssContractApplications">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "css_option_id" type="NUMBER(20,0)">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="cssContractApplicationWid" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "option_type_id" type="NUMBER(20,0)">
+            <column name="pkid" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "option_description" type="VARCHAR">
+            <column name="insertDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "option_long_description" type="VARCHAR">
+            <column name="deleteDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "duration" type="NUMBER(11,0)">
+            <column name="contractId" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "option_code" type="VARCHAR">
+            <column name="applicationId" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "contract_type_id" type="NUMBER(11,0)">
+            <column name="typePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "start_dt" type="TIMESTAMP">
+            <column name="typeSCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "end_dt" type="TIMESTAMP">
+            <column name="dataSourcePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "group_id" type="VARCHAR">
+            <column name="dataSourceSCode" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="startDt" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+            <column name="endDt" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+            <column name="validStartFlag" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="validEndFlag" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="startActId" type="NUMBER(11,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="endActId" type="NUMBER(11,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="lastUpdateDt" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+            <column name="user" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_defra_links">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageCssOptions">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "defra_links_wid" type="NUMBER(9,0)">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="cssOptionId" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "subject_id" type="NUMBER(9,0)">
+            <column name="optionTypeId" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "defra_id" type="NUMBER(12,0)">
+            <column name="optionDescription" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "defra_type" type="VARCHAR">
+            <column name="optionLongDescription" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "mdm_id" type="NUMBER(12,0)">
+            <column name="duration" type="NUMBER(11,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="optionCode" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="contractTypeId" type="NUMBER(11,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="startDt" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+            <column name="endDt" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+            <column name="groupId" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_finance_dax">
-            <column name="change_type" type="VARCHAR">
+        <createTable tableName="etlStageDefraLinks">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="change_time" type="TIMESTAMP">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "etl_id" type="BIGSERIAL">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "finance_dax_wid" type="NUMBER(19,0)">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="defraLinksWid" type="NUMBER(9,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "transdate" type="TIMESTAMP">
+            <column name="subjectId" type="NUMBER(9,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "accounttype" type="NUMBER(10,0)">
+            <column name="defraId" type="NUMBER(12,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "invoiceid" type="VARCHAR">
+            <column name="defraType" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "invoicedate" type="TIMESTAMP">
+            <column name="mdmId" type="NUMBER(12,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "scheme" type="VARCHAR">
+        </createTable>
+        <createTable tableName="etlStageFinanceDax">
+            <column name="changeType" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="changeTime" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlId" type="BIGSERIAL">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="financeDaxWid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "fund" type="VARCHAR">
+            <column name="transdate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "marketingyear" type="VARCHAR">
+            <column name="accounttype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "accountnum" type="VARCHAR">
+            <column name="invoiceid" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "deliverybody" type="VARCHAR">
+            <column name="invoicedate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "accrualstatus" type="NUMBER(10,0)">
+            <column name="scheme" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "settlementvoucher" type="VARCHAR">
+            <column name="fund" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "lineamounteur" type="NUMBER(32,6)">
+            <column name="marketingyear" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "lineamountmstgbp" type="NUMBER(32,6)">
+            <column name="accountnum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "transactiontype" type="NUMBER(10,0)">
+            <column name="deliverybody" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "journalnum" type="VARCHAR">
+            <column name="accrualstatus" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "journalname" type="VARCHAR">
+            <column name="settlementvoucher" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "admindebt" type="NUMBER(10,0)">
+            <column name="lineamounteur" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "voucher" type="VARCHAR">
+            <column name="lineamountmstgbp" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "month" type="VARCHAR">
+            <column name="transactiontype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "amounteur" type="NUMBER(32,6)">
+            <column name="journalnum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "amountmstgbp" type="NUMBER(32,6)">
+            <column name="journalname" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "quarter" type="VARCHAR">
+            <column name="admindebt" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "idvoucher" type="VARCHAR">
+            <column name="voucher" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "transtxt" type="VARCHAR">
+            <column name="month" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "irregularitydebt" type="NUMBER(10,0)">
+            <column name="amounteur" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "sectiontype" type="NUMBER(10,0)">
+            <column name="amountmstgbp" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "transrecid" type="NUMBER(19,0)">
+            <column name="quarter" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "ljtransrecid" type="NUMBER(19,0)">
+            <column name="idvoucher" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "glaccountentryrecid" type="NUMBER(19,0)">
+            <column name="transtxt" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "settlementrecid" type="NUMBER(19,0)">
+            <column name="irregularitydebt" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "runnumber" type="VARCHAR">
+            <column name="sectiontype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "reportingtype" type="NUMBER(10,0)">
+            <column name="transrecid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "custvendac" type="VARCHAR">
+            <column name="ljtransrecid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "modifieddatetime" type="TIMESTAMP">
+            <column name="glaccountentryrecid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "modifiedby" type="VARCHAR">
+            <column name="settlementrecid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "createddatetime" type="TIMESTAMP">
+            <column name="runnumber" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "createdby" type="VARCHAR">
+            <column name="reportingtype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "dataareaid" type="VARCHAR">
+            <column name="custvendac" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "partition" type="VARCHAR">
+            <column name="modifieddatetime" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "recid" type="NUMBER(19,0)">
+            <column name="modifiedby" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "eurunnumber" type="VARCHAR">
+            <column name="createddatetime" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "accrualledgerdimensionaccount" type="NUMBER(19,0)">
+            <column name="createdby" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "accrualgjaccountentryrecid" type="NUMBER(19,0)">
+            <column name="dataareaid" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "currencycode" type="VARCHAR">
+            <column name="partition" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "legacyfarmeraccount" type="VARCHAR">
+            <column name="recid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "claimsettlementdate" type="TIMESTAMP">
+            <column name="eurunnumber" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="accrualledgerdimensionaccount" type="NUMBER(19,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="accrualgjaccountentryrecid" type="NUMBER(19,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="currencycode" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="legacyfarmeraccount" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="claimsettlementdate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>     
-            <column name = "claimrefnum" type="VARCHAR">
+            <column name="claimrefnum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "iseurelevant" type="NUMBER(10,0)">
+            <column name="iseurelevant" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "fundedby" type="NUMBER(10,0)">
+            <column name="fundedby" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "euyearstartdate" type="TIMESTAMP">
+            <column name="euyearstartdate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "euyearenddate" type="TIMESTAMP">
+            <column name="euyearenddate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "yearendrunnumber" type="VARCHAR">
+            <column name="yearendrunnumber" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "reason" type="VARCHAR">
+            <column name="reason" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "exchratecalctype" type="NUMBER(10,0)">
+            <column name="exchratecalctype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "postingdate" type="TIMESTAMP">
+            <column name="postingdate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "datawarehouserunnum" type="VARCHAR">
+            <column name="datawarehouserunnum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "crosscompliance" type="NUMBER(10,0)">
+            <column name="crosscompliance" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "penalty" type="NUMBER(10,0)">
+            <column name="penalty" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "exchfundedeur" type="NUMBER(32,6)">
+            <column name="exchfundedeur" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "exchfundedgbp" type="NUMBER(32,6)">
+            <column name="exchfundedgbp" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "festxnnum" type="VARCHAR">
+            <column name="festxnnum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "festxnlinenum" type="NUMBER(10,0)">
+            <column name="festxnlinenum" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "advpayflag" type="NUMBER(10,0)">
+            <column name="advpayflag" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "daxinvoicenum" type="VARCHAR">
+            <column name="daxinvoicenum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "dwhtxntype" type="VARCHAR">
+            <column name="dwhtxntype" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "retention" type="NUMBER(10,0)">
+            <column name="retention" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "dummyt104" type="NUMBER(10,0)">
+            <column name="dummyt104" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "f106gbp" type="NUMBER(32,6)">
+            <column name="f106gbp" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name = "schemeexchangerate" type="NUMBER(32,16)">
+            <column name="schemeexchangerate" type="NUMBER(32,16)">
                 <constraints nullable="true" />
             </column>
-            <column name = "agreementreference" type="VARCHAR">
+            <column name="agreementreference" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "oedate" type="TIMESTAMP">
+            <column name="oedate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "settlementvoucher1" type="VARCHAR">
+            <column name="settlementvoucher1" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "annexiitranstype" type="NUMBER(10,0)">
+            <column name="annexiitranstype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "bpallocationtype" type="NUMBER(10,0)">
+            <column name="bpallocationtype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "schemetype" type="NUMBER(10,0)">
+            <column name="schemetype" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "applicationreference" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-        <createTable tableName = "etl_stage_organisation">
-            <column name="change_type" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name="change_time" type="TIMESTAMP">
-                <constraints nullable="false" />
-            </column>
-            <column name = "etl_id" type="BIGSERIAL">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "organisation_wid" type="NUMBER(20,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "party_id" type="NUMBER(20,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "organisation_name" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "confirmed_flg" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "land_confirmed_flg" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "sbi" type="NUMBER(38,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "tax_registration_number" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "legal_status_type_id" type="NUMBER(38,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "business_reference" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "business_type_id" type="NUMBER(38,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "vendor_number" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "land_detailS_confirmed_dt_key" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "business_det_confirmed_dt_key" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "registration_date" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "charity_commission_regnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "companies_house_regnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "additional_businesses" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "amended" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "trader_number" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "date_started_farming" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name = "accountable_people_completed" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "financial_to_business_addr" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "corr_as_business_addr" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name = "last_updated_on" type="TIMESTAMP">
+            <column name="applicationreference" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
-        <createTable tableName = "etl_interm_calc_org">
-            <column name = "application_id" type="INTEGER">
+        <createTable tableName="etlStageOrganisation">
+            <column name="changeType" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "calculation_id" type="INTEGER">
+            <column name="changeTime" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "calculation_date" type="TIMESTAMP">
+            <column name="etlId" type="BIGSERIAL">
                 <constraints nullable="false" />
             </column>
-            <column name = "sbi" type="INTEGER">
-                <constraints nullable="false" />
-            </column>
-            <column name = "frn" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name = "id_clc_header" type="INTEGER">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-        </createTable>
-        <createTable tableName = "etl_interm_org">
-            <column name = "sbi" type="INTEGER">
-                <constraints nullable="false" />
-            </column>
-            <column name = "addressline1" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name = "addressline2" type="VARCHAR">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="organisationWid" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "addressline3" type="VARCHAR">
+            <column name="partyId" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "city" type="VARCHAR">
+            <column name="organisationName" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name = "county" type="VARCHAR">
+            <column name="confirmedFlg" type="NUMBER(1,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "postcode" type="VARCHAR">
+            <column name="landConfirmedFlg" type="NUMBER(1,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "emailaddress" type="VARCHAR">
+            <column name="sbi" type="NUMBER(38,0)">
                 <constraints nullable="true" />
             </column>
-            <column name = "frn" type="VARCHAR">
-                <constraints nullable="false" />
+            <column name="taxRegistrationNumber" type="VARCHAR">
+                <constraints nullable="true" />
             </column>
-            <column name = "name" type="VARCHAR">
-                <constraints nullable="false" />
+            <column name="legalStatusTypeId" type="NUMBER(38,0)">
+                <constraints nullable="true" />
             </column>
-            <column name = "party_id" type="INTEGER">
-                <constraints nullable="false" />
+            <column name="businessReference" type="VARCHAR">
+                <constraints nullable="true" />
             </column>
-            <column name = "updated" type="TIMESTAMP">
-                <constraints nullable="false" />
+            <column name="businessTypeId" type="NUMBER(38,0)">
+                <constraints nullable="true" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="vendorNumber" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="landDetailSConfirmedDtKey" type="NUMBER(10,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="businessDetConfirmedDtKey" type="NUMBER(10,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="registrationDate" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="charityCommissionRegnum" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="companiesHouseRegnum" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="additionalBusinesses" type="NUMBER(1,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="amended" type="NUMBER(1,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="traderNumber" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="dateStartedFarming" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="accountablePeopleCompleted" type="NUMBER(1,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="financialToBusinessAddr" type="NUMBER(1,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="corrAsBusinessAddr" type="NUMBER(1,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="lastUpdatedOn" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
         </createTable>
-        <createTable tableName = "etl_interm_application_claim">
-            <column name = "contract_id" type="INTEGER">
+        <createTable tableName="etlIntermCalcOrg">
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "claim_id" type="INTEGER">
+            <column name="calculationId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "agreement_id" type="INTEGER">
+            <column name="calculationDate" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "pkid" type="INTEGER">
+            <column name="sbi" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="frn" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="idClcHeader" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
-        <createTable tableName = "etl_interm_application_contract">
-            <column name = "contract_id" type="INTEGER">
+        <createTable tableName="etlIntermOrg">
+            <column name="sbi" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "agreementstart" type="TIMESTAMP">
+            <column name="addressline1" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "agreementend" type="TIMESTAMP">
+            <column name="addressline2" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="addressline3" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="city" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="county" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="postcode" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="emailaddress" type="VARCHAR">
+                <constraints nullable="true" />
+            </column>
+            <column name="frn" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "application_id" type="INTEGER">
+            <column name="name" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "pkid" type="INTEGER">
+            <column name="partyId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
-        <createTable tableName = "etl_interm_application_payment">
-            <column name = "application_id" type="INTEGER">
+        <createTable tableName="etlIntermApplicationClaim">
+            <column name="contractId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "invoice_number" type="VARCHAR">
+            <column name="claimId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "invoice_id" type="INTEGER">
+            <column name="agreementId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "id_clc_header" type="INTEGER">
+            <column name="pkid" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
-        <createTable tableName = "etl_interm_finance_dax">
-            <column name = "transdate" type="TIMESTAMP">
+        <createTable tableName="etlIntermApplicationContract">
+            <column name="contractId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "invoiceid" type="VARCHAR">
+            <column name="agreementstart" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "scheme" type="INTEGER">
+            <column name="agreementend" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "fund" type="VARCHAR">
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "marketingyear" type="INTEGER">
+            <column name="pkid" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "month" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name = "quarter" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name = "transaction_amount" type="NUMERIC">
-                <constraints nullable="false" />
-            </column>
-            <column name = "agreementreference" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name = "siti_invoice_id" type="INTEGER">
-                <constraints nullable="false" />
-            </column>
-            <column name = "claim_id" type="INTEGER">
-                <constraints nullable="false" />
-            </column>
-            <column name = "payment_ref" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name = "recid" type="NUMBER(19,0)">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
-        <createTable tableName = "etl_interm_total">
-            <column name = "payment_ref" type="VARCHAR">
+        <createTable tableName="etlIntermApplicationPayment">
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "quarter" type="VARCHAR">
+            <column name="invoiceNumber" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "total_amount" type="NUMERIC">
+            <column name="invoiceId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "transdate" type="TIMESTAMP">
+            <column name="idClcHeader" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "calculation_id" type="BIGSERIAL">
-                <constraints nullable="false" />
-            </column>
-            <column name = "invoiceid" type="VARCHAR">
-                <constraints nullable="false" />
-            </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
-        <createTable tableName = "etl_interm_total_claim">
-            <column name = "payment_ref" type="VARCHAR">
+        <createTable tableName="etlIntermFinanceDax">
+            <column name="transdate" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "claim_id" type="INTEGER">
+            <column name="invoiceid" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="scheme" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="fund" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="marketingyear" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="month" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="quarter" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="transactionAmount" type="NUMERIC">
+                <constraints nullable="false" />
+            </column>
+            <column name="agreementreference" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="sitiInvoiceId" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="claimId" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="paymentRef" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="recid" type="NUMBER(19,0)">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
-        <addUniqueConstraint  
-            columnNames="payment_ref, claim_id"
-            constraintName="uq_payment_ref_claim_id"
-            tableName="etl_interm_total_claim"
-            validate="true"/>
-        <createTable tableName = "etl_interm_paymentref_agreement_dateS">
-            <column name = "payment_ref" type="VARCHAR">
+        <createTable tableName="etlIntermTotal">
+            <column name="paymentRef" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "agreementstart" type="TIMESTAMP">
+            <column name="quarter" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "agreementend" type="TIMESTAMP">
+            <column name="totalAmount" type="NUMERIC">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="transdate" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="calculationId" type="BIGSERIAL">
+                <constraints nullable="false" />
+            </column>
+            <column name="invoiceid" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <createTable tableName="etlIntermTotalClaim">
+            <column name="paymentRef" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="claimId" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
         <addUniqueConstraint  
-            columnNames="payment_ref, agreementstart, agreementend"
-            constraintName="uq_payment_ref_agreement_date"
-            tableName="etl_interm_paymentref_agreement_dateS"
+            columnNames="paymentRef, claimId"
+            constraintName="uqPaymentRefClaimId"
+            tableName="etlIntermTotalClaim"
             validate="true"/>
-        <createTable tableName = "etl_interm_paymentref_org">
-            <column name = "payment_ref" type="VARCHAR">
+        <createTable tableName="etlIntermPaymentrefAgreementDateS">
+            <column name="paymentRef" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "sbi" type="VARCHAR">
+            <column name="agreementstart" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "frn" type="VARCHAR">
+            <column name="agreementend" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        <addUniqueConstraint  
+            columnNames="paymentRef, agreementstart, agreementend"
+            constraintName="uqPaymentRefAgreementDate"
+            tableName="etlIntermPaymentrefAgreementDateS"
+            validate="true"/>
+        <createTable tableName="etlIntermPaymentrefOrg">
+            <column name="paymentRef" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="sbi" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="frn" type="VARCHAR">
+                <constraints nullable="false" />
+            </column>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
         <addUniqueConstraint
-            columnNames="payment_ref, sbi, frn"
-            constraintName="uq_paymentref_org"
-            tableName="etl_interm_paymentref_org"
+            columnNames="paymentRef, sbi, frn"
+            constraintName="uqPaymentrefOrg"
+            tableName="etlIntermPaymentrefOrg"
             validate="true"/>
-        <createTable tableName = "etl_interm_paymentref_application">
-            <column name = "payment_ref" type="VARCHAR">
+        <createTable tableName="etlIntermPaymentrefApplication">
+            <column name="paymentRef" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "application_id" type="INTEGER">
+            <column name="applicationId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
         <addUniqueConstraint
-            columnNames="payment_ref, application_id"
-            constraintName="uq_paymentref_application"
-            tableName="etl_interm_paymentref_application"
+            columnNames="paymentRef, applicationId"
+            constraintName="uqPaymentrefApplication"
+            tableName="etlIntermPaymentrefApplication"
             validate="true"/>
-        <createTable tableName = "etl_stage_settlement">
-            <column name = "settlement_id" type="INTEGER">
+        <createTable tableName="etlStageSettlement">
+            <column name="settlementId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "payment_request_id" type="INTEGER">
+            <column name="paymentRequestId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "detail" type="VARCHAR">
+            <column name="detail" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "invalid" type="BOOLEAN">
+            <column name="invalid" type="BOOLEAN">
                 <constraints nullable="false" />
             </column>
-            <column name = "generated" type="BOOLEAN">
+            <column name="generated" type="BOOLEAN">
                 <constraints nullable="false" />
             </column>
-            <column name = "invoice_number" type="VARCHAR">
+            <column name="invoiceNumber" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "ledger" type="VARCHAR">
+            <column name="ledger" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "reference" type="VARCHAR">
+            <column name="reference" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "settled" type="BOOLEAN">
+            <column name="settled" type="BOOLEAN">
                 <constraints nullable="false" />
             </column>
-            <column name = "settlement_date" type="TIMESTAMP">
+            <column name="settlementDate" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "value" type="INTEGER">
+            <column name="value" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name = "source_system" type="VARCHAR">
+            <column name="sourceSystem" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "frn" type="BIGINT">
+            <column name="frn" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name = "received" type="TIMESTAMP">
+            <column name="received" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <createTable tableName = "etl_stage_log">
-            <column autoIncrement="true" name = "etl_id" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="etlId_pkey" />
+        <createTable tableName="etlStageLog">
+            <column autoIncrement="true" name="etlId" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlIdPkey" />
             </column>
-            <column name="etl_inserted_dt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name = "file" type="VARCHAR">
+            <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="file" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name = "started_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="startedAt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name = "ended_at" type="TIMESTAMP">
+            <column name="endedAt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name = "row_count" type="INTEGER">
+            <column name="rowCount" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "rows_loaded_count" type="INTEGER">
+            <column name="rowsLoadedCount" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "id_from" type="INTEGER">
+            <column name="idFrom" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name = "id_to" type="INTEGER">
+            <column name="idTo" type="INTEGER">
                 <constraints nullable="true" />
             </column>
         </createTable>

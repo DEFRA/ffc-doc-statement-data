@@ -1,17 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
   const etlStageDefraLinks = sequelize.define('etlStageDefraLinks', {
-    change_type: DataTypes.STRING,
-    change_time: DataTypes.DATE,
-    etl_id: DataTypes.INTEGER,
-    etl_inserted_dt: DataTypes.DATE,
-    defra_links_wid: DataTypes.INTEGER,
-    subject_id: DataTypes.INTEGER,
-    defra_id: DataTypes.INTEGER,
-    defra_type: DataTypes.STRING,
-    mdm_id: DataTypes.INTEGER
+    changeType: DataTypes.STRING,
+    changeTime: DataTypes.DATE,
+    etlId: DataTypes.INTEGER,
+    etlInsertedDt: DataTypes.DATE,
+    defraLinksWid: DataTypes.INTEGER,
+    subjectId: DataTypes.INTEGER,
+    defraId: DataTypes.INTEGER,
+    defraType: DataTypes.STRING,
+    mdmId: DataTypes.INTEGER
   },
   {
-    tableName: 'etl_stage_defra_links',
+    tableName: 'etlStageDefraLinks',
     freezeTableName: true,
     timestamps: false
   })

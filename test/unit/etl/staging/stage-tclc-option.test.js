@@ -45,21 +45,21 @@ test('stageTCLCOption downloads file and runs ETL process', async () => {
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
-    { column: 'CALCULATION_ID', targetColumn: 'calculation_id', targetType: 'number' },
-    { column: 'OP_CODE', targetColumn: 'op_code', targetType: 'varchar' },
-    { column: 'SCO_UOM', targetColumn: 'sco_uom', targetType: 'varchar' },
+    { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'APPLICATION_ID', targetColumn: 'applicationId', targetType: 'number' },
+    { column: 'CALCULATION_ID', targetColumn: 'calculationId', targetType: 'number' },
+    { column: 'OP_CODE', targetColumn: 'opCode', targetType: 'varchar' },
+    { column: 'SCO_UOM', targetColumn: 'scoUom', targetType: 'varchar' },
     { column: 'COMMITMENT', targetColumn: 'commitment', targetType: 'number' },
-    { column: 'COMMITMENT_VAL', targetColumn: 'commitment_val', targetType: 'number' },
-    { column: 'AGREE_AMOUNT', targetColumn: 'agree_amount', targetType: 'number' },
-    { column: 'CLAIMED_PAY_AMOUNT', targetColumn: 'claimed_pay_amount', targetType: 'number' },
-    { column: 'VERIF_PAY_AMOUNT', targetColumn: 'verify_pay_amount', targetType: 'number' },
-    { column: 'FOUND_AMOUNT', targetColumn: 'found_amount', targetType: 'number' },
-    { column: 'OVERD_REDUCT_AMOUNT', targetColumn: 'overd_reduct_amount', targetType: 'number' },
-    { column: 'OVERD_PENALTY_AMOUNT', targetColumn: 'overd_penalty_amount', targetType: 'number' },
-    { column: 'NET1_AMOUNT', targetColumn: 'net1_amount', targetType: 'number' }
+    { column: 'COMMITMENT_VAL', targetColumn: 'commitmentVal', targetType: 'number' },
+    { column: 'AGREE_AMOUNT', targetColumn: 'agreeAmount', targetType: 'number' },
+    { column: 'CLAIMED_PAY_AMOUNT', targetColumn: 'claimedPayAmount', targetType: 'number' },
+    { column: 'VERIF_PAY_AMOUNT', targetColumn: 'verifyPayAmount', targetType: 'number' },
+    { column: 'FOUND_AMOUNT', targetColumn: 'foundAmount', targetType: 'number' },
+    { column: 'OVERD_REDUCT_AMOUNT', targetColumn: 'overdReductAmount', targetType: 'number' },
+    { column: 'OVERD_PENALTY_AMOUNT', targetColumn: 'overdPenaltyAmount', targetType: 'number' },
+    { column: 'NET1_AMOUNT', targetColumn: 'net1Amount', targetType: 'number' }
   ]
 
   await stageTCLCOption()

@@ -7,13 +7,13 @@ const loadDAX = async (startDate, transaction) => {
       "paymentAmount", "transactionDate"
     )
     SELECT DISTINCT
-      T.payment_ref AS paymentReference,
-      T.calculation_id AS calculationId,
+      T.paymentRef AS paymentReference,
+      T.calculationId AS calculationId,
       T.quarter AS paymentPeriod, 
-      T.total_amount AS paymentAmount,
+      T.totalAmount AS paymentAmount,
       T.transdate AS transactionDate 
-    FROM etl_interm_total T
-    WHERE T.etl_inserted_dt > :startDate;
+    FROM etlIntermTotal T
+    WHERE T.etlInsertedDt > :startDate;
   `, {
     replacements: {
       startDate

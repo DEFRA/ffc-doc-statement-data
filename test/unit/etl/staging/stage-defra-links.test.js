@@ -32,33 +32,33 @@ describe('stageDefraLinks', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'SUBJECT_ID',
-        targetColumn: 'subject_id',
+        targetColumn: 'subjectId',
         targetType: 'number'
       },
       {
         column: 'DEFRA_ID',
-        targetColumn: 'defra_id',
+        targetColumn: 'defraId',
         targetType: 'varchar'
       },
       {
         column: 'DEFRA_TYPE',
-        targetColumn: 'defra_type',
+        targetColumn: 'defraType',
         targetType: 'varchar'
       },
       {
         column: 'MDM_ID',
-        targetColumn: 'mdm_id',
+        targetColumn: 'mdmId',
         targetType: 'number'
       }
     ]

@@ -33,33 +33,33 @@ describe('stageCalculationDetails', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'APPLICATION_ID',
-        targetColumn: 'application_id',
+        targetColumn: 'applicationId',
         targetType: 'number'
       },
       {
         column: 'ID_CLC_HEADER',
-        targetColumn: 'id_clc_header',
+        targetColumn: 'idClcHeader',
         targetType: 'number'
       },
       {
         column: 'CALCULATION_ID',
-        targetColumn: 'calculation_id',
+        targetColumn: 'calculationId',
         targetType: 'number'
       },
       {
         column: 'CALCULATION_DT',
-        targetColumn: 'calculation_dt',
+        targetColumn: 'calculationDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
