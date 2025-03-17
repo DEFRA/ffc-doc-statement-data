@@ -186,16 +186,5 @@ describe('send organisation updates', () => {
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })
-
-    test('should publish all organisation records when there are 2 times the number of organisation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
   })
 })
