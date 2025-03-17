@@ -94,6 +94,7 @@ describe('runEtlProcess', () => {
     storage.deleteFile.mockResolvedValue()
     db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
     db.etlStageLog.update.mockResolvedValue()
+    db.etlStageApplicationDetail.create.mockResolvedValue()
     db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 
