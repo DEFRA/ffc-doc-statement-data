@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermApplicationClaim = async (startDate) => {
+const loadIntermApplicationClaim = async (startDate, transaction) => {
   const tablesToCheck = [
     storageConfig.cssContractApplications.folder,
     storageConfig.cssContract.folder
@@ -65,7 +65,7 @@ const loadIntermApplicationClaim = async (startDate) => {
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing application claim records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
-      await executeQuery(query, {})
+      await executeQuery(query, {}, transaction)
     }
 
     console.log(`Processed application claim records for ${folder}`)

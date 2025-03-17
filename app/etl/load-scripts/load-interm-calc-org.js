@@ -81,7 +81,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     WHERE change_type = 'INSERT'
       OR (change_type = 'UPDATE' AND (calculation_id, id_clc_header) NOT IN (SELECT calculation_id, id_clc_header FROM updated_rows));
   `
-const loadIntermCalcOrg = async (startDate) => {
+const loadIntermCalcOrg = async (startDate, transaction) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -98,7 +98,7 @@ const loadIntermCalcOrg = async (startDate) => {
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing calcOrg records for ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
-      await executeQuery(query, {})
+      await executeQuery(query, {}, transaction)
     }
 
     console.log(`Processed calcOrg records for ${folder}`)

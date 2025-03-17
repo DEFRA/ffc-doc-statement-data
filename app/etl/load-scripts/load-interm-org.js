@@ -84,7 +84,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
 `
 
-const loadIntermOrg = async (startDate) => {
+const loadIntermOrg = async (startDate, transaction) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -101,7 +101,7 @@ const loadIntermOrg = async (startDate) => {
     for (let i = log.id_from; i <= log.id_to; i += batchSize) {
       console.log(`Processing org records for folder ${folder} ${i} - ${Math.min(i + batchSize - 1, log.id_to)}`)
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionScript)
-      await executeQuery(query, {})
+      await executeQuery(query, {}, transaction)
     }
 
     console.log(`Processed org records for folder ${folder}`)

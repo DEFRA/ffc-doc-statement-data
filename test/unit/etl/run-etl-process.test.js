@@ -12,12 +12,16 @@ jest.mock('../../../app/storage')
 jest.mock('../../../app/data', () => ({
   sequelize: {
     authenticate: jest.fn(),
-    close: jest.fn()
+    close: jest.fn(),
+    query: jest.fn()
   },
   Sequelize: jest.fn(),
   etlStageLog: {
     create: jest.fn(),
     update: jest.fn()
+  },
+  etlStageApplicationDetail: {
+    create: jest.fn()
   }
 }))
 jest.mock('../../../app/constants/table-mappings')
@@ -36,6 +40,7 @@ describe('runEtlProcess', () => {
     storage.deleteFile.mockResolvedValue()
     db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
     db.etlStageLog.update.mockResolvedValue()
+    db.etlStageApplicationDetail.create.mockResolvedValue()
     db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 
@@ -79,6 +84,7 @@ describe('runEtlProcess', () => {
     expect(result).toEqual([])
     expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
     expect(db.etlStageLog.update).toHaveBeenCalled()
+    expect(db.etlStageApplicationDetail.create).toHaveBeenCalled() // Check if create was called
   })
 
   test('should reject if an error occurs', async () => {
@@ -88,6 +94,7 @@ describe('runEtlProcess', () => {
     storage.deleteFile.mockResolvedValue()
     db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
     db.etlStageLog.update.mockResolvedValue()
+    db.etlStageApplicationDetail.create.mockResolvedValue() // Mocking the create function 
     db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 

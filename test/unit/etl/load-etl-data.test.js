@@ -62,12 +62,12 @@ describe('loadETLData', () => {
     expect(require('../../../app/data').sequelize.transaction).toHaveBeenCalledWith({
       isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
     })
-    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationClaim).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationContract).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationPayment).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermApplicationClaim).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermApplicationContract).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermApplicationPayment).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(loadIntermTotal).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(loadIntermTotalClaim).toHaveBeenCalledWith('2023-01-01', transaction)
@@ -88,7 +88,7 @@ describe('loadETLData', () => {
     expect(require('../../../app/data').sequelize.transaction).toHaveBeenCalledWith({
       isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
     })
-    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(transaction.commit).not.toHaveBeenCalled()
     expect(transaction.rollback).toHaveBeenCalled()
   })

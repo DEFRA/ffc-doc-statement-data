@@ -9,12 +9,12 @@ const loadETLData = async (startDate) => {
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
   })
   try {
-    await loadIntermFinanceDAX(startDate)
-    await loadIntermCalcOrg(startDate)
-    await loadIntermOrg(startDate)
-    await loadIntermApplicationClaim(startDate)
-    await loadIntermApplicationContract(startDate)
-    await loadIntermApplicationPayment(startDate)
+    await loadIntermFinanceDAX(startDate, transaction)
+    await loadIntermCalcOrg(startDate, transaction)
+    await loadIntermOrg(startDate, transaction)
+    await loadIntermApplicationClaim(startDate, transaction)
+    await loadIntermApplicationContract(startDate, transaction)
+    await loadIntermApplicationPayment(startDate, transaction)
     await loadIntermTotal(startDate, transaction)
     await loadDAX(startDate, transaction)
     await loadIntermTotalClaim(startDate, transaction)

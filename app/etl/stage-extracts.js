@@ -5,7 +5,6 @@ const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, 
 const { loadETLData } = require('./load-etl-data')
 const { storageConfig } = require('../config')
 const ora = require('ora')
-const { createTempTables } = require('./manage-temp-tables')
 
 let completed = 0
 
@@ -46,8 +45,6 @@ const stageExtracts = async () => {
   const etlFiles = await storage.getFileList()
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
   total = foldersToStage.length
-  await createTempTables()
-  console.log('temporary tables created')
   if (etlFiles.length) {
     for (const { fn, label } of stageFunctions) {
       if (foldersToStage.includes(label)) {
