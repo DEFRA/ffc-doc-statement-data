@@ -8,43 +8,15 @@ const { removeFirstLine, getFirstLineNumber } = require('./file-utils')
 
 const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer, nonProdTransformer, file }) => {
   const etl = new Etl.Etl()
-
   const sequelizeModelName = tableMappings[table]
   const initialRowCount = await db[sequelizeModelName]?.count()
   const idFrom = (await db[sequelizeModelName]?.max('etl_id') ?? 0) + 1
   const rowCount = await getFirstLineNumber(fileStream)
   fileStream = await removeFirstLine(fileStream)
+  console.log('got a file stream')
   const fileInProcess = await db.etlStageLog.create({
     file,
     row_count: rowCount
-  })
-
-  await db.etlStageApplicationDetail.create({
-    change_type: 'INSERT',
-    change_time: new Date(),
-    etl_id: idFrom,
-    etl_inserted_dt: new Date(),
-    pkid: 1002,
-    dt_insert: new Date(),
-    dt_delete: null,
-    subject_id: 2002,
-    ute_id: 3002,
-    application_id: 4002,
-    application_code: 'NEW_APP_CODE',
-    amended_app_id: 5002,
-    app_type_id: 6002,
-    proxy_id: 7002,
-    status_p_code: 'NEW_STATUS_P',
-    status_s_code: 'NEW_STATUS_S',
-    source_p_code: 'NEW_SOURCE_P',
-    source_s_code: 'NEW_SOURCE_S',
-    dt_start: '2023-10-02',
-    dt_end: '2023-11-01',
-    valid_start_flg: 'Y',
-    valid_end_flg: 'N',
-    app_id_start: 8002,
-    app_id_end: 9002,
-    dt_rec_update: new Date()
   })
 
   await db.sequelize.query(`INSERT INTO etl_stage_application_detail (

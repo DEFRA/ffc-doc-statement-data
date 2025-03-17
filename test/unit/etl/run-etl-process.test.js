@@ -84,7 +84,6 @@ describe('runEtlProcess', () => {
     expect(result).toEqual([])
     expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
     expect(db.etlStageLog.update).toHaveBeenCalled()
-    expect(db.etlStageApplicationDetail.create).toHaveBeenCalled() // Check if create was called
   })
 
   test('should reject if an error occurs', async () => {

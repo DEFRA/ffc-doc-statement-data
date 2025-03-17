@@ -58,7 +58,6 @@ const stageApplicationDetails = async () => {
     { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format: dateTimeFormat },
     { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
-
   return downloadAndProcessFile('applicationDetail', applicationDetail, columns, mapping)
 }
 
