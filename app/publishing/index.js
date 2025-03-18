@@ -13,6 +13,34 @@ const start = async () => {
     await sendUpdates(DAX)
     await sendUpdates(D365)
     console.log('All outstanding valid datasets published')
+    await db.sequelize.query(`INSERT INTO organisations (
+      sbi,
+      "addressLine1",
+      "addressLine2",
+      "addressLine3",
+      city,
+      county,
+      postcode,
+      "emailAddress",
+      frn,
+      name,
+      updated,
+      published
+    ) VALUES (
+      123456,
+      '123 Farm Lane',
+      'Rural Area',
+      NULL,
+      'Farmville',
+      'Countryside',
+      'AB12 3CD',
+      'farmer@example.com',
+      987654,
+      'Green Acres Farm',
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP
+    );
+    `)
     await db.sequelize.query(`INSERT INTO "etlStageApplicationDetail" (
       "changeType",
       "changeTime",
