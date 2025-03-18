@@ -1,20 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
   const etlStageAppsTypes = sequelize.define('etlStageAppsTypes', {
-    change_type: DataTypes.STRING,
-    change_time: DataTypes.DATE,
-    etl_id: DataTypes.INTEGER,
-    etl_inserted_dt: DataTypes.DATE,
-    app_type_id: DataTypes.INTEGER,
-    sector_p_code: DataTypes.STRING,
-    sector_s_code: DataTypes.STRING,
-    short_description: DataTypes.STRING,
-    ext_description: DataTypes.STRING,
+    changeType: DataTypes.STRING,
+    changeTime: DataTypes.DATE,
+    etlId: DataTypes.INTEGER,
+    etlInsertedDt: DataTypes.DATE,
+    appTypeId: DataTypes.INTEGER,
+    sectorPCode: DataTypes.STRING,
+    sectorSCode: DataTypes.STRING,
+    shortDescription: DataTypes.STRING,
+    extDescription: DataTypes.STRING,
     year: DataTypes.INTEGER,
-    win_open_date: DataTypes.DATE,
-    win_close_date: DataTypes.DATE
+    winOpenDate: DataTypes.DATE,
+    winCloseDate: DataTypes.DATE
   },
   {
-    tableName: 'etl_stage_apps_types',
+    tableName: 'etlStageAppsTypes',
     freezeTableName: true,
     timestamps: false
   })

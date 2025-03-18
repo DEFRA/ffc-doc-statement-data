@@ -40,16 +40,16 @@ test('stageAppsTypes downloads file and runs ETL process', async () => {
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'APP_TYPE_ID', targetColumn: 'app_type_id', targetType: 'number' },
-    { column: 'SECTOR_P_CODE', targetColumn: 'sector_p_code', targetType: 'varchar' },
-    { column: 'SECTOR_S_CODE', targetColumn: 'sector_s_code', targetType: 'varchar' },
-    { column: 'SHORT_DESCRIPTION', targetColumn: 'short_description', targetType: 'varchar' },
-    { column: 'EXT_DESCRIPTION', targetColumn: 'ext_description', targetType: 'varchar' },
+    { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'APP_TYPE_ID', targetColumn: 'appTypeId', targetType: 'number' },
+    { column: 'SECTOR_P_CODE', targetColumn: 'sectorPCode', targetType: 'varchar' },
+    { column: 'SECTOR_S_CODE', targetColumn: 'sectorSCode', targetType: 'varchar' },
+    { column: 'SHORT_DESCRIPTION', targetColumn: 'shortDescription', targetType: 'varchar' },
+    { column: 'EXT_DESCRIPTION', targetColumn: 'extDescription', targetType: 'varchar' },
     { column: 'YEAR', targetColumn: 'year', targetType: 'number' },
-    { column: 'WIN_OPEN_DATE', targetColumn: 'win_open_date', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'WIN_CLOSE_DATE', targetColumn: 'win_close_date', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' }
+    { column: 'WIN_OPEN_DATE', targetColumn: 'winOpenDate', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'WIN_CLOSE_DATE', targetColumn: 'winCloseDate', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' }
   ]
 
   await stageAppsTypes()

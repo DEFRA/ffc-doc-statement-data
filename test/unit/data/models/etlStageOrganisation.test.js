@@ -11,99 +11,99 @@ describe('etlStageOrganisation Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageOrganisation.getTableName()).toBe('etl_stage_organisation')
+    expect(etlStageOrganisation.getTableName()).toBe('etlStageOrganisation')
   })
 
   test('should have correct attributes', () => {
     const attributes = etlStageOrganisation.rawAttributes
 
-    expect(attributes.change_type).toBeDefined()
-    expect(attributes.change_type.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.changeType).toBeDefined()
+    expect(attributes.changeType.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.change_time).toBeDefined()
-    expect(attributes.change_time.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.changeTime).toBeDefined()
+    expect(attributes.changeTime.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.etl_id).toBeDefined()
-    expect(attributes.etl_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.etlId).toBeDefined()
+    expect(attributes.etlId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.etl_inserted_dt).toBeDefined()
-    expect(attributes.etl_inserted_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.etlInsertedDt).toBeDefined()
+    expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.organisation_wid).toBeDefined()
-    expect(attributes.organisation_wid.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.organisationWid).toBeDefined()
+    expect(attributes.organisationWid.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.party_id).toBeDefined()
-    expect(attributes.party_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.partyId).toBeDefined()
+    expect(attributes.partyId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.organisation_name).toBeDefined()
-    expect(attributes.organisation_name.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.organisationName).toBeDefined()
+    expect(attributes.organisationName.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.confirmed_flg).toBeDefined()
-    expect(attributes.confirmed_flg.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.confirmedFlg).toBeDefined()
+    expect(attributes.confirmedFlg.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.land_confirmed_flg).toBeDefined()
-    expect(attributes.land_confirmed_flg.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.landConfirmedFlg).toBeDefined()
+    expect(attributes.landConfirmedFlg.type.key).toBe(DataTypes.INTEGER.key)
 
     expect(attributes.sbi).toBeDefined()
     expect(attributes.sbi.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.tax_registration_number).toBeDefined()
-    expect(attributes.tax_registration_number.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.taxRegistrationNumber).toBeDefined()
+    expect(attributes.taxRegistrationNumber.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.legal_status_type_id).toBeDefined()
-    expect(attributes.legal_status_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.legalStatusTypeId).toBeDefined()
+    expect(attributes.legalStatusTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.business_reference).toBeDefined()
-    expect(attributes.business_reference.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.businessReference).toBeDefined()
+    expect(attributes.businessReference.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.business_type_id).toBeDefined()
-    expect(attributes.business_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.businessTypeId).toBeDefined()
+    expect(attributes.businessTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.vendor_number).toBeDefined()
-    expect(attributes.vendor_number.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.vendorNumber).toBeDefined()
+    expect(attributes.vendorNumber.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.land_details_confirmed_dt_key).toBeDefined()
-    expect(attributes.land_details_confirmed_dt_key.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.landDetailsConfirmedDtKey).toBeDefined()
+    expect(attributes.landDetailsConfirmedDtKey.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.business_det_confirmed_dt_key).toBeDefined()
-    expect(attributes.business_det_confirmed_dt_key.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.businessDetConfirmedDtKey).toBeDefined()
+    expect(attributes.businessDetConfirmedDtKey.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.registration_date).toBeDefined()
-    expect(attributes.registration_date.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.registrationDate).toBeDefined()
+    expect(attributes.registrationDate.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.charity_commission_regnum).toBeDefined()
-    expect(attributes.charity_commission_regnum.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.charityCommissionRegnum).toBeDefined()
+    expect(attributes.charityCommissionRegnum.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.companies_house_regnum).toBeDefined()
-    expect(attributes.companies_house_regnum.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.companiesHouseRegnum).toBeDefined()
+    expect(attributes.companiesHouseRegnum.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.additional_businesses).toBeDefined()
-    expect(attributes.additional_businesses.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.additionalBusinesses).toBeDefined()
+    expect(attributes.additionalBusinesses.type.key).toBe(DataTypes.INTEGER.key)
 
     expect(attributes.amended).toBeDefined()
     expect(attributes.amended.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.trader_number).toBeDefined()
-    expect(attributes.trader_number.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.traderNumber).toBeDefined()
+    expect(attributes.traderNumber.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.date_started_farming).toBeDefined()
-    expect(attributes.date_started_farming.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.dateStartedFarming).toBeDefined()
+    expect(attributes.dateStartedFarming.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.accountable_people_completed).toBeDefined()
-    expect(attributes.accountable_people_completed.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.accountablePeopleCompleted).toBeDefined()
+    expect(attributes.accountablePeopleCompleted.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.financial_to_business_addr).toBeDefined()
-    expect(attributes.financial_to_business_addr.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.financialToBusinessAddr).toBeDefined()
+    expect(attributes.financialToBusinessAddr.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.corr_as_business_addr).toBeDefined()
-    expect(attributes.corr_as_business_addr.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.corrAsBusinessAddr).toBeDefined()
+    expect(attributes.corrAsBusinessAddr.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.last_updated_on).toBeDefined()
-    expect(attributes.last_updated_on.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.lastUpdatedOn).toBeDefined()
+    expect(attributes.lastUpdatedOn.type.key).toBe(DataTypes.DATE.key)
   })
 
   test('should have correct options', () => {
-    expect(etlStageOrganisation.options.tableName).toBe('etl_stage_organisation')
+    expect(etlStageOrganisation.options.tableName).toBe('etlStageOrganisation')
     expect(etlStageOrganisation.options.freezeTableName).toBe(true)
     expect(etlStageOrganisation.options.timestamps).toBe(false)
   })

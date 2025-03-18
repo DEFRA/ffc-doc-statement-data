@@ -48,12 +48,12 @@ describe('stageCSSContract', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
@@ -64,102 +64,102 @@ describe('stageCSSContract', () => {
       },
       {
         column: 'INSERT_DT',
-        targetColumn: 'insert_dt',
+        targetColumn: 'insertDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'DELETE_DT',
-        targetColumn: 'delete_dt',
+        targetColumn: 'deleteDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'CONTRACT_ID',
-        targetColumn: 'contract_id',
+        targetColumn: 'contractId',
         targetType: 'number'
       },
       {
         column: 'CONTRACT_CODE',
-        targetColumn: 'contract_code',
+        targetColumn: 'contractCode',
         targetType: 'varchar'
       },
       {
         column: 'CONTRACT_TYPE_ID',
-        targetColumn: 'contract_type_id',
+        targetColumn: 'contractTypeId',
         targetType: 'number'
       },
       {
         column: 'CONTRACT_TYPE_DESCRIPTION',
-        targetColumn: 'contract_type_description',
+        targetColumn: 'contractTypeDescription',
         targetType: 'varchar'
       },
       {
         column: 'CONTRACT_DESCRIPTION',
-        targetColumn: 'contract_description',
+        targetColumn: 'contractDescription',
         targetType: 'varchar'
       },
       {
         column: 'CONTRACT_STATE_P_CODE',
-        targetColumn: 'contract_state_p_code',
+        targetColumn: 'contractStatePCode',
         targetType: 'varchar'
       },
       {
         column: 'CONTRACT_STATE_S_CODE',
-        targetColumn: 'contract_state_s_code',
+        targetColumn: 'contractStateSCode',
         targetType: 'varchar'
       },
       {
         column: 'DATA_SOURCE_P_CODE',
-        targetColumn: 'data_source_p_code',
+        targetColumn: 'dataSourcePCode',
         targetType: 'varchar'
       },
       {
         column: 'DATA_SOURCE_S_CODE',
-        targetColumn: 'data_source_s_code',
+        targetColumn: 'dataSourceSCode',
         targetType: 'varchar'
       },
       {
         column: 'START_DT',
-        targetColumn: 'start_dt',
+        targetColumn: 'startDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'END_DT',
-        targetColumn: 'end_dt',
+        targetColumn: 'endDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'VALID_START_FLAG',
-        targetColumn: 'valid_start_flag',
+        targetColumn: 'validStartFlag',
         targetType: 'varchar'
       },
       {
         column: 'VALID_END_FLAG',
-        targetColumn: 'valid_end_flag',
+        targetColumn: 'validEndFlag',
         targetType: 'varchar'
       },
       {
         column: 'START_ACT_ID',
-        targetColumn: 'start_act_id',
+        targetColumn: 'startActId',
         targetType: 'number'
       },
       {
         column: 'END_ACT_ID',
-        targetColumn: 'end_act_id',
+        targetColumn: 'endActId',
         targetType: 'number'
       },
       {
         column: 'LAST_UPDATE_DT',
-        targetColumn: 'last_update_dt',
+        targetColumn: 'lastUpdateDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'USER_FLD',
-        targetColumn: 'USER',
+        targetColumn: 'user',
         targetType: 'varchar'
       }
     ]

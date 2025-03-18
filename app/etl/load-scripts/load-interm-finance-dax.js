@@ -6,7 +6,7 @@ const delinkedAccountNumber = 10
 const defaultInvoicePattern = 'S%Z%'
 const delinkedInvoicePattern = 'D%Z%'
 
-const loadIntermFinanceDAX = async (startDate, folder = storageConfig.financeDAX.folder, accountnum = defaultAccountNumber, invoicePattern = defaultInvoicePattern) => {
+const loadIntermFinanceDAX = async (startDate, transaction, folder = storageConfig.financeDAX.folder, accountnum = defaultAccountNumber, invoicePattern = defaultInvoicePattern) => {
   const etlStageLog = await getEtlStageLogs(startDate, folder)
 
   if (!etlStageLog[0]) {
@@ -15,20 +15,20 @@ const loadIntermFinanceDAX = async (startDate, folder = storageConfig.financeDAX
 
   const query = intermFinanceDaxQuery(accountnum, invoicePattern)
   const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog[0].id_from
-  const idTo = etlStageLog[0].id_to
+  const idFrom = etlStageLog[0].idFrom
+  const idTo = etlStageLog[0].idTo
   for (let i = idFrom; i <= idTo; i += batchSize) {
     console.log(`Processing financeDAX records ${i} to ${Math.min(i + batchSize - 1, idTo)}`)
 
     await executeQuery(query, {
       idFrom,
       idTo: Math.min(i + batchSize - 1, idTo)
-    })
+    }, transaction)
   }
 }
 
-const loadIntermFinanceDAXDelinked = async (startDate) => {
-  return loadIntermFinanceDAX(startDate, storageConfig.financeDAXDelinked.folder, delinkedAccountNumber, delinkedInvoicePattern)
+const loadIntermFinanceDAXDelinked = async (startDate, transaction) => {
+  return loadIntermFinanceDAX(startDate, transaction, storageConfig.financeDAXDelinked.folder, delinkedAccountNumber, delinkedInvoicePattern)
 }
 
 module.exports = {

@@ -5,47 +5,47 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
   "calls": [
     [
       "
-  WITH new_data AS (
+  WITH newData AS (
     SELECT
       O.sbi,
-      A.business_address1 AS addressLine1,
-      A.business_address2 AS addressLine2,
-      A.business_address3 AS addressLine3,
-      A.business_city AS city,
-      A.business_county AS county,
-      A.business_post_code AS postcode,
-      A.business_email_addr AS emailaddress,
+      A.businessAddress1 AS addressLine1,
+      A.businessAddress2 AS addressLine2,
+      A.businessAddress3 AS addressLine3,
+      A.businessCity AS city,
+      A.businessCounty AS county,
+      A.businessPostCode AS postcode,
+      A.businessEmailAddr AS emailaddress,
       A.frn,
-      A.business_name AS name,
-      O.last_updated_on::date AS updated,
-      O.party_id,
-      O.change_type
-    FROM etl_stage_organisation O
-    LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi
-    WHERE O.etl_id BETWEEN 1 AND 2
+      A.businessName AS name,
+      O.lastUpdatedOn::date AS updated,
+      O.partyId,
+      O.changeType
+    FROM etlStageOrganisation O
+    LEFT JOIN etlStageBusinessAddressContactV A ON A.sbi = O.sbi
+    WHERE O.etlId BETWEEN 1 AND 2
       
   ),
-  updated_rows AS (
-    UPDATE etl_interm_org interm
+  updatedRows AS (
+    UPDATE etlIntermOrg interm
     SET
-      addressLine1 = new_data.addressLine1,
-      addressLine2 = new_data.addressLine2,
-      addressLine3 = new_data.addressLine3,
-      city = new_data.city,
-      county = new_data.county,
-      postcode = new_data.postcode,
-      emailaddress = new_data.emailaddress,
-      frn = new_data.frn,
-      sbi = new_data.sbi,
-      "name" = new_data.name,
-      updated = new_data.updated,
-      etl_inserted_dt = NOW()
-    FROM new_data
-    WHERE new_data.change_type = 'UPDATE'
-      AND interm.party_id = new_data.party_id
-    RETURNING interm.party_id
+      addressLine1 = newData.addressLine1,
+      addressLine2 = newData.addressLine2,
+      addressLine3 = newData.addressLine3,
+      city = newData.city,
+      county = newData.county,
+      postcode = newData.postcode,
+      emailaddress = newData.emailaddress,
+      frn = newData.frn,
+      sbi = newData.sbi,
+      "name" = newData.name,
+      updated = newData.updated,
+      etlInsertedDt = NOW()
+    FROM newData
+    WHERE newData.changeType = 'UPDATE'
+      AND interm.partyId = newData.partyId
+    RETURNING interm.partyId
   )
-  INSERT INTO etl_interm_org (
+  INSERT INTO etlIntermOrg (
     sbi,
     addressLine1,
     addressLine2,
@@ -56,7 +56,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     emailaddress,
     frn,
     "name",
-    party_id,
+    partyId,
     updated
   )
   SELECT
@@ -70,11 +70,11 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     emailaddress,
     frn,
     "name",
-    party_id,
+    partyId,
     updated
-  FROM new_data
-  WHERE change_type = 'INSERT'
-    OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
+  FROM newData
+  WHERE changeType = 'INSERT'
+    OR (changeType = 'UPDATE' AND partyId NOT IN (SELECT partyId FROM updatedRows));
 ",
       {
         "raw": true,
@@ -84,47 +84,47 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     ],
     [
       "
-  WITH new_data AS (
+  WITH newData AS (
     SELECT
       O.sbi,
-      A.business_address1 AS addressLine1,
-      A.business_address2 AS addressLine2,
-      A.business_address3 AS addressLine3,
-      A.business_city AS city,
-      A.business_county AS county,
-      A.business_post_code AS postcode,
-      A.business_email_addr AS emailaddress,
+      A.businessAddress1 AS addressLine1,
+      A.businessAddress2 AS addressLine2,
+      A.businessAddress3 AS addressLine3,
+      A.businessCity AS city,
+      A.businessCounty AS county,
+      A.businessPostCode AS postcode,
+      A.businessEmailAddr AS emailaddress,
       A.frn,
-      A.business_name AS name,
-      O.last_updated_on::date AS updated,
-      O.party_id,
-      O.change_type
-    FROM etl_stage_organisation O
-    LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi
-    WHERE O.etl_id BETWEEN 1 AND 2
-       AND O.etl_id NOT BETWEEN 1 AND 2
+      A.businessName AS name,
+      O.lastUpdatedOn::date AS updated,
+      O.partyId,
+      O.changeType
+    FROM etlStageOrganisation O
+    LEFT JOIN etlStageBusinessAddressContactV A ON A.sbi = O.sbi
+    WHERE O.etlId BETWEEN 1 AND 2
+       AND O.etlId NOT BETWEEN 1 AND 2
   ),
-  updated_rows AS (
-    UPDATE etl_interm_org interm
+  updatedRows AS (
+    UPDATE etlIntermOrg interm
     SET
-      addressLine1 = new_data.addressLine1,
-      addressLine2 = new_data.addressLine2,
-      addressLine3 = new_data.addressLine3,
-      city = new_data.city,
-      county = new_data.county,
-      postcode = new_data.postcode,
-      emailaddress = new_data.emailaddress,
-      frn = new_data.frn,
-      sbi = new_data.sbi,
-      "name" = new_data.name,
-      updated = new_data.updated,
-      etl_inserted_dt = NOW()
-    FROM new_data
-    WHERE new_data.change_type = 'UPDATE'
-      AND interm.party_id = new_data.party_id
-    RETURNING interm.party_id
+      addressLine1 = newData.addressLine1,
+      addressLine2 = newData.addressLine2,
+      addressLine3 = newData.addressLine3,
+      city = newData.city,
+      county = newData.county,
+      postcode = newData.postcode,
+      emailaddress = newData.emailaddress,
+      frn = newData.frn,
+      sbi = newData.sbi,
+      "name" = newData.name,
+      updated = newData.updated,
+      etlInsertedDt = NOW()
+    FROM newData
+    WHERE newData.changeType = 'UPDATE'
+      AND interm.partyId = newData.partyId
+    RETURNING interm.partyId
   )
-  INSERT INTO etl_interm_org (
+  INSERT INTO etlIntermOrg (
     sbi,
     addressLine1,
     addressLine2,
@@ -135,7 +135,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     emailaddress,
     frn,
     "name",
-    party_id,
+    partyId,
     updated
   )
   SELECT
@@ -149,11 +149,11 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     emailaddress,
     frn,
     "name",
-    party_id,
+    partyId,
     updated
-  FROM new_data
-  WHERE change_type = 'INSERT'
-    OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
+  FROM newData
+  WHERE changeType = 'INSERT'
+    OR (changeType = 'UPDATE' AND partyId NOT IN (SELECT partyId FROM updatedRows));
 ",
       {
         "raw": true,

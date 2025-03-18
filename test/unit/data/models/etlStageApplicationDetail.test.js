@@ -11,93 +11,93 @@ describe('etlStageApplicationDetail Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageApplicationDetail.getTableName()).toBe('etl_stage_application_detail')
+    expect(etlStageApplicationDetail.getTableName()).toBe('etlStageApplicationDetail')
   })
 
   test('should have correct attributes', () => {
     const attributes = etlStageApplicationDetail.rawAttributes
 
-    expect(attributes.change_type).toBeDefined()
-    expect(attributes.change_type.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.changeType).toBeDefined()
+    expect(attributes.changeType.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.change_time).toBeDefined()
-    expect(attributes.change_time.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.changeTime).toBeDefined()
+    expect(attributes.changeTime.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.etl_id).toBeDefined()
-    expect(attributes.etl_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.etlId).toBeDefined()
+    expect(attributes.etlId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.etl_inserted_dt).toBeDefined()
-    expect(attributes.etl_inserted_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.etlInsertedDt).toBeDefined()
+    expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
 
     expect(attributes.pkid).toBeDefined()
     expect(attributes.pkid.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.dt_insert).toBeDefined()
-    expect(attributes.dt_insert.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.dtInsert).toBeDefined()
+    expect(attributes.dtInsert.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.dt_delete).toBeDefined()
-    expect(attributes.dt_delete.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.dtDelete).toBeDefined()
+    expect(attributes.dtDelete.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.subject_id).toBeDefined()
-    expect(attributes.subject_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.subjectId).toBeDefined()
+    expect(attributes.subjectId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.ute_id).toBeDefined()
-    expect(attributes.ute_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.uteId).toBeDefined()
+    expect(attributes.uteId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.application_id).toBeDefined()
-    expect(attributes.application_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.applicationId).toBeDefined()
+    expect(attributes.applicationId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.application_code).toBeDefined()
-    expect(attributes.application_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.applicationCode).toBeDefined()
+    expect(attributes.applicationCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.amended_app_id).toBeDefined()
-    expect(attributes.amended_app_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.amendedAppId).toBeDefined()
+    expect(attributes.amendedAppId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.app_type_id).toBeDefined()
-    expect(attributes.app_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.appTypeId).toBeDefined()
+    expect(attributes.appTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.proxy_id).toBeDefined()
-    expect(attributes.proxy_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.proxyId).toBeDefined()
+    expect(attributes.proxyId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.status_p_code).toBeDefined()
-    expect(attributes.status_p_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.statusPCode).toBeDefined()
+    expect(attributes.statusPCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.status_s_code).toBeDefined()
-    expect(attributes.status_s_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.statusSCode).toBeDefined()
+    expect(attributes.statusSCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.source_p_code).toBeDefined()
-    expect(attributes.source_p_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.sourcePCode).toBeDefined()
+    expect(attributes.sourcePCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.source_s_code).toBeDefined()
-    expect(attributes.source_s_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.sourceSCode).toBeDefined()
+    expect(attributes.sourceSCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.dt_start).toBeDefined()
-    expect(attributes.dt_start.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.dtStart).toBeDefined()
+    expect(attributes.dtStart.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.dt_end).toBeDefined()
-    expect(attributes.dt_end.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.dtEnd).toBeDefined()
+    expect(attributes.dtEnd.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.valid_start_flg).toBeDefined()
-    expect(attributes.valid_start_flg.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.validStartFlg).toBeDefined()
+    expect(attributes.validStartFlg.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.valid_end_flg).toBeDefined()
-    expect(attributes.valid_end_flg.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.validEndFlg).toBeDefined()
+    expect(attributes.validEndFlg.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.app_id_start).toBeDefined()
-    expect(attributes.app_id_start.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.appIdStart).toBeDefined()
+    expect(attributes.appIdStart.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.app_id_end).toBeDefined()
-    expect(attributes.app_id_end.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.appIdEnd).toBeDefined()
+    expect(attributes.appIdEnd.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.dt_rec_update).toBeDefined()
-    expect(attributes.dt_rec_update.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.dtRecUpdate).toBeDefined()
+    expect(attributes.dtRecUpdate.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.user_id).toBeDefined()
-    expect(attributes.user_id.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.userId).toBeDefined()
+    expect(attributes.userId.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {
-    expect(etlStageApplicationDetail.options.tableName).toBe('etl_stage_application_detail')
+    expect(etlStageApplicationDetail.options.tableName).toBe('etlStageApplicationDetail')
     expect(etlStageApplicationDetail.options.freezeTableName).toBe(true)
     expect(etlStageApplicationDetail.options.timestamps).toBe(false)
   })

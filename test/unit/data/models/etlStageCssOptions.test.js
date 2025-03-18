@@ -11,57 +11,57 @@ describe('etlStageCssOptions Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageCssOptions.getTableName()).toBe('etl_stage_css_options')
+    expect(etlStageCssOptions.getTableName()).toBe('etlStageCssOptions')
   })
 
   test('should have correct attributes', () => {
     const attributes = etlStageCssOptions.rawAttributes
 
-    expect(attributes.change_type).toBeDefined()
-    expect(attributes.change_type.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.changeType).toBeDefined()
+    expect(attributes.changeType.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.change_time).toBeDefined()
-    expect(attributes.change_time.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.changeTime).toBeDefined()
+    expect(attributes.changeTime.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.etl_id).toBeDefined()
-    expect(attributes.etl_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.etlId).toBeDefined()
+    expect(attributes.etlId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.etl_inserted_dt).toBeDefined()
-    expect(attributes.etl_inserted_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.etlInsertedDt).toBeDefined()
+    expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.css_option_id).toBeDefined()
-    expect(attributes.css_option_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.cssOptionId).toBeDefined()
+    expect(attributes.cssOptionId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.option_type_id).toBeDefined()
-    expect(attributes.option_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.optionTypeId).toBeDefined()
+    expect(attributes.optionTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.option_description).toBeDefined()
-    expect(attributes.option_description.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.optionDescription).toBeDefined()
+    expect(attributes.optionDescription.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.option_long_description).toBeDefined()
-    expect(attributes.option_long_description.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.optionLongDescription).toBeDefined()
+    expect(attributes.optionLongDescription.type.key).toBe(DataTypes.STRING.key)
 
     expect(attributes.duration).toBeDefined()
     expect(attributes.duration.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.option_code).toBeDefined()
-    expect(attributes.option_code.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.optionCode).toBeDefined()
+    expect(attributes.optionCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.contract_type_id).toBeDefined()
-    expect(attributes.contract_type_id.type.key).toBe(DataTypes.INTEGER.key)
+    expect(attributes.contractTypeId).toBeDefined()
+    expect(attributes.contractTypeId.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.start_dt).toBeDefined()
-    expect(attributes.start_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.startDt).toBeDefined()
+    expect(attributes.startDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.end_dt).toBeDefined()
-    expect(attributes.end_dt.type.key).toBe(DataTypes.DATE.key)
+    expect(attributes.endDt).toBeDefined()
+    expect(attributes.endDt.type.key).toBe(DataTypes.DATE.key)
 
-    expect(attributes.group_id).toBeDefined()
-    expect(attributes.group_id.type.key).toBe(DataTypes.STRING.key)
+    expect(attributes.groupId).toBeDefined()
+    expect(attributes.groupId.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {
-    expect(etlStageCssOptions.options.tableName).toBe('etl_stage_css_options')
+    expect(etlStageCssOptions.options.tableName).toBe('etlStageCssOptions')
     expect(etlStageCssOptions.options.freezeTableName).toBe(true)
     expect(etlStageCssOptions.options.timestamps).toBe(false)
   })

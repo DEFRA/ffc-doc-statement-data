@@ -63,7 +63,6 @@ const stageExtracts = async () => {
   const etlFiles = await storage.getFileList()
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
   total = foldersToStage.length
-
   if (etlFiles.length) {
     for (const { fn, label } of stageFunctions) {
       if (foldersToStage.includes(label)) {

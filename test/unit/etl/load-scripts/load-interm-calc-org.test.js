@@ -25,7 +25,7 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', id_from: 1, id_to: 2 }, { file: 'Apps_Payment_Notification/export.csv', id_from: 3, id_to: 4 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', idFrom: 1, idTo: 2 }, { file: 'Apps_Payment_Notification/export.csv', idFrom: 3, idTo: 4 }])
 
     await expect(loadIntermCalcOrg(startDate)).rejects.toThrow(
       `Multiple records found for updates to ${storageConfig.appsPaymentNotification.folder}, expected only one`
@@ -40,73 +40,73 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should call sequelize.query with correct SQL and parameters', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', id_from: 1, id_to: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', idFrom: 1, idTo: 2 }])
 
     await loadIntermCalcOrg(startDate)
 
     expect(db.sequelize.query).toHaveBeenCalledWith(`
-    WITH new_data AS (
+    WITH newData AS (
       SELECT
-        CD.calculation_id,
+        CD.calculationId,
         BAC.sbi,
         BAC.frn,
-        CD.application_id,
-        CD.calculation_dt,
-        CD.id_clc_header,
-        APN.change_type
-      FROM etl_stage_apps_payment_notification APN
-      INNER JOIN etl_stage_css_contract_applications CLAIM 
-        ON CLAIM.application_id = APN.application_id 
-        AND CLAIM.data_source_s_code = 'CAPCLM'
-      INNER JOIN etl_stage_css_contract_applications APP 
-        ON APP.contract_id = CLAIM.contract_id 
-        AND APP.data_source_s_code = '000001'
-      INNER JOIN etl_interm_finance_dax D 
-        ON D.claim_id = CLAIM.application_id
-      INNER JOIN etl_stage_finance_dax SD 
+        CD.applicationId,
+        CD.calculationDt,
+        CD.idClcHeader,
+        APN.changeType
+      FROM etlStageAppsPaymentNotification APN
+      INNER JOIN etlStageCssContractApplications CLAIM 
+        ON CLAIM.applicationId = APN.applicationId 
+        AND CLAIM.dataSourceSCode = 'CAPCLM'
+      INNER JOIN etlStageCssContractApplications APP 
+        ON APP.contractId = CLAIM.contractId 
+        AND APP.dataSourceSCode = '000001'
+      INNER JOIN etlIntermFinanceDax D 
+        ON D.claimId = CLAIM.applicationId
+      INNER JOIN etlStageFinanceDax SD 
         ON SD.invoiceid = D.invoiceid
-      INNER JOIN etl_stage_business_address_contact_v BAC 
+      INNER JOIN etlStageBusinessAddressContactV BAC 
         ON BAC.frn = SD.custvendac
-      INNER JOIN etl_stage_calculation_details CD 
-        ON CD.application_id = APN.application_id 
-        AND CD.id_clc_header = APN.id_clc_header
+      INNER JOIN etlStageCalculationDetails CD 
+        ON CD.applicationId = APN.applicationId 
+        AND CD.idClcHeader = APN.idClcHeader
         AND CD.ranked = 1
-      WHERE APN.notification_flag = 'P'
-        AND APN.etl_id BETWEEN 1 AND 2
+      WHERE APN.notificationFlag = 'P'
+        AND APN.etlId BETWEEN 1 AND 2
         
-      GROUP BY CD.calculation_id, BAC.sbi, BAC.frn, CD.application_id, CD.calculation_dt, CD.id_clc_header, APN.change_type
+      GROUP BY CD.calculationId, BAC.sbi, BAC.frn, CD.applicationId, CD.calculationDt, CD.idClcHeader, APN.changeType
     ),
-    updated_rows AS (
-      UPDATE etl_interm_calc_org interm
+    updatedRows AS (
+      UPDATE etlIntermCalcOrg interm
       SET
-        sbi = new_data.sbi,
-        frn = new_data.frn,
-        calculation_date = new_data.calculation_dt,
-        etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.calculation_id = new_data.calculation_id
-        AND interm.id_clc_header = new_data.id_clc_header
-      RETURNING interm.calculation_id, interm.id_clc_header
+        sbi = newData.sbi,
+        frn = newData.frn,
+        calculationDate = newData.calculationDt,
+        etlInsertedDt = NOW()
+      FROM newData
+      WHERE newData.changeType = 'UPDATE'
+        AND interm.calculationId = newData.calculationId
+        AND interm.idClcHeader = newData.idClcHeader
+      RETURNING interm.calculationId, interm.idClcHeader
     )
-    INSERT INTO etl_interm_calc_org (
-      calculation_id,
+    INSERT INTO etlIntermCalcOrg (
+      calculationId,
       sbi,
       frn,
-      application_id,
-      calculation_date,
-      id_clc_header
+      applicationId,
+      calculationDate,
+      idClcHeader
     )
     SELECT
-      calculation_id,
+      calculationId,
       sbi,
       frn,
-      application_id,
-      calculation_dt,
-      id_clc_header
-    FROM new_data
-    WHERE change_type = 'INSERT'
-      OR (change_type = 'UPDATE' AND (calculation_id, id_clc_header) NOT IN (SELECT calculation_id, id_clc_header FROM updated_rows));
+      applicationId,
+      calculationDt,
+      idClcHeader
+    FROM newData
+    WHERE changeType = 'INSERT'
+      OR (changeType = 'UPDATE' AND (calculationId, idClcHeader) NOT IN (SELECT calculationId, idClcHeader FROM updatedRows));
   `, {
       replacements: {},
       raw: true,
@@ -115,7 +115,7 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should handle errors thrown by sequelize.query', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', id_from: 1, id_to: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', idFrom: 1, idTo: 2 }])
     db.sequelize.query.mockRejectedValue(new Error('Query failed'))
 
     await expect(loadIntermCalcOrg(startDate)).rejects.toThrow('Query failed')

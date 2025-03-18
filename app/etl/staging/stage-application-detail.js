@@ -60,7 +60,6 @@ const stageApplicationDetails = async (monthDayFormat = false, folder = 'applica
     { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format },
     { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
-
   return downloadAndProcessFile(folder, applicationDetail, columns, mapping)
 }
 

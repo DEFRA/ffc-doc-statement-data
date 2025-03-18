@@ -27,15 +27,19 @@ const removeFirstLine = (stream) => {
         if (lines.length > 1) {
           this.push(lines.slice(1).join('\n') + (lines[lines.length - 1] ? '\n' : ''))
         }
-        callback()
       } else {
-        callback(null, chunk)
+        this.push(chunk)
       }
+      callback()
+    },
+    flush (callback) {
+      callback()
     }
   })
 
   return stream.pipe(transformStream)
 }
+
 module.exports = {
   removeFirstLine,
   getFirstLineNumber
