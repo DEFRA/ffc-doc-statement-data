@@ -23,12 +23,12 @@ describe('loadOrganisations', () => {
       "name", updated
     )
     SELECT
-      sbi, addressLine1, addressLine2,
-      addressLine3, city, county,
-      SUBSTRING(postcode,1,7), emailAddress, frn::integer,
+      sbi, "addressLine1", "addressLine2",
+      "addressLine3", city, county,
+      SUBSTRING(postcode,1,7), "emailAddress", frn::integer,
       "name", NOW()
-    FROM etlIntermOrg O
-    WHERE O.etlInsertedDt > :startDate;
+    FROM "etlIntermOrg" O
+    WHERE O."etlInsertedDt" > :startDate;
   `
 
     expect(db.sequelize.query).toHaveBeenCalledWith(expected,

@@ -18,68 +18,68 @@ const folderToAliasMap = {
 }
 
 const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH newData AS (
+    WITH newdata AS (
       SELECT
-        CD.calculationId,
+        CD."calculationId",
         BAC.sbi,
         BAC.frn,
-        CD.applicationId,
-        CD.calculationDt,
-        CD.idClcHeader,
-        ${tableAlias}.changeType
-      FROM etlStageAppsPaymentNotification APN
-      INNER JOIN etlStageCssContractApplications CLAIM 
-        ON CLAIM.applicationId = APN.applicationId 
-        AND CLAIM.dataSourceSCode = 'CAPCLM'
-      INNER JOIN etlStageCssContractApplications APP 
-        ON APP.contractId = CLAIM.contractId 
-        AND APP.dataSourceSCode = '000001'
-      INNER JOIN etlIntermFinanceDax D 
-        ON D.claimId = CLAIM.applicationId
-      INNER JOIN etlStageFinanceDax SD 
+        CD."applicationId",
+        CD."calculationDt",
+        CD."idClcHeader",
+        ${tableAlias}."changeType"
+      FROM "etlStageAppsPaymentNotification" APN
+      INNER JOIN "etlStageCssContractApplications" CLAIM 
+        ON CLAIM."applicationId" = APN."applicationId" 
+        AND CLAIM."dataSourceSCode" = 'CAPCLM'
+      INNER JOIN "etlStageCssContractApplications" APP 
+        ON APP."contractId" = CLAIM."contractId" 
+        AND APP."dataSourceSCode" = '000001'
+      INNER JOIN "etlIntermFinanceDax" D 
+        ON D."claimId" = CLAIM."applicationId"
+      INNER JOIN "etlStageFinanceDax" SD 
         ON SD.invoiceid = D.invoiceid
-      INNER JOIN etlStageBusinessAddressContactV BAC 
+      INNER JOIN "etlStageBusinessAddressContactV" BAC 
         ON BAC.frn = SD.custvendac
-      INNER JOIN etlStageCalculationDetails CD 
-        ON CD.applicationId = APN.applicationId 
-        AND CD.idClcHeader = APN.idClcHeader
+      INNER JOIN "etlStageCalculationDetails" CD 
+        ON CD."applicationId" = APN."applicationId" 
+        AND CD."idClcHeader" = APN."idClcHeader"
         AND CD.ranked = 1
-      WHERE APN.notificationFlag = 'P'
-        AND ${tableAlias}.etlId BETWEEN ${idFrom} AND ${idTo}
+      WHERE APN."notificationFlag" = 'P'
+        AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY CD.calculationId, BAC.sbi, BAC.frn, CD.applicationId, CD.calculationDt, CD.idClcHeader, ${tableAlias}.changeType
+      GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", ${tableAlias}."changeType"
     ),
-    updatedRows AS (
-      UPDATE etlIntermCalcOrg interm
+    updatedrows AS (
+      UPDATE "etlIntermCalcOrg" interm
       SET
-        sbi = newData.sbi,
-        frn = newData.frn,
-        calculationDate = newData.calculationDt,
-        etlInsertedDt = NOW()
-      FROM newData
-      WHERE newData.changeType = 'UPDATE'
-        AND interm.calculationId = newData.calculationId
-        AND interm.idClcHeader = newData.idClcHeader
-      RETURNING interm.calculationId, interm.idClcHeader
+        sbi = newdata.sbi,
+        frn = newdata.frn,
+        "calculationDate" = newdata."calculationDt",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm."calculationId" = newdata."calculationId"
+        AND interm."idClcHeader" = newdata."idClcHeader"
+      RETURNING interm."calculationId", interm."idClcHeader"
     )
-    INSERT INTO etlIntermCalcOrg (
-      calculationId,
+    INSERT INTO "etlIntermCalcOrg" (
+      "calculationId",
       sbi,
       frn,
-      applicationId,
-      calculationDate,
-      idClcHeader
+      "applicationId",
+      "calculationDate",
+      "idClcHeader"
     )
     SELECT
-      calculationId,
+      "calculationId",
       sbi,
       frn,
-      applicationId,
-      calculationDt,
-      idClcHeader
-    FROM newData
-    WHERE changeType = 'INSERT'
-      OR (changeType = 'UPDATE' AND (calculationId, idClcHeader) NOT IN (SELECT calculationId, idClcHeader FROM updatedRows));
+      "applicationId",
+      "calculationDt",
+      "idClcHeader"
+    FROM newdata
+    WHERE "changeType" = 'INSERT'
+      OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
   `
 const loadIntermCalcOrg = async (startDate, transaction) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
@@ -102,7 +102,7 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
     }
 
     console.log(`Processed calcOrg records for ${folder}`)
-    exclusionScript += ` AND ${tableAlias}.etlId NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

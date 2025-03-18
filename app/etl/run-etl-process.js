@@ -41,7 +41,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
   const { writable, getData } = collectData()
   fileStream.pipe(writable)
 
-  await db.sequelize.query(`INSERT INTO etlStageApplicationDetail (
+  await db.sequelize.query(`INSERT INTO "etlStageApplicationDetail" (
     changeType,
     changeTime,
     etlId,
@@ -137,7 +137,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             const idTo = await db[sequelizeModelName]?.max('etlId') ?? 0
             await db.etlStageLog.update(
               {
-                rows_loadedCount: newRowCount - initialRowCount,
+                rowsLoadedCount: newRowCount - initialRowCount,
                 idTo,
                 idFrom: idFrom < idTo ? idFrom : idTo,
                 endedAt: new Date()

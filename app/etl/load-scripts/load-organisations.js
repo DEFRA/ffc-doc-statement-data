@@ -9,12 +9,12 @@ const loadOrganisations = async (startDate, transaction) => {
       "name", updated
     )
     SELECT
-      sbi, addressLine1, addressLine2,
-      addressLine3, city, county,
-      SUBSTRING(postcode,1,7), emailAddress, frn::integer,
+      sbi, "addressLine1", "addressLine2",
+      "addressLine3", city, county,
+      SUBSTRING(postcode,1,7), "emailAddress", frn::integer,
       "name", NOW()
-    FROM etlIntermOrg O
-    WHERE O.etlInsertedDt > :startDate;
+    FROM "etlIntermOrg" O
+    WHERE O."etlInsertedDt" > :startDate;
   `
 
   await executeQuery(query, {

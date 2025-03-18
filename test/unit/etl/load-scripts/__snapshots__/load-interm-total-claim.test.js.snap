@@ -5,13 +5,13 @@ exports[`loadIntermTotalClaim should call sequelize.query with correct SQL and p
   "calls": [
     [
       "
-    INSERT INTO etlIntermTotalClaim (claimId, paymentRef)
+    INSERT INTO "etlIntermTotalClaim" ("claimId", "paymentRef")
     SELECT
-      (SELECT claimId FROM etlIntermFinanceDax WHERE paymentRef = T.paymentRef LIMIT 1) as applicationId,
-      T.paymentRef
-    FROM etlIntermTotal T
-    WHERE T.etlInsertedDt > :startDate
-    ON CONFLICT (claimId, paymentRef) DO NOTHING;
+      (SELECT "claimId" FROM "etlIntermFinanceDax" WHERE "paymentRef" = T."paymentRef" LIMIT 1) as "applicationId",
+      T."paymentRef"
+    FROM "etlIntermTotal" T
+    WHERE T."etlInsertedDt" > :startDate
+    ON CONFLICT ("claimId", "paymentRef") DO NOTHING;
   ",
       {
         "raw": true,

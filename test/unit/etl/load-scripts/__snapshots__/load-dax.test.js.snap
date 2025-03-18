@@ -10,13 +10,13 @@ exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`]
       "paymentAmount", "transactionDate"
     )
     SELECT DISTINCT
-      T.paymentRef AS paymentReference,
-      T.calculationId AS calculationId,
-      T.quarter AS paymentPeriod, 
-      T.totalAmount AS paymentAmount,
-      T.transdate AS transactionDate 
-    FROM etlIntermTotal T
-    WHERE T.etlInsertedDt > :startDate;
+      T."paymentRef" AS "paymentReference",
+      T."calculationId" AS "calculationId",
+      T.quarter AS "paymentPeriod", 
+      T."totalAmount" AS "paymentAmount",
+      T.transdate AS "transactionDate" 
+    FROM "etlIntermTotal" T
+    WHERE T."etlInsertedDt" > :startDate;
   ",
       {
         "raw": true,
