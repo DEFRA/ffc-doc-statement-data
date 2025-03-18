@@ -8,7 +8,7 @@ const getEtlStageLogs = async (startDate, folder) => {
       const logs = await db.etlStageLog.findAll({
         where: {
           file: `${f}/export.csv`,
-          ended_at: {
+          endedAt: {
             [db.Sequelize.Op.gt]: startDate
           }
         }
