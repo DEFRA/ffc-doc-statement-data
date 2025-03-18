@@ -8,15 +8,15 @@
       <column name="CALCULATION_ID"/>
     </createIndex>
 
-    <createIndex indexName="idx_etlStageCalculationDetailsApplicationId" tableName="ETL_STAGE_CALCULATION_DETAILS">
-      <column name="APPLICATION_ID"/>
+    <createIndex indexName="idx_etlStageCalculationDetailsApplicationId" tableName="etlStageCalculationDetails">
+      <column name="applicationId"/>
     </createIndex>
 
-    <createIndex indexName="idx_etlStageOrganisationPartyId" tableName="ETL_STAGE_ORGANISATION">
-      <column name="PARTY_ID"/>
+    <createIndex indexName="idx_etlStageOrganisationPartyId" tableName="etlStageOrganisation">
+      <column name="partyId"/>
     </createIndex>
 
-    <createIndex indexName="idx_etlStageBusinessAddressContactVSbi" tableName="ETL_STAGE_BUSINESS_ADDRESS_CONTACT_V">
+    <createIndex indexName="idx_etlStageBusinessAddressContactVSbi" tableName="etlStageBusinessAddressContactV">
       <column name="SBI"/>
     </createIndex>
 

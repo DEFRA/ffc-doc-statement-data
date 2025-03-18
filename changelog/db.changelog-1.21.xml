@@ -6,39 +6,35 @@
     </changeSet>
 
     <changeSet id="2" author="John Barnard">
-        <createIndex indexName="idx_etlIntermTotalCalculationId" tableName="ETL_INTERM_TOTAL">
-            <column name="CALCULATION_ID"/>
+        <createIndex indexName="idx_etlIntermTotalCalculationId" tableName="etlIntermTotal">
+            <column name="calculationId"/>
         </createIndex>
-        <createIndex indexName="idx_etlStageCalculationDetailsCalculationId" tableName="ETL_STAGE_CALCULATION_DETAILS">
-            <column name="CALCULATION_ID"/>
+        <createIndex indexName="idx_etlStageCalculationDetailsCalculationId" tableName="etlStageCalculationDetails">
+            <column name="calculationId"/>
         </createIndex>
 
         <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsCalculationIdIdx" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
             <column name="CALCULATION_ID"/>
         </createIndex>
 
-        <createIndex indexName="idx_etlStageCalculationDetailsApplicationIdIdx" tableName="ETL_STAGE_CALCULATION_DETAILS">
-            <column name="APPLICATION_ID"/>
-        </createIndex>
-
-        <createIndex indexName="idx_etlStageOrganisationSbiIdx" tableName="ETL_STAGE_ORGANISATION">
+        <createIndex indexName="idx_etlStageOrganisationSbiIdx" tableName="etlStageOrganisation">
             <column name="SBI"/>
         </createIndex>
 
-        <createIndex indexName="idx_etlStageBusinessAddressContactVFrnIdx" tableName="ETL_STAGE_BUSINESS_ADDRESS_CONTACT_V">
+        <createIndex indexName="idx_etlStageBusinessAddressContactVFrnIdx" tableName="etlStageBusinessAddressContactV">
             <column name="FRN"/>
         </createIndex>
 
-        <createIndex indexName="idx_etlIntermTotalTotalAmountIdx" tableName="ETL_INTERM_TOTAL">
-            <column name="TOTAL_AMOUNT"/>
+        <createIndex indexName="idx_etlIntermTotalTotalAmountIdx" tableName="etlIntermTotal">
+            <column name="totalAmount"/>
         </createIndex>
 
-        <createIndex indexName="idx_etlStageDefraLinksSubjectId" tableName="ETL_STAGE_DEFRA_LINKS">
-            <column name="SUBJECT_ID"/>
+        <createIndex indexName="idx_etlStageDefraLinksSubjectId" tableName="etlStageDefraLinks">
+            <column name="subjectId"/>
         </createIndex>
 
-       <createIndex indexName="idx_etlStageApplicationDetailApplicationId" tableName="ETL_STAGE_APPLICATION_DETAIL">
-            <column name="APPLICATION_ID"/>
+       <createIndex indexName="idx_etlStageApplicationDetailApplicationId" tableName="etlStageApplicationDetail">
+            <column name="applicationId"/>
         </createIndex>
 
         <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsVariableName" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
