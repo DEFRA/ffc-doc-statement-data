@@ -11,21 +11,21 @@ const intermTablesToCopy = [
 
 const createTempTables = async () => {
   for (const tableName of intermTablesToCopy) {
-    await executeQuery(`DROP TABLE IF EXISTS ${tableName}Temp;`)
-    await executeQuery(`CREATE TEMP TABLE ${tableName}Temp AS SELECT * FROM ${tableName};`)
+    await executeQuery(`DROP TABLE IF EXISTS "${tableName}Temp";`)
+    await executeQuery(`CREATE TEMP TABLE "${tableName}Temp" AS SELECT * FROM "${tableName}";`)
   }
 }
 
 const restoreIntermTablesFromTemp = async () => {
   for (const tableName of intermTablesToCopy) {
-    await executeQuery(`DELETE FROM ${tableName};`)
-    await executeQuery(`INSERT INTO ${tableName} SELECT * FROM ${tableName}Temp;`)
+    await executeQuery(`DELETE FROM "${tableName}";`)
+    await executeQuery(`INSERT INTO "${tableName}" SELECT * FROM "${tableName}Temp";`)
   }
 }
 
 const clearTempTables = async () => {
   for (const tableName of intermTablesToCopy) {
-    await executeQuery(`DROP TABLE IF EXISTS ${tableName}Temp;`)
+    await executeQuery(`DROP TABLE IF EXISTS "${tableName}Temp";`)
   }
 }
 
