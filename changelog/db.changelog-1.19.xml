@@ -21,11 +21,11 @@
     </createIndex>
 
     <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsEtlId" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
-      <column name="ETL_ID"/>
+      <column name="etlId"/>
     </createIndex>
 
     <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsChangeType" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
-      <column name="CHANGE_TYPE"/>
+      <column name="changeType"/>
     </createIndex>
   </changeSet>
 </databaseChangeLog>

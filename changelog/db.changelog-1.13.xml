@@ -1059,7 +1059,7 @@
             constraintName="uqPaymentRefClaimId"
             tableName="etlIntermTotalClaim"
             validate="true"/>
-        <createTable tableName="etlIntermPaymentrefAgreementDateS">
+        <createTable tableName="etlIntermPaymentrefAgreementDates">
             <column name="paymentRef" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
@@ -1074,7 +1074,7 @@
         <addUniqueConstraint  
             columnNames="paymentRef, agreementstart, agreementend"
             constraintName="uqPaymentRefAgreementDate"
-            tableName="etlIntermPaymentrefAgreementDateS"
+            tableName="etlIntermPaymentrefAgreementDates"
             validate="true"/>
         <createTable tableName="etlIntermPaymentrefOrg">
             <column name="paymentRef" type="VARCHAR">

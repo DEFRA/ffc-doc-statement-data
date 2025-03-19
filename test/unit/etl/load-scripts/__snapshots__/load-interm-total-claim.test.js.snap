@@ -7,7 +7,7 @@ exports[`loadIntermTotalClaim should call sequelize.query with correct SQL and p
       "
     INSERT INTO etlIntermTotalClaim (claimId, paymentRef)
     SELECT
-      (SELECT claimId FROM etlIntermFinanceDax WHERE paymentRef = T.paymentRef LIMIT 1) as applicationId,
+      (SELECT claimId FROM "etlIntermFinanceDax" WHERE paymentRef = T.paymentRef LIMIT 1) as applicationId,
       T.paymentRef
     FROM etlIntermTotal T
     WHERE T.etlInsertedDt > :startDate

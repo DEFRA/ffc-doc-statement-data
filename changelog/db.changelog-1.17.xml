@@ -5,16 +5,16 @@
   </changeSet>
   <changeSet id="2" author="John Barnard">
     <createTable tableName = "ETL_STAGE_TDE_LINKING_TRANSFER_TRANSACTIONS">
-        <column name="CHANGE_TYPE" type="VARCHAR">
+        <column name="changeType" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="CHANGE_TIME" type="TIMESTAMP">
+        <column name="changeTime" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
-        <column name = "ETL_ID" type="BIGSERIAL">
+        <column name="etlId" type="BIGSERIAL">
             <constraints nullable="false" />
         </column>
-        <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         <column name="TRANSFEROR_SBI" type="VARCHAR">
             <constraints nullable="false" />
         </column>

@@ -1,6 +1,6 @@
 module.exports = (accountnum, invoicePattern) => {
   return `
-WITH newData AS (
+WITH "newData" AS (
     SELECT
       transdate,
       invoiceid,
@@ -15,46 +15,46 @@ WITH newData AS (
             FROM (
               SELECT
                 value,
-                COALESCE(LAG(value, 1) OVER (ORDER BY S.settlementDate ASC, S.value ASC),0) AS lag,
+                COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
                 S.reference
-                FROM etlStageSettlement S 
-                WHERE S.invoiceNumber = D.invoiceid
+                FROM "etlStageSettlement" S 
+                WHERE S."invoiceNumber" = D.invoiceid
                 ORDER BY value
             ) B WHERE B.reference = D.settlementvoucher),
           lineamountmstgbp)
-        AS DECIMAL(10,2)) AS TRANSACTIONAMOUNT,
+        AS DECIMAL(10,2)) AS "transactionAmount",
       agreementreference,
-      substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS sitiInvoiceId,
-      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS claimId,
-      settlementvoucher AS PAYMENTREF,
-      changeType,
+      substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS "sitiInvoiceId",
+      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS "claimId",
+      settlementvoucher AS "paymentRef",
+      D."changeType",
       recid
-    FROM etlStageFinanceDax D
+    FROM "etlStageFinanceDax" D
     WHERE LENGTH(accountnum) = ${accountnum}
-      AND etlId BETWEEN :idFrom AND :idTo
-      AND invoiceid LIKE '${invoicePattern}'
+      AND "etlId" BETWEEN :idFrom AND :idTo
+      AND "invoiceid" LIKE '${invoicePattern}'
   ),
-  updatedRows AS (
-    UPDATE etlIntermFinanceDax interm
+  "updatedRows" AS (
+    UPDATE "etlIntermFinanceDax" interm
     SET
-      transdate = newData.transdate,
-      scheme = newData.scheme,
-      fund = newData.fund,
-      marketingyear = newData.marketingyear,
-      "month" = newData."month",
-      quarter = newData.quarter,
-      TRANSACTIONAMOUNT = newData.TRANSACTIONAMOUNT,
-      agreementreference = newData.agreementreference,
-      sitiInvoiceId = newData.sitiInvoiceId,
-      claimId = newData.claimId,
-      invoiceid = newData.invoiceid,
-      etlInsertedDt = NOW()
-    FROM newData
-    WHERE newData.changeType = 'UPDATE'
-      AND interm.recid = newData.recid
+      transdate = "newData".transdate,
+      scheme = "newData".scheme,
+      fund = "newData".fund,
+      marketingyear = "newData".marketingyear,
+      "month" = "newData"."month",
+      quarter = "newData".quarter,
+      "transactionAmount" = "newData"."transactionAmount",
+      agreementreference = "newData".agreementreference,
+      "sitiInvoiceId" = "newData"."sitiInvoiceId",
+      "claimId" = "newData"."claimId",
+      invoiceid = "newData".invoiceid,
+      "etlInsertedDt" = NOW()
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm.recid = "newData".recid
     RETURNING interm.recid
   )
-  INSERT INTO etlIntermFinanceDax (
+  INSERT INTO "etlIntermFinanceDax" (
     transdate,
     invoiceid,
     scheme,
@@ -62,11 +62,11 @@ WITH newData AS (
     marketingyear,
     "month",
     quarter,
-    TRANSACTIONAMOUNT,
+    "transactionAmount",
     agreementreference,
-    sitiInvoiceId,
-    claimId,
-    PAYMENTREF,
+    "sitiInvoiceId",
+    "claimId",
+    "paymentRef",
     recid
   )
   SELECT
@@ -77,14 +77,14 @@ WITH newData AS (
     marketingyear,
     "month",
     quarter,
-    TRANSACTIONAMOUNT,
+    "transactionAmount",
     agreementreference,
-    sitiInvoiceId,
-    claimId,
-    PAYMENTREF,
+    "sitiInvoiceId",
+    "claimId",
+    "paymentRef",
     recid
-  FROM newData
-  WHERE changeType = 'INSERT'
-    OR (changeType = 'UPDATE' AND recid NOT IN (SELECT recid FROM updatedRows));
+  FROM "newData"
+  WHERE "newData"."changeType" = 'INSERT'
+    OR ("newData"."changeType" = 'UPDATE' AND recid NOT IN (SELECT recid FROM "updatedRows"));
 `
 }

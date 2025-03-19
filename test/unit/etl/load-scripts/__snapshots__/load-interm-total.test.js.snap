@@ -14,7 +14,7 @@ exports[`loadIntermTotal should call sequelize.query with correct parameters 1`]
       SUM(transactionAmount) * -1 as totalAmount,
       transdate,
       invoiceid
-    FROM etlIntermFinanceDax D 
+    FROM "etlIntermFinanceDax" D 
     WHERE D.paymentRef LIKE 'PY%' 
       AND D.etlInsertedDt > :startDate
     GROUP BY transdate, quarter, paymentRef, invoiceid

@@ -12,7 +12,7 @@ exports[`loadIntermPaymentrefAgreementDates should call sequelize.query with cor
       DA.paymentRef,
       (SELECT agreementStart FROM etlIntermApplicationContract IAC WHERE IAC.contractId = CA.contractId LIMIT 1),
       (SELECT agreementEnd FROM etlIntermApplicationContract IAC WHERE IAC.contractId = CA.contractId LIMIT 1)
-    FROM etlIntermFinanceDax DA
+    FROM "etlIntermFinanceDax" DA
     INNER JOIN etlStageCssContractApplications CA ON CA.applicationId = DA.claimId
     INNER JOIN etlIntermApplicationContract IAC ON IAC.contractId = CA.contractId
     WHERE IAC.agreementStart IS NOT NULL

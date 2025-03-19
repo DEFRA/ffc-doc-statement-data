@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
   const etlStageTdeLinkingTransferTransactions = sequelize.define('etlStageTdeLinkingTransferTransactions', {
-    change_type: DataTypes.STRING,
-    change_time: DataTypes.DATE,
-    etl_id: DataTypes.INTEGER,
-    etl_inserted_dt: DataTypes.DATE,
+    changeType: DataTypes.STRING,
+    changeTime: DataTypes.DATE,
+    etlId: DataTypes.INTEGER,
+    etlInsertedDt: DataTypes.DATE,
     transferor_sbi: DataTypes.STRING,
     transferor_cuaa: DataTypes.STRING,
     transferor_pk_cuaa: DataTypes.STRING,
