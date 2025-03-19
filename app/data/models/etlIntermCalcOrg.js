@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlIntermCalcOrg = sequelize.define('etlIntermCalcOrg', {
     applicationId: DataTypes.INTEGER,
@@ -10,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     tableName: 'etlIntermCalcOrg',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
 
   return etlIntermCalcOrg

@@ -1,7 +1,11 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 const properties = {
   tableName: 'etlStageFinanceDax',
   freezeTableName: true,
-  timestamps: false
+  timestamps: false,
+  schema: dbConfig.schema
 }
 
 const fields1 = (DataTypes) => ({

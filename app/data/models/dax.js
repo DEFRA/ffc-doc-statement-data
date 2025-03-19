@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const number30 = 30
   const number200 = 200
@@ -13,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'dax',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   dax.associate = function (models) {
     dax.belongsTo(models.dax, {

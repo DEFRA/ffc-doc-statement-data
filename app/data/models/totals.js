@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const number2 = 2
   const number15 = 15
@@ -23,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'totals',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   total.associate = function (models) {
     total.hasMany(models.dax, {

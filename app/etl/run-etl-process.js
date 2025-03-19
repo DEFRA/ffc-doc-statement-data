@@ -41,61 +41,6 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
   const { writable, getData } = collectData()
   fileStream.pipe(writable)
 
-  await db.sequelize.query(`INSERT INTO "etlStageApplicationDetail" (
-    "changeType",
-    "changeTime",
-    "etlId",
-    "etlInsertedDt",
-    pkid,
-    "dtInsert",
-    "dtDelete",
-    "subjectId",
-    "uteId",
-    "applicationId",
-    "applicationCode",
-    "amendedAppId",
-    "appTypeId",
-    "proxyId",
-    "statusPCode",
-    "statusSCode",
-    "sourcePCode",
-    "sourceSCode",
-    "dtStart",
-    "dtEnd",
-    "validStartFlg",
-    "validEndFlg",
-    "appIdStart",
-    "appIdEnd",
-    "dtRecUpdate"
-  )
-  VALUES (
-    'UPDATE',         
-    '2023-10-01 12:00:00',     
-    1,                          
-    CURRENT_TIMESTAMP,
-    1001,                       
-    NOW(),
-    NULL,
-    2001,                       
-    3001,                       
-    4001,                       
-    'APP_CODE',                
-    5001,                       
-    6001,                       
-    7001,                       
-    'STATUS_P',                
-    'STATUS_S',                
-    'SOURCE_P',                
-    'SOURCE_S',                
-    '2023-10-01',              
-    '2023-10-31',              
-    'Y',                        
-    'N',                        
-    8001,                       
-    9001,                       
-    NOW()
-);
-`)
   return new Promise((resolve, reject) => {
     (async () => {
       try {
@@ -104,7 +49,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             name: 'postgresConnection',
             sequelize: db.sequelize
           }))
-          .loader(new Loaders.CSVLoader({ stream: fileStream, columns, startingLine: 3 }))
+          .loader(new Loaders.CSVLoader({ stream: fileStream, columns, startingLine: 3, relax: true }))
 
         if (nonProdTransformer && !config.isProd) {
           etlFlow.transform(new Transformers.FakerTransformer({
@@ -121,7 +66,8 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             table,
             connection: 'postgresConnection',
             mapping,
-            includeErrors: false
+            includeErrors: false,
+            schema: dbConfig.schema
           }))
           .pump()
           .on('finish', async (data) => {

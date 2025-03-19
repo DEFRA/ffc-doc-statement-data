@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlStageLog = sequelize.define('etlStageLog', {
     etlId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -13,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'etlStageLog',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   return etlStageLog
 }

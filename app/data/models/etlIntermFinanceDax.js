@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlIntermFinanceDax = sequelize.define('etlIntermFinanceDax', {
     transdate: DataTypes.DATE,
@@ -17,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     tableName: 'etlIntermFinanceDax',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
 
   return etlIntermFinanceDax

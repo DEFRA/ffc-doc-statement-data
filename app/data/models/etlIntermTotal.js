@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlIntermTotal = sequelize.define('etlIntermTotal', {
     paymentRef: DataTypes.STRING,
@@ -10,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     tableName: 'etlIntermTotal',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
 
   return etlIntermTotal

@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlStageBusinessAddressContactV = sequelize.define('etlStageBusinessAddressContactV', {
     changeType: DataTypes.STRING,
@@ -32,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'etlStageBusinessAddressContactV',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   return etlStageBusinessAddressContactV
 }

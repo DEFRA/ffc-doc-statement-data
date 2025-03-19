@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlIntermApplicationContract = sequelize.define('etlIntermApplicationContract', {
     contractId: DataTypes.INTEGER,
@@ -9,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     tableName: 'etlIntermApplicationContract',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
 
   return etlIntermApplicationContract

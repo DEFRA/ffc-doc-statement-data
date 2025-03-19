@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlStageDefraLinks = sequelize.define('etlStageDefraLinks', {
     changeType: DataTypes.STRING,
@@ -13,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'etlStageDefraLinks',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   return etlStageDefraLinks
 }
