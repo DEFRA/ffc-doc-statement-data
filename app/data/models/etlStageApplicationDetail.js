@@ -1,4 +1,4 @@
-const { dbConfig } = require("../../config")
+const { dbConfig } = require('../../config')
 
 module.exports = (sequelize, DataTypes) => {
   const etlStageApplicationDetail = sequelize.define('etlStageApplicationDetail', {

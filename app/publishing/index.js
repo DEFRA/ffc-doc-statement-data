@@ -1,4 +1,4 @@
-const { publishingConfig } = require('../config')
+const { publishingConfig, dbConfig } = require('../config')
 const sendUpdates = require('./send-updates')
 const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('./types')
 const db = require('../data')
@@ -13,7 +13,7 @@ const start = async () => {
     await sendUpdates(DAX)
     await sendUpdates(D365)
     console.log('All outstanding valid datasets published')
-    await db.sequelize.query(`INSERT INTO organisations (
+    await db.sequelize.query(`INSERT INTO ${dbConfig.schema}.organisations (
       sbi,
       "addressLine1",
       "addressLine2",
@@ -41,7 +41,7 @@ const start = async () => {
       CURRENT_TIMESTAMP
     );
     `)
-    await db.sequelize.query(`INSERT INTO "etlStageApplicationDetail" (
+    await db.sequelize.query(`INSERT INTO ${dbConfig.schema}."etlStageApplicationDetail" (
       "changeType",
       "changeTime",
       "etlId",
