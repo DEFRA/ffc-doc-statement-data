@@ -1,7 +1,9 @@
-const { publishingConfig, dbConfig } = require('../config')
+const config = require('../config')
 const sendUpdates = require('./send-updates')
 const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('./types')
 const db = require('../data')
+const publishingConfig = config.publishingConfig
+const dbConfig = config.dbConfig[config.env]
 
 const start = async () => {
   try {
