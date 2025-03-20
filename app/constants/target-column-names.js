@@ -207,5 +207,19 @@ module.exports = {
   yearendrunnumber: 'yearendrunnumber',
   variableName: 'variableName',
   progLine: 'progLine',
-  value: 'value'
+  value: 'value',
+  transferorSbi: 'transferorSbi',
+  transferorCuaa: 'transferorCuaa',
+  transferorPkCuaa: 'transferorPkCuaa',
+  transfereeSbi: 'transfereeSbi',
+  transfereeCuaa: 'transfereeCuaa',
+  transfereePkCuaa: 'transfereePkCuaa',
+  totalAmountTransferred: 'totalAmountTransferred',
+  transferAmount: 'transferAmount',
+  transferAmountTransIn: 'transferAmountTransIn',
+  dateOfTransfer: 'dateOfTransfer',
+  transferApplicationId: 'transferApplicationId',
+  userInsert: 'userInsert',
+  userDelete: 'userDelete',
+  dtUpdate: 'dtUpdate'
 }

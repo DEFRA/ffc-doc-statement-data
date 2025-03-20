@@ -4,7 +4,7 @@
     <tagDatabase tag="v1.17.0" />
   </changeSet>
   <changeSet id="2" author="John Barnard">
-    <createTable tableName = "ETL_STAGE_TDE_LINKING_TRANSFER_TRANSACTIONS">
+    <createTable tableName = "etlStageTdeLinkingTransferTransactions">
         <column name="changeType" type="VARCHAR">
             <constraints nullable="false" />
         </column>
@@ -15,64 +15,64 @@
             <constraints nullable="false" />
         </column>
         <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-        <column name="TRANSFEROR_SBI" type="VARCHAR">
+        <column name="transferorSbi" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEROR_CUAA" type="VARCHAR">
+        <column name="transferorCuaa" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEROR_PK_CUAA" type="VARCHAR">
+        <column name="transferorPkCuaa" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEREE_SBI" type="VARCHAR">
+        <column name="transfereeSbi" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEREE_CUAA" type="VARCHAR">
+        <column name="transfereeCuaa" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFEREE_PK_CUAA" type="VARCHAR">
+        <column name="transfereePkCuaa" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TOTAL_AMOUNT_TRANSFERRED" type="DOUBLE">
+        <column name="totalAmountTransferred" type="DOUBLE">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFER_AMOUNT" type="DOUBLE">
+        <column name="transferAmount" type="DOUBLE">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFER_AMOUNT_TRANS_IN" type="DOUBLE">
+        <column name="transferAmountTransIn" type="DOUBLE">
             <constraints nullable="false" />
         </column>
-        <column name="DT_INSERT" type="VARCHAR">
+        <column name="dtInsert" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="DT_DELETE" type="VARCHAR">
+        <column name="dtDelete" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="DATE_OF_TRANSFER" type="TIMESTAMP">
+        <column name="dateOfTransfer" type="TIMESTAMP">
             <constraints nullable="false" />
         </column>
-        <column name="STATUS_P_CODE" type="VARCHAR">
+        <column name="statusPCode" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="STATUS_S_CODE" type="VARCHAR">
+        <column name="statusSCode" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="TRANSFER_APPLICATION_ID" type="VARCHAR">
+        <column name="transferApplicationId" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="USER_INSERT" type="VARCHAR">
+        <column name="userInsert" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="USER_DELETE" type="VARCHAR">
+        <column name="userDelete" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="DT_UPDATE" type="VARCHAR">
+        <column name="dtUpdate" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="DATA_SOURCE_P_CODE" type="VARCHAR">
+        <column name="dataSourcePCode" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="DATA_SOURCE_S_CODE" type="VARCHAR">
+        <column name="dataSourceSCode" type="VARCHAR">
             <constraints nullable="false" />
         </column>
     </createTable>
