@@ -1,8 +1,10 @@
 const db = require('../../data')
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 
 const loadDAX = async (startDate, transaction) => {
   await db.sequelize.query(`
-    INSERT INTO dax (
+    INSERT INTO ${dbConfig.schema}.dax (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )
@@ -12,7 +14,7 @@ const loadDAX = async (startDate, transaction) => {
       T.quarter AS "paymentPeriod", 
       T."totalAmount" AS "paymentAmount",
       T.transdate AS "transactionDate" 
-    FROM "etlIntermTotal" T
+    FROM ${dbConfig.schema}."etlIntermTotal" T
     WHERE T."etlInsertedDt" > :startDate;
   `, {
     replacements: {

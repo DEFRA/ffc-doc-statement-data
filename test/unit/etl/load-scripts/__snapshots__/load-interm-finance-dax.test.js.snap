@@ -34,13 +34,13 @@ exports[`loadIntermFinanceDAX should call sequelize.query with correct SQL and p
       settlementvoucher AS "paymentRef",
       "changeType",
       recid
-    FROM "etlStageFinanceDax" D
+    FROM public."etlStageFinanceDax" D
     WHERE LENGTH(accountnum) = 10
       AND "etlId" BETWEEN :idFrom AND :idTo
       AND invoiceid LIKE 'S%Z%'
   ),
   updatedrows AS (
-    UPDATE "etlIntermFinanceDax" interm
+    UPDATE public."etlIntermFinanceDax" interm
     SET
       transdate = newdata.transdate,
       scheme = newdata.scheme,
@@ -59,7 +59,7 @@ exports[`loadIntermFinanceDAX should call sequelize.query with correct SQL and p
       AND interm.recid = newdata.recid
     RETURNING interm.recid
   )
-  INSERT INTO "etlIntermFinanceDax" (
+  INSERT INTO public."etlIntermFinanceDax" (
     transdate,
     invoiceid,
     scheme,

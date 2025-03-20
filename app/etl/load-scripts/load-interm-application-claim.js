@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationClaim = async (startDate, transaction) => {
@@ -26,16 +28,16 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
         ca."applicationId" AS "agreementId",
         cl.pkid,
         ${tableAlias}."changeType"
-      FROM "etlStageCssContractApplications" cl
-      LEFT JOIN "etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
-      LEFT JOIN "etlStageCssContracts" cc ON cl."contractId" = cc."contractId"
+      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId"
       WHERE cl."dataSourceSCode" = 'CAPCLM'
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
       GROUP BY cc."contractId", cc."startDt", cc."endDt", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
     updatedrows AS (
-      UPDATE "etlIntermApplicationClaim" interm
+      UPDATE ${dbConfig.schema}."etlIntermApplicationClaim" interm
       SET
         "contractId" = newdata."contractId",
         "claimId" = newdata."claimId",
@@ -46,7 +48,7 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
         AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO "etlIntermApplicationClaim" (
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationClaim" (
       "contractId", "claimId", "agreementId", pkid
     )
     SELECT "contractId", "claimId", "agreementId", pkid

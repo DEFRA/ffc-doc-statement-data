@@ -20,13 +20,13 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       O."lastUpdatedOn"::date AS updated,
       O."partyId",
       O."changeType"
-    FROM "etlStageOrganisation" O
-    LEFT JOIN "etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    FROM public."etlStageOrganisation" O
+    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
     WHERE O."etlId" BETWEEN 1 AND 2
       
   ),
   updatedrows AS (
-    UPDATE "etlIntermOrg" interm
+    UPDATE public."etlIntermOrg" interm
     SET
       "addressLine1" = newdata."addressLine1",
       "addressLine2" = newdata."addressLine2",
@@ -45,7 +45,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       AND interm."partyId" = newdata."partyId"
     RETURNING interm."partyId"
   )
-  INSERT INTO "etlIntermOrg" (
+  INSERT INTO public."etlIntermOrg" (
     sbi,
     "addressLine1",
     "addressLine2",
@@ -99,13 +99,13 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       O."lastUpdatedOn"::date AS updated,
       O."partyId",
       O."changeType"
-    FROM "etlStageOrganisation" O
-    LEFT JOIN "etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    FROM public."etlStageOrganisation" O
+    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
     WHERE O."etlId" BETWEEN 1 AND 2
        AND O."etlId" NOT BETWEEN 1 AND 2
   ),
   updatedrows AS (
-    UPDATE "etlIntermOrg" interm
+    UPDATE public."etlIntermOrg" interm
     SET
       "addressLine1" = newdata."addressLine1",
       "addressLine2" = newdata."addressLine2",
@@ -124,7 +124,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       AND interm."partyId" = newdata."partyId"
     RETURNING interm."partyId"
   )
-  INSERT INTO "etlIntermOrg" (
+  INSERT INTO public."etlIntermOrg" (
     sbi,
     "addressLine1",
     "addressLine2",

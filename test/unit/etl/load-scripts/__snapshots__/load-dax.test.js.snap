@@ -5,7 +5,7 @@ exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`]
   "calls": [
     [
       "
-    INSERT INTO dax (
+    INSERT INTO public.dax (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )
@@ -15,7 +15,7 @@ exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`]
       T.quarter AS "paymentPeriod", 
       T."totalAmount" AS "paymentAmount",
       T.transdate AS "transactionDate" 
-    FROM "etlIntermTotal" T
+    FROM public."etlIntermTotal" T
     WHERE T."etlInsertedDt" > :startDate;
   ",
       {

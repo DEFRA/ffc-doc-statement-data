@@ -1,8 +1,10 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const loadTotals = async (startDate, transaction) => {
   const query = `
-    INSERT INTO totals (
+    INSERT INTO ${dbConfig.schema}.totals (
       "calculationId", "sbi", "frn", "agreementNumber",
       "claimId", "schemeType", "calculationDate",
       "invoiceNumber", "agreementStart", "agreementEnd",
@@ -25,12 +27,12 @@ const loadTotals = async (startDate, transaction) => {
       NOW() as updated,
       NULL as "datePublished",
       T."totalAmount" AS "totalPayments"
-    FROM "etlIntermTotal" T
-    INNER JOIN "etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
-    INNER JOIN "etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef"
-    INNER JOIN "etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
-    INNER JOIN "etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
-    INNER JOIN "etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"
+    FROM ${dbConfig.schema}."etlIntermTotal" T
+    INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
+    INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef"
+    INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
+    INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
+    INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"
     WHERE T."etlInsertedDt" > :startDate
       OR PO."etlInsertedDt" > :startDate
       OR PA."etlInsertedDt" > :startDate

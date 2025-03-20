@@ -16,7 +16,7 @@ describe('loadOrganisations', () => {
 
     await loadOrganisations(startDate, mockTransaction)
     const expected = `
-    INSERT INTO organisations (
+    INSERT INTO public.organisations (
       sbi, "addressLine1", "addressLine2",
       "addressLine3", city, county,
       postcode, "emailAddress", frn,
@@ -27,7 +27,7 @@ describe('loadOrganisations', () => {
       "addressLine3", city, county,
       SUBSTRING(postcode,1,7), "emailAddress", frn::integer,
       "name", NOW()
-    FROM "etlIntermOrg" O
+    FROM public."etlIntermOrg" O
     WHERE O."etlInsertedDt" > :startDate;
   `
 

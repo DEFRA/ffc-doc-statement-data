@@ -53,16 +53,16 @@ describe('loadIntermApplicationContract', () => {
         ca."applicationId",
         cl.pkid,
         cl."changeType"
-      FROM "etlStageCssContractApplications" cl
-      LEFT JOIN "etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
-      LEFT JOIN "etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
+      FROM public."etlStageCssContractApplications" cl
+      LEFT JOIN public."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN public."etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
       WHERE cl."dataSourceSCode" = 'CAPCLM'
         AND cl."etlId" BETWEEN 1 AND 2
         
       GROUP BY cc."contractId", ca."applicationId", cl."changeType", cl.pkid
     ),
     updatedrows AS (
-      UPDATE "etlIntermApplicationContract" interm
+      UPDATE public."etlIntermApplicationContract" interm
       SET
         "contractId" = newdata."contractId",
         "agreementStart" = newdata."agreementStart",
@@ -74,7 +74,7 @@ describe('loadIntermApplicationContract', () => {
         AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO "etlIntermApplicationContract" (
+    INSERT INTO public."etlIntermApplicationContract" (
       "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
     )
     SELECT "contractId", "agreementStart", "agreementEnd", "applicationId", pkid

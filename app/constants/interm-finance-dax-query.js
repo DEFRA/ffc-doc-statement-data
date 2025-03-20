@@ -1,3 +1,6 @@
+const config = require('../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = `
   WITH newdata AS (
     SELECT
@@ -28,13 +31,13 @@ module.exports = `
       settlementvoucher AS "paymentRef",
       "changeType",
       recid
-    FROM "etlStageFinanceDax" D
+    FROM ${dbConfig.schema}."etlStageFinanceDax" D
     WHERE LENGTH(accountnum) = 10
       AND "etlId" BETWEEN :idFrom AND :idTo
       AND invoiceid LIKE 'S%Z%'
   ),
   updatedrows AS (
-    UPDATE "etlIntermFinanceDax" interm
+    UPDATE ${dbConfig.schema}."etlIntermFinanceDax" interm
     SET
       transdate = newdata.transdate,
       scheme = newdata.scheme,
@@ -53,7 +56,7 @@ module.exports = `
       AND interm.recid = newdata.recid
     RETURNING interm.recid
   )
-  INSERT INTO "etlIntermFinanceDax" (
+  INSERT INTO ${dbConfig.schema}."etlIntermFinanceDax" (
     transdate,
     invoiceid,
     scheme,

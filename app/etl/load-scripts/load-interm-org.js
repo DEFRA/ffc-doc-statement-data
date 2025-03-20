@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const tablesToCheck = [
@@ -27,13 +29,13 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       O."lastUpdatedOn"::date AS updated,
       O."partyId",
       ${tableAlias}."changeType"
-    FROM "etlStageOrganisation" O
-    LEFT JOIN "etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    FROM ${dbConfig.schema}."etlStageOrganisation" O
+    LEFT JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
   updatedrows AS (
-    UPDATE "etlIntermOrg" interm
+    UPDATE ${dbConfig.schema}."etlIntermOrg" interm
     SET
       "addressLine1" = newdata."addressLine1",
       "addressLine2" = newdata."addressLine2",
@@ -52,7 +54,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       AND interm."partyId" = newdata."partyId"
     RETURNING interm."partyId"
   )
-  INSERT INTO "etlIntermOrg" (
+  INSERT INTO ${dbConfig.schema}."etlIntermOrg" (
     sbi,
     "addressLine1",
     "addressLine2",

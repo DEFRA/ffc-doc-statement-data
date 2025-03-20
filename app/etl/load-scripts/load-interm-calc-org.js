@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const tablesToCheck = [
@@ -27,20 +29,20 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
         CD."calculationDt",
         CD."idClcHeader",
         ${tableAlias}."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CLAIM 
+      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CLAIM 
         ON CLAIM."applicationId" = APN."applicationId" 
         AND CLAIM."dataSourceSCode" = 'CAPCLM'
-      INNER JOIN "etlStageCssContractApplications" APP 
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" APP 
         ON APP."contractId" = CLAIM."contractId" 
         AND APP."dataSourceSCode" = '000001'
-      INNER JOIN "etlIntermFinanceDax" D 
+      INNER JOIN ${dbConfig.schema}."etlIntermFinanceDax" D 
         ON D."claimId" = CLAIM."applicationId"
-      INNER JOIN "etlStageFinanceDax" SD 
+      INNER JOIN ${dbConfig.schema}."etlStageFinanceDax" SD 
         ON SD.invoiceid = D.invoiceid
-      INNER JOIN "etlStageBusinessAddressContactV" BAC 
+      INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" BAC 
         ON BAC.frn = SD.custvendac
-      INNER JOIN "etlStageCalculationDetails" CD 
+      INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD 
         ON CD."applicationId" = APN."applicationId" 
         AND CD."idClcHeader" = APN."idClcHeader"
         AND CD.ranked = 1
@@ -50,7 +52,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", ${tableAlias}."changeType"
     ),
     updatedrows AS (
-      UPDATE "etlIntermCalcOrg" interm
+      UPDATE ${dbConfig.schema}."etlIntermCalcOrg" interm
       SET
         sbi = newdata.sbi,
         frn = newdata.frn,
@@ -62,7 +64,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
         AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermCalcOrg" (
+    INSERT INTO ${dbConfig.schema}."etlIntermCalcOrg" (
       "calculationId",
       sbi,
       frn,

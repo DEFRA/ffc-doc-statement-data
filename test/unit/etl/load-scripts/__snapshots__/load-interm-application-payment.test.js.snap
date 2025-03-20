@@ -12,10 +12,10 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
         "idClcHeader",
         APN."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CA 
+      FROM public."etlStageAppsPaymentNotification" APN
+      INNER JOIN public."etlStageCssContractApplications" CA 
         ON APN."applicationId" = CA."applicationId"
-      INNER JOIN "etlStageCssContractApplications" CL 
+      INNER JOIN public."etlStageCssContractApplications" CL 
         ON CA."contractId" = CL."contractId"
       WHERE CA."dataSourceSCode" = 'CAPCLM'
         AND CL."dataSourceSCode" = '000001'
@@ -24,7 +24,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         
     ),
     updatedrows AS (
-      UPDATE "etlIntermApplicationPayment" interm
+      UPDATE public."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",
         "invoiceId" = newdata."invoiceId",
@@ -35,7 +35,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermApplicationPayment" (
+    INSERT INTO public."etlIntermApplicationPayment" (
       "applicationId",
       "invoiceNumber",
       "invoiceId",
@@ -65,10 +65,10 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
         "idClcHeader",
         APN."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CA 
+      FROM public."etlStageAppsPaymentNotification" APN
+      INNER JOIN public."etlStageCssContractApplications" CA 
         ON APN."applicationId" = CA."applicationId"
-      INNER JOIN "etlStageCssContractApplications" CL 
+      INNER JOIN public."etlStageCssContractApplications" CL 
         ON CA."contractId" = CL."contractId"
       WHERE CA."dataSourceSCode" = 'CAPCLM'
         AND CL."dataSourceSCode" = '000001'
@@ -77,7 +77,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
          AND APN."etlId" NOT BETWEEN 1 AND 2
     ),
     updatedrows AS (
-      UPDATE "etlIntermApplicationPayment" interm
+      UPDATE public."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",
         "invoiceId" = newdata."invoiceId",
@@ -88,7 +88,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermApplicationPayment" (
+    INSERT INTO public."etlIntermApplicationPayment" (
       "applicationId",
       "invoiceNumber",
       "invoiceId",

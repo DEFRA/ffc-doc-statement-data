@@ -5,7 +5,7 @@ exports[`loadIntermTotal should call sequelize.query with correct parameters 1`]
   "calls": [
     [
       "
-    INSERT INTO "etlIntermTotal" (
+    INSERT INTO public."etlIntermTotal" (
       "paymentRef", quarter, "totalAmount",
       transdate, invoiceid
     )
@@ -14,7 +14,7 @@ exports[`loadIntermTotal should call sequelize.query with correct parameters 1`]
       SUM("transactionAmount") * -1 as "totalAmount",
       transdate,
       invoiceid
-    FROM "etlIntermFinanceDax" D 
+    FROM public."etlIntermFinanceDax" D 
     WHERE D."paymentRef" LIKE 'PY%' 
       AND D."etlInsertedDt" > :startDate
     GROUP BY transdate, quarter, "paymentRef", invoiceid

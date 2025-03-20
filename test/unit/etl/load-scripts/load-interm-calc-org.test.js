@@ -54,20 +54,20 @@ describe('loadIntermCalcOrg', () => {
         CD."calculationDt",
         CD."idClcHeader",
         APN."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CLAIM 
+      FROM public."etlStageAppsPaymentNotification" APN
+      INNER JOIN public."etlStageCssContractApplications" CLAIM 
         ON CLAIM."applicationId" = APN."applicationId" 
         AND CLAIM."dataSourceSCode" = 'CAPCLM'
-      INNER JOIN "etlStageCssContractApplications" APP 
+      INNER JOIN public."etlStageCssContractApplications" APP 
         ON APP."contractId" = CLAIM."contractId" 
         AND APP."dataSourceSCode" = '000001'
-      INNER JOIN "etlIntermFinanceDax" D 
+      INNER JOIN public."etlIntermFinanceDax" D 
         ON D."claimId" = CLAIM."applicationId"
-      INNER JOIN "etlStageFinanceDax" SD 
+      INNER JOIN public."etlStageFinanceDax" SD 
         ON SD.invoiceid = D.invoiceid
-      INNER JOIN "etlStageBusinessAddressContactV" BAC 
+      INNER JOIN public."etlStageBusinessAddressContactV" BAC 
         ON BAC.frn = SD.custvendac
-      INNER JOIN "etlStageCalculationDetails" CD 
+      INNER JOIN public."etlStageCalculationDetails" CD 
         ON CD."applicationId" = APN."applicationId" 
         AND CD."idClcHeader" = APN."idClcHeader"
         AND CD.ranked = 1
@@ -77,7 +77,7 @@ describe('loadIntermCalcOrg', () => {
       GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", APN."changeType"
     ),
     updatedrows AS (
-      UPDATE "etlIntermCalcOrg" interm
+      UPDATE public."etlIntermCalcOrg" interm
       SET
         sbi = newdata.sbi,
         frn = newdata.frn,
@@ -89,7 +89,7 @@ describe('loadIntermCalcOrg', () => {
         AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermCalcOrg" (
+    INSERT INTO public."etlIntermCalcOrg" (
       "calculationId",
       sbi,
       frn,

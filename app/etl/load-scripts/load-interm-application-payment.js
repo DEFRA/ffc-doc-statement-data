@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationPayment = async (startDate, transaction) => {
@@ -26,10 +28,10 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
         "idClcHeader",
         ${tableAlias}."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CA 
+      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA 
         ON APN."applicationId" = CA."applicationId"
-      INNER JOIN "etlStageCssContractApplications" CL 
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CL 
         ON CA."contractId" = CL."contractId"
       WHERE CA."dataSourceSCode" = 'CAPCLM'
         AND CL."dataSourceSCode" = '000001'
@@ -38,7 +40,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         ${exclusionCondition}
     ),
     updatedrows AS (
-      UPDATE "etlIntermApplicationPayment" interm
+      UPDATE ${dbConfig.schema}."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",
         "invoiceId" = newdata."invoiceId",
@@ -49,7 +51,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermApplicationPayment" (
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationPayment" (
       "applicationId",
       "invoiceNumber",
       "invoiceId",

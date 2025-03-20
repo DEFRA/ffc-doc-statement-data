@@ -17,7 +17,7 @@ describe('loadTotals', () => {
     await loadTotals(startDate, mockTransaction)
 
     const expected = `
-    INSERT INTO totals (
+    INSERT INTO public.totals (
       "calculationId", "sbi", "frn", "agreementNumber",
       "claimId", "schemeType", "calculationDate",
       "invoiceNumber", "agreementStart", "agreementEnd",
@@ -40,12 +40,12 @@ describe('loadTotals', () => {
       NOW() as updated,
       NULL as "datePublished",
       T."totalAmount" AS "totalPayments"
-    FROM "etlIntermTotal" T
-    INNER JOIN "etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
-    INNER JOIN "etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef"
-    INNER JOIN "etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
-    INNER JOIN "etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
-    INNER JOIN "etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"
+    FROM public."etlIntermTotal" T
+    INNER JOIN public."etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
+    INNER JOIN public."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef"
+    INNER JOIN public."etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
+    INNER JOIN public."etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
+    INNER JOIN public."etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"
     WHERE T."etlInsertedDt" > :startDate
       OR PO."etlInsertedDt" > :startDate
       OR PA."etlInsertedDt" > :startDate

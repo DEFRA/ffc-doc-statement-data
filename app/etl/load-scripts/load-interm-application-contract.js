@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationContract = async (startDate, transaction) => {
@@ -27,16 +29,16 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
         ca."applicationId",
         cl.pkid,
         ${tableAlias}."changeType"
-      FROM "etlStageCssContractApplications" cl
-      LEFT JOIN "etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
-      LEFT JOIN "etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
+      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
       WHERE cl."dataSourceSCode" = 'CAPCLM'
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
       GROUP BY cc."contractId", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
     updatedrows AS (
-      UPDATE "etlIntermApplicationContract" interm
+      UPDATE ${dbConfig.schema}."etlIntermApplicationContract" interm
       SET
         "contractId" = newdata."contractId",
         "agreementStart" = newdata."agreementStart",
@@ -48,7 +50,7 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
         AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO "etlIntermApplicationContract" (
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationContract" (
       "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
     )
     SELECT "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
@@ -70,7 +72,7 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
       await executeQuery(query, {}, transaction)
     }
 
-    console.log(`Processed application claim records for ${folder}}`)
+    console.log(`Processed application claim records for ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
