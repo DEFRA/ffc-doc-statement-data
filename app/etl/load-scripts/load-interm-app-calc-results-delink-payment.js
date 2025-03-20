@@ -52,37 +52,37 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
       SELECT
         DP."calculationId",
         CD."applicationId",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand1",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand2",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand3",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND4' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand4",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BANDPRC1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction1",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BANDPRC2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction2",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BANDPRC3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction3",
-        MAX(CASE WHEN DP.variable_name = 'PI_BPS_BANDPRC4' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction4",
-        MAX(CASE WHEN DP.variable_name = 'PROG_RED_BAND_1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions1",
-        MAX(CASE WHEN DP.variable_name = 'PROG_RED_BAND_2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions2",
-        MAX(CASE WHEN DP.variable_name = 'PROG_RED_BAND_3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions3",
-        MAX(CASE WHEN DP.variable_name = 'PROG_RED_BAND_4' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions4",
-        MAX(CASE WHEN DP.variable_name = 'CUR_REF_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "referenceAmount",
-        MAX(CASE WHEN DP.variable_name = 'TOT_PRO_RED_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalProgressiveReduction",
-        MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalDelinkedPayment",
-        MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) / 2 ELSE 0 END) AS "paymentAmountCalculated",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BAND1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand1",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BAND2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand2",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BAND3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand3",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BAND4' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand4",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BANDPRC1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction1",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BANDPRC2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction2",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BANDPRC3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction3",
+        MAX(CASE WHEN DP."variableName" = 'PI_BPS_BANDPRC4' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "percentageReduction4",
+        MAX(CASE WHEN DP."variableName" = 'PROG_RED_BAND_1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions1",
+        MAX(CASE WHEN DP."variableName" = 'PROG_RED_BAND_2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions2",
+        MAX(CASE WHEN DP."variableName" = 'PROG_RED_BAND_3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions3",
+        MAX(CASE WHEN DP."variableName" = 'PROG_RED_BAND_4' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "progressiveReductions4",
+        MAX(CASE WHEN DP."variableName" = 'CUR_REF_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "referenceAmount",
+        MAX(CASE WHEN DP."variableName" = 'TOT_PRO_RED_AMO' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalProgressiveReduction",
+        MAX(CASE WHEN DP."variableName" = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "totalDelinkedPayment",
+        MAX(CASE WHEN DP."variableName" = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) / 2 ELSE 0 END) AS "paymentAmountCalculated",
         O.sbi,
         CAST(BAC.frn AS INTEGER) AS frn,
         ${tableAlias}."changeType"
-      FROM etl_stage_app_calc_results_delink_payments DP
+      FROM "etlStageAppCalcResultsDelinkPayments" DP
       JOIN "etlStageCalculationDetails" CD ON DP."calculationId" = CD."calculationId"
       JOIN "etlStageApplicationDetail" AD ON AD."applicationId" = CD."applicationId"
-      JOIN "etlStageDefraLinks" DL ON DL.subject_id = AD.subject_id
-      JOIN "etlStageOrganisation" O ON O.party_id = DL.defra_id
+      JOIN "etlStageDefraLinks" DL ON DL."subjectId" = AD."subjectId"
+      JOIN "etlStageOrganisation" O ON O."partyId" = DL."defraId"
       JOIN "etlStageBusinessAddressContactV" BAC ON BAC.sbi = O.sbi
       WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
       GROUP BY DP."calculationId", CD."applicationId", O.sbi, BAC.frn, ${tableAlias}."changeType"
     ),
     "updatedRows" AS (
-      UPDATE etl_interm_app_calc_results_delink_payments interm
+      UPDATE "etlIntermAppCalcResultsDelinkPayments" interm
       SET
         "calculationId" = "newData"."calculationId",
         "applicationId" = "newData"."applicationId",
@@ -104,14 +104,14 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
         "paymentAmountCalculated" = "newData"."paymentAmountCalculated",
         sbi = "newData".sbi,
         frn = "newData".frn,
-        etl_inserted_dt = NOW()
+        "etlInsertedDt" = NOW()
       FROM "newData"
       WHERE "newData"."changeType" = 'UPDATE'
         AND interm."calculationId" = "newData"."calculationId"
         AND interm."applicationId" = "newData"."applicationId"
       RETURNING interm."calculationId", interm."applicationId"
     )
-    INSERT INTO etl_interm_app_calc_results_delink_payments (
+    INSERT INTO "etlIntermAppCalcResultsDelinkPayments" (
       ${fieldsString}
     )
     SELECT ${fieldsString}

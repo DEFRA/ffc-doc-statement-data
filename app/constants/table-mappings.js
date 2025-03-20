@@ -13,6 +13,6 @@ module.exports = {
   etlStageSettlement: 'etlStageSettlement',
   etlStageTclcPiiPayClaimSfimtOption: 'etlStageTclcPiiPayClaimSfimtOption',
   etlStageTclcPiiPayClaimSfimt: 'etlStageTclcPiiPayClaimSfimt',
-  etl_stage_app_calc_results_delink_payments: 'etlStageAppCalcResultsDelinkPayment',
+  etlStageAppCalcResultsDelinkPayments: 'etlStageAppCalcResultsDelinkPayment',
   etl_stage_tde_linking_transfer_transactions: 'etlStageTdeLinkingTransferTransactions'
 }

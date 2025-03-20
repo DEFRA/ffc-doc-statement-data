@@ -69,7 +69,7 @@ describe('loadIntermAppCalcResultsDelinkPayment', () => {
         O.sbi,
         CAST(BAC.frn AS INTEGER) AS frn,
         DP.change_type
-      FROM etl_stage_app_calc_results_delink_payments DP
+      FROM "etlStageAppCalcResultsDelinkPayments" DP
       JOIN etl_stage_calculation_details CD ON DP.calculation_id = CD.calculation_id
       JOIN etl_stage_application_detail AD ON AD.application_id = CD.application_id
       JOIN etl_stage_defra_links DL ON DL.subject_id = AD.subject_id
@@ -79,7 +79,7 @@ describe('loadIntermAppCalcResultsDelinkPayment', () => {
       GROUP BY DP.calculation_id, CD.application_id, O.sbi, BAC.frn, DP.change_type
     ),
     updated_rows AS (
-      UPDATE etl_interm_app_calc_results_delink_payments interm
+      UPDATE "etlIntermAppCalcResultsDelinkPayments" interm
       SET
         calculation_id = new_data.calculation_id,
         application_id = new_data.application_id,
@@ -108,7 +108,7 @@ describe('loadIntermAppCalcResultsDelinkPayment', () => {
         AND interm.application_id = new_data.application_id
       RETURNING interm.calculation_id, interm.application_id
     )
-    INSERT INTO etl_interm_app_calc_results_delink_payments (
+    INSERT INTO "etlIntermAppCalcResultsDelinkPayments" (
       calculation_id,
       application_id,
       "paymentBand1",

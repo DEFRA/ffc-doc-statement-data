@@ -4,7 +4,7 @@
     <tagDatabase tag="v1.16.0" />
   </changeSet>
   <changeSet id="2" author="John Barnard">
-    <createTable tableName = "ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+    <createTable tableName = "etlStageAppCalcResultsDelinkPayments">
         <column name="changeType" type="VARCHAR">
             <constraints nullable="false" />
         </column>
@@ -18,13 +18,13 @@
         <column name="PKID" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name="CALCULATION_ID" type="INTEGER">
+        <column name="calculationId" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name="VARIABLE_NAME" type="VARCHAR">
+        <column name="variableName" type="VARCHAR">
             <constraints nullable="false" />
         </column>
-        <column name="PROG_LINE" type="INTEGER">
+        <column name="progLine" type="INTEGER">
             <constraints nullable="true" />
         </column>
         <column name="VALUE" type="VARCHAR">

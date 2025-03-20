@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     value: DataTypes.STRING
   },
   {
-    tableName: 'etl_stage_app_calc_results_delink_payments',
+    tableName: 'etlStageAppCalcResultsDelinkPayments',
     freezeTableName: true,
     timestamps: false
   })

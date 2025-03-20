@@ -4,8 +4,8 @@
     <tagDatabase tag="v1.19.0" />
   </changeSet>
   <changeSet id="2" author="John Barnard">
-    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsCalculationId" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
-      <column name="CALCULATION_ID"/>
+    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsCalculationId" tableName="etlStageAppCalcResultsDelinkPayments">
+      <column name="calculationId"/>
     </createIndex>
 
     <createIndex indexName="idx_etlStageCalculationDetailsApplicationId" tableName="etlStageCalculationDetails">
@@ -20,11 +20,11 @@
       <column name="SBI"/>
     </createIndex>
 
-    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsEtlId" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsEtlId" tableName="etlStageAppCalcResultsDelinkPayments">
       <column name="etlId"/>
     </createIndex>
 
-    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsChangeType" tableName="ETL_STAGE_APP_CALC_RESULTS_DELINK_PAYMENTS">
+    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsChangeType" tableName="etlStageAppCalcResultsDelinkPayments">
       <column name="changeType"/>
     </createIndex>
   </changeSet>

@@ -4,11 +4,11 @@
     <tagDatabase tag="v1.18.0" />
   </changeSet>
   <changeSet id="2" author="John Barnard">
-    <createTable tableName = "ETL_INTERM_APP_CALC_RESULTS_DELINK_PAYMENTS">
-        <column name="calculation_id" type="INTEGER">
+    <createTable tableName = "etlIntermAppCalcResultsDelinkPayments">
+        <column name="calculationId" type="INTEGER">
             <constraints nullable="true" />
         </column>
-        <column name="application_id" type="INTEGER">
+        <column name="applicationId" type="INTEGER">
             <constraints nullable="false"/>
         </column>
         <column name="frn" type="INTEGER">
@@ -65,7 +65,7 @@
         <column name="paymentAmountCalculated" type="NUMERIC(15,2)">
             <constraints nullable="false"/>
         </column>
-        <column name="ETL_INSERTED_DT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
     </createTable>
    </changeSet>
 </databaseChangeLog>

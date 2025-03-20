@@ -25,8 +25,8 @@ INSERT INTO "delinkedCalculation" (
     "paymentAmountCalculated"
 )
 SELECT 
-    P."calculation_id" AS "calculationId",
-    P."application_id" AS "applicationId",
+    P."calculationId" AS "calculationId",
+    P."applicationId" AS "applicationId",
     CAST(P."sbi" AS INTEGER),
     CAST(P."frn" AS VARCHAR),
     CAST(P."paymentBand1" AS VARCHAR),
@@ -46,9 +46,9 @@ SELECT
     CAST(P."totalDelinkedPayment" AS VARCHAR),
     CAST(P."paymentAmountCalculated" AS VARCHAR)
 FROM 
-    etl_interm_app_calc_results_delink_payments P
+    "etlIntermAppCalcResultsDelinkPayments" P
 WHERE 
-    P.etl_inserted_dt > :startDate;
+    P."etlInsertedDt" > :startDate;
   `, {
     replacements: {
       startDate

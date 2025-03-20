@@ -204,5 +204,8 @@ module.exports = {
   winCloseDate: 'winCloseDate',
   winOpenDate: 'winOpenDate',
   year: 'year',
-  yearendrunnumber: 'yearendrunnumber'
+  yearendrunnumber: 'yearendrunnumber',
+  variableName: 'variableName',
+  progLine: 'progLine',
+  value: 'value'
 }
