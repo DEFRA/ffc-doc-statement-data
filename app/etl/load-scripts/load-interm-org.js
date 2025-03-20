@@ -19,76 +19,76 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
   }
 
   const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-  WITH newData AS (
+ WITH "newData" AS (
     SELECT
-      O.sbi,
-      A.businessAddress1 AS addressLine1,
-      A.businessAddress2 AS addressLine2,
-      A.businessAddress3 AS addressLine3,
-      A.businessCity AS city,
-      A.businessCounty AS county,
-      A.businessPostCode AS postcode,
-      A.businessEmailAddr AS emailaddress,
-      A.frn,
-      A.businessName AS name,
-      O.lastUpdatedOn::date AS updated,
-      O.partyId,
-      ${tableAlias}.changeType
-    FROM etlStageOrganisation O
-    LEFT JOIN etlStageBusinessAddressContactV A ON A.sbi = O.sbi
-    WHERE ${tableAlias}.etlId BETWEEN ${idFrom} AND ${idTo}
+      O."sbi",
+      A."businessAddress1" AS "addressLine1",
+      A."businessAddress2" AS "addressLine2",
+      A."businessAddress3" AS "addressLine3",
+      A."businessCity" AS "city",
+      A."businessCounty" AS "county",
+      A."businessPostCode" AS "postcode",
+      A."businessEmailAddr" AS "emailaddress",
+      A."frn",
+      A."businessName" AS "name",
+      O."lastUpdatedOn"::date AS "updated",
+      O."partyId",
+      ${tableAlias}."changeType"
+    FROM "etlStageOrganisation" O
+    LEFT JOIN "etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
+    WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
-  updatedRows AS (
-    UPDATE etlIntermOrg interm
+  "updatedRows" AS (
+    UPDATE "etlIntermOrg" interm
     SET
-      addressLine1 = newData.addressLine1,
-      addressLine2 = newData.addressLine2,
-      addressLine3 = newData.addressLine3,
-      city = newData.city,
-      county = newData.county,
-      postcode = newData.postcode,
-      emailaddress = newData.emailaddress,
-      frn = newData.frn,
-      sbi = newData.sbi,
-      "name" = newData.name,
-      updated = newData.updated,
-      etlInsertedDt = NOW()
-    FROM newData
-    WHERE newData.changeType = 'UPDATE'
-      AND interm.partyId = newData.partyId
-    RETURNING interm.partyId
+      addressLine1 = "newData"."addressLine1",
+      addressLine2 = "newData"."addressLine2",
+      addressLine3 = "newData"."addressLine3",
+      "city" = "newData"."city",
+      "county" = "newData"."county",
+      "postcode" = "newData"."postcode",
+      emailaddress = "newData"."emailaddress",
+      "frn" = "newData"."frn",
+      "sbi" = "newData"."sbi",
+      "name" = "newData"."name",
+      "updated" = "newData"."updated",
+      "etlInsertedDt" = NOW()
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm."partyId" = "newData"."partyId"
+    RETURNING interm."partyId"
   )
-  INSERT INTO etlIntermOrg (
-    sbi,
+  INSERT INTO "etlIntermOrg" (
+    "sbi",
     addressLine1,
     addressLine2,
     addressLine3,
-    city,
-    county,
-    postcode,
+    "city",
+    "county",
+    "postcode",
     emailaddress,
-    frn,
+    "frn",
     "name",
-    partyId,
-    updated
+    "partyId",
+    "updated"
   )
   SELECT
-    sbi,
-    addressLine1,
-    addressLine2,
-    addressLine3,
-    city,
-    county,
-    postcode,
-    emailaddress,
-    frn,
+    "sbi",
+    "addressLine1",
+    "addressLine2",
+    "addressLine3",
+    "city",
+    "county",
+    "postcode",
+    "emailaddress",
+    "frn",
     "name",
-    partyId,
-    updated
-  FROM newData
-  WHERE changeType = 'INSERT'
-    OR (changeType = 'UPDATE' AND partyId NOT IN (SELECT partyId FROM updatedRows));
+    "partyId",
+    "updated"
+  FROM "newData"
+  WHERE "changeType" = 'INSERT'
+    OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM "updatedRows"));
 `
 
   const batchSize = storageConfig.etlBatchSize

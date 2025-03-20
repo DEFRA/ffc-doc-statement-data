@@ -1,3 +1,6 @@
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
+const { VARCHAR, DATE } = require('../../constants/target-column-types')
 const { tdeLinkingTransferTransactions } = require('../../constants/tables')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -6,15 +9,16 @@ const stageTdeLinkingTransferTransactions = async () => {
   const folder = 'tdeLinkingTransferTransactions'
 
   const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'TRANSFEROR_SBI', 'TRANSFEROR_CUAA', 'TRANSFEROR_PK_CUAA', 'TRANSFEREE_SBI',
+    sourceColumnNames.CHANGE_TYPE,
+    sourceColumnNames.CHANGE_TIME, 'TRANSFEROR_SBI', 'TRANSFEROR_CUAA', 'TRANSFEROR_PK_CUAA', 'TRANSFEREE_SBI',
     'TRANSFEREE_CUAA', 'TRANSFEREE_PK_CUAA', 'TOTAL_AMOUNT_TRANSFERRED', 'TRANSFER_AMOUNT', 'TRANSFER_AMOUNT_TRANS_IN',
     'DT_INSERT', 'DT_DELETE', 'DATE_OF_TRANSFER', 'STATUS_P_CODE', 'STATUS_S_CODE', 'TRANSFER_APPLICATION_ID', 'USER_INSERT', 'USER_DELETE',
     'DT_UPDATE', 'DATA_SOURCE_P_CODE', 'DATA_SOURCE_S_CODE'
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format },
+    { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: 'TRANSFEROR_SBI', targetColumn: 'transferor_sbi', targetType: 'varchar' },
     { column: 'TRANSFEROR_CUAA', targetColumn: 'transferor_cuaa', targetType: 'varchar' },
     { column: 'TRANSFEROR_PK_CUAA', targetColumn: 'transferor_pk_cuaa', targetType: 'varchar' },

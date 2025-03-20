@@ -1,7 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermAppCalcResultsDelinkPayment = async (startDate) => {
+const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => {
   const tablesToCheck = [
     storageConfig.appCalculationResultsDelinkPayments.folder
   ]
@@ -22,8 +22,8 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate) => {
   }
 
   const fields = [
-    '"calculation_id"',
-    '"application_id"',
+    '"calculationId"',
+    '"applicationId"',
     '"paymentBand1"',
     '"paymentBand2"',
     '"paymentBand3"',
@@ -44,13 +44,14 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate) => {
     '"frn"'
   ]
 
-  const fieldsString = fields.join(', ')
+  // todo change all the app calc column casing
 
+  const fieldsString = fields.join(', ')
   const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH new_data AS (
+    WITH "newData" AS (
       SELECT
-        DP.calculation_id,
-        CD.application_id,
+        DP."calculationId",
+        CD."applicationId",
         MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND1' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand1",
         MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND2' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand2",
         MAX(CASE WHEN DP.variable_name = 'PI_BPS_BAND3' THEN CAST(DP.value AS NUMERIC) ELSE 0 END) AS "paymentBand3",
@@ -69,76 +70,71 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate) => {
         MAX(CASE WHEN DP.variable_name = 'NE_TOT_AMOUNT' THEN CAST(DP.value AS NUMERIC) / 2 ELSE 0 END) AS "paymentAmountCalculated",
         O.sbi,
         CAST(BAC.frn AS INTEGER) AS frn,
-        ${tableAlias}.change_type
+        ${tableAlias}."changeType"
       FROM etl_stage_app_calc_results_delink_payments DP
-      JOIN etl_stage_calculation_details CD ON DP.calculation_id = CD.calculation_id
-      JOIN etl_stage_application_detail AD ON AD.application_id = CD.application_id
-      JOIN etl_stage_defra_links DL ON DL.subject_id = AD.subject_id
-      JOIN etl_stage_organisation O ON O.party_id = DL.defra_id
-      JOIN etl_stage_business_address_contact_v BAC ON BAC.sbi = O.sbi
-      WHERE ${tableAlias}.etl_id BETWEEN ${idFrom} AND ${idTo}
+      JOIN "etlStageCalculationDetails" CD ON DP."calculationId" = CD."calculationId"
+      JOIN "etlStageApplicationDetail" AD ON AD."applicationId" = CD."applicationId"
+      JOIN "etlStageDefraLinks" DL ON DL.subject_id = AD.subject_id
+      JOIN "etlStageOrganisation" O ON O.party_id = DL.defra_id
+      JOIN "etlStageBusinessAddressContactV" BAC ON BAC.sbi = O.sbi
+      WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY DP.calculation_id, CD.application_id, O.sbi, BAC.frn, ${tableAlias}.change_type
+      GROUP BY DP."calculationId", CD."applicationId", O.sbi, BAC.frn, ${tableAlias}."changeType"
     ),
-    updated_rows AS (
+    "updatedRows" AS (
       UPDATE etl_interm_app_calc_results_delink_payments interm
       SET
-        calculation_id = new_data.calculation_id,
-        application_id = new_data.application_id,
-        "paymentBand1" = new_data."paymentBand1",
-        "paymentBand2" = new_data."paymentBand2",
-        "paymentBand3" = new_data."paymentBand3",
-        "paymentBand4" = new_data."paymentBand4",
-        "percentageReduction1" = new_data."percentageReduction1",
-        "percentageReduction2" = new_data."percentageReduction2",
-        "percentageReduction3" = new_data."percentageReduction3",
-        "percentageReduction4" = new_data."percentageReduction4",
-        "progressiveReductions1" = new_data."progressiveReductions1",
-        "progressiveReductions2" = new_data."progressiveReductions2",
-        "progressiveReductions3" = new_data."progressiveReductions3",
-        "progressiveReductions4" = new_data."progressiveReductions4",
-        "referenceAmount" = new_data."referenceAmount",
-        "totalProgressiveReduction" = new_data."totalProgressiveReduction",
-        "totalDelinkedPayment" = new_data."totalDelinkedPayment",
-        "paymentAmountCalculated" = new_data."paymentAmountCalculated",
-        sbi = new_data.sbi,
-        frn = new_data.frn,
+        "calculationId" = "newData"."calculationId",
+        "applicationId" = "newData"."applicationId",
+        "paymentBand1" = "newData"."paymentBand1",
+        "paymentBand2" = "newData"."paymentBand2",
+        "paymentBand3" = "newData"."paymentBand3",
+        "paymentBand4" = "newData"."paymentBand4",
+        "percentageReduction1" = "newData"."percentageReduction1",
+        "percentageReduction2" = "newData"."percentageReduction2",
+        "percentageReduction3" = "newData"."percentageReduction3",
+        "percentageReduction4" = "newData"."percentageReduction4",
+        "progressiveReductions1" = "newData"."progressiveReductions1",
+        "progressiveReductions2" = "newData"."progressiveReductions2",
+        "progressiveReductions3" = "newData"."progressiveReductions3",
+        "progressiveReductions4" = "newData"."progressiveReductions4",
+        "referenceAmount" = "newData"."referenceAmount",
+        "totalProgressiveReduction" = "newData"."totalProgressiveReduction",
+        "totalDelinkedPayment" = "newData"."totalDelinkedPayment",
+        "paymentAmountCalculated" = "newData"."paymentAmountCalculated",
+        sbi = "newData".sbi,
+        frn = "newData".frn,
         etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.calculation_id = new_data.calculation_id
-        AND interm.application_id = new_data.application_id
-      RETURNING interm.calculation_id, interm.application_id
+      FROM "newData"
+      WHERE "newData"."changeType" = 'UPDATE'
+        AND interm."calculationId" = "newData"."calculationId"
+        AND interm."applicationId" = "newData"."applicationId"
+      RETURNING interm."calculationId", interm."applicationId"
     )
     INSERT INTO etl_interm_app_calc_results_delink_payments (
       ${fieldsString}
     )
     SELECT ${fieldsString}
-    FROM new_data
-    WHERE change_type = 'INSERT'
-        OR (change_type = 'UPDATE' AND (calculation_id, application_id) NOT IN (SELECT calculation_id, application_id FROM updated_rows));
+    FROM "newData"
+    WHERE "changeType" = 'INSERT'
+        OR ("changeType" = 'UPDATE' AND ("calculationId", "applicationId") NOT IN (SELECT "calculationId", "applicationId" FROM "updatedRows"));
   `
 
   const batchSize = storageConfig.etlBatchSize
-
+  let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    const folderIndex = tablesToCheck.indexOf(folder)
-    let exclusionCondition = ''
-    for (let i = 0; i < folderIndex; i++) {
-      const priorFolder = tablesToCheck[i]
-      exclusionCondition += ` AND ${folderToAliasMap[priorFolder]}.etl_id NOT BETWEEN ${log.id_from} AND ${log.id_to}`
+    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
+      console.log(`Processing app calc results delinked payment records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.idTo)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
+      await executeQuery(query, {}, transaction)
     }
-    for (let i = log.id_from; i <= log.id_to; i += batchSize) {
-      console.log(`Processing app calculation results delink payments records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.id_to)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.id_to), tableAlias, exclusionCondition)
 
-      console.log(query)
-      await executeQuery(query, {})
-    }
+    console.log(`Processed app calc results delinked payment records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}.etlId NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

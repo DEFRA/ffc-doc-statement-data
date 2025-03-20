@@ -4,9 +4,9 @@ module.exports = (sequelize, DataTypes) => {
     changeTime: DataTypes.DATE,
     etlId: DataTypes.INTEGER,
     etlInsertedDt: DataTypes.DATE,
-    calculation_id: DataTypes.INTEGER,
-    variable_name: DataTypes.STRING,
-    prog_line: DataTypes.INTEGER,
+    calculationId: DataTypes.INTEGER,
+    variableName: DataTypes.STRING,
+    progLine: DataTypes.INTEGER,
     value: DataTypes.STRING
   },
   {
