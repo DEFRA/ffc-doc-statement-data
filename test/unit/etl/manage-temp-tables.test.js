@@ -22,8 +22,8 @@ describe('ETL Interm Utils', () => {
       await createTempTables()
 
       for (const tableName of intermTablesToCopy) {
-        expect(executeQuery).toHaveBeenCalledWith(`DROP TABLE IF EXISTS ${tableName}Temp;`)
-        expect(executeQuery).toHaveBeenCalledWith(`CREATE TEMP TABLE ${tableName}Temp AS SELECT * FROM ${tableName};`)
+        expect(executeQuery).toHaveBeenCalledWith(`DROP TABLE IF EXISTS "${tableName}Temp";`)
+        expect(executeQuery).toHaveBeenCalledWith(`CREATE TEMP TABLE "${tableName}Temp" AS SELECT * FROM "${tableName}";`)
       }
 
       expect(executeQuery).toHaveBeenCalledTimes(intermTablesToCopy.length * 2)
@@ -35,8 +35,8 @@ describe('ETL Interm Utils', () => {
       await restoreIntermTablesFromTemp()
 
       for (const tableName of intermTablesToCopy) {
-        expect(executeQuery).toHaveBeenCalledWith(`DELETE FROM ${tableName};`)
-        expect(executeQuery).toHaveBeenCalledWith(`INSERT INTO ${tableName} SELECT * FROM ${tableName}Temp;`)
+        expect(executeQuery).toHaveBeenCalledWith(`DELETE FROM "${tableName}";`)
+        expect(executeQuery).toHaveBeenCalledWith(`INSERT INTO "${tableName}" SELECT * FROM "${tableName}Temp";`)
       }
 
       expect(executeQuery).toHaveBeenCalledTimes(intermTablesToCopy.length * 2)
@@ -48,7 +48,7 @@ describe('ETL Interm Utils', () => {
       await clearTempTables()
 
       for (const tableName of intermTablesToCopy) {
-        expect(executeQuery).toHaveBeenCalledWith(`DROP TABLE IF EXISTS ${tableName}Temp;`)
+        expect(executeQuery).toHaveBeenCalledWith(`DROP TABLE IF EXISTS "${tableName}Temp";`)
       }
 
       expect(executeQuery).toHaveBeenCalledTimes(intermTablesToCopy.length)

@@ -11,7 +11,7 @@ describe('etlStageCssContracts Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageCssContracts.getTableName()).toBe('etlStageCssContracts')
+    expect(etlStageCssContracts.getTableName().name).toBe('etlStageCssContracts')
   })
 
   test('should have correct attributes', () => {

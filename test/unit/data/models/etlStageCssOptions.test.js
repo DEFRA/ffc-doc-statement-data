@@ -11,7 +11,7 @@ describe('etlStageCssOptions Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageCssOptions.getTableName()).toBe('etlStageCssOptions')
+    expect(etlStageCssOptions.getTableName().name).toBe('etlStageCssOptions')
   })
 
   test('should have correct attributes', () => {

@@ -11,7 +11,7 @@ describe('etlStageTclcPiiPayClaimSfimtOption Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageTclcPiiPayClaimSfimtOption.getTableName()).toBe('etlStageTclcPiiPayClaimSfimtOption')
+    expect(etlStageTclcPiiPayClaimSfimtOption.getTableName().name).toBe('etlStageTclcPiiPayClaimSfimtOption')
   })
 
   test('should have correct attributes', () => {
