@@ -17,7 +17,7 @@ const processDemographicsMessage = async (message, receiver) => {
       emailAddress: receivedData.digitalContact?.[0]?.digitalAddress,
       frn: receivedData.organisation?.firmId,
       name: receivedData.organisation?.organisationName,
-      updated: moment().format('YYYY-MM-DD HH:mm:ss'),
+      updated: moment().format('YYYY-MM-DD HH24:mm:ss'),
       published: null,
       ...addressLines
     }
