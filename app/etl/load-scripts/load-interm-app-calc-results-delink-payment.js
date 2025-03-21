@@ -1,5 +1,7 @@
 const { storageConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 
 const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => {
   const tablesToCheck = [

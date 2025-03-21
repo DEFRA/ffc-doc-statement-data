@@ -30,27 +30,27 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
       A."businessCity" AS "city",
       A."businessCounty" AS "county",
       A."businessPostCode" AS "postcode",
-      A."businessEmailAddr" AS "emailaddress",
+      A."businessEmailAddr" AS "emailAddress",
       A."frn",
       A."businessName" AS "name",
       O."lastUpdatedOn"::date AS "updated",
       O."partyId",
       ${tableAlias}."changeType"
-    FROM "${dbConfig.schema}."etlStageOrganisation" O
-    LEFT JOIN "${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
+    FROM ${dbConfig.schema}."etlStageOrganisation" O
+    LEFT JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
   "updatedrows" AS (
     UPDATE ${dbConfig.schema}."etlIntermOrg" interm
     SET
-      addressLine1 = "newData"."addressLine1",
-      addressLine2 = "newData"."addressLine2",
-      addressLine3 = "newData"."addressLine3",
+      "addressLine1" = "newData"."addressLine1",
+      "addressLine2" = "newData"."addressLine2",
+      "addressLine3" = "newData"."addressLine3",
       "city" = "newData"."city",
       "county" = "newData"."county",
       "postcode" = "newData"."postcode",
-      emailaddress = "newData"."emailaddress",
+      "emailAddress" = "newData"."emailAddress",
       "frn" = "newData"."frn",
       "sbi" = "newData"."sbi",
       "name" = "newData"."name",
@@ -69,7 +69,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
     "city",
     "county",
     "postcode",
-    emailaddress,
+    "emailAddress",
     "frn",
     "name",
     "partyId",
@@ -83,12 +83,12 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
     city,
     county,
     postcode,
-    emailaddress,
+    "emailAddress",
     frn,
     "name",
     "partyId",
     updated
-  FROM newdata
+  FROM "newData"
   WHERE "changeType" = 'INSERT'
     OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 `

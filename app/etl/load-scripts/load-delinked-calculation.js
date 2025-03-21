@@ -1,4 +1,6 @@
 const db = require('../../data')
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 
 const loadDelinkedCalculation = async (startDate, transaction) => {
   await db.sequelize.query(`

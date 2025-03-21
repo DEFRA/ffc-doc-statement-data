@@ -3,7 +3,7 @@ const dbConfig = config.dbConfig[config.env]
 
 module.exports = (accountnum, invoicePattern) => {
   return `
-WITH "newdata" AS (
+WITH "newData" AS (
     SELECT
       transdate,
       invoiceid,
@@ -32,13 +32,13 @@ WITH "newdata" AS (
       settlementvoucher AS "paymentRef",
       D."changeType",
       recid
-    FROM "${dbConfig.schema}."etlStageFinanceDax"" D
+    FROM ${dbConfig.schema}."etlStageFinanceDax" D
     WHERE LENGTH(accountnum) = ${accountnum}
-      AND ""etlId"" BETWEEN :idFrom AND :idTo
+      AND "etlId" BETWEEN :idFrom AND :idTo
       AND "invoiceid" LIKE '${invoicePattern}'
   ),
-  "updatedrows" AS (
-    UPDATE "${dbConfig.schema}."etlIntermFinanceDax"" interm
+  "updatedRows" AS (
+    UPDATE ${dbConfig.schema}."etlIntermFinanceDax" interm
     SET
       transdate = "newData".transdate,
       scheme = "newData".scheme,
@@ -57,7 +57,7 @@ WITH "newdata" AS (
       AND interm.recid = "newData".recid
     RETURNING interm.recid
   )
-  INSERT INTO "${dbConfig.schema}."etlIntermFinanceDax"" (
+  INSERT INTO ${dbConfig.schema}."etlIntermFinanceDax" (
     transdate,
     invoiceid,
     scheme,

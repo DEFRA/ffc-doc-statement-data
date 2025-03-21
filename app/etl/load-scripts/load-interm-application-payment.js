@@ -40,7 +40,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         ${exclusionCondition}
     ),
     "updatedrows" AS (
-      UPDATE "${dbConfig.schema}."etlIntermApplicationPayment"" interm
+      UPDATE ${dbConfig.schema}."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",
         "invoiceId" = newdata."invoiceId",
