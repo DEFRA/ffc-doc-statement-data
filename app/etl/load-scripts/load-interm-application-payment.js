@@ -21,7 +21,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
   }
 
   const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH newdata AS (
+    WITH "newdata" AS (
       SELECT
         CL."applicationId",
         APN."invoiceNumber",
@@ -39,7 +39,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
     ),
-    updatedrows AS (
+    "updatedrows" AS (
       UPDATE ${dbConfig.schema}."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",

@@ -45,48 +45,48 @@ describe('loadIntermCalcOrg', () => {
     await loadIntermCalcOrg(startDate)
 
     expect(db.sequelize.query).toHaveBeenCalledWith(`
-    WITH newdata AS (
+    WITH "newdata" AS (
       SELECT
         CD."calculationId",
-        BAC.sbi,
-        BAC.frn,
+        BAC."sbi",
+        BAC."frn",
         CD."applicationId",
         CD."calculationDt",
         CD."idClcHeader",
         APN."changeType"
-      FROM public."etlStageAppsPaymentNotification" APN
-      INNER JOIN public."etlStageCssContractApplications" CLAIM 
+      FROM "etlStageAppsPaymentNotification" APN
+      INNER JOIN "etlStageCssContractApplications" CLAIM 
         ON CLAIM."applicationId" = APN."applicationId" 
         AND CLAIM."dataSourceSCode" = 'CAPCLM'
-      INNER JOIN public."etlStageCssContractApplications" APP 
+      INNER JOIN "etlStageCssContractApplications" APP 
         ON APP."contractId" = CLAIM."contractId" 
         AND APP."dataSourceSCode" = '000001'
-      INNER JOIN public."etlIntermFinanceDax" D 
+      INNER JOIN "etlIntermFinanceDax" D 
         ON D."claimId" = CLAIM."applicationId"
-      INNER JOIN public."etlStageFinanceDax" SD 
-        ON SD.invoiceid = D.invoiceid
-      INNER JOIN public."etlStageBusinessAddressContactV" BAC 
-        ON BAC.frn = SD.custvendac
-      INNER JOIN public."etlStageCalculationDetails" CD 
+      INNER JOIN "etlStageFinanceDax" SD 
+        ON SD."invoiceid" = D."invoiceid"
+      INNER JOIN "etlStageBusinessAddressContactV" BAC 
+        ON BAC."frn" = SD."custvendac"
+      INNER JOIN "etlStageCalculationDetails" CD 
         ON CD."applicationId" = APN."applicationId" 
         AND CD."idClcHeader" = APN."idClcHeader"
-        AND CD.ranked = 1
+        AND CD."ranked" = 1
       WHERE APN."notificationFlag" = 'P'
         AND APN."etlId" BETWEEN 1 AND 2
         
-      GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", APN."changeType"
+      GROUP BY CD."calculationId", BAC."sbi", BAC."frn", CD."applicationId", CD."calculationDt", CD."idClcHeader", APN."changeType"
     ),
-    updatedrows AS (
-      UPDATE public."etlIntermCalcOrg" interm
+    "updatedRows" AS (
+      UPDATE "etlIntermCalcOrg" interm
       SET
-        sbi = newdata.sbi,
-        frn = newdata.frn,
-        "calculationDate" = newdata."calculationDt",
+        "sbi" = "newData"."sbi",
+        "frn" = "newData"."frn",
+        "calculationDate" = "newData"."calculationDt",
         "etlInsertedDt" = NOW()
-      FROM newdata
-      WHERE newdata."changeType" = 'UPDATE'
-        AND interm."calculationId" = newdata."calculationId"
-        AND interm."idClcHeader" = newdata."idClcHeader"
+      FROM "newData"
+      WHERE "newData"."changeType" = 'UPDATE'
+        AND interm."calculationId" = "newData"."calculationId"
+        AND interm."idClcHeader" = "newData"."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
     INSERT INTO public."etlIntermCalcOrg" (
@@ -99,14 +99,14 @@ describe('loadIntermCalcOrg', () => {
     )
     SELECT
       "calculationId",
-      sbi,
-      frn,
+      "sbi",
+      "frn",
       "applicationId",
       "calculationDt",
       "idClcHeader"
-    FROM newdata
+    FROM "newData"
     WHERE "changeType" = 'INSERT'
-      OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
+      OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM "updatedRows"));
   `, {
       replacements: {},
       raw: true,

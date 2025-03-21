@@ -20,7 +20,7 @@ describe('loadTotals', () => {
     INSERT INTO public.totals (
       "calculationId", "sbi", "frn", "agreementNumber",
       "claimId", "schemeType", "calculationDate",
-      "invoiceNumber", "agreementStart", "agreementEnd",
+      "invoiceNumber", agreementStart, agreementEnd,
       "totalAdditionalPayments", "totalActionPayments", "updated",
       "datePublished", "totalPayments"  
     )

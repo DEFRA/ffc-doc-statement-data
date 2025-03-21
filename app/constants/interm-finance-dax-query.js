@@ -1,8 +1,9 @@
 const config = require('../config')
 const dbConfig = config.dbConfig[config.env]
 
-module.exports = `
-  WITH newdata AS (
+module.exports = (accountnum, invoicePattern) => {
+  return `
+WITH "newData" AS (
     SELECT
       transdate,
       invoiceid,
@@ -29,31 +30,31 @@ module.exports = `
       substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS "sitiInvoiceId",
       substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS "claimId",
       settlementvoucher AS "paymentRef",
-      "changeType",
+      D."changeType",
       recid
     FROM ${dbConfig.schema}."etlStageFinanceDax" D
-    WHERE LENGTH(accountnum) = 10
+    WHERE LENGTH(accountnum) = ${accountnum}
       AND "etlId" BETWEEN :idFrom AND :idTo
-      AND invoiceid LIKE 'S%Z%'
+      AND "invoiceid" LIKE '${invoicePattern}'
   ),
-  updatedrows AS (
+  "updatedRows" AS (
     UPDATE ${dbConfig.schema}."etlIntermFinanceDax" interm
     SET
-      transdate = newdata.transdate,
-      scheme = newdata.scheme,
-      fund = newdata.fund,
-      marketingyear = newdata.marketingyear,
-      "month" = newdata."month",
-      quarter = newdata.quarter,
-      "transactionAmount" = newdata."transactionAmount",
-      agreementreference = newdata.agreementreference,
-      "sitiInvoiceId" = newdata."sitiInvoiceId",
-      "claimId" = newdata."claimId",
-      invoiceid = newdata.invoiceid,
+      transdate = "newData".transdate,
+      scheme = "newData".scheme,
+      fund = "newData".fund,
+      marketingyear = "newData".marketingyear,
+      "month" = "newData"."month",
+      quarter = "newData".quarter,
+      "transactionAmount" = "newData"."transactionAmount",
+      agreementreference = "newData".agreementreference,
+      "sitiInvoiceId" = "newData"."sitiInvoiceId",
+      "claimId" = "newData"."claimId",
+      invoiceid = "newData".invoiceid,
       "etlInsertedDt" = NOW()
-    FROM newdata
-    WHERE newdata."changeType" = 'UPDATE'
-      AND interm.recid = newdata.recid
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm.recid = "newData".recid
     RETURNING interm.recid
   )
   INSERT INTO ${dbConfig.schema}."etlIntermFinanceDax" (
@@ -85,7 +86,8 @@ module.exports = `
     "claimId",
     "paymentRef",
     recid
-  FROM newdata
-  WHERE "changeType" = 'INSERT'
-    OR ("changeType" = 'UPDATE' AND recid NOT IN (SELECT recid FROM updatedrows));
+  FROM "newData"
+  WHERE "newData"."changeType" = 'INSERT'
+    OR ("newData"."changeType" = 'UPDATE' AND recid NOT IN (SELECT recid FROM "updatedRows"));
 `
+}
