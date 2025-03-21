@@ -10,7 +10,7 @@ const stageAppCalcResultsDelinkPayments = async () => {
 
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
-    sourceColumnNames.CHANGE_TIME, 
+    sourceColumnNames.CHANGE_TIME,
     sourceColumnNames.CALCULATION_ID,
     sourceColumnNames.VARIABLE_NAME,
     sourceColumnNames.PROG_LINE,
@@ -23,7 +23,7 @@ const stageAppCalcResultsDelinkPayments = async () => {
     { column: sourceColumnNames.CALCULATION_ID, targetColumn: targetColumnNames.calculationId, targetType: NUMBER },
     { column: sourceColumnNames.VARIABLE_NAME, targetColumn: targetColumnNames.variableName, targetType: VARCHAR },
     { column: sourceColumnNames.PROG_LINE, targetColumn: targetColumnNames.progLine, targetType: NUMBER },
-    { column: sourceColumnNames.VALUE, targetColumn: targetColumnNames.value, targetType: VARCHAR },
+    { column: sourceColumnNames.VALUE, targetColumn: targetColumnNames.value, targetType: VARCHAR }
   ]
 
   return downloadAndProcessFile(folder, appCalcResultsDelinkPayments, columns, mapping)
