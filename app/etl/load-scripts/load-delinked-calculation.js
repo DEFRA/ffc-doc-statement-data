@@ -2,7 +2,7 @@ const db = require('../../data')
 
 const loadDelinkedCalculation = async (startDate, transaction) => {
   await db.sequelize.query(`
-INSERT INTO "delinkedCalculation" (
+INSERT INTO ${dbConfig.schema}."delinkedCalculation" (
     "calculationId",
     "applicationId",
     "sbi",
@@ -46,7 +46,7 @@ SELECT
     CAST(P."totalDelinkedPayment" AS VARCHAR),
     CAST(P."paymentAmountCalculated" AS VARCHAR)
 FROM 
-    "etlIntermAppCalcResultsDelinkPayments" P
+    ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" P
 WHERE 
     P."etlInsertedDt" > :startDate;
   `, {
