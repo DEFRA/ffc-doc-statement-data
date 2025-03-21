@@ -96,7 +96,9 @@ test('stageBusinessAddressContacts downloads file and runs ETL process', async (
     { column: 'BUSINESS_ADDRESS1', find: "'", replace: "''", all: true },
     { column: 'BUSINESS_ADDRESS2', find: "'", replace: "''", all: true },
     { column: 'BUSINESS_ADDRESS3', find: "'", replace: "''", all: true },
-    { column: 'BUSINESS_CITY', find: "'", replace: "''", all: true }
+    { column: 'BUSINESS_CITY', find: "'", replace: "''", all: true },
+    { column: 'BUSINESS_EMAIL_ADDR', find: "'", replace: "''", all: true },
+    { column: 'CORRESPONDENCE_EMAIL_ADDR', find: "'", replace: "''", all: true }
   ]
 
   const nonProdTransformer = [
@@ -104,7 +106,8 @@ test('stageBusinessAddressContacts downloads file and runs ETL process', async (
     { name: 'BUSINESS_ADDRESS1', faker: 'location.street' },
     { name: 'BUSINESS_POST_CODE', faker: 'location.zipCode' },
     { name: 'BUSINESS_CITY', faker: 'location.city' },
-    { name: 'BUSINESS_EMAIL_ADDR', faker: 'internet.email' }
+    { name: 'BUSINESS_EMAIL_ADDR', faker: 'internet.email' },
+    { name: 'CORRESPONDENCE_EMAIL_ADDR', faker: 'internet.email' }
   ]
 
   await stageBusinessAddressContacts()
