@@ -12,41 +12,61 @@ const sendUpdates = async (type) => {
 
   const readStream = new Readable({
     objectMode: true,
-    async read (size) {
-      try {
-        const batch = await getUnpublished(size)
-        for (const item of batch) {
-          this.push(item)
-        }
-        if (batch.length < size) {
-          this.push(null)
-        }
-      } catch (error) {
-        this.destroy(error)
+    reading: false,
+    read(size) {
+      if (this.reading) {
+        return
       }
+
+      this.reading = true
+
+      getUnpublished(size)
+        .then(batch => {
+          if (!batch || !Array.isArray(batch)) {
+            console.warn(`Invalid batch returned for ${type}`)
+            this.push(null)
+            this.reading = false
+            return
+          }
+
+          for (const item of batch) {
+            this.push(item)
+          }
+
+          if (batch.length < size) {
+            this.push(null)
+          }
+          this.reading = false
+        })
+        .catch(error => {
+          console.error(`Error in read stream for ${type}:`, error)
+          this.reading = false
+          this.destroy(error)
+        })
     }
   })
 
   const processStream = new Transform({
     objectMode: true,
-    transform (chunk, _encoding, callback) {
-      const processItem = async () => {
-        try {
-          const sanitizedUpdate = removeDefunctValues(chunk)
-          sanitizedUpdate.type = type
-          const isValid = validateUpdate(sanitizedUpdate, type)
-          if (isValid) {
-            await sendMessage(sanitizedUpdate, type)
+    transform(chunk, _encoding, callback) {
+      const sanitizedUpdate = removeDefunctValues(chunk)
+      sanitizedUpdate.type = type
+      const isValid = validateUpdate(sanitizedUpdate, type)
+
+      if (isValid) {
+        sendMessage(sanitizedUpdate, type)
+          .then(() => {
             const primaryKey = getPrimaryKeyValue(chunk, type)
-            await updatePublished(primaryKey)
+            return updatePublished(primaryKey)
+          })
+          .then(() => {
             totalPublished++
-          }
-          callback()
-        } catch (error) {
-          callback(error)
-        }
+            callback()
+          })
+          .catch(error => callback(error))
+      } else {
+        callback()
       }
-      processItem()
     }
   })
 
@@ -58,7 +78,6 @@ const sendUpdates = async (type) => {
     console.log('%i %s datasets published', totalPublished, type)
   } catch (error) {
     console.error(`Error in sendUpdates for ${type}:`, error)
-    throw error
   }
 }
 

@@ -4,9 +4,13 @@ const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('./typ
 
 const updateTypes = [ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365]
 
-async function * updateGenerator () {
+const processUpdates = async () => {
   for (const type of updateTypes) {
-    yield sendUpdates(type)
+    try {
+      await sendUpdates(type)
+    } catch (err) {
+      console.error(`Error processing updates for ${type}:`, err)
+    }
   }
 }
 
@@ -14,15 +18,13 @@ const start = async () => {
   try {
     console.log('Ready to publish data')
 
-    for await (const promise of updateGenerator()) {
-      await promise
-    }
+    await processUpdates()
 
     console.log('All outstanding valid datasets published')
   } catch (err) {
     console.error('Error during publishing:', err)
   } finally {
-    setTimeout(start, publishingConfig.pollingInterval)
+    setTimeout(() => start(), publishingConfig.pollingInterval)
   }
 }
 
