@@ -74,7 +74,8 @@ const stageBusinessAddressContacts = async () => {
     { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
     { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
     { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true }
+    { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
+    { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
   ]
 
   let nonProdTransformer = []
