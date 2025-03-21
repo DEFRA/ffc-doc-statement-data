@@ -11,7 +11,7 @@ describe('etlStageAppsTypes Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageAppsTypes.getTableName()).toBe('etlStageAppsTypes')
+    expect(etlStageAppsTypes.getTableName().name).toBe('etlStageAppsTypes')
   })
 
   test('should have correct attributes', () => {

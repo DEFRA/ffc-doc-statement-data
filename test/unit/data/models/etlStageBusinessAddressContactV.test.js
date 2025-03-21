@@ -11,7 +11,7 @@ describe('etlStageBusinessAddressContactV Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageBusinessAddressContactV.getTableName()).toBe('etlStageBusinessAddressContactV')
+    expect(etlStageBusinessAddressContactV.getTableName().name).toBe('etlStageBusinessAddressContactV')
   })
 
   test('should have correct attributes', () => {

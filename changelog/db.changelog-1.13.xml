@@ -899,13 +899,13 @@
             <column name="sbi" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="addressline1" type="VARCHAR">
+            <column name="addressLine1" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="addressline2" type="VARCHAR">
+            <column name="addressLine2" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="addressline3" type="VARCHAR">
+            <column name="addressLine3" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
             <column name="city" type="VARCHAR">
@@ -917,7 +917,7 @@
             <column name="postcode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="emailaddress" type="VARCHAR">
+            <column name="emailAddress" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
             <column name="frn" type="VARCHAR">
@@ -953,10 +953,10 @@
             <column name="contractId" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="agreementstart" type="TIMESTAMP">
+            <column name="agreementStart" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name="agreementend" type="TIMESTAMP">
+            <column name="agreementEnd" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
             <column name="applicationId" type="INTEGER">
@@ -1063,16 +1063,16 @@
             <column name="paymentRef" type="VARCHAR">
                 <constraints nullable="false" />
             </column>
-            <column name="agreementstart" type="TIMESTAMP">
+            <column name="agreementStart" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name="agreementend" type="TIMESTAMP">
+            <column name="agreementEnd" type="TIMESTAMP">
                 <constraints nullable="false" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
         <addUniqueConstraint  
-            columnNames="paymentRef, agreementstart, agreementend"
+            columnNames="paymentRef, agreementStart, agreementEnd"
             constraintName="uqPaymentRefAgreementDate"
             tableName="etlIntermPaymentrefAgreementDates"
             validate="true"/>

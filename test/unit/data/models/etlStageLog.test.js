@@ -11,7 +11,7 @@ describe('etlStageLog Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageLog.getTableName()).toBe('etlStageLog')
+    expect(etlStageLog.getTableName().name).toBe('etlStageLog')
   })
 
   test('should have correct attributes', () => {

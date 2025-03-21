@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
@@ -28,39 +30,39 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
     WITH "newData" AS (
       SELECT
         CD."calculationId",
-        BAC."sbi",
-        BAC."frn",
+        BAC.sbi,
+        BAC.frn,
         CD."applicationId",
         CD."calculationDt",
         CD."idClcHeader",
         ${tableAlias}."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CLAIM 
+      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CLAIM 
         ON CLAIM."applicationId" = APN."applicationId" 
         AND CLAIM."dataSourceSCode" = 'CAPCLM'
-      INNER JOIN "etlStageCssContractApplications" APP 
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" APP 
         ON APP."contractId" = CLAIM."contractId" 
         AND APP."dataSourceSCode" = '000001'
-      INNER JOIN "etlIntermFinanceDax" D 
+      INNER JOIN ${dbConfig.schema}."etlIntermFinanceDax" D 
         ON D."claimId" = CLAIM."applicationId"
-      INNER JOIN "etlStageFinanceDax" SD 
-        ON SD."invoiceid" = D."invoiceid"
-      INNER JOIN "etlStageBusinessAddressContactV" BAC 
-        ON BAC."frn" = SD."custvendac"
-      INNER JOIN "etlStageCalculationDetails" CD 
+      INNER JOIN ${dbConfig.schema}."etlStageFinanceDax" SD 
+        ON SD.invoiceid = D.invoiceid
+      INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" BAC 
+        ON BAC.frn = SD.custvendac
+      INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD 
         ON CD."applicationId" = APN."applicationId" 
         AND CD."idClcHeader" = APN."idClcHeader"
-        AND CD."ranked" = 1
+        AND CD.ranked = 1
       WHERE APN."notificationFlag" = 'P'
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY CD."calculationId", BAC."sbi", BAC."frn", CD."applicationId", CD."calculationDt", CD."idClcHeader", ${tableAlias}."changeType"
+      GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", ${tableAlias}."changeType"
     ),
-    "updatedRows" AS (
-      UPDATE "etlIntermCalcOrg" interm
+    updatedrows AS (
+      UPDATE ${dbConfig.schema}."etlIntermCalcOrg" interm
       SET
-        "sbi" = "newData"."sbi",
-        "frn" = "newData"."frn",
+        sbi = "newData".sbi,
+        frn = "newData".frn,
         "calculationDate" = "newData"."calculationDt",
         "etlInsertedDt" = NOW()
       FROM "newData"
@@ -69,28 +71,28 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
         AND interm."idClcHeader" = "newData"."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermCalcOrg" (
+    INSERT INTO ${dbConfig.schema}."etlIntermCalcOrg" (
       "calculationId",
-      "sbi",
-      "frn",
+      sbi,
+      frn,
       "applicationId",
       "calculationDate",
       "idClcHeader"
     )
     SELECT
       "calculationId",
-      "sbi",
-      "frn",
+      sbi,
+      frn,
       "applicationId",
       "calculationDt",
       "idClcHeader"
     FROM "newData"
     WHERE "changeType" = 'INSERT'
-      OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM "updatedRows"));
+      OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
   `
 
   const batchSize = storageConfig.etlBatchSize
-  const exclusionScript = ''
+  let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
     const folder = folderMatch ? folderMatch[1] : ''
@@ -101,6 +103,9 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
       const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
       await executeQuery(query, {}, transaction)
     }
+
+    console.log(`Processed calcOrg records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

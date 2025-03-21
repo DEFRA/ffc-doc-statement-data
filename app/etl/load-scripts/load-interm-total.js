@@ -1,7 +1,9 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const defaultQuery = `
-INSERT INTO "etlIntermTotal" (
+INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
   "transdate", "invoiceid"
 )
@@ -10,7 +12,7 @@ SELECT DISTINCT "paymentRef",
   SUM("transactionAmount") * -1 as "totalAmount",
   "transdate",
   "invoiceid"
-FROM "etlIntermFinanceDax" D 
+FROM ${dbConfig.schema}."etlIntermFinanceDax" D 
 WHERE D."paymentRef" LIKE 'PY%' 
   AND D."etlInsertedDt" > :startDate
 GROUP BY "transdate", "quarter", "paymentRef", "invoiceid"
@@ -18,7 +20,7 @@ ORDER BY "paymentRef";
 `
 
 const delinkedQuery = `
-INSERT INTO "etlIntermTotal" (
+INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
   "transdate", "invoiceid", "calculationId"
 )
@@ -29,7 +31,7 @@ SELECT DISTINCT
   D."transdate",
   D."invoiceid",
   CD."calculationId"
-FROM "etlIntermFinanceDax" D
+FROM ${dbConfig.schema}."etlIntermFinanceDax" D 
 JOIN "etlStageCalculationDetails" CD ON D."claimId" = CD."applicationId"
 WHERE D."paymentRef" LIKE 'PY%'
     AND D."etlInsertedDt" > :startDate

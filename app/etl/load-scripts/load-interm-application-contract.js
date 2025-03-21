@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationContract = async (startDate, transaction) => {
@@ -19,42 +21,42 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
   }
 
   const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH newData AS (
+    WITH newdata AS (
       SELECT
-        cc.contractId,
-        MIN(cc.startDt) AS agreementStart,
-        MIN(cc.endDt) AS agreementEnd,
-        ca.applicationId,
+        cc."contractId",
+        MIN(cc."startDt") AS "agreementStart",
+        MIN(cc."endDt") AS "agreementEnd",
+        ca."applicationId",
         cl.pkid,
-        ${tableAlias}.changeType
-      FROM etlStageCssContractApplications cl
-      LEFT JOIN etlStageCssContractApplications ca ON cl.contractId = ca.contractId AND ca.dataSourceSCode = '000001'
-      LEFT JOIN etlStageCssContracts cc ON cl.contractId = cc.contractId AND cc.contractStateSCode = '000020'
-      WHERE cl.dataSourceSCode = 'CAPCLM'
-        AND ${tableAlias}.etlId BETWEEN ${idFrom} AND ${idTo}
+        ${tableAlias}."changeType"
+      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
+      WHERE cl."dataSourceSCode" = 'CAPCLM'
+        AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY cc.contractId, ca.applicationId, ${tableAlias}.changeType, cl.pkid
+      GROUP BY cc."contractId", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
-    updatedRows AS (
-      UPDATE etlIntermApplicationContract interm
+    updatedrows AS (
+      UPDATE ${dbConfig.schema}."etlIntermApplicationContract" interm
       SET
-        contractId = newData.contractId,
-        agreementStart = newData.agreementStart,
-        agreementEnd = newData.agreementEnd,
-        applicationId = newData.applicationId,
-        etlInsertedDt = NOW()
-      FROM newData
-      WHERE newData.changeType = 'UPDATE'
-        AND interm.pkid = newData.pkid
+        "contractId" = newdata."contractId",
+        "agreementStart" = newdata."agreementStart",
+        "agreementEnd" = newdata."agreementEnd",
+        "applicationId" = newdata."applicationId",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO etlIntermApplicationContract (
-      contractId, agreementStart, agreementEnd, applicationId, pkid
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationContract" (
+      "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
     )
-    SELECT contractId, agreementStart, agreementEnd, applicationId, pkid
-    FROM newData
-    WHERE changeType = 'INSERT'
-      OR (changeType = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedRows));
+    SELECT "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
+    FROM newdata
+    WHERE "changeType" = 'INSERT'
+      OR ("changeType" = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedrows));
   `
 
   const batchSize = storageConfig.etlBatchSize
@@ -70,8 +72,8 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
       await executeQuery(query, {}, transaction)
     }
 
-    console.log(`Processed application claim records for ${folder}}`)
-    exclusionScript += ` AND ${tableAlias}.etlId NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
+    console.log(`Processed application claim records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

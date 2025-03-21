@@ -19,13 +19,13 @@ describe('loadIntermPaymentrefOrg', () => {
     await loadIntermPaymentrefOrg(startDate, transaction)
 
     expect(db.sequelize.query).toHaveBeenCalledWith(`
-    INSERT INTO etlIntermPaymentrefOrg (paymentRef, sbi, frn)
-    SELECT PA.paymentRef, O.sbi, O.frn::bigint 
-      FROM etlIntermPaymentrefApplication PA 
-    INNER JOIN etlIntermCalcOrg O ON O.applicationId = PA.applicationId
-    WHERE PA.etlInsertedDt > :startDate
-      OR O.etlInsertedDt > :startDate
-    GROUP BY PA.paymentRef, O.sbi, O.frn;
+    INSERT INTO public."etlIntermPaymentrefOrg" ("paymentRef", sbi, frn)
+    SELECT PA."paymentRef", O.sbi, O.frn::bigint 
+      FROM public."etlIntermPaymentrefApplication" PA 
+    INNER JOIN public."etlIntermCalcOrg" O ON O."applicationId" = PA."applicationId"
+    WHERE PA."etlInsertedDt" > :startDate
+      OR O."etlInsertedDt" > :startDate
+    GROUP BY PA."paymentRef", O.sbi, O.frn;
   `, {
       replacements: {
         startDate

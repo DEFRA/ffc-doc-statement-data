@@ -11,7 +11,7 @@ describe('etlStageOrganisation Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageOrganisation.getTableName()).toBe('etlStageOrganisation')
+    expect(etlStageOrganisation.getTableName().name).toBe('etlStageOrganisation')
   })
 
   test('should have correct attributes', () => {

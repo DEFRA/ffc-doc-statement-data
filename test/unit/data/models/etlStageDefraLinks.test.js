@@ -11,7 +11,7 @@ describe('etlStageDefraLinks Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageDefraLinks.getTableName()).toBe('etlStageDefraLinks')
+    expect(etlStageDefraLinks.getTableName().name).toBe('etlStageDefraLinks')
   })
 
   test('should have correct attributes', () => {

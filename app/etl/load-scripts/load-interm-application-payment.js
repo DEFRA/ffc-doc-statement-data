@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationPayment = async (startDate, transaction) => {
@@ -19,17 +21,17 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
   }
 
   const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH "newData" AS (
+    WITH "newdata" AS (
       SELECT
-        CL.""applicationId"",
-        APN.""invoiceNumber"",
-        substring(APN.""invoiceNumber"", position('A' in APN.""invoiceNumber"") + 2, length(APN.""invoiceNumber"") - (position('A' in APN.""invoiceNumber"") + 1))::integer AS ""invoiceId"",
+        CL."applicationId",
+        APN."invoiceNumber",
+        substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
         "idClcHeader",
         ${tableAlias}."changeType"
-      FROM "etlStageAppsPaymentNotification" APN
-      INNER JOIN "etlStageCssContractApplications" CA 
-        ON APN.""applicationId"" = CA.""applicationId""
-      INNER JOIN "etlStageCssContractApplications" CL 
+      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA 
+        ON APN."applicationId" = CA."applicationId"
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CL 
         ON CA."contractId" = CL."contractId"
       WHERE CA."dataSourceSCode" = 'CAPCLM'
         AND CL."dataSourceSCode" = '000001'
@@ -37,19 +39,19 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
     ),
-    "updatedRows" AS (
-      UPDATE "etlIntermApplicationPayment" interm
+    "updatedrows" AS (
+      UPDATE "${dbConfig.schema}."etlIntermApplicationPayment"" interm
       SET
-        "invoiceNumber" = "newData"."invoiceNumber",
-        "invoiceId" = "newData"."invoiceId",
+        "invoiceNumber" = newdata."invoiceNumber",
+        "invoiceId" = newdata."invoiceId",
         "etlInsertedDt" = NOW()
-      FROM "newData"
-      WHERE "newData"."changeType" = 'UPDATE'
-        AND interm."applicationId" = "newData"."applicationId"
-        AND interm."idClcHeader" = "newData"."idClcHeader"
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm."applicationId" = newdata."applicationId"
+        AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermApplicationPayment" (
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationPayment" (
       "applicationId",
       "invoiceNumber",
       "invoiceId",
@@ -60,9 +62,9 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
       "invoiceNumber",
       "invoiceId",
       "idClcHeader"
-    FROM "newData"
+    FROM newdata
       WHERE "changeType" = 'INSERT'
-        OR ("changeType" = 'UPDATE' AND ("applicationId", "idClcHeader") NOT IN (SELECT "applicationId", "idClcHeader" FROM "updatedRows"));
+        OR ("changeType" = 'UPDATE' AND ("applicationId", "idClcHeader") NOT IN (SELECT "applicationId", "idClcHeader" FROM updatedrows));
   `
 
   const batchSize = storageConfig.etlBatchSize
@@ -79,7 +81,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
     }
 
     console.log(`Processed application payment records for ${folder}`)
-    exclusionScript += ` AND ${tableAlias}.etlId NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

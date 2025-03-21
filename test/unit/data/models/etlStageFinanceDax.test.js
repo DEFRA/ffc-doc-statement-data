@@ -11,7 +11,7 @@ describe('etlStageFinanceDax Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageFinanceDax.getTableName()).toBe('etlStageFinanceDax')
+    expect(etlStageFinanceDax.getTableName().name).toBe('etlStageFinanceDax')
   })
 
   test('should have correct attributes', () => {

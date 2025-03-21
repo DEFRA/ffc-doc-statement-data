@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
@@ -34,13 +36,13 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
       O."lastUpdatedOn"::date AS "updated",
       O."partyId",
       ${tableAlias}."changeType"
-    FROM "etlStageOrganisation" O
-    LEFT JOIN "etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
+    FROM "${dbConfig.schema}."etlStageOrganisation" O
+    LEFT JOIN "${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
-  "updatedRows" AS (
-    UPDATE "etlIntermOrg" interm
+  "updatedrows" AS (
+    UPDATE ${dbConfig.schema}."etlIntermOrg" interm
     SET
       addressLine1 = "newData"."addressLine1",
       addressLine2 = "newData"."addressLine2",
@@ -59,21 +61,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
       AND interm."partyId" = "newData"."partyId"
     RETURNING interm."partyId"
   )
-  INSERT INTO "etlIntermOrg" (
-    "sbi",
-    addressLine1,
-    addressLine2,
-    addressLine3,
-    "city",
-    "county",
-    "postcode",
-    emailaddress,
-    "frn",
-    "name",
-    "partyId",
-    "updated"
-  )
-  SELECT
+  INSERT INTO ${dbConfig.schema}."etlIntermOrg" (
     "sbi",
     "addressLine1",
     "addressLine2",
@@ -81,14 +69,28 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
     "city",
     "county",
     "postcode",
-    "emailaddress",
+    emailaddress,
     "frn",
     "name",
     "partyId",
-    "updated"
-  FROM "newData"
+    updated
+  )
+  SELECT
+    sbi,
+    "addressLine1",
+    "addressLine2",
+    "addressLine3",
+    city,
+    county,
+    postcode,
+    emailaddress,
+    frn,
+    "name",
+    "partyId",
+    updated
+  FROM newdata
   WHERE "changeType" = 'INSERT'
-    OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM "updatedRows"));
+    OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 `
 
   const batchSize = storageConfig.etlBatchSize
@@ -105,7 +107,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
     }
 
     console.log(`Processed org records for folder ${folder}`)
-    exclusionScript += ` AND ${tableAlias}.etlId NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

@@ -11,7 +11,7 @@ describe('etlStageAppsPaymentNotification Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageAppsPaymentNotification.getTableName()).toBe('etlStageAppsPaymentNotification')
+    expect(etlStageAppsPaymentNotification.getTableName().name).toBe('etlStageAppsPaymentNotification')
   })
 
   test('should have correct attributes', () => {

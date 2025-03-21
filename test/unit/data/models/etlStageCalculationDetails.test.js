@@ -11,7 +11,7 @@ describe('etlStageCalculationDetails Model', () => {
   })
 
   test('should have correct table name', () => {
-    expect(etlStageCalculationDetails.getTableName()).toBe('etlStageCalculationDetails')
+    expect(etlStageCalculationDetails.getTableName().name).toBe('etlStageCalculationDetails')
   })
 
   test('should have correct attributes', () => {

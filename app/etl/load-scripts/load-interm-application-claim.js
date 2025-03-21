@@ -1,4 +1,6 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const storageConfig = config.storageConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
@@ -19,40 +21,40 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
   }
 
   const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH newData AS (
+    WITH newdata AS (
       SELECT
-        cc.contractId,
-        ca.applicationId AS claimId,
-        ca.applicationId AS agreementId,
+        cc."contractId",
+        ca."applicationId" AS "claimId",
+        ca."applicationId" AS "agreementId",
         cl.pkid,
-        ${tableAlias}.changeType
-      FROM etlStageCssContractApplications cl
-      LEFT JOIN etlStageCssContractApplications ca ON cl.contractId = ca.contractId AND ca.dataSourceSCode = '000001'
-      LEFT JOIN etlStageCssContracts cc ON cl.contractId = cc.contractId
-      WHERE cl.dataSourceSCode = 'CAPCLM'
-        AND ${tableAlias}.etlId BETWEEN ${idFrom} AND ${idTo}
+        ${tableAlias}."changeType"
+      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId"
+      WHERE cl."dataSourceSCode" = 'CAPCLM'
+        AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
-      GROUP BY cc.contractId, cc.startDt, cc.endDt, ca.applicationId, ${tableAlias}.changeType, cl.pkid
+      GROUP BY cc."contractId", cc."startDt", cc."endDt", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
-    updatedRows AS (
-      UPDATE etlIntermApplicationClaim interm
+    updatedrows AS (
+      UPDATE ${dbConfig.schema}."etlIntermApplicationClaim" interm
       SET
-        contractId = newData.contractId,
-        claimId = newData.claimId,
-        agreementId = newData.agreementId,
-        etlInsertedDt = NOW()
-      FROM newData
-      WHERE newData.changeType = 'UPDATE'
-        AND interm.pkid = newData.pkid
+        "contractId" = newdata."contractId",
+        "claimId" = newdata."claimId",
+        "agreementId" = newdata."agreementId",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO etlIntermApplicationClaim (
-      contractId, claimId, agreementId, pkid
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationClaim" (
+      "contractId", "claimId", "agreementId", pkid
     )
-    SELECT contractId, claimId, agreementId, pkid
-    FROM newData
-    WHERE changeType = 'INSERT'
-      OR (changeType = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedRows));
+    SELECT "contractId", "claimId", "agreementId", pkid
+    FROM newdata
+    WHERE "changeType" = 'INSERT'
+      OR ("changeType" = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedrows));
   `
 
   const batchSize = storageConfig.etlBatchSize
@@ -69,7 +71,7 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
     }
 
     console.log(`Processed application claim records for ${folder}`)
-    exclusionScript += ` AND ${tableAlias}.etlId NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

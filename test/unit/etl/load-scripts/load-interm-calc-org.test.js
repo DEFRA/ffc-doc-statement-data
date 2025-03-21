@@ -45,7 +45,7 @@ describe('loadIntermCalcOrg', () => {
     await loadIntermCalcOrg(startDate)
 
     expect(db.sequelize.query).toHaveBeenCalledWith(`
-    WITH "newData" AS (
+    WITH "newdata" AS (
       SELECT
         CD."calculationId",
         BAC."sbi",
@@ -89,10 +89,10 @@ describe('loadIntermCalcOrg', () => {
         AND interm."idClcHeader" = "newData"."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
-    INSERT INTO "etlIntermCalcOrg" (
+    INSERT INTO public."etlIntermCalcOrg" (
       "calculationId",
-      "sbi",
-      "frn",
+      sbi,
+      frn,
       "applicationId",
       "calculationDate",
       "idClcHeader"

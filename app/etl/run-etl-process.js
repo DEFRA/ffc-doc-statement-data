@@ -49,7 +49,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             name: 'postgresConnection',
             sequelize: db.sequelize
           }))
-          .loader(new Loaders.CSVLoader({ stream: fileStream, columns, startingLine: 3 }))
+          .loader(new Loaders.CSVLoader({ stream: fileStream, columns, startingLine: 3, relax: true }))
 
         if (nonProdTransformer && !config.isProd) {
           etlFlow.transform(new Transformers.FakerTransformer({
@@ -67,7 +67,8 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             table,
             connection: 'postgresConnection',
             mapping,
-            includeErrors: false
+            includeErrors: false,
+            schema: dbConfig.schema
           }))
           .pump()
           .on('finish', async (data) => {
@@ -83,7 +84,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             const idTo = await db[sequelizeModelName]?.max('etlId') ?? 0
             await db.etlStageLog.update(
               {
-                rows_loadedCount: newRowCount - initialRowCount,
+                rowsLoadedCount: newRowCount - initialRowCount,
                 idTo,
                 idFrom: idFrom < idTo ? idFrom : idTo,
                 endedAt: new Date()

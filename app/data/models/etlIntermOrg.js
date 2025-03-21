@@ -2,8 +2,8 @@ const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
 module.exports = (sequelize, DataTypes) => {
-  const organisation = sequelize.define('organisation', {
-    sbi: { type: DataTypes.INTEGER, primaryKey: true },
+  const etlIntermOrg = sequelize.define('etlIntermOrg', {
+    sbi: DataTypes.INTEGER,
     addressLine1: DataTypes.STRING,
     addressLine2: DataTypes.STRING,
     addressLine3: DataTypes.STRING,
@@ -11,22 +11,17 @@ module.exports = (sequelize, DataTypes) => {
     county: DataTypes.STRING,
     postcode: DataTypes.STRING,
     emailAddress: DataTypes.STRING,
-    frn: DataTypes.BIGINT,
+    frn: DataTypes.STRING,
     name: DataTypes.STRING,
+    partyId: DataTypes.INTEGER,
     updated: DataTypes.DATE,
-    published: DataTypes.DATE
-  },
-  {
-    tableName: 'organisations',
+    etlInsertedDt: DataTypes.DATE
+  }, {
+    tableName: 'etlIntermOrg',
     freezeTableName: true,
     timestamps: false,
     schema: dbConfig.schema
   })
-  organisation.associate = function (models) {
-    organisation.hasMany(models.calculation, {
-      foreignKey: 'sbi',
-      as: 'calculations'
-    })
-  }
-  return organisation
+
+  return etlIntermOrg
 }

@@ -5,7 +5,7 @@ exports[`loadIntermFinanceDAX should call sequelize.query with correct SQL and p
   "calls": [
     [
       "
-  WITH newData AS (
+  WITH newdata AS (
     SELECT
       transdate,
       invoiceid,
@@ -20,46 +20,46 @@ exports[`loadIntermFinanceDAX should call sequelize.query with correct SQL and p
             FROM (
               SELECT
                 value,
-                COALESCE(LAG(value, 1) OVER (ORDER BY S.settlementDate ASC, S.value ASC),0) AS lag,
+                COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
                 S.reference
-                FROM etlStageSettlement S 
-                WHERE S.invoiceNumber = D.invoiceid
+                FROM "etlStageSettlement" S 
+                WHERE S."invoiceNumber" = D.invoiceid
                 ORDER BY value
             ) B WHERE B.reference = D.settlementvoucher),
           lineamountmstgbp)
-        AS DECIMAL(10,2)) AS TRANSACTIONAMOUNT,
+        AS DECIMAL(10,2)) AS "transactionAmount",
       agreementreference,
       substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS "sitiInvoiceId",
-      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS claimId,
-      settlementvoucher AS PAYMENTREF,
-      changeType,
+      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS "claimId",
+      settlementvoucher AS "paymentRef",
+      "changeType",
       recid
-    FROM etlStageFinanceDax D
+    FROM public."etlStageFinanceDax" D
     WHERE LENGTH(accountnum) = 10
-      AND etlId BETWEEN :idFrom AND :idTo
+      AND "etlId" BETWEEN :idFrom AND :idTo
       AND invoiceid LIKE 'S%Z%'
   ),
-  updatedRows AS (
-    UPDATE etlIntermFinanceDax interm
+  updatedrows AS (
+    UPDATE public."etlIntermFinanceDax" interm
     SET
-      transdate = newData.transdate,
-      scheme = newData.scheme,
-      fund = newData.fund,
-      marketingyear = newData.marketingyear,
-      "month" = newData."month",
-      quarter = newData.quarter,
-      TRANSACTIONAMOUNT = newData.TRANSACTIONAMOUNT,
-      agreementreference = newData.agreementreference,
-      "sitiInvoiceId" = newData."sitiInvoiceId",
-      claimId = newData.claimId,
-      invoiceid = newData.invoiceid,
-      etlInsertedDt = NOW()
-    FROM newData
-    WHERE newData.changeType = 'UPDATE'
-      AND interm.recid = newData.recid
+      transdate = newdata.transdate,
+      scheme = newdata.scheme,
+      fund = newdata.fund,
+      marketingyear = newdata.marketingyear,
+      "month" = newdata."month",
+      quarter = newdata.quarter,
+      "transactionAmount" = newdata."transactionAmount",
+      agreementreference = newdata.agreementreference,
+      "sitiInvoiceId" = newdata."sitiInvoiceId",
+      "claimId" = newdata."claimId",
+      invoiceid = newdata.invoiceid,
+      "etlInsertedDt" = NOW()
+    FROM newdata
+    WHERE newdata."changeType" = 'UPDATE'
+      AND interm.recid = newdata.recid
     RETURNING interm.recid
   )
-  INSERT INTO etlIntermFinanceDax (
+  INSERT INTO public."etlIntermFinanceDax" (
     transdate,
     invoiceid,
     scheme,
@@ -67,11 +67,11 @@ exports[`loadIntermFinanceDAX should call sequelize.query with correct SQL and p
     marketingyear,
     "month",
     quarter,
-    TRANSACTIONAMOUNT,
+    "transactionAmount",
     agreementreference,
     "sitiInvoiceId",
-    claimId,
-    PAYMENTREF,
+    "claimId",
+    "paymentRef",
     recid
   )
   SELECT
@@ -82,15 +82,15 @@ exports[`loadIntermFinanceDAX should call sequelize.query with correct SQL and p
     marketingyear,
     "month",
     quarter,
-    TRANSACTIONAMOUNT,
+    "transactionAmount",
     agreementreference,
     "sitiInvoiceId",
-    claimId,
-    PAYMENTREF,
+    "claimId",
+    "paymentRef",
     recid
-  FROM newData
-  WHERE changeType = 'INSERT'
-    OR (changeType = 'UPDATE' AND recid NOT IN (SELECT recid FROM updatedRows));
+  FROM newdata
+  WHERE "changeType" = 'INSERT'
+    OR ("changeType" = 'UPDATE' AND recid NOT IN (SELECT recid FROM updatedrows));
 ",
       {
         "raw": true,
