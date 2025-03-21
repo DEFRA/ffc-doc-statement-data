@@ -25,9 +25,9 @@ deployment:
   memoryThreshold: 70
 
 container:
-  requestMemory: 450Mi
+  requestMemory: 1024Mi
   requestCpu: 300m
-  limitMemory: 600Mi
+  limitMemory: 1024Mi
   limitCpu: 600m
   messageQueueHost: namespace.servicebus.windows.net
   dataTopicAddress: ffc-doc-statement-data
