@@ -5,7 +5,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
   "calls": [
     [
       "
-    WITH newdata AS (
+    WITH "newdata" AS (
       SELECT
         CL."applicationId",
         APN."invoiceNumber",
@@ -23,7 +23,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         AND APN."etlId" BETWEEN 1 AND 2
         
     ),
-    updatedrows AS (
+    "updatedrows" AS (
       UPDATE public."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",
@@ -58,7 +58,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
     ],
     [
       "
-    WITH newdata AS (
+    WITH "newdata" AS (
       SELECT
         CL."applicationId",
         APN."invoiceNumber",
@@ -76,7 +76,7 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
         AND APN."etlId" BETWEEN 1 AND 2
          AND APN."etlId" NOT BETWEEN 1 AND 2
     ),
-    updatedrows AS (
+    "updatedrows" AS (
       UPDATE public."etlIntermApplicationPayment" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",

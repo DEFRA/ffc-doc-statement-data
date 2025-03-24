@@ -16,50 +16,6 @@ describe('loadTotals', () => {
 
     await loadTotals(startDate, mockTransaction)
 
-    const expected = `
-    INSERT INTO public.totals (
-      "calculationId", "sbi", "frn", "agreementNumber",
-      "claimId", "schemeType", "calculationDate",
-      "invoiceNumber", agreementStart, agreementEnd,
-      "totalAdditionalPayments", "totalActionPayments", "updated",
-      "datePublished", "totalPayments"  
-    )
-    SELECT
-      T."calculationId" AS "calculationId",
-      PO.sbi::integer,
-      PO.frn::integer,
-      CA2."applicationId" AS "agreementNumber",
-      PA."applicationId" AS "claimId",
-      'SFI-23' AS "schemeType",
-      NOW() AS "calculationDate",
-      T.invoiceid AS "invoiceNumber",
-      IPAD."agreementStart",
-      IPAD."agreementEnd",
-      T."totalAmount" AS "totalAdditionalPayments",
-      T."totalAmount" AS "totalActionPayments",
-      NOW() as updated,
-      NULL as "datePublished",
-      T."totalAmount" AS "totalPayments"
-    FROM public."etlIntermTotal" T
-    INNER JOIN public."etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
-    INNER JOIN public."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef"
-    INNER JOIN public."etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
-    INNER JOIN public."etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
-    INNER JOIN public."etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"
-    WHERE T."etlInsertedDt" > :startDate
-      OR PO."etlInsertedDt" > :startDate
-      OR PA."etlInsertedDt" > :startDate
-      OR CA."etlInsertedDt" > :startDate
-      OR IPAD."etlInsertedDt" > :startDate
-    ON CONFLICT ("calculationId") DO NOTHING;
-  `
-
-    expect(db.sequelize.query).toHaveBeenCalledWith(expected,
-      {
-        replacements: { startDate },
-        raw: true,
-        transaction: mockTransaction
-      }
-    )
+    expect(db.sequelize.query).toMatchSnapshot()
   })
 })
