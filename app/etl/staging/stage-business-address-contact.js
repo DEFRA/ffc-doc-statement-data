@@ -76,7 +76,9 @@ const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'bu
     { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
     { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
     { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true }
+    { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
+    { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, find: "'", replace: "''", all: true },
+    { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
   ]
 
   let nonProdTransformer = []
@@ -86,7 +88,8 @@ const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'bu
       { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },
       { name: sourceColumnNames.BUSINESS_POST_CODE, faker: LOCATION_ZIP_CODE },
       { name: sourceColumnNames.BUSINESS_CITY, faker: LOCATION_CITY },
-      { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL }
+      { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL },
+      { name: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, faker: INTERNET_EMAIL }
     ]
   }
 

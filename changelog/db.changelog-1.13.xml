@@ -834,7 +834,7 @@
             <column name="vendorNumber" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="landDetailSConfirmedDtKey" type="NUMBER(10,0)">
+            <column name="landDetailsConfirmedDtKey" type="NUMBER(10,0)">
                 <constraints nullable="true" />
             </column>
             <column name="businessDetConfirmedDtKey" type="NUMBER(10,0)">

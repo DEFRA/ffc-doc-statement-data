@@ -5,27 +5,6 @@ const storage = require('../storage')
 const db = require('../data')
 const tableMappings = require('../constants/table-mappings')
 const { getFirstLineNumber } = require('./file-utils')
-const { Writable } = require('stream')
-
-const collectData = () => {
-  let data = ''
-  const writable = new Writable({
-    write (chunk, encoding, callback) {
-      data += chunk.toString()
-      callback()
-    }
-  })
-
-  writable.on('finish', () => {
-    console.log('Collected Data:', data)
-  })
-
-  writable.on('error', (error) => {
-    console.error('Error collecting data:', error.message)
-  })
-
-  return { writable, getData: () => data }
-}
 
 const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer, nonProdTransformer, file }) => {
   const etl = new Etl.Etl()
@@ -37,9 +16,6 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
     file,
     rowCount
   })
-
-  const { writable, getData } = collectData()
-  fileStream.pipe(writable)
 
   return new Promise((resolve, reject) => {
     (async () => {
@@ -95,7 +71,6 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
           })
           .on('error', (error) => {
             console.error('ETL Error:', error.message)
-            console.error('Data causing the error:', getData())
             reject(error)
           })
       } catch (e) {
