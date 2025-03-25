@@ -1,7 +1,7 @@
 const getUnpublishedTotal = require('./get-unpublished-total')
 const getActionsByCalculationId = require('./get-actions-by-calculation-id')
 
-const getUnpublished = async (limit = 250, offset = 0, transaction) => {
+const getUnpublished = async (transaction, limit = 250, offset = 0) => {
   const totals = await getUnpublishedTotal(limit, offset, transaction)
   const grouped = {}
 
