@@ -1,9 +1,11 @@
 const db = require('../../data')
 
-const getUnpublishedTotal = async (transaction) => {
+const getUnpublishedTotal = async (limit = 250, offset = 0, transaction) => {
   return db.total.findAll({
     lock: true,
     skipLocked: true,
+    limit,
+    offset,
     where: {
       [db.Sequelize.Op.or]: [
         {
