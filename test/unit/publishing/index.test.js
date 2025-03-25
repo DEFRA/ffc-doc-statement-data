@@ -46,7 +46,7 @@ describe('start publishing', () => {
     sendUpdates.mockRejectedValueOnce(error)
 
     await start()
-    expect(console.error).toHaveBeenCalledWith(error)
+    expect(console.error).toHaveBeenCalledWith(`Error processing updates for ${ORGANISATION}:`, error)
   })
 
   test('restarts after polling interval', async () => {

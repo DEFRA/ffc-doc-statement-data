@@ -1,83 +1,70 @@
-const { Readable, Transform } = require('stream')
-const { pipeline } = require('stream/promises')
+const { pipeline, Readable, Transform } = require('stream')
+const util = require('util')
+const pipelineAsync = util.promisify(pipeline)
+
 const getPrimaryKeyValue = require('./get-primary-key-value')
 const sendMessage = require('./send-message')
 const removeDefunctValues = require('./remove-defunct-values')
 const validateUpdate = require('./validate-update')
+
+async function * ensureAsyncIterable (source) {
+  if (source && typeof source[Symbol.asyncIterator] === 'function') {
+    yield * source
+  } else if (source && typeof source[Symbol.iterator] === 'function') {
+    for (const item of source) {
+      yield item
+    }
+  } else {
+    const result = await source
+    if (result && typeof result[Symbol.iterator] === 'function') {
+      for (const item of result) {
+        yield item
+      }
+    } else {
+      yield result
+    }
+  }
+}
 
 const sendUpdates = async (type) => {
   const getUnpublished = require(`./${type}/get-unpublished`)
   const updatePublished = require(`./${type}/update-published`)
   let totalPublished = 0
 
-  const readStream = new Readable({
+  const unpublishedIterable = ensureAsyncIterable(getUnpublished())
+  const readable = Readable.from(unpublishedIterable, { objectMode: true })
+
+  const processTransform = new Transform({
     objectMode: true,
-    reading: false,
-    read(size) {
-      if (this.reading) {
-        return
-      }
+    async transform (unpublished, _encoding, callback) {
+      try {
+        const sanitizedUpdate = removeDefunctValues(unpublished)
+        sanitizedUpdate.type = type
 
-      this.reading = true
-
-      getUnpublished(size)
-        .then(batch => {
-          if (!batch || !Array.isArray(batch)) {
-            console.warn(`Invalid batch returned for ${type}`)
-            this.push(null)
-            this.reading = false
-            return
-          }
-
-          for (const item of batch) {
-            this.push(item)
-          }
-
-          if (batch.length < size) {
-            this.push(null)
-          }
-          this.reading = false
-        })
-        .catch(error => {
-          console.error(`Error in read stream for ${type}:`, error)
-          this.reading = false
-          this.destroy(error)
-        })
-    }
-  })
-
-  const processStream = new Transform({
-    objectMode: true,
-    transform(chunk, _encoding, callback) {
-      const sanitizedUpdate = removeDefunctValues(chunk)
-      sanitizedUpdate.type = type
-      const isValid = validateUpdate(sanitizedUpdate, type)
-
-      if (isValid) {
-        sendMessage(sanitizedUpdate, type)
-          .then(() => {
-            const primaryKey = getPrimaryKeyValue(chunk, type)
-            return updatePublished(primaryKey)
-          })
-          .then(() => {
-            totalPublished++
-            callback()
-          })
-          .catch(error => callback(error))
-      } else {
+        if (!validateUpdate(sanitizedUpdate, type)) {
+          console.warn(`Skipping invalid update for ${type} (id: ${unpublished.id || 'unknown'})`)
+          return callback()
+        }
+        await sendMessage(sanitizedUpdate, type)
+        const primaryKey = getPrimaryKeyValue(unpublished, type)
+        await updatePublished(primaryKey)
+        totalPublished++
+        callback(null, unpublished)
+      } catch (err) {
+        console.error(`Error processing update for ${type} (id: ${unpublished?.id || 'unknown'}):`, err)
         callback()
       }
     }
   })
 
   try {
-    await pipeline(
-      readStream,
-      processStream
+    await pipelineAsync(
+      readable,
+      processTransform
     )
     console.log('%i %s datasets published', totalPublished, type)
-  } catch (error) {
-    console.error(`Error in sendUpdates for ${type}:`, error)
+  } catch (err) {
+    console.error(`Error during processing pipeline for ${type}:`, err)
   }
 }
 
