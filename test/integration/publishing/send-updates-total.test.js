@@ -413,9 +413,7 @@ describe('send total updates', () => {
       )
       const unpublishedBefore = await db.total.findAll({ where: { datePublished: null } })
 
-      // Launch two concurrent publish processes
       await Promise.all([publish.start(), publish.start()])
-      // Call once more to process any remaining records
       await publish.start()
 
       const unpublishedAfter = await db.total.findAll({ where: { datePublished: null } })

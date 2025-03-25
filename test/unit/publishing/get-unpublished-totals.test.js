@@ -21,13 +21,11 @@ describe('getUnpublishedTotals', () => {
 
   test('getUnpublishedTotals passes custom limit and offset to db.total.findAll', async () => {
     const transaction = {}
-    await getUnpublishedTotals(100, 50, transaction)
+    await getUnpublishedTotals(transaction, 100, 50)
 
     expect(db.total.findAll).toHaveBeenCalledWith({
       lock: true,
       skipLocked: true,
-      limit: 100,
-      offset: 50,
       where: {
         [db.Sequelize.Op.or]: [
           { datePublished: null },
@@ -55,20 +53,20 @@ describe('getUnpublishedTotals', () => {
         'datePublished'
       ],
       raw: true,
+      limit: 100,
+      offset: 50,
       transaction
     })
   })
 
   test('getUnpublishedTotals returns the correct data', async () => {
     const transaction = {}
-    const result = await getUnpublishedTotals(250, 0, transaction)
+    const result = await getUnpublishedTotals(transaction, 250, 0)
     expect(result).toEqual([mockTotal1, mockTotal2, mockTotal3])
 
     expect(db.total.findAll).toHaveBeenCalledWith({
       lock: true,
       skipLocked: true,
-      limit: 250,
-      offset: 0,
       where: {
         [db.Sequelize.Op.or]: [
           { datePublished: null },
@@ -96,6 +94,8 @@ describe('getUnpublishedTotals', () => {
         'datePublished'
       ],
       raw: true,
+      limit: 250,
+      offset: 0,
       transaction
     })
   })

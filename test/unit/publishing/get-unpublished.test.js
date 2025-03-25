@@ -19,18 +19,19 @@ describe('getUnpublished', () => {
 
   test('returns an empty array when no totals are found', async () => {
     getUnpublishedTotal.mockResolvedValueOnce([])
-    const result = await getUnpublished(250, 0, {})
+    // Note: transaction comes first!
+    const result = await getUnpublished('trans', 250, 0)
     expect(result).toEqual([])
-    expect(getUnpublishedTotal).toHaveBeenCalledWith(250, 0, {})
+    expect(getUnpublishedTotal).toHaveBeenCalledWith('trans', 250, 0)
   })
 
   test('returns grouped totals with actions for a single total', async () => {
     getUnpublishedTotal.mockResolvedValueOnce([total1])
     getActionsByCalculationId.mockResolvedValueOnce([actionA1, actionA2])
 
-    const result = await getUnpublished(250, 0, 'trans1')
+    const result = await getUnpublished('trans1', 250, 0)
     expect(result).toEqual([{ ...total1, actions: [actionA1, actionA2] }])
-    expect(getUnpublishedTotal).toHaveBeenCalledWith(250, 0, 'trans1')
+    expect(getUnpublishedTotal).toHaveBeenCalledWith('trans1', 250, 0)
     expect(getActionsByCalculationId).toHaveBeenCalledWith(total1.calculationId, 'trans1')
   })
 
@@ -40,11 +41,11 @@ describe('getUnpublished', () => {
       .mockResolvedValueOnce([actionA1, actionA2])
       .mockResolvedValueOnce([actionA2, actionA3])
 
-    const result = await getUnpublished(100, 50, {})
+    const result = await getUnpublished({}, 100, 50)
     expect(result).toEqual([
       { ...total1, actions: [actionA1, actionA2, actionA3] }
     ])
-    expect(getUnpublishedTotal).toHaveBeenCalledWith(100, 50, {})
+    expect(getUnpublishedTotal).toHaveBeenCalledWith({}, 100, 50)
     expect(getActionsByCalculationId).toHaveBeenCalledTimes(2)
     expect(getActionsByCalculationId).toHaveBeenNthCalledWith(1, total1.calculationId, {})
     expect(getActionsByCalculationId).toHaveBeenNthCalledWith(2, total1.calculationId, {})
@@ -56,12 +57,12 @@ describe('getUnpublished', () => {
       .mockResolvedValueOnce([actionA1])
       .mockResolvedValueOnce([actionA2])
 
-    const result = await getUnpublished(200, 10, 'trans2')
+    const result = await getUnpublished('trans2', 200, 10)
     expect(result).toEqual([
       { ...total1, actions: [actionA1] },
       { ...total2, actions: [actionA2] }
     ])
-    expect(getUnpublishedTotal).toHaveBeenCalledWith(200, 10, 'trans2')
+    expect(getUnpublishedTotal).toHaveBeenCalledWith('trans2', 200, 10)
     expect(getActionsByCalculationId).toHaveBeenNthCalledWith(1, total1.calculationId, 'trans2')
     expect(getActionsByCalculationId).toHaveBeenNthCalledWith(2, total2.calculationId, 'trans2')
   })
