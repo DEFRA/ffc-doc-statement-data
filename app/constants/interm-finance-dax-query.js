@@ -20,7 +20,7 @@ WITH "newData" AS (
                 value,
                 COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
                 S.reference
-                FROM "etlStageSettlement" S 
+                FROM ${dbConfig.schema}."etlStageSettlement" S 
                 WHERE S."invoiceNumber" = D.invoiceid
                 ORDER BY value
             ) B WHERE B.reference = D.settlementvoucher),
