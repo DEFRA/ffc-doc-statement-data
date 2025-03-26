@@ -401,14 +401,21 @@ describe('send total updates', () => {
 
     test('should process all total records when there are 2 times the number of total records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.total.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockTotal1, calculationId: mockTotal1.calculationId + x } }))
-      await db.action.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x } }))
+      await db.total.bulkCreate(
+        [...Array(numberOfRecords).keys()].map(x => {
+          return { ...mockTotal1, calculationId: mockTotal1.calculationId + x }
+        })
+      )
+      await db.action.bulkCreate(
+        [...Array(numberOfRecords).keys()].map(x => {
+          return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x }
+        })
+      )
       const unpublishedBefore = await db.total.findAll({ where: { datePublished: null } })
 
-      publish.start()
-      publish.start()
+      await Promise.all([publish.start(), publish.start()])
+      await publish.start()
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
       const unpublishedAfter = await db.total.findAll({ where: { datePublished: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
