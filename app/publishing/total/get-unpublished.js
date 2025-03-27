@@ -1,8 +1,9 @@
 const getUnpublishedTotal = require('./get-unpublished-total')
 const getActionsByCalculationId = require('./get-actions-by-calculation-id')
+const { publishingConfig } = require('../../config')
 
-const getUnpublished = async (transaction, limit = 250, offset = 0) => {
-  const totals = await getUnpublishedTotal(transaction, limit, offset)
+const getUnpublished = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
+  const totals = await getUnpublishedTotal(transaction, limit)
   const grouped = {}
 
   for (const total of totals) {

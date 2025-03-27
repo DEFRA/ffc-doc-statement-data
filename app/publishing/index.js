@@ -14,7 +14,7 @@ const processUpdates = async () => {
   }
 }
 
-const start = async (cycleOnce = false) => {
+const start = async () => {
   try {
     console.log('Ready to publish data')
     await processUpdates()

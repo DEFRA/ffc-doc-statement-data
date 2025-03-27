@@ -8,7 +8,7 @@ const sendUpdates = async (type) => {
   const getUnpublished = require(`./${type}/get-unpublished`)
   const updatePublished = require(`./${type}/update-published`)
   let totalPublished = 0
-  const batchSize = publishingConfig.dataPublishingMaxBatchSizePerDataSource || 250
+  const batchSize = publishingConfig.dataPublishingMaxBatchSizePerDataSource
 
   let outstanding = []
   do {
