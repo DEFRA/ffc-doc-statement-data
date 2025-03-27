@@ -14,12 +14,10 @@ const processUpdates = async () => {
   }
 }
 
-const start = async () => {
+const start = async (cycleOnce = false) => {
   try {
     console.log('Ready to publish data')
-
     await processUpdates()
-
     console.log('All outstanding valid datasets published')
   } catch (err) {
     console.error('Error during publishing:', err)
