@@ -13,27 +13,35 @@ WITH "newData" AS (
       "month",
       quarter,
       CAST(
-        COALESCE(
-          (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
-            FROM (
-              SELECT
-                value,
-                COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
-                S.reference
-                FROM ${dbConfig.schema}."etlStageSettlement" S 
-                WHERE S."invoiceNumber" = D.invoiceid
-                ORDER BY value
-            ) B WHERE B.reference = D.settlementvoucher),
-          lineamountmstgbp)
-        AS DECIMAL(10,2)) AS "transactionAmount",
+          COALESCE(
+              (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
+                  FROM (
+                      SELECT
+                          value,
+                          COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
+                          S.reference
+                      FROM ${dbConfig.schema}."etlStageSettlement" S 
+                      WHERE S."invoiceNumber" = D.invoiceid
+                      ORDER BY value
+                  ) B WHERE B.reference = D.settlementvoucher),
+              lineamountmstgbp)
+          AS DECIMAL(10,2)) AS "transactionAmount",
       agreementreference,
-      substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS "sitiInvoiceId",
-      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1)) AS "claimId",
+      CASE
+          WHEN substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)) ~ '^[0-9]+$'
+          THEN CAST(substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)) AS INTEGER)
+          ELSE NULL
+      END AS "sitiInvoiceId",
+      CASE
+          WHEN substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1)) ~ '^[0-9]+$'
+          THEN CAST(substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1)) AS INTEGER)
+          ELSE NULL
+      END AS "claimId",
       settlementvoucher AS "paymentRef",
       D."changeType",
       recid
-    FROM ${dbConfig.schema}."etlStageFinanceDax" D
-    WHERE LENGTH(accountnum) = ${accountnum}
+  FROM ${dbConfig.schema}."etlStageFinanceDax" D
+  WHERE LENGTH(accountnum) = ${accountnum}
       AND "etlId" BETWEEN :idFrom AND :idTo
       AND "invoiceid" LIKE '${invoicePattern}'
   ),
