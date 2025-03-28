@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet id ="1" author="John Barnard">
+    <tagDatabase tag="v1.16.0" />
+  </changeSet>
+  <changeSet id="2" author="John Barnard">
+    <createTable tableName = "etlStageAppCalcResultsDelinkPayments">
+        <column name="changeType" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="changeTime" type="TIMESTAMP">
+            <constraints nullable="false" />
+        </column>
+        <column name="etlId" type="BIGSERIAL">
+            <constraints nullable="false" />
+        </column>
+        <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        <column name="PKID" type="INTEGER">
+            <constraints nullable="true" />
+        </column>
+        <column name="calculationId" type="INTEGER">
+            <constraints nullable="true" />
+        </column>
+        <column name="variableName" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="progLine" type="INTEGER">
+            <constraints nullable="true" />
+        </column>
+        <column name="VALUE" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+    </createTable>
+   </changeSet>
+</databaseChangeLog>

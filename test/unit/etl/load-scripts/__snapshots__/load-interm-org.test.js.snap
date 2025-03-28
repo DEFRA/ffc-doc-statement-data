@@ -5,56 +5,56 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
   "calls": [
     [
       "
-  WITH newdata AS (
+ WITH "newData" AS (
     SELECT
-      O.sbi,
+      O."sbi",
       A."businessAddress1" AS "addressLine1",
       A."businessAddress2" AS "addressLine2",
       A."businessAddress3" AS "addressLine3",
-      A."businessCity" AS city,
-      A."businessCounty" AS county,
-      A."businessPostCode" AS postcode,
-      A."businessEmailAddr" AS emailaddress,
-      A.frn,
-      A."businessName" AS name,
-      O."lastUpdatedOn"::date AS updated,
+      A."businessCity" AS "city",
+      A."businessCounty" AS "county",
+      A."businessPostCode" AS "postcode",
+      A."businessEmailAddr" AS "emailAddress",
+      A."frn",
+      A."businessName" AS "name",
+      O."lastUpdatedOn"::date AS "updated",
       O."partyId",
       O."changeType"
     FROM public."etlStageOrganisation" O
-    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
     WHERE O."etlId" BETWEEN 1 AND 2
       
   ),
-  updatedrows AS (
+  "updatedrows" AS (
     UPDATE public."etlIntermOrg" interm
     SET
-      "addressLine1" = newdata."addressLine1",
-      "addressLine2" = newdata."addressLine2",
-      "addressLine3" = newdata."addressLine3",
-      city = newdata.city,
-      county = newdata.county,
-      postcode = newdata.postcode,
-      emailaddress = newdata.emailaddress,
-      frn = newdata.frn,
-      sbi = newdata.sbi,
-      "name" = newdata.name,
-      updated = newdata.updated,
+      "addressLine1" = "newData"."addressLine1",
+      "addressLine2" = "newData"."addressLine2",
+      "addressLine3" = "newData"."addressLine3",
+      "city" = "newData"."city",
+      "county" = "newData"."county",
+      "postcode" = "newData"."postcode",
+      "emailAddress" = "newData"."emailAddress",
+      "frn" = "newData"."frn",
+      "sbi" = "newData"."sbi",
+      "name" = "newData"."name",
+      "updated" = "newData"."updated",
       "etlInsertedDt" = NOW()
-    FROM newdata
-    WHERE newdata."changeType" = 'UPDATE'
-      AND interm."partyId" = newdata."partyId"
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm."partyId" = "newData"."partyId"
     RETURNING interm."partyId"
   )
   INSERT INTO public."etlIntermOrg" (
-    sbi,
+    "sbi",
     "addressLine1",
     "addressLine2",
     "addressLine3",
-    city,
-    county,
-    postcode,
-    emailaddress,
-    frn,
+    "city",
+    "county",
+    "postcode",
+    "emailAddress",
+    "frn",
     "name",
     "partyId",
     updated
@@ -67,12 +67,12 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     city,
     county,
     postcode,
-    emailaddress,
+    "emailAddress",
     frn,
     "name",
     "partyId",
     updated
-  FROM newdata
+  FROM "newData"
   WHERE "changeType" = 'INSERT'
     OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 ",
@@ -84,56 +84,56 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     ],
     [
       "
-  WITH newdata AS (
+ WITH "newData" AS (
     SELECT
-      O.sbi,
+      O."sbi",
       A."businessAddress1" AS "addressLine1",
       A."businessAddress2" AS "addressLine2",
       A."businessAddress3" AS "addressLine3",
-      A."businessCity" AS city,
-      A."businessCounty" AS county,
-      A."businessPostCode" AS postcode,
-      A."businessEmailAddr" AS emailaddress,
-      A.frn,
-      A."businessName" AS name,
-      O."lastUpdatedOn"::date AS updated,
+      A."businessCity" AS "city",
+      A."businessCounty" AS "county",
+      A."businessPostCode" AS "postcode",
+      A."businessEmailAddr" AS "emailAddress",
+      A."frn",
+      A."businessName" AS "name",
+      O."lastUpdatedOn"::date AS "updated",
       O."partyId",
       O."changeType"
     FROM public."etlStageOrganisation" O
-    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
     WHERE O."etlId" BETWEEN 1 AND 2
        AND O."etlId" NOT BETWEEN 1 AND 2
   ),
-  updatedrows AS (
+  "updatedrows" AS (
     UPDATE public."etlIntermOrg" interm
     SET
-      "addressLine1" = newdata."addressLine1",
-      "addressLine2" = newdata."addressLine2",
-      "addressLine3" = newdata."addressLine3",
-      city = newdata.city,
-      county = newdata.county,
-      postcode = newdata.postcode,
-      emailaddress = newdata.emailaddress,
-      frn = newdata.frn,
-      sbi = newdata.sbi,
-      "name" = newdata.name,
-      updated = newdata.updated,
+      "addressLine1" = "newData"."addressLine1",
+      "addressLine2" = "newData"."addressLine2",
+      "addressLine3" = "newData"."addressLine3",
+      "city" = "newData"."city",
+      "county" = "newData"."county",
+      "postcode" = "newData"."postcode",
+      "emailAddress" = "newData"."emailAddress",
+      "frn" = "newData"."frn",
+      "sbi" = "newData"."sbi",
+      "name" = "newData"."name",
+      "updated" = "newData"."updated",
       "etlInsertedDt" = NOW()
-    FROM newdata
-    WHERE newdata."changeType" = 'UPDATE'
-      AND interm."partyId" = newdata."partyId"
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm."partyId" = "newData"."partyId"
     RETURNING interm."partyId"
   )
   INSERT INTO public."etlIntermOrg" (
-    sbi,
+    "sbi",
     "addressLine1",
     "addressLine2",
     "addressLine3",
-    city,
-    county,
-    postcode,
-    emailaddress,
-    frn,
+    "city",
+    "county",
+    "postcode",
+    "emailAddress",
+    "frn",
     "name",
     "partyId",
     updated
@@ -146,12 +146,12 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
     city,
     county,
     postcode,
-    emailaddress,
+    "emailAddress",
     frn,
     "name",
     "partyId",
     updated
-  FROM newdata
+  FROM "newData"
   WHERE "changeType" = 'INSERT'
     OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 ",

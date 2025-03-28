@@ -1,8 +1,9 @@
 const config = require('../config')
 const dbConfig = config.dbConfig[config.env]
 
-module.exports = `
-  WITH newdata AS (
+module.exports = (accountnum, invoicePattern) => {
+  return `
+WITH "newData" AS (
     SELECT
       transdate,
       invoiceid,
@@ -12,48 +13,56 @@ module.exports = `
       "month",
       quarter,
       CAST(
-        COALESCE(
-          (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
-            FROM (
-              SELECT
-                value,
-                COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
-                S.reference
-                FROM ${dbConfig.schema}."etlStageSettlement" S 
-                WHERE S."invoiceNumber" = D.invoiceid
-                ORDER BY value
-            ) B WHERE B.reference = D.settlementvoucher),
-          lineamountmstgbp)
-        AS DECIMAL(10,2)) AS "transactionAmount",
+          COALESCE(
+              (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
+                  FROM (
+                      SELECT
+                          value,
+                          COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
+                          S.reference
+                      FROM ${dbConfig.schema}."etlStageSettlement" S 
+                      WHERE S."invoiceNumber" = D.invoiceid
+                      ORDER BY value
+                  ) B WHERE B.reference = D.settlementvoucher),
+              lineamountmstgbp)
+          AS DECIMAL(10,2)) AS "transactionAmount",
       agreementreference,
-      substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS "sitiInvoiceId",
-      substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1))::integer AS "claimId",
+      CASE
+          WHEN substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)) ~ '^[0-9]+$'
+          THEN CAST(substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)) AS INTEGER)
+          ELSE NULL
+      END AS "sitiInvoiceId",
+      CASE
+          WHEN substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1)) ~ '^[0-9]+$'
+          THEN CAST(substring(invoiceid, position('Z' in invoiceid) + 1, position('V' in invoiceid) - (position('Z' in invoiceid) + 1)) AS INTEGER)
+          ELSE NULL
+      END AS "claimId",
       settlementvoucher AS "paymentRef",
-      "changeType",
+      D."changeType",
       recid
-    FROM ${dbConfig.schema}."etlStageFinanceDax" D
-    WHERE LENGTH(accountnum) = 10
+  FROM ${dbConfig.schema}."etlStageFinanceDax" D
+  WHERE LENGTH(accountnum) = ${accountnum}
       AND "etlId" BETWEEN :idFrom AND :idTo
-      AND invoiceid LIKE 'S%Z%'
+      AND "invoiceid" LIKE '${invoicePattern}'
   ),
-  updatedrows AS (
+  "updatedRows" AS (
     UPDATE ${dbConfig.schema}."etlIntermFinanceDax" interm
     SET
-      transdate = newdata.transdate,
-      scheme = newdata.scheme,
-      fund = newdata.fund,
-      marketingyear = newdata.marketingyear,
-      "month" = newdata."month",
-      quarter = newdata.quarter,
-      "transactionAmount" = newdata."transactionAmount",
-      agreementreference = newdata.agreementreference,
-      "sitiInvoiceId" = newdata."sitiInvoiceId",
-      "claimId" = newdata."claimId",
-      invoiceid = newdata.invoiceid,
+      transdate = "newData".transdate,
+      scheme = "newData".scheme,
+      fund = "newData".fund,
+      marketingyear = "newData".marketingyear,
+      "month" = "newData"."month",
+      quarter = "newData".quarter,
+      "transactionAmount" = "newData"."transactionAmount",
+      agreementreference = "newData".agreementreference,
+      "sitiInvoiceId" = "newData"."sitiInvoiceId",
+      "claimId" = "newData"."claimId",
+      invoiceid = "newData".invoiceid,
       "etlInsertedDt" = NOW()
-    FROM newdata
-    WHERE newdata."changeType" = 'UPDATE'
-      AND interm.recid = newdata.recid
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm.recid = "newData".recid
     RETURNING interm.recid
   )
   INSERT INTO ${dbConfig.schema}."etlIntermFinanceDax" (
@@ -85,7 +94,8 @@ module.exports = `
     "claimId",
     "paymentRef",
     recid
-  FROM newdata
-  WHERE "changeType" = 'INSERT'
-    OR ("changeType" = 'UPDATE' AND recid NOT IN (SELECT recid FROM updatedrows));
+  FROM "newData"
+  WHERE "newData"."changeType" = 'INSERT'
+    OR ("newData"."changeType" = 'UPDATE' AND recid NOT IN (SELECT recid FROM "updatedRows"));
 `
+}

@@ -1,10 +1,12 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { tclcOption } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
-const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageTCLCOption = async () => {
+const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
     sourceColumnNames.CHANGE_TIME,
@@ -25,7 +27,7 @@ const stageTCLCOption = async () => {
 
   const mapping = [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
-    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
     { column: sourceColumnNames.CALCULATION_ID, targetColumn: targetColumnNames.calculationId, targetType: NUMBER },
     { column: sourceColumnNames.OP_CODE, targetColumn: targetColumnNames.opCode, targetType: VARCHAR },
@@ -41,9 +43,14 @@ const stageTCLCOption = async () => {
     { column: sourceColumnNames.NET1_AMOUNT, targetColumn: targetColumnNames.net1Amount, targetType: NUMBER }
   ]
 
-  return downloadAndProcessFile('tclcOption', tclcOption, columns, mapping)
+  return downloadAndProcessFile(folder, tclcOption, columns, mapping)
+}
+
+const stageTCLCOptionDelinked = async () => {
+  return stageTCLCOption(true, 'tclcOptionsDelinked')
 }
 
 module.exports = {
-  stageTCLCOption
+  stageTCLCOption,
+  stageTCLCOptionDelinked
 }

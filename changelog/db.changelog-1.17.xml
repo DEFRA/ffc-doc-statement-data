@@ -1,0 +1,80 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet id ="1" author="John Barnard">
+    <tagDatabase tag="v1.17.0" />
+  </changeSet>
+  <changeSet id="2" author="John Barnard">
+    <createTable tableName = "etlStageTdeLinkingTransferTransactions">
+        <column name="changeType" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="changeTime" type="TIMESTAMP">
+            <constraints nullable="false" />
+        </column>
+        <column name="etlId" type="BIGSERIAL">
+            <constraints nullable="false" />
+        </column>
+        <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        <column name="transferorSbi" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="transferorCuaa" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="transferorPkCuaa" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="transfereeSbi" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="transfereeCuaa" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="transfereePkCuaa" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="totalAmountTransferred" type="DOUBLE">
+            <constraints nullable="false" />
+        </column>
+        <column name="transferAmount" type="DOUBLE">
+            <constraints nullable="false" />
+        </column>
+        <column name="transferAmountTransIn" type="DOUBLE">
+            <constraints nullable="false" />
+        </column>
+        <column name="dtInsert" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="dtDelete" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="dateOfTransfer" type="TIMESTAMP">
+            <constraints nullable="false" />
+        </column>
+        <column name="statusPCode" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="statusSCode" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="transferApplicationId" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="userInsert" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="userDelete" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="dtUpdate" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="dataSourcePCode" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+        <column name="dataSourceSCode" type="VARCHAR">
+            <constraints nullable="false" />
+        </column>
+    </createTable>
+   </changeSet>
+</databaseChangeLog>

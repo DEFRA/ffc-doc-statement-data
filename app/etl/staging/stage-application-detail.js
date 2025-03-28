@@ -2,9 +2,11 @@ const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { applicationDetail } = require('../../constants/tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageApplicationDetails = async () => {
+const stageApplicationDetails = async (monthDayFormat = false, folder = 'applicationDetail') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
     sourceColumnNames.CHANGE_TIME,
@@ -34,10 +36,10 @@ const stageApplicationDetails = async () => {
 
   const mapping = [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
-    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: sourceColumnNames.PKID, targetColumn: targetColumnNames.pkid, targetType: NUMBER },
-    { column: sourceColumnNames.DT_INSERT, targetColumn: targetColumnNames.dtInsert, targetType: DATE, format: dateTimeFormat },
-    { column: sourceColumnNames.DT_DELETE, targetColumn: targetColumnNames.dtDelete, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.DT_INSERT, targetColumn: targetColumnNames.dtInsert, targetType: DATE, format },
+    { column: sourceColumnNames.DT_DELETE, targetColumn: targetColumnNames.dtDelete, targetType: DATE, format },
     { column: sourceColumnNames.SUBJECT_ID, targetColumn: targetColumnNames.subjectId, targetType: NUMBER },
     { column: sourceColumnNames.UTE_ID, targetColumn: targetColumnNames.uteId, targetType: NUMBER },
     { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
@@ -49,18 +51,23 @@ const stageApplicationDetails = async () => {
     { column: sourceColumnNames.STATUS_S_CODE, targetColumn: targetColumnNames.statusSCode, targetType: VARCHAR },
     { column: sourceColumnNames.SOURCE_P_CODE, targetColumn: targetColumnNames.sourcePCode, targetType: VARCHAR },
     { column: sourceColumnNames.SOURCE_S_CODE, targetColumn: targetColumnNames.sourceSCode, targetType: VARCHAR },
-    { column: sourceColumnNames.DT_START, targetColumn: targetColumnNames.dtStart, targetType: DATE, format: dateTimeFormat },
-    { column: sourceColumnNames.DT_END, targetColumn: targetColumnNames.dtEnd, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.DT_START, targetColumn: targetColumnNames.dtStart, targetType: DATE, format },
+    { column: sourceColumnNames.DT_END, targetColumn: targetColumnNames.dtEnd, targetType: DATE, format },
     { column: sourceColumnNames.VALID_START_FLG, targetColumn: targetColumnNames.validStartFlg, targetType: VARCHAR },
     { column: sourceColumnNames.VALID_END_FLG, targetColumn: targetColumnNames.validEndFlg, targetType: VARCHAR },
     { column: sourceColumnNames.APP_ID_START, targetColumn: targetColumnNames.appIdStart, targetType: NUMBER },
     { column: sourceColumnNames.APP_ID_END, targetColumn: targetColumnNames.appIdEnd, targetType: NUMBER },
-    { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format },
     { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
-  return downloadAndProcessFile('applicationDetail', applicationDetail, columns, mapping)
+  return downloadAndProcessFile(folder, applicationDetail, columns, mapping)
+}
+
+const stageApplicationDetailsDelinked = async () => {
+  return stageApplicationDetails(true, 'applicationDetailDelinked')
 }
 
 module.exports = {
-  stageApplicationDetails
+  stageApplicationDetails,
+  stageApplicationDetailsDelinked
 }

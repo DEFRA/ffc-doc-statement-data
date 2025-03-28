@@ -3,7 +3,7 @@ const storageConfig = config.storageConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const tablesToCheck = [
+const defaultTablesToCheck = [
   storageConfig.appsPaymentNotification.folder,
   storageConfig.cssContractApplications.folder,
   storageConfig.financeDAX.folder,
@@ -11,7 +11,7 @@ const tablesToCheck = [
   storageConfig.calculationsDetails.folder
 ]
 
-const folderToAliasMap = {
+const defaultFolderToAliasMap = {
   [storageConfig.appsPaymentNotification.folder]: 'APN',
   [storageConfig.cssContractApplications.folder]: 'APP',
   [storageConfig.financeDAX.folder]: 'SD',
@@ -19,8 +19,15 @@ const folderToAliasMap = {
   [storageConfig.calculationsDetails.folder]: 'CD'
 }
 
-const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH newdata AS (
+const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
+    return
+  }
+
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+    WITH "newData" AS (
       SELECT
         CD."calculationId",
         BAC.sbi,
@@ -54,14 +61,14 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     updatedrows AS (
       UPDATE ${dbConfig.schema}."etlIntermCalcOrg" interm
       SET
-        sbi = newdata.sbi,
-        frn = newdata.frn,
-        "calculationDate" = newdata."calculationDt",
+        sbi = "newData".sbi,
+        frn = "newData".frn,
+        "calculationDate" = "newData"."calculationDt",
         "etlInsertedDt" = NOW()
-      FROM newdata
-      WHERE newdata."changeType" = 'UPDATE'
-        AND interm."calculationId" = newdata."calculationId"
-        AND interm."idClcHeader" = newdata."idClcHeader"
+      FROM "newData"
+      WHERE "newData"."changeType" = 'UPDATE'
+        AND interm."calculationId" = "newData"."calculationId"
+        AND interm."idClcHeader" = "newData"."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
     INSERT INTO ${dbConfig.schema}."etlIntermCalcOrg" (
@@ -79,16 +86,10 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       "applicationId",
       "calculationDt",
       "idClcHeader"
-    FROM newdata
+    FROM "newData"
     WHERE "changeType" = 'INSERT'
       OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
   `
-const loadIntermCalcOrg = async (startDate, transaction) => {
-  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
-
-  if (!etlStageLogs.length) {
-    return
-  }
 
   const batchSize = storageConfig.etlBatchSize
   let exclusionScript = ''
@@ -108,6 +109,27 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
   }
 }
 
+const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
+  const tablesToCheck = [
+    storageConfig.appsPaymentNotificationDelinked.folder,
+    storageConfig.cssContractApplicationsDelinked.folder,
+    storageConfig.financeDAXDelinked.folder,
+    storageConfig.businessAddressDelinked.folder,
+    storageConfig.calculationsDetailsDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [storageConfig.appsPaymentNotificationDelinked.folder]: 'APN',
+    [storageConfig.cssContractApplicationsDelinked.folder]: 'APP',
+    [storageConfig.financeDAXDelinked.folder]: 'SD',
+    [storageConfig.businessAddressDelinked.folder]: 'BAC',
+    [storageConfig.calculationsDetailsDelinked.folder]: 'CD'
+  }
+
+  return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
+}
+
 module.exports = {
-  loadIntermCalcOrg
+  loadIntermCalcOrg,
+  loadIntermCalcOrgDelinked
 }
