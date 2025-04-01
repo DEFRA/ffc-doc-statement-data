@@ -12,18 +12,16 @@ module.exports = `
       "month",
       quarter,
       CAST(
-        COALESCE(
-          (SELECT CAST((value - lag) / -100.00 AS DECIMAL(10,2)) AS value 
-            FROM (
-              SELECT
-                value,
-                COALESCE(LAG(value, 1) OVER (ORDER BY S."settlementDate" ASC, S.value ASC),0) AS lag,
-                S.reference
-                FROM ${dbConfig.schema}."etlStageSettlement" S 
-                WHERE S."invoiceNumber" = D.invoiceid
-                ORDER BY value
-            ) B WHERE B.reference = D.settlementvoucher),
-          lineamountmstgbp)
+        (SELECT CAST((lineamountmstgbp - lag) / -100.00 AS DECIMAL(10,2)) AS value 
+          FROM (
+            SELECT
+              lineamountmstgbp,
+              COALESCE(LAG(lineamountmstgbp, 1) OVER (ORDER BY D2.transdate DESC, D2.lineamountmstgbp DESC), 0) AS lag,
+              D2.invoiceid
+            FROM ${dbConfig.schema}."etlStageFinanceDax" D2
+            WHERE D2.invoiceid = D.invoiceid
+            ORDER BY D2.transdate DESC, D2.lineamountmstgbp DESC
+          ) B WHERE B.invoiceid = D.invoiceid)
         AS DECIMAL(10,2)) AS "transactionAmount",
       agreementreference,
       substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2))::integer AS "sitiInvoiceId",
