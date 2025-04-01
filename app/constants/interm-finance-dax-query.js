@@ -1,7 +1,7 @@
 const config = require('../config')
 const dbConfig = config.dbConfig[config.env]
 
-module.exports = (accountnum, invoicePattern) => {
+module.exports = (accountnum, invoicePattern, startOfInvoice) => {
   return `
 WITH "newData" AS (
     SELECT
@@ -28,8 +28,8 @@ WITH "newData" AS (
           AS DECIMAL(10,2)) AS "transactionAmount",
       agreementreference,
       CASE
-          WHEN substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)) ~ '^[0-9]+$'
-          THEN CAST(substring(invoiceid, 2, position('Z' in invoiceid) - (position('S' in invoiceid) + 2)) AS INTEGER)
+          WHEN substring(invoiceid, 2, position('Z' in invoiceid) - (position('${startOfInvoice}' in invoiceid) + 2)) ~ '^[0-9]+$'
+          THEN CAST(substring(invoiceid, 2, position('Z' in invoiceid) - (position('${startOfInvoice}' in invoiceid) + 2)) AS INTEGER)
           ELSE NULL
       END AS "sitiInvoiceId",
       CASE
