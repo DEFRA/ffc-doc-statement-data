@@ -1,6 +1,6 @@
 const db = require('../../data')
 
-const getUnpublishedTotal = async (transaction) => {
+const getUnpublishedTotal = async (transaction, limit = 250, offset = 0) => {
   return db.total.findAll({
     lock: true,
     skipLocked: true,
@@ -16,6 +16,8 @@ const getUnpublishedTotal = async (transaction) => {
     },
     attributes: ['calculationId', ['calculationId', 'calculationReference'], ['calculationId', 'totalsId'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'claimReference'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
     raw: true,
+    limit,
+    offset,
     transaction
   })
 }

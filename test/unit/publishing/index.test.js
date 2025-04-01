@@ -40,13 +40,25 @@ describe('start publishing', () => {
     expect(console.log).toHaveBeenCalledWith('All outstanding valid datasets published')
   })
 
-  test('handles errors and logs them', async () => {
+  test('handles errors and logs them for individual types', async () => {
     console.error = jest.fn()
     const error = new Error('Test error')
     sendUpdates.mockRejectedValueOnce(error)
 
     await start()
-    expect(console.error).toHaveBeenCalledWith(error)
+    expect(console.error).toHaveBeenCalledWith(`${'Error processing updates for ' + ORGANISATION}:`, error)
+  })
+
+  test('handles errors during publishing and logs them', async () => {
+    console.error = jest.fn()
+    const testError = new Error('Test error during publishing')
+    const iteratorSpy = jest.spyOn(Array.prototype, Symbol.iterator).mockImplementationOnce(function () {
+      throw testError
+    })
+
+    await start()
+    expect(console.error).toHaveBeenCalledWith('Error during publishing:', testError)
+    iteratorSpy.mockRestore()
   })
 
   test('restarts after polling interval', async () => {
@@ -59,7 +71,6 @@ describe('start publishing', () => {
 
   test('updates timeout interval when publishingConfig.pollingInterval changes', async () => {
     const newPollingInterval = 10000
-
     sendUpdates.mockResolvedValueOnce()
 
     publishingConfig.pollingInterval = newPollingInterval
