@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const etlStageCssContracts = sequelize.define('etlStageCssContracts', {
     changeType: DataTypes.STRING,
     changeTime: DataTypes.DATE,
-    etlId: DataTypes.INTEGER,
+    etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     cssContractWid: DataTypes.INTEGER,
     pkid: DataTypes.INTEGER,

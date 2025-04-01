@@ -11,7 +11,7 @@ const properties = {
 const fields1 = (DataTypes) => ({
   changeType: DataTypes.STRING,
   changeTime: DataTypes.DATE,
-  etlId: DataTypes.INTEGER,
+  etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
   etlInsertedDt: DataTypes.DATE,
   financeDaxWid: DataTypes.INTEGER,
   transdate: DataTypes.DATE,

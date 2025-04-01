@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const etlStageTclcPiiPayClaimSfimtOption = sequelize.define('etlStageTclcPiiPayClaimSfimtOption', {
     changeType: DataTypes.STRING,
     changeTime: DataTypes.DATE,
-    etlId: DataTypes.INTEGER,
+    etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     tclcPiiPayClaimSfimtOptionWid: DataTypes.INTEGER,
     applicationId: DataTypes.INTEGER,

@@ -15,7 +15,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageApplicationDetail_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="pkid" type="INTEGER">
@@ -93,7 +93,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageAppsPaymentNotification_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="applicationId" type="INTEGER">
@@ -138,7 +138,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageAppsTypes_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="appTypeId" type="INTEGER">
@@ -174,7 +174,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageBusinessAddressContactV_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="sbi" type="NUMBER">
@@ -264,7 +264,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageCalculationDetails_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="applicationId" type="INTEGER">
@@ -291,7 +291,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageTclcPiiPayClaimSfimtOption_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="tclcPiiPayClaimSfimtOptionWid" type="DECIMAL(20,0)">
@@ -345,7 +345,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageCssContracts_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="cssContractWid" type="DECIMAL(20,0)">
@@ -420,7 +420,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageCssContractApplications_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="cssContractApplicationWid" type="NUMBER(20,0)">
@@ -486,7 +486,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageCssOptions_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="cssOptionId" type="NUMBER(20,0)">
@@ -528,7 +528,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageDefraLinks_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="defraLinksWid" type="NUMBER(9,0)">
@@ -555,7 +555,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageFinanceDax_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="financeDaxWid" type="NUMBER(19,0)">
@@ -798,7 +798,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="etlId" type="BIGSERIAL">
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageOrganisation_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="organisationWid" type="NUMBER(20,0)">

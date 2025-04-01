@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const etlStageDefraLinks = sequelize.define('etlStageDefraLinks', {
     changeType: DataTypes.STRING,
     changeTime: DataTypes.DATE,
-    etlId: DataTypes.INTEGER,
+    etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     defraLinksWid: DataTypes.INTEGER,
     subjectId: DataTypes.INTEGER,

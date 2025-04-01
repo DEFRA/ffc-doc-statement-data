@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const etlStageOrganisation = sequelize.define('etlStageOrganisation', {
     changeType: DataTypes.STRING,
     changeTime: DataTypes.DATE,
-    etlId: DataTypes.INTEGER,
+    etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     organisationWid: DataTypes.INTEGER,
     partyId: DataTypes.INTEGER,
