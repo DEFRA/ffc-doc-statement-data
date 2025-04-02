@@ -30,7 +30,7 @@ configured) the microservice will use AAD Pod Identity.
 | MESSAGE_QUEUE_USER     | Azure Service Bus SAS policy name, e.g. `RootManageSharedAccessKey`    |
 | MESSAGE_QUEUE_SUFFIX   | Developer initials                                                     |
 
-## Message schemas
+## Message schemas 
 
 All message schemas are fully documented in an [AsyncAPI specification](docs/asyncapi.yaml).
 
