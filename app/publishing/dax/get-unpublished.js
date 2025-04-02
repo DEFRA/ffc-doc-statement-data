@@ -1,6 +1,7 @@
 const db = require('../../data')
+const { publishingConfig } = require('../../config')
 
-const getUnpublishedDax = async (transaction) => {
+const getUnpublishedDax = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
   return db.dax.findAll({
     lock: true,
     skipLocked: true,
@@ -13,7 +14,8 @@ const getUnpublishedDax = async (transaction) => {
     },
     attributes: ['paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
     raw: true,
-    transaction
+    transaction,
+    limit
   })
 }
 
