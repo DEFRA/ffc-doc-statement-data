@@ -1,6 +1,4 @@
 const db = require('../../../app/data')
-const { publishingConfig } = require('../../../app/config')
-
 db.sequelize = { col: (col) => col }
 db.Sequelize = {
   Op: {
@@ -23,8 +21,7 @@ describe('getUnpublishedTotals', () => {
 
   test('getUnpublishedTotals passes custom limit and offset to db.total.findAll', async () => {
     const transaction = {}
-    const limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource
-    await getUnpublishedTotals(transaction, limit)
+    await getUnpublishedTotals(transaction, 100, 50)
 
     expect(db.total.findAll).toHaveBeenCalledWith({
       lock: true,
@@ -56,15 +53,15 @@ describe('getUnpublishedTotals', () => {
         'datePublished'
       ],
       raw: true,
-      transaction,
-      limit
+      limit: 100,
+      offset: 50,
+      transaction
     })
   })
 
   test('getUnpublishedTotals returns the correct data', async () => {
     const transaction = {}
-    const limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource
-    const result = await getUnpublishedTotals(transaction, limit)
+    const result = await getUnpublishedTotals(transaction, 250, 0)
     expect(result).toEqual([mockTotal1, mockTotal2, mockTotal3])
 
     expect(db.total.findAll).toHaveBeenCalledWith({
@@ -97,8 +94,9 @@ describe('getUnpublishedTotals', () => {
         'datePublished'
       ],
       raw: true,
-      transaction,
-      limit
+      limit: 250,
+      offset: 0,
+      transaction
     })
   })
 })

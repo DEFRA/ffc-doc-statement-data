@@ -1,9 +1,8 @@
 const getUnpublishedCalculations = require('./get-unpublished-calculations')
 const getFundingsByCalculationId = require('./get-fundings-by-calculation-id')
-const { publishingConfig } = require('../../config')
 
-const getUnpublished = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
-  const calculations = await getUnpublishedCalculations(transaction, limit)
+const getUnpublished = async (transaction) => {
+  const calculations = await getUnpublishedCalculations(transaction)
 
   const unpublished = []
 

@@ -1,7 +1,6 @@
 const db = require('../../data')
-const { publishingConfig } = require('../../config')
 
-const getUnpublished = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
+const getUnpublished = async (transaction) => {
   return db.organisation.findAll({
     lock: true,
     skipLocked: true,
@@ -17,8 +16,7 @@ const getUnpublished = async (transaction, limit = publishingConfig.dataPublishi
     },
     attributes: ['sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated'],
     raw: true,
-    transaction,
-    limit
+    transaction
   })
 }
 

@@ -1,7 +1,6 @@
 const db = require('../../data')
-const { publishingConfig } = require('../../config')
 
-const getUnpublishedTotal = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
+const getUnpublishedTotal = async (transaction, limit = 250, offset = 0) => {
   return db.total.findAll({
     lock: true,
     skipLocked: true,
@@ -17,8 +16,9 @@ const getUnpublishedTotal = async (transaction, limit = publishingConfig.dataPub
     },
     attributes: ['calculationId', ['calculationId', 'calculationReference'], ['calculationId', 'totalsId'], 'sbi', 'frn', 'agreementNumber', 'claimId', ['claimId', 'claimReference'], 'schemeType', 'calculationDate', 'invoiceNumber', 'agreementStart', 'agreementEnd', 'totalAdditionalPayments', 'totalActionPayments', 'totalPayments', 'updated', 'datePublished'],
     raw: true,
-    transaction,
-    limit
+    limit,
+    offset,
+    transaction
   })
 }
 
