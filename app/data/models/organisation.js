@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const organisation = sequelize.define('organisation', {
     sbi: { type: DataTypes.INTEGER, primaryKey: true },
@@ -16,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'organisations',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   organisation.associate = function (models) {
     organisation.hasMany(models.calculation, {

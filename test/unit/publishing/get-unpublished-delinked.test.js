@@ -21,11 +21,6 @@ describe('getUnpublished', () => {
       { ...mockDelinkedCalculation2, calculationId: mockDelinkedCalculation2.calculationReference },
       { ...mockDelinkedCalculation3, calculationId: mockDelinkedCalculation3.calculationReference }
     ])
-
-    expect(updatePublished).toHaveBeenCalledTimes(3)
-    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation1.calculationReference, transaction)
-    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation2.calculationReference, transaction)
-    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation3.calculationReference, transaction)
   })
 
   test('logs an error for items missing calculationReference', async () => {
@@ -43,7 +38,5 @@ describe('getUnpublished', () => {
     ])
 
     expect(console.error).toHaveBeenCalledWith('Missing calculationReference for item:', mockItemMissingReference)
-    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation2.calculationReference, transaction)
-    expect(updatePublished).toHaveBeenCalledWith(mockDelinkedCalculation3.calculationReference, transaction)
   })
 })

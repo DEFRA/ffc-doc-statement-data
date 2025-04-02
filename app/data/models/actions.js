@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const number2 = 2
   const number5 = 5
@@ -27,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'actions',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   action.associate = function (models) {
     action.belongsTo(models.total, {
