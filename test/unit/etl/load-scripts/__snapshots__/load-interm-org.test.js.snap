@@ -21,7 +21,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       O."partyId",
       O."changeType"
     FROM public."etlStageOrganisation" O
-    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
+    INNER JOIN public."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
     WHERE O."etlId" BETWEEN 1 AND 2
       
   ),
@@ -100,7 +100,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       O."partyId",
       O."changeType"
     FROM public."etlStageOrganisation" O
-    LEFT JOIN public."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
+    INNER JOIN public."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
     WHERE O."etlId" BETWEEN 1 AND 2
        AND O."etlId" NOT BETWEEN 1 AND 2
   ),
