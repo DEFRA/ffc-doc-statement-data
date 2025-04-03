@@ -1,7 +1,11 @@
 const { writeToString } = require('@fast-csv/format')
 const moment = require('moment')
 const storage = require('../storage')
-const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('./staging')
+const {
+  stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption,
+  stageApplicationDetailsDelinked, stageAppsTypesDelinked, stageAppsPaymentNotificationsDelinked, stageBusinessAddressContactsDelinked, stageCalculationDetailsDelinked, stageCSSContractApplicationsDelinked, stageCSSContractDelinked, stageCSSOptionsDelinked, stageDefraLinksDelinked, stageFinanceDAXDelinked, stageOrganisationDelinked, stageTCLCOptionDelinked,
+  stageAppCalcResultsDelinkPayments, stageTdeLinkingTransferTransactions
+} = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { storageConfig } = require('../config')
 const ora = require('ora')
@@ -37,7 +41,21 @@ const stageFunctions = [
   { fn: stageDefraLinks, label: storageConfig.defraLinks.folder },
   { fn: stageFinanceDAX, label: storageConfig.financeDAX.folder },
   { fn: stageOrganisation, label: storageConfig.organisation.folder },
-  { fn: stageTCLCOption, label: storageConfig.tclcOption.folder }
+  { fn: stageTCLCOption, label: storageConfig.tclcOption.folder },
+  { fn: stageApplicationDetailsDelinked, label: storageConfig.applicationDetailDelinked.folder },
+  { fn: stageAppsTypesDelinked, label: storageConfig.appsTypesDelinked.folder },
+  { fn: stageAppsPaymentNotificationsDelinked, label: storageConfig.appsPaymentNotificationDelinked.folder },
+  { fn: stageBusinessAddressContactsDelinked, label: storageConfig.businessAddressDelinked.folder },
+  { fn: stageCalculationDetailsDelinked, label: storageConfig.calculationsDetailsDelinked.folder },
+  { fn: stageCSSContractApplicationsDelinked, label: storageConfig.cssContractApplicationsDelinked.folder },
+  { fn: stageCSSContractDelinked, label: storageConfig.cssContractDelinked.folder },
+  { fn: stageCSSOptionsDelinked, label: storageConfig.cssOptionsDelinked.folder },
+  { fn: stageDefraLinksDelinked, label: storageConfig.defraLinksDelinked.folder },
+  { fn: stageFinanceDAXDelinked, label: storageConfig.financeDAXDelinked.folder },
+  { fn: stageOrganisationDelinked, label: storageConfig.organisationDelinked.folder },
+  { fn: stageTCLCOptionDelinked, label: storageConfig.tclcOptionDelinked.folder },
+  { fn: stageAppCalcResultsDelinkPayments, label: storageConfig.appCalculationResultsDelinkPayments.folder },
+  { fn: stageTdeLinkingTransferTransactions, label: storageConfig.tdeLinkingTransferTransactions.folder }
 ]
 
 const stageExtracts = async () => {

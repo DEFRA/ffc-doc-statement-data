@@ -204,5 +204,22 @@ module.exports = {
   winCloseDate: 'winCloseDate',
   winOpenDate: 'winOpenDate',
   year: 'year',
-  yearendrunnumber: 'yearendrunnumber'
+  yearendrunnumber: 'yearendrunnumber',
+  variableName: 'variableName',
+  progLine: 'progLine',
+  value: 'value',
+  transferorSbi: 'transferorSbi',
+  transferorCuaa: 'transferorCuaa',
+  transferorPkCuaa: 'transferorPkCuaa',
+  transfereeSbi: 'transfereeSbi',
+  transfereeCuaa: 'transfereeCuaa',
+  transfereePkCuaa: 'transfereePkCuaa',
+  totalAmountTransferred: 'totalAmountTransferred',
+  transferAmount: 'transferAmount',
+  transferAmountTransIn: 'transferAmountTransIn',
+  dateOfTransfer: 'dateOfTransfer',
+  transferApplicationId: 'transferApplicationId',
+  userInsert: 'userInsert',
+  userDelete: 'userDelete',
+  dtUpdate: 'dtUpdate'
 }

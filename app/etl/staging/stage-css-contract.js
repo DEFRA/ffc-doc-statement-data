@@ -1,10 +1,12 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { cssContract } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
-const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageCSSContract = async () => {
+const stageCSSContract = async (monthDayFormat = false, folder = 'cssContract') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
     sourceColumnNames.CHANGE_TIME,
@@ -32,10 +34,10 @@ const stageCSSContract = async () => {
 
   const mapping = [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
-    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: sourceColumnNames.PKID, targetColumn: targetColumnNames.pkid, targetType: NUMBER },
-    { column: sourceColumnNames.INSERT_DT, targetColumn: targetColumnNames.insertDt, targetType: DATE, format: dateTimeFormat },
-    { column: sourceColumnNames.DELETE_DT, targetColumn: targetColumnNames.deleteDt, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.INSERT_DT, targetColumn: targetColumnNames.insertDt, targetType: DATE, format },
+    { column: sourceColumnNames.DELETE_DT, targetColumn: targetColumnNames.deleteDt, targetType: DATE, format },
     { column: sourceColumnNames.CONTRACT_ID, targetColumn: targetColumnNames.contractId, targetType: NUMBER },
     { column: sourceColumnNames.CONTRACT_CODE, targetColumn: targetColumnNames.contractCode, targetType: VARCHAR },
     { column: sourceColumnNames.CONTRACT_TYPE_ID, targetColumn: targetColumnNames.contractTypeId, targetType: NUMBER },
@@ -45,13 +47,13 @@ const stageCSSContract = async () => {
     { column: sourceColumnNames.CONTRACT_STATE_S_CODE, targetColumn: targetColumnNames.contractStateSCode, targetType: VARCHAR },
     { column: sourceColumnNames.DATA_SOURCE_P_CODE, targetColumn: targetColumnNames.dataSourcePCode, targetType: VARCHAR },
     { column: sourceColumnNames.DATA_SOURCE_S_CODE, targetColumn: targetColumnNames.dataSourceSCode, targetType: VARCHAR },
-    { column: sourceColumnNames.START_DT, targetColumn: targetColumnNames.startDt, targetType: DATE, format: dateTimeFormat },
-    { column: sourceColumnNames.END_DT, targetColumn: targetColumnNames.endDt, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.START_DT, targetColumn: targetColumnNames.startDt, targetType: DATE, format },
+    { column: sourceColumnNames.END_DT, targetColumn: targetColumnNames.endDt, targetType: DATE, format },
     { column: sourceColumnNames.VALID_START_FLAG, targetColumn: targetColumnNames.validStartFlag, targetType: VARCHAR },
     { column: sourceColumnNames.VALID_END_FLAG, targetColumn: targetColumnNames.validEndFlag, targetType: VARCHAR },
     { column: sourceColumnNames.START_ACT_ID, targetColumn: targetColumnNames.startActId, targetType: NUMBER },
     { column: sourceColumnNames.END_ACT_ID, targetColumn: targetColumnNames.endActId, targetType: NUMBER },
-    { column: sourceColumnNames.LAST_UPDATE_DT, targetColumn: targetColumnNames.lastUpdateDt, targetType: DATE, format: dateTimeFormat },
+    { column: sourceColumnNames.LAST_UPDATE_DT, targetColumn: targetColumnNames.lastUpdateDt, targetType: DATE, format },
     { column: sourceColumnNames.USER_FLD, targetColumn: targetColumnNames.userFld, targetType: VARCHAR }
   ]
 
@@ -59,9 +61,14 @@ const stageCSSContract = async () => {
     { column: sourceColumnNames.CONTRACT_DESCRIPTION, find: "'", replace: "''", all: true }
   ]
 
-  return downloadAndProcessFile('cssContract', cssContract, columns, mapping, transformer)
+  return downloadAndProcessFile(folder, cssContract, columns, mapping, transformer)
+}
+
+const stageCSSContractDelinked = async () => {
+  return stageCSSContract(true, 'cssContractDelinked')
 }
 
 module.exports = {
-  stageCSSContract
+  stageCSSContract,
+  stageCSSContractDelinked
 }

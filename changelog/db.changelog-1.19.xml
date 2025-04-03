@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet id="1" author="John Barnard">
+    <tagDatabase tag="v1.19.0" />
+  </changeSet>
+  <changeSet id="2" author="John Barnard">
+    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsCalculationId" tableName="etlStageAppCalcResultsDelinkPayments">
+      <column name="calculationId"/>
+    </createIndex>
+
+    <createIndex indexName="idx_etlStageCalculationDetailsApplicationId" tableName="etlStageCalculationDetails">
+      <column name="applicationId"/>
+    </createIndex>
+
+    <createIndex indexName="idx_etlStageOrganisationPartyId" tableName="etlStageOrganisation">
+      <column name="partyId"/>
+    </createIndex>
+
+    <createIndex indexName="idx_etlStageBusinessAddressContactVSbi" tableName="etlStageBusinessAddressContactV">
+      <column name="SBI"/>
+    </createIndex>
+
+    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsEtlId" tableName="etlStageAppCalcResultsDelinkPayments">
+      <column name="etlId"/>
+    </createIndex>
+
+    <createIndex indexName="idx_etlStageAppCalcResultsDelinkPaymentsChangeType" tableName="etlStageAppCalcResultsDelinkPayments">
+      <column name="changeType"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>
