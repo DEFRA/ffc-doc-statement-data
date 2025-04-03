@@ -393,4 +393,32 @@ describe('send total updates', () => {
       expect(mockSendMessage.mock.calls[0][0].body.actions).not.toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
     })
   })
+
+  describe('When there are 2 concurrent processes', () => {
+    beforeEach(async () => {
+      jest.useRealTimers()
+    })
+
+    test('should process all total records when there are 2 times the number of total records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
+      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
+      await db.total.bulkCreate(
+        [...Array(numberOfRecords).keys()].map(x => {
+          return { ...mockTotal1, calculationId: mockTotal1.calculationId + x }
+        })
+      )
+      await db.action.bulkCreate(
+        [...Array(numberOfRecords).keys()].map(x => {
+          return { ...mockAction1, actionId: mockAction1.actionId + x, calculationId: mockTotal1.calculationId + x }
+        })
+      )
+      const unpublishedBefore = await db.total.findAll({ where: { datePublished: null } })
+
+      await Promise.all([publish.start(), publish.start()])
+      await publish.start()
+
+      const unpublishedAfter = await db.total.findAll({ where: { datePublished: null } })
+      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedAfter).toHaveLength(0)
+    })
+  })
 })

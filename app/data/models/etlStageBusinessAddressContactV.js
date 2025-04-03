@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const etlStageBusinessAddressContactV = sequelize.define('etlStageBusinessAddressContactV', {
     changeType: DataTypes.STRING,
     changeTime: DataTypes.DATE,
-    etlId: DataTypes.INTEGER,
+    etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     sbi: DataTypes.INTEGER,
     frn: DataTypes.STRING,
