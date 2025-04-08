@@ -202,7 +202,7 @@ describe('stageCSSContract', () => {
         'user',
         'validEndFlag',
         'validStartFlag'
-      ],
+      ]
     })
   })
 })
