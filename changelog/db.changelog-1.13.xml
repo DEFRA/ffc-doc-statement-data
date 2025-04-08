@@ -21,67 +21,7 @@
             <column name="pkid" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="dtInsert" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="dtDelete" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="subjectId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="uteId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
             <column name="applicationId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="applicationCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="amendedAppId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="appTypeId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="proxyId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="statusPCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="statusSCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="sourcePCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="sourceSCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dtStart" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dtEnd" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="validStartFlg" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="validEndFlg" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="appIdStart" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="appIdEnd" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="dtRecUpdate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="userId" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -102,31 +42,10 @@
             <column name="idClcHeader" type="INTEGER">
                 <constraints nullable="true" />
             </column>
-            <column name="notificationDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
             <column name="notificationFlag" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="notifierKey" type="NUMBER">
-                <constraints nullable="true" />
-            </column>
-            <column name="notificationText" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
             <column name="invoiceNumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="requestInvoiceNumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="pillar" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="deliveryBodyCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="paymentPreferenceCurrency" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -141,30 +60,6 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageAppsTypes_pkey" />
             </column>
             <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-            <column name="appTypeId" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="sectorPCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="sectorSCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="shortDescription" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="extDescription" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="year" type="INTEGER">
-                <constraints nullable="true" />
-            </column>
-            <column name="winOpenDate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="winCloseDate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
         </createTable>
         <createTable tableName="etlStageBusinessAddressContactV">
             <column name="changeType" type="VARCHAR">
@@ -186,15 +81,6 @@
             <column name="businessName" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="accountablePeopleCompleted" type="NUMBER">
-                <constraints nullable="true" />
-            </column>
-            <column name="financialToBusinessAddr" type="NUMBER">
-                <constraints nullable="true" />
-            </column>
-            <column name="corrAsBusinessAddr" type="NUMBER">
-                <constraints nullable="true" />
-            </column>    
             <column name="businessAddress1" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
@@ -210,49 +96,10 @@
             <column name="businessCounty" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="businessCountry" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
             <column name="businessPostCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="businessLandline" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="businessMobile" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
             <column name="businessEmailAddr" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceAddress1" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceAddress2" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceAddress3" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceCity" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceCounty" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceCountry" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondencePostCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceLandline" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceMobile" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="correspondenceEmailAddr" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -303,39 +150,6 @@
             <column name="calculationId" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="opCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="scoUom" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="commitment" type="DECIMAL(17,4)">
-                <constraints nullable="true" />
-            </column>
-            <column name="commitmentVal" type="DECIMAL(17,4)">
-                <constraints nullable="true" />
-            </column>
-            <column name="agreeAmount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>
-            <column name="claimedPayAmount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>
-            <column name="verifyPayAmount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>    
-            <column name="foundAmount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>
-            <column name="overdReductAmount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>
-            <column name="overdPenaltyAmount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>
-            <column name="net1Amount" type="DECIMAL(15,2)">
-                <constraints nullable="true" />
-            </column>
         </createTable>
         <createTable tableName="etlStageCssContracts">
             <column name="changeType" type="VARCHAR">
@@ -354,34 +168,10 @@
             <column name="pkid" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="insertDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>    
-            <column name="deleteDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
             <column name="contractId" type="DECIMAL(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="contractCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="contractTypeId" type="DECIMAL(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="contractTypeDescription" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="contractDescription" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="contractStatePCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
             <column name="contractStateSCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dataSourcePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
             <column name="dataSourceSCode" type="VARCHAR">
@@ -391,24 +181,6 @@
                 <constraints nullable="true" />
             </column>
             <column name="endDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="validStartFlag" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="validEndFlag" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="startActId" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="endActId" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="lastUpdateDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="user" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -429,25 +201,10 @@
             <column name="pkid" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="insertDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="deleteDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
             <column name="contractId" type="NUMBER(11,0)">
                 <constraints nullable="true" />
             </column>
             <column name="applicationId" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="typePCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="typeSCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dataSourcePCode" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
             <column name="dataSourceSCode" type="VARCHAR">
@@ -457,24 +214,6 @@
                 <constraints nullable="true" />
             </column>
             <column name="endDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="validStartFlag" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="validEndFlag" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="startActId" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="endActId" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="lastUpdateDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="user" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -492,31 +231,10 @@
             <column name="cssOptionId" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="optionTypeId" type="NUMBER(20,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="optionDescription" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="optionLongDescription" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="duration" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="optionCode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="contractTypeId" type="NUMBER(11,0)">
-                <constraints nullable="true" />
-            </column>
             <column name="startDt" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
             <column name="endDt" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="groupId" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -537,15 +255,6 @@
             <column name="subjectId" type="NUMBER(9,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="defraId" type="NUMBER(12,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="defraType" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="mdmId" type="NUMBER(12,0)">
-                <constraints nullable="true" />
-            </column>
         </createTable>
         <createTable tableName="etlStageFinanceDax">
             <column name="changeType" type="VARCHAR">
@@ -564,13 +273,7 @@
             <column name="transdate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
-            <column name="accounttype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
             <column name="invoiceid" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="invoicedate" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
             <column name="scheme" type="VARCHAR">
@@ -585,40 +288,13 @@
             <column name="accountnum" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="deliverybody" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="accrualstatus" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
             <column name="settlementvoucher" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="lineamounteur" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
             <column name="lineamountmstgbp" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
-            <column name="transactiontype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="journalnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="journalname" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="admindebt" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="voucher" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
             <column name="month" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="amounteur" type="NUMBER(32,6)">
                 <constraints nullable="true" />
             </column>
             <column name="amountmstgbp" type="NUMBER(32,6)">
@@ -627,166 +303,16 @@
             <column name="quarter" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="idvoucher" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="transtxt" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="irregularitydebt" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="sectiontype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="transrecid" type="NUMBER(19,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="ljtransrecid" type="NUMBER(19,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="glaccountentryrecid" type="NUMBER(19,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="settlementrecid" type="NUMBER(19,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="runnumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="reportingtype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
             <column name="custvendac" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="modifieddatetime" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="modifiedby" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="createddatetime" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="createdby" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dataareaid" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="partition" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
             <column name="recid" type="NUMBER(19,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="eurunnumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="accrualledgerdimensionaccount" type="NUMBER(19,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="accrualgjaccountentryrecid" type="NUMBER(19,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="currencycode" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="legacyfarmeraccount" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="claimsettlementdate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>     
-            <column name="claimrefnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="iseurelevant" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="fundedby" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="euyearstartdate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="euyearenddate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="yearendrunnumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="reason" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="exchratecalctype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="postingdate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="datawarehouserunnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="crosscompliance" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="penalty" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="exchfundedeur" type="NUMBER(32,6)">
-                <constraints nullable="true" />
-            </column>
-            <column name="exchfundedgbp" type="NUMBER(32,6)">
-                <constraints nullable="true" />
-            </column>
-            <column name="festxnnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="festxnlinenum" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="advpayflag" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="daxinvoicenum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dwhtxntype" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="retention" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="dummyt104" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="f106gbp" type="NUMBER(32,6)">
-                <constraints nullable="true" />
-            </column>
-            <column name="schemeexchangerate" type="NUMBER(32,16)">
-                <constraints nullable="true" />
-            </column>
             <column name="agreementreference" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
-            <column name="oedate" type="TIMESTAMP">
-                <constraints nullable="true" />
-            </column>
-            <column name="settlementvoucher1" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="annexiitranstype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="bpallocationtype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
             <column name="schemetype" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="applicationreference" type="VARCHAR">
                 <constraints nullable="true" />
             </column>
         </createTable>
@@ -807,67 +333,7 @@
             <column name="partyId" type="NUMBER(20,0)">
                 <constraints nullable="true" />
             </column>
-            <column name="organisationName" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="confirmedFlg" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="landConfirmedFlg" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
             <column name="sbi" type="NUMBER(38,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="taxRegistrationNumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="legalStatusTypeId" type="NUMBER(38,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="businessReference" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="businessTypeId" type="NUMBER(38,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="vendorNumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="landDetailsConfirmedDtKey" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="businessDetConfirmedDtKey" type="NUMBER(10,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="registrationDate" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="charityCommissionRegnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="companiesHouseRegnum" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="additionalBusinesses" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="amended" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="traderNumber" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="dateStartedFarming" type="VARCHAR">
-                <constraints nullable="true" />
-            </column>
-            <column name="accountablePeopleCompleted" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="financialToBusinessAddr" type="NUMBER(1,0)">
-                <constraints nullable="true" />
-            </column>
-            <column name="corrAsBusinessAddr" type="NUMBER(1,0)">
                 <constraints nullable="true" />
             </column>
             <column name="lastUpdatedOn" type="TIMESTAMP">

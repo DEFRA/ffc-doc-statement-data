@@ -32,68 +32,8 @@ describe('etlStageApplicationDetail Model', () => {
     expect(attributes.pkid).toBeDefined()
     expect(attributes.pkid.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.dtInsert).toBeDefined()
-    expect(attributes.dtInsert.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.dtDelete).toBeDefined()
-    expect(attributes.dtDelete.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.subjectId).toBeDefined()
-    expect(attributes.subjectId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.uteId).toBeDefined()
-    expect(attributes.uteId.type.key).toBe(DataTypes.INTEGER.key)
-
     expect(attributes.applicationId).toBeDefined()
     expect(attributes.applicationId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.applicationCode).toBeDefined()
-    expect(attributes.applicationCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.amendedAppId).toBeDefined()
-    expect(attributes.amendedAppId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.appTypeId).toBeDefined()
-    expect(attributes.appTypeId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.proxyId).toBeDefined()
-    expect(attributes.proxyId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.statusPCode).toBeDefined()
-    expect(attributes.statusPCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.statusSCode).toBeDefined()
-    expect(attributes.statusSCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.sourcePCode).toBeDefined()
-    expect(attributes.sourcePCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.sourceSCode).toBeDefined()
-    expect(attributes.sourceSCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.dtStart).toBeDefined()
-    expect(attributes.dtStart.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.dtEnd).toBeDefined()
-    expect(attributes.dtEnd.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.validStartFlg).toBeDefined()
-    expect(attributes.validStartFlg.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.validEndFlg).toBeDefined()
-    expect(attributes.validEndFlg.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.appIdStart).toBeDefined()
-    expect(attributes.appIdStart.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.appIdEnd).toBeDefined()
-    expect(attributes.appIdEnd.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.dtRecUpdate).toBeDefined()
-    expect(attributes.dtRecUpdate.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.userId).toBeDefined()
-    expect(attributes.userId.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {

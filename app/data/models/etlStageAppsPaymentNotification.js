@@ -9,15 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     etlInsertedDt: DataTypes.DATE,
     applicationId: DataTypes.INTEGER,
     idClcHeader: DataTypes.INTEGER,
-    notificationDt: DataTypes.DATE,
     notificationFlag: DataTypes.STRING,
-    notifierKey: DataTypes.DECIMAL,
-    notificationText: DataTypes.STRING,
-    invoiceNumber: DataTypes.STRING,
-    requestInvoiceNumber: DataTypes.STRING,
-    pillar: DataTypes.STRING,
-    deliveryBodyCode: DataTypes.STRING,
-    paymentPreferenceCurrency: DataTypes.STRING
+    invoiceNumber: DataTypes.STRING
   },
   {
     tableName: 'etlStageAppsPaymentNotification',

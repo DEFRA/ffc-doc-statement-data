@@ -9,22 +9,11 @@ module.exports = (sequelize, DataTypes) => {
     etlInsertedDt: DataTypes.DATE,
     cssContractApplicationWid: DataTypes.INTEGER,
     pkid: DataTypes.INTEGER,
-    insertDt: DataTypes.DATE,
-    deleteDt: DataTypes.DATE,
     contractId: DataTypes.INTEGER,
     applicationId: DataTypes.INTEGER,
-    typePCode: DataTypes.STRING,
-    typeSCode: DataTypes.STRING,
-    dataSourcePCode: DataTypes.STRING,
     dataSourceSCode: DataTypes.STRING,
     startDt: DataTypes.DATE,
-    endDt: DataTypes.DATE,
-    validStartFlag: DataTypes.STRING,
-    validEndFlag: DataTypes.STRING,
-    startActId: DataTypes.INTEGER,
-    endActId: DataTypes.INTEGER,
-    lastUpdateDt: DataTypes.DATE,
-    user: DataTypes.STRING
+    endDt: DataTypes.DATE
   },
   {
     tableName: 'etlStageCssContractApplications',

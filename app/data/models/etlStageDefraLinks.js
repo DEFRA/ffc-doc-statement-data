@@ -8,10 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     defraLinksWid: DataTypes.INTEGER,
-    subjectId: DataTypes.INTEGER,
-    defraId: DataTypes.INTEGER,
-    defraType: DataTypes.STRING,
-    mdmId: DataTypes.INTEGER
+    subjectId: DataTypes.INTEGER
   },
   {
     tableName: 'etlStageDefraLinks',

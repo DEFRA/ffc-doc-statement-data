@@ -9,7 +9,7 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   tclcOption: { folder: 'tclcOptionFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -70,6 +70,7 @@ test('stageTCLCOption downloads file and runs ETL process', async () => {
     columns,
     table: tclcOption,
     mapping,
-    file: 'tclcOptionFolder/export.csv'
+    file: 'tclcOptionFolder/export.csv',
+    excludedFields: []
   })
 })

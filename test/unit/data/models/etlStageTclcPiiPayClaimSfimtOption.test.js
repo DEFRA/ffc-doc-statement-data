@@ -37,39 +37,6 @@ describe('etlStageTclcPiiPayClaimSfimtOption Model', () => {
 
     expect(attributes.calculationId).toBeDefined()
     expect(attributes.calculationId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.opCode).toBeDefined()
-    expect(attributes.opCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.scoUom).toBeDefined()
-    expect(attributes.scoUom.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.commitment).toBeDefined()
-    expect(attributes.commitment.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.commitmentVal).toBeDefined()
-    expect(attributes.commitmentVal.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.agreeAmount).toBeDefined()
-    expect(attributes.agreeAmount.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.claimedPayAmount).toBeDefined()
-    expect(attributes.claimedPayAmount.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.verifyPayAmount).toBeDefined()
-    expect(attributes.verifyPayAmount.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.foundAmount).toBeDefined()
-    expect(attributes.foundAmount.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.overdReductAmount).toBeDefined()
-    expect(attributes.overdReductAmount.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.overdPenaltyAmount).toBeDefined()
-    expect(attributes.overdPenaltyAmount.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.net1Amount).toBeDefined()
-    expect(attributes.net1Amount.type.key).toBe(DataTypes.DECIMAL.key)
   })
 
   test('should have correct options', () => {

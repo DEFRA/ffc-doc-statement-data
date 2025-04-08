@@ -2,7 +2,7 @@ const { getDWHExtracts, moveFile } = require('../../../app/storage')
 const { renameExtracts } = require('../../../app/etl/rename-extracts')
 
 jest.mock('../../../app/', () => ({
-  storageConfig: {
+  etlConfig: {
     applicationDetail: { fileMask: 'appDetail', folder: 'appDetailFolder' },
     appsPaymentNotification: { fileMask: 'appPayment', folder: 'appPaymentFolder' },
     appsTypes: { fileMask: 'appTypes', folder: 'appTypesFolder' },

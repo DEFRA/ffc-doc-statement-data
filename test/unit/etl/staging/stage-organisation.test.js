@@ -9,7 +9,7 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   organisation: { folder: 'organisationFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -19,7 +19,11 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
 }))
 jest.mock('../../../../app/config', () => ({
-  isProd: false
+  isProd: false,
+  etlConfig: {
+    excludeCalculationData: true,
+    organisation: { folder: 'organisationFolder' }
+  }
 }))
 
 test('stageOrganisation downloads file and runs ETL process', async () => {
@@ -103,6 +107,28 @@ test('stageOrganisation downloads file and runs ETL process', async () => {
     mapping,
     transformer,
     nonProdTransformer,
-    file: 'organisationFolder/export.csv'
+    file: 'organisationFolder/export.csv',
+    excludedFields: [
+      'accountablePeopleCompleted',
+      'additionalBusinesses',
+      'amended',
+      'businessDetConfirmedDtKey',
+      'businessReference',
+      'businessTypeId',
+      'charityCommissionRegnum',
+      'companiesHouseRegnum',
+      'confirmedFlg',
+      'corrAsBusinessAddr',
+      'dateStartedFarming',
+      'financialToBusinessAddr',
+      'landConfirmedFlg',
+      'landDetailsConfirmedDtKey',
+      'legalStatusTypeId',
+      'organisationName',
+      'registrationDate',
+      'taxRegistrationNumber',
+      'traderNumber',
+      'vendorNumber'
+    ]
   })
 })

@@ -68,30 +68,52 @@ const mapping = [
   { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, targetColumn: targetColumnNames.correspondenceEmailAddr, targetType: VARCHAR }
 ]
 
-const stageBusinessAddressContacts = async () => {
-  const transformer = [
-    { column: sourceColumnNames.BUSINESS_NAME, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
+const transformer = [
+  { column: sourceColumnNames.BUSINESS_NAME, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
+]
+
+let nonProdTransformer = []
+if (!config.isProd) {
+  nonProdTransformer = [
+    { name: sourceColumnNames.BUSINESS_NAME, faker: COMPANY_NAME },
+    { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },
+    { name: sourceColumnNames.BUSINESS_POST_CODE, faker: LOCATION_ZIP_CODE },
+    { name: sourceColumnNames.BUSINESS_CITY, faker: LOCATION_CITY },
+    { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL },
+    { name: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, faker: INTERNET_EMAIL }
   ]
+}
 
-  let nonProdTransformer = []
-  if (!config.isProd) {
-    nonProdTransformer = [
-      { name: sourceColumnNames.BUSINESS_NAME, faker: COMPANY_NAME },
-      { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },
-      { name: sourceColumnNames.BUSINESS_POST_CODE, faker: LOCATION_ZIP_CODE },
-      { name: sourceColumnNames.BUSINESS_CITY, faker: LOCATION_CITY },
-      { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL },
-      { name: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, faker: INTERNET_EMAIL }
-    ]
-  }
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.accountablePeopleCompleted,
+    targetColumnNames.businessCountry,
+    targetColumnNames.businessLandline,
+    targetColumnNames.businessMobile,
+    targetColumnNames.corrAsBusinessAddr,
+    targetColumnNames.correspondenceAddress1,
+    targetColumnNames.correspondenceAddress2,
+    targetColumnNames.correspondenceAddress3,
+    targetColumnNames.correspondenceCity,
+    targetColumnNames.correspondenceCountry,
+    targetColumnNames.correspondenceCounty,
+    targetColumnNames.correspondenceEmailAddr,
+    targetColumnNames.correspondenceLandline,
+    targetColumnNames.correspondenceMobile,
+    targetColumnNames.correspondencePostCode,
+    targetColumnNames.financialToBusinessAddr
+  ]
+}
 
-  return downloadAndProcessFile('businessAddress', businessAddress, columns, mapping, transformer, nonProdTransformer)
+const stageBusinessAddressContacts = async () => {
+  return downloadAndProcessFile('businessAddress', businessAddress, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 module.exports = {

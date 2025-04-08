@@ -6,7 +6,7 @@ const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/storage')
+jest.mock('../../../../app/config/etl')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -159,7 +159,20 @@ describe('stageCSSContractApplications', () => {
       columns: mockColumns,
       table: cssContractApplications,
       mapping: mockMapping,
-      file: mockFile
+      file: mockFile,
+      excludedFields: [
+        'dataSourcePCode',
+        'deleteDt',
+        'endActId',
+        'insertDt',
+        'lastUpdateDt',
+        'startActId',
+        'typePCode',
+        'typeSCode',
+        'user',
+        'validEndFlag',
+        'validStartFlag'
+      ]
     })
   })
 })

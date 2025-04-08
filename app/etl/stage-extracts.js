@@ -3,7 +3,7 @@ const moment = require('moment')
 const storage = require('../storage')
 const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
-const { storageConfig } = require('../config')
+const { etlConfig } = require('../config')
 const ora = require('ora')
 
 let completed = 0
@@ -15,29 +15,29 @@ let startDate
 
 const checkComplete = async () => {
   if (completed < total) {
-    setTimeout(checkComplete, storageConfig.checkCompleteTimeoutMs)
+    setTimeout(checkComplete, etlConfig.checkCompleteTimeoutMs)
   } else {
     console.log('All ETL extracts loaded')
     const body = await writeToString(global.results)
-    const outboundBlobClient = await storage.getBlob(`${storageConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
+    const outboundBlobClient = await storage.getBlob(`${etlConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
     await outboundBlobClient.upload(body, body.length)
     await loadETLData(startDate)
   }
 }
 
 const stageFunctions = [
-  { fn: stageApplicationDetails, label: storageConfig.applicationDetail.folder },
-  { fn: stageAppsTypes, label: storageConfig.appsTypes.folder },
-  { fn: stageAppsPaymentNotifications, label: storageConfig.appsPaymentNotification.folder },
-  { fn: stageBusinessAddressContacts, label: storageConfig.businessAddress.folder },
-  { fn: stageCalculationDetails, label: storageConfig.calculationsDetails.folder },
-  { fn: stageCSSContractApplications, label: storageConfig.cssContractApplications.folder },
-  { fn: stageCSSContract, label: storageConfig.cssContract.folder },
-  { fn: stageCSSOptions, label: storageConfig.cssOptions.folder },
-  { fn: stageDefraLinks, label: storageConfig.defraLinks.folder },
-  { fn: stageFinanceDAX, label: storageConfig.financeDAX.folder },
-  { fn: stageOrganisation, label: storageConfig.organisation.folder },
-  { fn: stageTCLCOption, label: storageConfig.tclcOption.folder }
+  { fn: stageApplicationDetails, label: etlConfig.applicationDetail.folder },
+  { fn: stageAppsTypes, label: etlConfig.appsTypes.folder },
+  { fn: stageAppsPaymentNotifications, label: etlConfig.appsPaymentNotification.folder },
+  { fn: stageBusinessAddressContacts, label: etlConfig.businessAddress.folder },
+  { fn: stageCalculationDetails, label: etlConfig.calculationsDetails.folder },
+  { fn: stageCSSContractApplications, label: etlConfig.cssContractApplications.folder },
+  { fn: stageCSSContract, label: etlConfig.cssContract.folder },
+  { fn: stageCSSOptions, label: etlConfig.cssOptions.folder },
+  { fn: stageDefraLinks, label: etlConfig.defraLinks.folder },
+  { fn: stageFinanceDAX, label: etlConfig.financeDAX.folder },
+  { fn: stageOrganisation, label: etlConfig.organisation.folder },
+  { fn: stageTCLCOption, label: etlConfig.tclcOption.folder }
 ]
 
 const stageExtracts = async () => {

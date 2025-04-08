@@ -18,8 +18,8 @@ const hooks = {
 }
 
 const pool = {
-  acquire: 3600000,
-  max: 10,
+  acquire: 7200000,
+  max: 20,
   min: 0
 }
 
@@ -29,7 +29,7 @@ const retry = {
   match: [/SequelizeConnectionError/],
   max: 10,
   name: 'connection',
-  timeout: 3600000
+  timeout: 7200000
 }
 
 const dbConfig = {
@@ -37,7 +37,7 @@ const dbConfig = {
   dialect: 'postgres',
   dialectOptions: {
     ssl: isProd(),
-    statement_timeout: 3600000
+    statement_timeout: 7200000
   },
   hooks,
   host: process.env.POSTGRES_HOST || 'ffc-doc-statement-data-postgres',

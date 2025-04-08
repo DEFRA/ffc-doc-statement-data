@@ -9,7 +9,7 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   applicationDetail: { folder: 'appDetailFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -17,6 +17,13 @@ jest.mock('../../../../app/constants/tables', () => ({
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
+}))
+
+jest.mock('../../../../app/config', () => ({
+  etlConfig: {
+    excludeCalculationData: true,
+    applicationDetail: { folder: 'appDetailFolder' }
+  }
 }))
 
 test('stageApplicationDetails downloads file and runs ETL process', async () => {
@@ -80,6 +87,29 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
     { column: 'USER_ID', targetColumn: 'userId', targetType: 'varchar' }
   ]
 
+  const excludedFields = [
+    'amendedAppId',
+    'applicationCode',
+    'appIdEnd',
+    'appIdStart',
+    'appTypeId',
+    'dtEnd',
+    'dtInsert',
+    'dtRecUpdate',
+    'dtStart',
+    'dtDelete',
+    'proxyId',
+    'sourcePCode',
+    'sourceSCode',
+    'statusPCode',
+    'statusSCode',
+    'subjectId',
+    'uteId',
+    'userId',
+    'validEndFlg',
+    'validStartFlg'
+  ]
+
   await stageApplicationDetails()
 
   expect(storage.downloadFileAsStream).toHaveBeenCalledWith('appDetailFolder/export.csv')
@@ -88,6 +118,7 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
     columns,
     table: applicationDetail,
     mapping,
-    file: 'appDetailFolder/export.csv'
+    file: 'appDetailFolder/export.csv',
+    excludedFields
   })
 })

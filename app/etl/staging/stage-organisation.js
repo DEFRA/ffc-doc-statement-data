@@ -62,27 +62,53 @@ const mapping = [
   { column: sourceColumnNames.LAST_UPDATED_ON, targetColumn: targetColumnNames.lastUpdatedOn, targetType: DATE, format: dateTimeFormat }
 ]
 
-const stageOrganisation = async () => {
-  const transformer = [
+const transformer = [
+  {
+    column: sourceColumnNames.ORGANISATION_NAME,
+    find: '\'',
+    replace: '\'\'',
+    all: true
+  }
+]
+
+let nonProdTransformer = []
+if (!config.isProd) {
+  nonProdTransformer = [
     {
-      column: sourceColumnNames.ORGANISATION_NAME,
-      find: '\'',
-      replace: '\'\'',
-      all: true
+      name: sourceColumnNames.ORGANISATION_NAME,
+      faker: COMPANY_NAME
     }
   ]
+}
 
-  let nonProdTransformer = []
-  if (!config.isProd) {
-    nonProdTransformer = [
-      {
-        name: sourceColumnNames.ORGANISATION_NAME,
-        faker: COMPANY_NAME
-      }
-    ]
-  }
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.accountablePeopleCompleted,
+    targetColumnNames.additionalBusinesses,
+    targetColumnNames.amended,
+    targetColumnNames.businessDetConfirmedDtKey,
+    targetColumnNames.businessReference,
+    targetColumnNames.businessTypeId,
+    targetColumnNames.charityCommissionRegnum,
+    targetColumnNames.companiesHouseRegnum,
+    targetColumnNames.confirmedFlg,
+    targetColumnNames.corrAsBusinessAddr,
+    targetColumnNames.dateStartedFarming,
+    targetColumnNames.financialToBusinessAddr,
+    targetColumnNames.landConfirmedFlg,
+    targetColumnNames.landDetailsConfirmedDtKey,
+    targetColumnNames.legalStatusTypeId,
+    targetColumnNames.organisationName,
+    targetColumnNames.registrationDate,
+    targetColumnNames.taxRegistrationNumber,
+    targetColumnNames.traderNumber,
+    targetColumnNames.vendorNumber
+  ]
+}
 
-  return downloadAndProcessFile('organisation', organisation, columns, mapping, transformer, nonProdTransformer)
+const stageOrganisation = async () => {
+  return downloadAndProcessFile('organisation', organisation, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 module.exports = {

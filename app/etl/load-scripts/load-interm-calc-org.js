@@ -1,22 +1,22 @@
 const config = require('../../config')
-const storageConfig = config.storageConfig
+const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const tablesToCheck = [
-  storageConfig.appsPaymentNotification.folder,
-  storageConfig.cssContractApplications.folder,
-  storageConfig.financeDAX.folder,
-  storageConfig.businessAddress.folder,
-  storageConfig.calculationsDetails.folder
+  etlConfig.appsPaymentNotification.folder,
+  etlConfig.cssContractApplications.folder,
+  etlConfig.financeDAX.folder,
+  etlConfig.businessAddress.folder,
+  etlConfig.calculationsDetails.folder
 ]
 
 const folderToAliasMap = {
-  [storageConfig.appsPaymentNotification.folder]: 'APN',
-  [storageConfig.cssContractApplications.folder]: 'APP',
-  [storageConfig.financeDAX.folder]: 'SD',
-  [storageConfig.businessAddress.folder]: 'BAC',
-  [storageConfig.calculationsDetails.folder]: 'CD'
+  [etlConfig.appsPaymentNotification.folder]: 'APN',
+  [etlConfig.cssContractApplications.folder]: 'APP',
+  [etlConfig.financeDAX.folder]: 'SD',
+  [etlConfig.businessAddress.folder]: 'BAC',
+  [etlConfig.calculationsDetails.folder]: 'CD'
 }
 
 const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
@@ -90,7 +90,7 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
     return
   }
 
-  const batchSize = storageConfig.etlBatchSize
+  const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)

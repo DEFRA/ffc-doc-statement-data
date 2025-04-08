@@ -7,21 +7,34 @@ const loadETLData = async (startDate) => {
   const transaction = await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
   })
+
+  const promisesBatch1 = [
+    loadIntermFinanceDAX(startDate),
+    loadIntermOrg(startDate),
+    loadIntermApplicationClaim(startDate),
+    loadIntermApplicationContract(startDate),
+    loadIntermApplicationPayment(startDate)
+  ]
+
+  const promisesBatch2 = [
+    loadIntermCalcOrg(startDate),
+    loadIntermTotal(startDate),
+    loadOrganisations(startDate, transaction),
+    loadIntermPaymentrefAgreementDates(startDate)
+  ]
+
+  const promisesBatch3 = [
+    loadDAX(startDate, transaction),
+    loadIntermTotalClaim(startDate),
+    loadIntermPaymentrefApplication(startDate)
+  ]
+
   try {
-    await loadIntermFinanceDAX(startDate, transaction)
-    await loadIntermCalcOrg(startDate, transaction)
-    await loadIntermOrg(startDate, transaction)
-    await loadIntermApplicationClaim(startDate, transaction)
-    await loadIntermApplicationContract(startDate, transaction)
-    await loadIntermApplicationPayment(startDate, transaction)
-    await loadIntermTotal(startDate, transaction)
-    await loadDAX(startDate, transaction)
-    await loadIntermTotalClaim(startDate, transaction)
-    await loadIntermPaymentrefApplication(startDate, transaction)
-    await loadIntermPaymentrefOrg(startDate, transaction)
-    await loadIntermPaymentrefAgreementDates(startDate, transaction)
+    await Promise.all(promisesBatch1)
+    await Promise.all(promisesBatch2)
+    await Promise.all(promisesBatch3)
+    await loadIntermPaymentrefOrg(startDate)
     await loadTotals(startDate, transaction)
-    await loadOrganisations(startDate, transaction)
     await transaction.commit()
     console.log('ETL data successfully loaded')
   } catch (error) {

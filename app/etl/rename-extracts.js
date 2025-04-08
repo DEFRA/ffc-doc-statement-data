@@ -1,20 +1,20 @@
-const { storageConfig } = require('../config')
+const { etlConfig } = require('../config')
 const { getDWHExtracts, moveFile } = require('../storage')
 
 const FILE_PATH_LOOKUP = {
-  [storageConfig.applicationDetail.fileMask]: storageConfig.applicationDetail.folder,
-  [storageConfig.appsPaymentNotification.fileMask]: storageConfig.appsPaymentNotification.folder,
-  [storageConfig.appsTypes.fileMask]: storageConfig.appsTypes.folder,
-  [storageConfig.businessAddress.fileMask]: storageConfig.businessAddress.folder,
-  [storageConfig.calculationsDetails.fileMask]: storageConfig.calculationsDetails.folder,
-  [storageConfig.cssContractApplications.fileMask]: storageConfig.cssContractApplications.folder,
-  [storageConfig.cssContract.fileMask]: storageConfig.cssContract.folder,
-  [storageConfig.cssOptions.fileMask]: storageConfig.cssOptions.folder,
-  [storageConfig.defraLinks.fileMask]: storageConfig.defraLinks.folder,
-  [storageConfig.financeDAX.fileMask]: storageConfig.financeDAX.folder,
-  [storageConfig.organisation.fileMask]: storageConfig.organisation.folder,
-  [storageConfig.tclcOption.fileMask]: storageConfig.tclcOption.folder,
-  [storageConfig.tclc.fileMask]: storageConfig.tclc.folder
+  [etlConfig.applicationDetail.fileMask]: etlConfig.applicationDetail.folder,
+  [etlConfig.appsPaymentNotification.fileMask]: etlConfig.appsPaymentNotification.folder,
+  [etlConfig.appsTypes.fileMask]: etlConfig.appsTypes.folder,
+  [etlConfig.businessAddress.fileMask]: etlConfig.businessAddress.folder,
+  [etlConfig.calculationsDetails.fileMask]: etlConfig.calculationsDetails.folder,
+  [etlConfig.cssContractApplications.fileMask]: etlConfig.cssContractApplications.folder,
+  [etlConfig.cssContract.fileMask]: etlConfig.cssContract.folder,
+  [etlConfig.cssOptions.fileMask]: etlConfig.cssOptions.folder,
+  [etlConfig.defraLinks.fileMask]: etlConfig.defraLinks.folder,
+  [etlConfig.financeDAX.fileMask]: etlConfig.financeDAX.folder,
+  [etlConfig.organisation.fileMask]: etlConfig.organisation.folder,
+  [etlConfig.tclcOption.fileMask]: etlConfig.tclcOption.folder,
+  [etlConfig.tclc.fileMask]: etlConfig.tclc.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {
@@ -31,9 +31,9 @@ const getOutputPathFromFileName = (fileName) => {
 const renameExtracts = async () => {
   const extracts = await getDWHExtracts()
   for (const extract of extracts) {
-    const fileName = extract.replace(`${storageConfig.dwhExtractsFolder}/`, '')
+    const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
     const outputFolder = getOutputPathFromFileName(fileName)
-    await moveFile(storageConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
+    await moveFile(etlConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
   }
 }
 
