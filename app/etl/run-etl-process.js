@@ -44,7 +44,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             mapping,
             includeErrors: false,
             schema: dbConfig.schema,
-            excludedFields
+            ignoredColumns: excludedFields
           }))
           .pump()
           .on('finish', async (data) => {
