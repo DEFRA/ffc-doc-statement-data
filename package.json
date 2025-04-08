@@ -30,7 +30,7 @@
     "@fast-csv/format": "5.0.2",
     "applicationinsights": "2.9.6",
     "ffc-messaging": "2.10.1",
-    "ffc-pay-etl-framework": "1.1.12",
+    "ffc-pay-etl-framework": "1.1.13",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
     "moment": "2.30.1",
