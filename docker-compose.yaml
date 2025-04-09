@@ -28,6 +28,7 @@ services:
       AZURE_STORAGE_USE_CONNECTION_STRING: "true"
       AZURE_STORAGE_CREATE_CONTAINERS: "true"
       DEMOGRAPHICS_ACTIVE: ${DEMOGRAPHICS_ACTIVE:-true}
+      EXCLUDE_CALCULATION_DATA: "true"
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine

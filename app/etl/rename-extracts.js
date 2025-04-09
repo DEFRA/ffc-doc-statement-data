@@ -1,35 +1,35 @@
-const { storageConfig } = require('../config')
+const { etlConfig } = require('../config')
 const { getDWHExtracts, moveFile } = require('../storage')
 
 const FILE_PATH_LOOKUP = {
-  [storageConfig.applicationDetail.fileMask]: storageConfig.applicationDetail.folder,
-  [storageConfig.appsPaymentNotification.fileMask]: storageConfig.appsPaymentNotification.folder,
-  [storageConfig.appsTypes.fileMask]: storageConfig.appsTypes.folder,
-  [storageConfig.businessAddress.fileMask]: storageConfig.businessAddress.folder,
-  [storageConfig.calculationsDetails.fileMask]: storageConfig.calculationsDetails.folder,
-  [storageConfig.cssContractApplications.fileMask]: storageConfig.cssContractApplications.folder,
-  [storageConfig.cssContract.fileMask]: storageConfig.cssContract.folder,
-  [storageConfig.cssOptions.fileMask]: storageConfig.cssOptions.folder,
-  [storageConfig.defraLinks.fileMask]: storageConfig.defraLinks.folder,
-  [storageConfig.financeDAX.fileMask]: storageConfig.financeDAX.folder,
-  [storageConfig.organisation.fileMask]: storageConfig.organisation.folder,
-  [storageConfig.tclcOption.fileMask]: storageConfig.tclcOption.folder,
-  [storageConfig.tclc.fileMask]: storageConfig.tclc.folder,
-  [storageConfig.applicationDetailDelinked.fileMask]: storageConfig.applicationDetailDelinked.folder,
-  [storageConfig.appsPaymentNotificationDelinked.fileMask]: storageConfig.appsPaymentNotificationDelinked.folder,
-  [storageConfig.appsTypesDelinked.fileMask]: storageConfig.appsTypesDelinked.folder,
-  [storageConfig.businessAddressDelinked.fileMask]: storageConfig.businessAddressDelinked.folder,
-  [storageConfig.calculationsDetailsDelinked.fileMask]: storageConfig.calculationsDetailsDelinked.folder,
-  [storageConfig.cssContractApplicationsDelinked.fileMask]: storageConfig.cssContractApplicationsDelinked.folder,
-  [storageConfig.cssContractDelinked.fileMask]: storageConfig.cssContractDelinked.folder,
-  [storageConfig.cssOptionsDelinked.fileMask]: storageConfig.cssOptionsDelinked.folder,
-  [storageConfig.defraLinksDelinked.fileMask]: storageConfig.defraLinksDelinked.folder,
-  [storageConfig.financeDAXDelinked.fileMask]: storageConfig.financeDAXDelinked.folder,
-  [storageConfig.organisationDelinked.fileMask]: storageConfig.organisationDelinked.folder,
-  [storageConfig.tclcOptionDelinked.fileMask]: storageConfig.tclcOptionDelinked.folder,
-  [storageConfig.tclcDelinked.fileMask]: storageConfig.tclcDelinked.folder,
-  [storageConfig.appCalculationResultsDelinkPayments.fileMask]: storageConfig.appCalculationResultsDelinkPayments.folder,
-  [storageConfig.tdeLinkingTransferTransactions.fileMask]: storageConfig.tdeLinkingTransferTransactions.folder
+  [etlConfig.applicationDetail.fileMask]: etlConfig.applicationDetail.folder,
+  [etlConfig.appsPaymentNotification.fileMask]: etlConfig.appsPaymentNotification.folder,
+  [etlConfig.appsTypes.fileMask]: etlConfig.appsTypes.folder,
+  [etlConfig.businessAddress.fileMask]: etlConfig.businessAddress.folder,
+  [etlConfig.calculationsDetails.fileMask]: etlConfig.calculationsDetails.folder,
+  [etlConfig.cssContractApplications.fileMask]: etlConfig.cssContractApplications.folder,
+  [etlConfig.cssContract.fileMask]: etlConfig.cssContract.folder,
+  [etlConfig.cssOptions.fileMask]: etlConfig.cssOptions.folder,
+  [etlConfig.defraLinks.fileMask]: etlConfig.defraLinks.folder,
+  [etlConfig.financeDAX.fileMask]: etlConfig.financeDAX.folder,
+  [etlConfig.organisation.fileMask]: etlConfig.organisation.folder,
+  [etlConfig.tclcOption.fileMask]: etlConfig.tclcOption.folder,
+  [etlConfig.tclc.fileMask]: etlConfig.tclc.folder,
+  [etlConfig.applicationDetailDelinked.fileMask]: etlConfig.applicationDetailDelinked.folder,
+  [etlConfig.appsPaymentNotificationDelinked.fileMask]: etlConfig.appsPaymentNotificationDelinked.folder,
+  [etlConfig.appsTypesDelinked.fileMask]: etlConfig.appsTypesDelinked.folder,
+  [etlConfig.businessAddressDelinked.fileMask]: etlConfig.businessAddressDelinked.folder,
+  [etlConfig.calculationsDetailsDelinked.fileMask]: etlConfig.calculationsDetailsDelinked.folder,
+  [etlConfig.cssContractApplicationsDelinked.fileMask]: etlConfig.cssContractApplicationsDelinked.folder,
+  [etlConfig.cssContractDelinked.fileMask]: etlConfig.cssContractDelinked.folder,
+  [etlConfig.cssOptionsDelinked.fileMask]: etlConfig.cssOptionsDelinked.folder,
+  [etlConfig.defraLinksDelinked.fileMask]: etlConfig.defraLinksDelinked.folder,
+  [etlConfig.financeDAXDelinked.fileMask]: etlConfig.financeDAXDelinked.folder,
+  [etlConfig.organisationDelinked.fileMask]: etlConfig.organisationDelinked.folder,
+  [etlConfig.tclcOptionDelinked.fileMask]: etlConfig.tclcOptionDelinked.folder,
+  [etlConfig.tclcDelinked.fileMask]: etlConfig.tclcDelinked.folder,
+  [etlConfig.appCalculationResultsDelinkPayments.fileMask]: etlConfig.appCalculationResultsDelinkPayments.folder,
+  [etlConfig.tdeLinkingTransferTransactions.fileMask]: etlConfig.tdeLinkingTransferTransactions.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {
@@ -46,9 +46,9 @@ const getOutputPathFromFileName = (fileName) => {
 const renameExtracts = async () => {
   const extracts = await getDWHExtracts()
   for (const extract of extracts) {
-    const fileName = extract.replace(`${storageConfig.dwhExtractsFolder}/`, '')
+    const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
     const outputFolder = getOutputPathFromFileName(fileName)
-    await moveFile(storageConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
+    await moveFile(etlConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
   }
 }
 

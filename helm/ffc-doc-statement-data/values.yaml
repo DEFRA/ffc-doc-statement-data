@@ -38,6 +38,7 @@ container:
   azureStorageUseConnectionString: false
   azureStorageCreateContainers: false
   demographicsActive: true
+  excludeCalculationData: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

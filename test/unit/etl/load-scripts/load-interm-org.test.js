@@ -1,4 +1,4 @@
-const { storageConfig } = require('../../../../app/config')
+const { etlConfig } = require('../../../../app/config')
 const db = require('../../../../app/data')
 const { loadIntermOrg } = require('../../../../app/etl/load-scripts/load-interm-org')
 
@@ -28,7 +28,7 @@ describe('loadIntermOrg', () => {
     db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization/export.csv', idFrom: 1, idTo: 2 }, { file: 'Organization/export.csv', idFrom: 3, idTo: 4 }])
 
     await expect(loadIntermOrg(startDate)).rejects.toThrow(
-      `Multiple records found for updates to ${storageConfig.organisation.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.organisation.folder}, expected only one`
     )
   })
 

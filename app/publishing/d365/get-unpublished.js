@@ -1,6 +1,7 @@
 const db = require('../../data')
+const { publishingConfig } = require('../../config')
 
-const getUnpublishedD365 = async (transaction) => {
+const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
   return db.d365.findAll({
     lock: true,
     skipLocked: true,
@@ -13,7 +14,8 @@ const getUnpublishedD365 = async (transaction) => {
     },
     attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
     raw: true,
-    transaction
+    transaction,
+    limit
   })
 }
 

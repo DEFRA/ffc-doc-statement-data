@@ -6,7 +6,7 @@ const db = require('../data')
 const tableMappings = require('../constants/table-mappings')
 const { getFirstLineNumber } = require('./file-utils')
 
-const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer, nonProdTransformer, file }) => {
+const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer, nonProdTransformer, excludedFields, file }) => {
   const etl = new Etl.Etl()
   const sequelizeModelName = tableMappings[table]
   const initialRowCount = await db[sequelizeModelName]?.count()
@@ -44,7 +44,8 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             connection: 'postgresConnection',
             mapping,
             includeErrors: false,
-            schema: dbConfig.schema
+            schema: dbConfig.schema,
+            ignoredColumns: excludedFields
           }))
           .pump()
           .on('finish', async (data) => {

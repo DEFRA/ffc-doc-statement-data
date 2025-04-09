@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { cssContract } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -61,7 +62,27 @@ const stageCSSContract = async (monthDayFormat = false, folder = 'cssContract') 
     { column: sourceColumnNames.CONTRACT_DESCRIPTION, find: "'", replace: "''", all: true }
   ]
 
-  return downloadAndProcessFile(folder, cssContract, columns, mapping, transformer)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.contractCode,
+      targetColumnNames.contractDescription,
+      targetColumnNames.contractStatePCode,
+      targetColumnNames.contractTypeDescription,
+      targetColumnNames.contractTypeId,
+      targetColumnNames.dataSourcePCode,
+      targetColumnNames.deleteDt,
+      targetColumnNames.endActId,
+      targetColumnNames.insertDt,
+      targetColumnNames.lastUpdateDt,
+      targetColumnNames.startActId,
+      targetColumnNames.userFld,
+      targetColumnNames.validEndFlag,
+      targetColumnNames.validStartFlag
+    ]
+  }
+
+  return downloadAndProcessFile(folder, cssContract, columns, mapping, excludedFields, transformer)
 }
 
 const stageCSSContractDelinked = async () => {

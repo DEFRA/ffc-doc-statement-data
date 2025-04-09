@@ -1,22 +1,22 @@
 const config = require('../../config')
-const storageConfig = config.storageConfig
+const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
-  storageConfig.appsPaymentNotification.folder,
-  storageConfig.cssContractApplications.folder,
-  storageConfig.financeDAX.folder,
-  storageConfig.businessAddress.folder,
-  storageConfig.calculationsDetails.folder
+  etlConfig.appsPaymentNotification.folder,
+  etlConfig.cssContractApplications.folder,
+  etlConfig.financeDAX.folder,
+  etlConfig.businessAddress.folder,
+  etlConfig.calculationsDetails.folder
 ]
 
 const defaultFolderToAliasMap = {
-  [storageConfig.appsPaymentNotification.folder]: 'APN',
-  [storageConfig.cssContractApplications.folder]: 'APP',
-  [storageConfig.financeDAX.folder]: 'SD',
-  [storageConfig.businessAddress.folder]: 'BAC',
-  [storageConfig.calculationsDetails.folder]: 'CD'
+  [etlConfig.appsPaymentNotification.folder]: 'APN',
+  [etlConfig.cssContractApplications.folder]: 'APP',
+  [etlConfig.financeDAX.folder]: 'SD',
+  [etlConfig.businessAddress.folder]: 'BAC',
+  [etlConfig.calculationsDetails.folder]: 'CD'
 }
 
 const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
@@ -91,7 +91,7 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
       OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
   `
 
-  const batchSize = storageConfig.etlBatchSize
+  const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
@@ -111,19 +111,19 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
 
 const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
   const tablesToCheck = [
-    storageConfig.appsPaymentNotificationDelinked.folder,
-    storageConfig.cssContractApplicationsDelinked.folder,
-    storageConfig.financeDAXDelinked.folder,
-    storageConfig.businessAddressDelinked.folder,
-    storageConfig.calculationsDetailsDelinked.folder
+    etlConfig.appsPaymentNotificationDelinked.folder,
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.financeDAXDelinked.folder,
+    etlConfig.businessAddressDelinked.folder,
+    etlConfig.calculationsDetailsDelinked.folder
   ]
 
   const folderToAliasMap = {
-    [storageConfig.appsPaymentNotificationDelinked.folder]: 'APN',
-    [storageConfig.cssContractApplicationsDelinked.folder]: 'APP',
-    [storageConfig.financeDAXDelinked.folder]: 'SD',
-    [storageConfig.businessAddressDelinked.folder]: 'BAC',
-    [storageConfig.calculationsDetailsDelinked.folder]: 'CD'
+    [etlConfig.appsPaymentNotificationDelinked.folder]: 'APN',
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'APP',
+    [etlConfig.financeDAXDelinked.folder]: 'SD',
+    [etlConfig.businessAddressDelinked.folder]: 'BAC',
+    [etlConfig.calculationsDetailsDelinked.folder]: 'CD'
   }
 
   return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)

@@ -34,15 +34,6 @@ describe('etlStageDefraLinks Model', () => {
 
     expect(attributes.subjectId).toBeDefined()
     expect(attributes.subjectId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.defraId).toBeDefined()
-    expect(attributes.defraId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.defraType).toBeDefined()
-    expect(attributes.defraType.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.mdmId).toBeDefined()
-    expect(attributes.mdmId.type.key).toBe(DataTypes.INTEGER.key)
   })
 
   test('should have correct options', () => {

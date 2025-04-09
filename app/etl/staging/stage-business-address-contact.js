@@ -93,7 +93,29 @@ const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'bu
     ]
   }
 
-  return downloadAndProcessFile(folder, businessAddress, columns, mapping, transformer, nonProdTransformer)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.accountablePeopleCompleted,
+      targetColumnNames.businessCountry,
+      targetColumnNames.businessLandline,
+      targetColumnNames.businessMobile,
+      targetColumnNames.corrAsBusinessAddr,
+      targetColumnNames.correspondenceAddress1,
+      targetColumnNames.correspondenceAddress2,
+      targetColumnNames.correspondenceAddress3,
+      targetColumnNames.correspondenceCity,
+      targetColumnNames.correspondenceCountry,
+      targetColumnNames.correspondenceCounty,
+      targetColumnNames.correspondenceEmailAddr,
+      targetColumnNames.correspondenceLandline,
+      targetColumnNames.correspondenceMobile,
+      targetColumnNames.correspondencePostCode,
+      targetColumnNames.financialToBusinessAddr
+    ]
+  }
+
+  return downloadAndProcessFile(folder, businessAddress, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 const stageBusinessAddressContactsDelinked = async () => {

@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { appsPaymentNotification } = require('../../constants/tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
@@ -39,7 +40,20 @@ const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'a
     { column: sourceColumnNames.PAYMENT_PREFERENCE_CURRENCY, targetColumn: targetColumnNames.paymentPreferenceCurrency, targetType: VARCHAR }
   ]
 
-  return downloadAndProcessFile(folder, appsPaymentNotification, columns, mapping)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.deliveryBodyCode,
+      targetColumnNames.notificationDt,
+      targetColumnNames.notificationText,
+      targetColumnNames.notifierKey,
+      targetColumnNames.paymentPreferenceCurrency,
+      targetColumnNames.pillar,
+      targetColumnNames.requestInvoiceNumber
+    ]
+  }
+
+  return downloadAndProcessFile(folder, appsPaymentNotification, columns, mapping, excludedFields)
 }
 
 const stageAppsPaymentNotificationsDelinked = async () => {

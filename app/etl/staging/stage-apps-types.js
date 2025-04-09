@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { appsTypes } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -33,7 +34,21 @@ const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
     { column: sourceColumnNames.WIN_CLOSE_DATE, targetColumn: targetColumnNames.winCloseDate, targetType: DATE, format }
   ]
 
-  return downloadAndProcessFile(folder, appsTypes, columns, mapping)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.appTypeId,
+      targetColumnNames.extDescription,
+      targetColumnNames.sectorPCode,
+      targetColumnNames.sectorSCode,
+      targetColumnNames.shortDescription,
+      targetColumnNames.winCloseDate,
+      targetColumnNames.winOpenDate,
+      targetColumnNames.year
+    ]
+  }
+
+  return downloadAndProcessFile(folder, appsTypes, columns, mapping, excludedFields)
 }
 
 const stageAppsTypesDelinked = async () => {

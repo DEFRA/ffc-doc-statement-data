@@ -55,7 +55,7 @@ jest.mock('@azure/storage-blob', () => {
 })
 
 jest.mock('@azure/identity')
-jest.mock('../app/config/storage', () => ({
+jest.mock('../app/config/etl', () => ({
   applicationDetail: { folder: 'applicationDetail' },
   appsPaymentNotification: { folder: 'appsPaymentNotification' },
   appsTypes: { folder: 'appsTypes' },

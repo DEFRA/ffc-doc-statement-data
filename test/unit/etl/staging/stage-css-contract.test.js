@@ -6,7 +6,7 @@ const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/storage')
+jest.mock('../../../../app/config/etl')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -186,7 +186,23 @@ describe('stageCSSContract', () => {
       table: cssContract,
       mapping: mockMapping,
       transformer: mockTransformer,
-      file: mockFile
+      file: mockFile,
+      excludedFields: [
+        'contractCode',
+        'contractDescription',
+        'contractStatePCode',
+        'contractTypeDescription',
+        'contractTypeId',
+        'dataSourcePCode',
+        'deleteDt',
+        'endActId',
+        'insertDt',
+        'lastUpdateDt',
+        'startActId',
+        'user',
+        'validEndFlag',
+        'validStartFlag'
+      ]
     })
   })
 })

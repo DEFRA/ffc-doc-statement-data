@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { cssContractApplications } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -51,7 +52,24 @@ const stageCSSContractApplications = async (monthDayFormat = false, folder = 'cs
     { column: sourceColumnNames.USER_FLD, targetColumn: targetColumnNames.userFld, targetType: VARCHAR }
   ]
 
-  return downloadAndProcessFile(folder, cssContractApplications, columns, mapping)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.dataSourcePCode,
+      targetColumnNames.deleteDt,
+      targetColumnNames.endActId,
+      targetColumnNames.insertDt,
+      targetColumnNames.lastUpdateDt,
+      targetColumnNames.startActId,
+      targetColumnNames.typePCode,
+      targetColumnNames.typeSCode,
+      targetColumnNames.userFld,
+      targetColumnNames.validEndFlag,
+      targetColumnNames.validStartFlag
+    ]
+  }
+
+  return downloadAndProcessFile(folder, cssContractApplications, columns, mapping, excludedFields)
 }
 
 const stageCSSContractApplicationsDelinked = async () => {

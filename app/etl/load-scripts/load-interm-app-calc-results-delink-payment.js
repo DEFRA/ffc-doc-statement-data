@@ -1,20 +1,20 @@
-const { storageConfig } = require('../../config')
+const { etlConfig } = require('../../config')
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
 const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => {
   const tablesToCheck = [
-    storageConfig.appCalculationResultsDelinkPayments.folder
+    etlConfig.appCalculationResultsDelinkPayments.folder
   ]
 
   const folderToAliasMap = {
-    [storageConfig.appCalculationResultsDelinkPayments.folder]: 'DP',
-    [storageConfig.calculationsDetailsDelinked.folder]: 'CD',
-    [storageConfig.businessAddressDelinked.folder]: 'BAC',
-    [storageConfig.applicationDetailDelinked.folder]: 'AD',
-    [storageConfig.defraLinksDelinked.folder]: 'DL',
-    [storageConfig.organisationDelinked.folder]: 'O'
+    [etlConfig.appCalculationResultsDelinkPayments.folder]: 'DP',
+    [etlConfig.calculationsDetailsDelinked.folder]: 'CD',
+    [etlConfig.businessAddressDelinked.folder]: 'BAC',
+    [etlConfig.applicationDetailDelinked.folder]: 'AD',
+    [etlConfig.defraLinksDelinked.folder]: 'DL',
+    [etlConfig.organisationDelinked.folder]: 'O'
   }
 
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
@@ -120,7 +120,7 @@ const loadIntermAppCalcResultsDelinkPayment = async (startDate, transaction) => 
         OR ("changeType" = 'UPDATE' AND ("calculationId", "applicationId") NOT IN (SELECT "calculationId", "applicationId" FROM "updatedRows"));
   `
 
-  const batchSize = storageConfig.etlBatchSize
+  const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)

@@ -6,15 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     changeType: DataTypes.STRING,
     changeTime: DataTypes.DATE,
     etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
-    etlInsertedDt: DataTypes.DATE,
-    appTypeId: DataTypes.INTEGER,
-    sectorPCode: DataTypes.STRING,
-    sectorSCode: DataTypes.STRING,
-    shortDescription: DataTypes.STRING,
-    extDescription: DataTypes.STRING,
-    year: DataTypes.INTEGER,
-    winOpenDate: DataTypes.DATE,
-    winCloseDate: DataTypes.DATE
+    etlInsertedDt: DataTypes.DATE
   },
   {
     tableName: 'etlStageAppsTypes',

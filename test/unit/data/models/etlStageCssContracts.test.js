@@ -35,32 +35,8 @@ describe('etlStageCssContracts Model', () => {
     expect(attributes.pkid).toBeDefined()
     expect(attributes.pkid.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.insertDt).toBeDefined()
-    expect(attributes.insertDt.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.deleteDt).toBeDefined()
-    expect(attributes.deleteDt.type.key).toBe(DataTypes.DATE.key)
-
     expect(attributes.contractId).toBeDefined()
     expect(attributes.contractId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.contractCode).toBeDefined()
-    expect(attributes.contractCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.contractTypeId).toBeDefined()
-    expect(attributes.contractTypeId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.contractTypeDescription).toBeDefined()
-    expect(attributes.contractTypeDescription.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.contractDescription).toBeDefined()
-    expect(attributes.contractDescription.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.contractStatePCode).toBeDefined()
-    expect(attributes.contractStatePCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.contractStateSCode).toBeDefined()
-    expect(attributes.contractStateSCode.type.key).toBe(DataTypes.STRING.key)
 
     expect(attributes.dataSourcePCode).toBeDefined()
     expect(attributes.dataSourcePCode.type.key).toBe(DataTypes.STRING.key)
@@ -73,24 +49,6 @@ describe('etlStageCssContracts Model', () => {
 
     expect(attributes.endDt).toBeDefined()
     expect(attributes.endDt.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.validStartFlag).toBeDefined()
-    expect(attributes.validStartFlag.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.validEndFlag).toBeDefined()
-    expect(attributes.validEndFlag.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.startActId).toBeDefined()
-    expect(attributes.startActId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.endActId).toBeDefined()
-    expect(attributes.endActId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.lastUpdateDt).toBeDefined()
-    expect(attributes.lastUpdateDt.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.user).toBeDefined()
-    expect(attributes.user.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {

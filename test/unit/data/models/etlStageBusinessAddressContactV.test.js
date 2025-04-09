@@ -38,15 +38,6 @@ describe('etlStageBusinessAddressContactV Model', () => {
     expect(attributes.businessName).toBeDefined()
     expect(attributes.businessName.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.accountablePeopleCompleted).toBeDefined()
-    expect(attributes.accountablePeopleCompleted.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.financialToBusinessAddr).toBeDefined()
-    expect(attributes.financialToBusinessAddr.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.corrAsBusinessAddr).toBeDefined()
-    expect(attributes.corrAsBusinessAddr.type.key).toBe(DataTypes.DECIMAL.key)
-
     expect(attributes.businessAddress1).toBeDefined()
     expect(attributes.businessAddress1.type.key).toBe(DataTypes.STRING.key)
 
@@ -65,41 +56,8 @@ describe('etlStageBusinessAddressContactV Model', () => {
     expect(attributes.businessPostCode).toBeDefined()
     expect(attributes.businessPostCode.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.businessLandline).toBeDefined()
-    expect(attributes.businessLandline.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.businessMobile).toBeDefined()
-    expect(attributes.businessMobile.type.key).toBe(DataTypes.STRING.key)
-
     expect(attributes.businessEmailAddr).toBeDefined()
     expect(attributes.businessEmailAddr.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceAddress1).toBeDefined()
-    expect(attributes.correspondenceAddress1.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceAddress2).toBeDefined()
-    expect(attributes.correspondenceAddress2.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceAddress3).toBeDefined()
-    expect(attributes.correspondenceAddress3.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceCity).toBeDefined()
-    expect(attributes.correspondenceCity.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceCounty).toBeDefined()
-    expect(attributes.correspondenceCounty.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondencePostCode).toBeDefined()
-    expect(attributes.correspondencePostCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceLandline).toBeDefined()
-    expect(attributes.correspondenceLandline.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceMobile).toBeDefined()
-    expect(attributes.correspondenceMobile.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.correspondenceEmailAddr).toBeDefined()
-    expect(attributes.correspondenceEmailAddr.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {

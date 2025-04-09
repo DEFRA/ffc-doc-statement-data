@@ -1,4 +1,4 @@
-const { storageConfig } = require('../../../../app/config')
+const { etlConfig } = require('../../../../app/config')
 const db = require('../../../../app/data')
 const { loadIntermAppCalcResultsDelinkPayment } = require('../../../../app/etl/load-scripts/load-interm-app-calc-results-delink-payment')
 
@@ -29,7 +29,7 @@ describe('loadIntermAppCalcResultsDelinkPayment', () => {
     db.etlStageLog.findAll.mockResolvedValue([{ id_from: 1, id_to: 2 }, { id_from: 3, id_to: 4 }])
 
     await expect(loadIntermAppCalcResultsDelinkPayment(startDate, transaction)).rejects.toThrow(
-      `Multiple records found for updates to ${storageConfig.appCalculationResultsDelinkPayments.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.appCalculationResultsDelinkPayments.folder}, expected only one`
     )
   })
 
@@ -41,7 +41,7 @@ describe('loadIntermAppCalcResultsDelinkPayment', () => {
   })
 
   test('should call sequelize.query with correct SQL and parameters', async () => {
-    const file = `${storageConfig.appCalculationResultsDelinkPayments.folder}/export.csv`
+    const file = `${etlConfig.appCalculationResultsDelinkPayments.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file }])
 
     await loadIntermAppCalcResultsDelinkPayment(startDate, transaction)
@@ -50,7 +50,7 @@ describe('loadIntermAppCalcResultsDelinkPayment', () => {
   })
 
   test('should handle errors thrown by sequelize.query', async () => {
-    const file = `${storageConfig.appCalculationResultsDelinkPayments.folder}/export.csv`
+    const file = `${etlConfig.appCalculationResultsDelinkPayments.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file }])
     db.sequelize.query.mockRejectedValue(new Error('Query failed'))
 

@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { tclcOption } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -43,7 +44,24 @@ const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') =>
     { column: sourceColumnNames.NET1_AMOUNT, targetColumn: targetColumnNames.net1Amount, targetType: NUMBER }
   ]
 
-  return downloadAndProcessFile(folder, tclcOption, columns, mapping)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.agreeAmount,
+      targetColumnNames.claimedPayAmount,
+      targetColumnNames.commitment,
+      targetColumnNames.commitmentVal,
+      targetColumnNames.foundAmount,
+      targetColumnNames.net1Amount,
+      targetColumnNames.opCode,
+      targetColumnNames.overdPenaltyAmount,
+      targetColumnNames.overdReductAmount,
+      targetColumnNames.scoUom,
+      targetColumnNames.verifyPayAmount
+    ]
+  }
+
+  return downloadAndProcessFile(folder, tclcOption, columns, mapping, excludedFields)
 }
 
 const stageTCLCOptionDelinked = async () => {

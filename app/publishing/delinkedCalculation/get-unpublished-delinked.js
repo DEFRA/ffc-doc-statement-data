@@ -1,6 +1,7 @@
 const db = require('../../data')
+const { publishingConfig } = require('../../config')
 
-const getUnpublishedDelinked = async (transaction) => {
+const getUnpublishedDelinked = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
   return db.delinkedCalculation.findAll({
     lock: true,
     skipLocked: true,
@@ -39,7 +40,8 @@ const getUnpublishedDelinked = async (transaction) => {
       'updated'
     ],
     raw: true,
-    transaction
+    transaction,
+    limit
   })
 }
 

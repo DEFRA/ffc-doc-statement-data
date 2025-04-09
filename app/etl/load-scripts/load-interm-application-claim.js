@@ -1,16 +1,16 @@
 const config = require('../../config')
-const storageConfig = config.storageConfig
+const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
-  storageConfig.cssContractApplications.folder,
-  storageConfig.cssContract.folder
+  etlConfig.cssContractApplications.folder,
+  etlConfig.cssContract.folder
 ]
 
 const defaultFolderToAliasMap = {
-  [storageConfig.cssContractApplications.folder]: 'cl',
-  [storageConfig.cssContract.folder]: 'cc'
+  [etlConfig.cssContractApplications.folder]: 'cl',
+  [etlConfig.cssContract.folder]: 'cc'
 }
 
 const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
@@ -57,7 +57,7 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
       OR ("changeType" = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedrows));
   `
 
-  const batchSize = storageConfig.etlBatchSize
+  const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
@@ -77,13 +77,13 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
 
 const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
   const tablesToCheck = [
-    storageConfig.cssContractApplicationsDelinked.folder,
-    storageConfig.cssContractDelinked.folder
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.cssContractDelinked.folder
   ]
 
   const folderToAliasMap = {
-    [storageConfig.cssContractApplicationsDelinked.folder]: 'cl',
-    [storageConfig.cssContractDelinked.folder]: 'cc'
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'cl',
+    [etlConfig.cssContractDelinked.folder]: 'cc'
   }
 
   return loadIntermApplicationClaim(startDate, transaction, tablesToCheck, folderToAliasMap)

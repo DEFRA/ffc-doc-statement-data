@@ -7,27 +7,40 @@ const loadETLData = async (startDate) => {
   const transaction = await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
   })
+
+  const promisesBatch1 = [
+    loadIntermFinanceDAX(startDate),
+    loadIntermFinanceDAXDelinked(startDate),
+    loadIntermOrg(startDate),
+    loadIntermCalcOrgDelinked(startDate),
+    loadIntermOrgDelinked(startDate),
+    loadIntermApplicationClaim(startDate),
+    loadIntermApplicationClaimDelinked(startDate),
+    loadIntermApplicationContract(startDate),
+    loadIntermApplicationPayment(startDate)
+  ]
+
+  const promisesBatch2 = [
+    loadIntermCalcOrg(startDate),
+    loadIntermTotal(startDate),
+    loadIntermTotalDelinked(startDate),
+    loadOrganisations(startDate, transaction),
+    loadIntermPaymentrefAgreementDates(startDate)
+  ]
+
+  const promisesBatch3 = [
+    loadDAX(startDate, transaction),
+    loadIntermAppCalcResultsDelinkPayment(startDate),
+    loadIntermTotalClaim(startDate),
+    loadIntermPaymentrefApplication(startDate)
+  ]
+
   try {
-    await loadIntermFinanceDAX(startDate, transaction)
-    await loadIntermFinanceDAXDelinked(startDate, transaction)
-    await loadIntermCalcOrg(startDate, transaction)
-    await loadIntermOrg(startDate, transaction)
-    await loadIntermCalcOrgDelinked(startDate, transaction)
-    await loadIntermOrgDelinked(startDate, transaction)
-    await loadIntermApplicationClaim(startDate, transaction)
-    await loadIntermApplicationClaimDelinked(startDate, transaction)
-    await loadIntermApplicationContract(startDate, transaction)
-    await loadIntermApplicationPayment(startDate, transaction)
-    await loadIntermTotal(startDate, transaction)
-    await loadIntermTotalDelinked(startDate, transaction)
-    await loadDAX(startDate, transaction)
-    await loadIntermAppCalcResultsDelinkPayment(startDate, transaction)
-    await loadIntermTotalClaim(startDate, transaction)
-    await loadIntermPaymentrefApplication(startDate, transaction)
-    await loadIntermPaymentrefOrg(startDate, transaction)
-    await loadIntermPaymentrefAgreementDates(startDate, transaction)
+    await Promise.all(promisesBatch1)
+    await Promise.all(promisesBatch2)
+    await Promise.all(promisesBatch3)
+    await loadIntermPaymentrefOrg(startDate)
     await loadTotals(startDate, transaction)
-    await loadOrganisations(startDate, transaction)
     await loadDelinkedCalculation(startDate, transaction)
     await loadD365(startDate, transaction)
     await transaction.commit()

@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { applicationDetail } = require('../../constants/tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
@@ -60,7 +61,34 @@ const stageApplicationDetails = async (monthDayFormat = false, folder = 'applica
     { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format },
     { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
-  return downloadAndProcessFile(folder, applicationDetail, columns, mapping)
+
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.amendedAppId,
+      targetColumnNames.applicationCode,
+      targetColumnNames.appIdEnd,
+      targetColumnNames.appIdStart,
+      targetColumnNames.appTypeId,
+      targetColumnNames.dtEnd,
+      targetColumnNames.dtInsert,
+      targetColumnNames.dtRecUpdate,
+      targetColumnNames.dtStart,
+      targetColumnNames.dtDelete,
+      targetColumnNames.proxyId,
+      targetColumnNames.sourcePCode,
+      targetColumnNames.sourceSCode,
+      targetColumnNames.statusPCode,
+      targetColumnNames.statusSCode,
+      targetColumnNames.subjectId,
+      targetColumnNames.uteId,
+      targetColumnNames.userId,
+      targetColumnNames.validEndFlg,
+      targetColumnNames.validStartFlg
+    ]
+  }
+
+  return downloadAndProcessFile(folder, applicationDetail, columns, mapping, excludedFields)
 }
 
 const stageApplicationDetailsDelinked = async () => {

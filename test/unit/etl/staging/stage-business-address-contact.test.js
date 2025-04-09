@@ -12,7 +12,7 @@ jest.mock('../../../../app/storage', () => ({
 jest.mock('../../../../app/config', () => ({
   isProd: false
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   businessAddress: { folder: 'businessAddressFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -20,6 +20,12 @@ jest.mock('../../../../app/constants/tables', () => ({
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
+}))
+jest.mock('../../../../app/config', () => ({
+  etlConfig: {
+    excludeCalculationData: true,
+    businessAddress: { folder: 'businessAddressFolder' }
+  }
 }))
 
 test('stageBusinessAddressContacts downloads file and runs ETL process', async () => {
@@ -120,6 +126,24 @@ test('stageBusinessAddressContacts downloads file and runs ETL process', async (
     mapping,
     transformer,
     nonProdTransformer,
-    file: 'businessAddressFolder/export.csv'
+    file: 'businessAddressFolder/export.csv',
+    excludedFields: [
+      'accountablePeopleCompleted',
+      'businessCountry',
+      'businessLandline',
+      'businessMobile',
+      'corrAsBusinessAddr',
+      'correspondenceAddress1',
+      'correspondenceAddress2',
+      'correspondenceAddress3',
+      'correspondenceCity',
+      'correspondenceCountry',
+      'correspondenceCounty',
+      'correspondenceEmailAddr',
+      'correspondenceLandline',
+      'correspondenceMobile',
+      'correspondencePostCode',
+      'financialToBusinessAddr'
+    ]
   })
 })

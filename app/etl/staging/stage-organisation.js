@@ -84,7 +84,33 @@ const stageOrganisation = async (monthDayFormat = false, folder = 'organisation'
     ]
   }
 
-  return downloadAndProcessFile(folder, organisation, columns, mapping, transformer, nonProdTransformer)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.accountablePeopleCompleted,
+      targetColumnNames.additionalBusinesses,
+      targetColumnNames.amended,
+      targetColumnNames.businessDetConfirmedDtKey,
+      targetColumnNames.businessReference,
+      targetColumnNames.businessTypeId,
+      targetColumnNames.charityCommissionRegnum,
+      targetColumnNames.companiesHouseRegnum,
+      targetColumnNames.confirmedFlg,
+      targetColumnNames.corrAsBusinessAddr,
+      targetColumnNames.dateStartedFarming,
+      targetColumnNames.financialToBusinessAddr,
+      targetColumnNames.landConfirmedFlg,
+      targetColumnNames.landDetailsConfirmedDtKey,
+      targetColumnNames.legalStatusTypeId,
+      targetColumnNames.organisationName,
+      targetColumnNames.registrationDate,
+      targetColumnNames.taxRegistrationNumber,
+      targetColumnNames.traderNumber,
+      targetColumnNames.vendorNumber
+    ]
+  }
+
+  return downloadAndProcessFile(folder, organisation, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 const stageOrganisationDelinked = async () => {

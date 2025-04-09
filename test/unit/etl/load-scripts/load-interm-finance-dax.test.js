@@ -1,4 +1,4 @@
-const { storageConfig } = require('../../../../app/config')
+const { etlConfig } = require('../../../../app/config')
 const db = require('../../../../app/data')
 const { loadIntermFinanceDAX } = require('../../../../app/etl/load-scripts/load-interm-finance-dax')
 
@@ -30,7 +30,7 @@ describe('loadIntermFinanceDAX', () => {
     db.etlStageLog.findAll.mockResolvedValue([{ file: 'Finance_Dax/export.csv', idFrom: 1, idTo: 2 }, { file: 'Finance_Dax/export.csv', idFrom: 3, idTo: 4 }])
 
     await expect(loadIntermFinanceDAX(startDate, mockTransaction)).rejects.toThrow(
-      `Multiple records found for updates to ${storageConfig.financeDAX.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.financeDAX.folder}, expected only one`
     )
   })
 

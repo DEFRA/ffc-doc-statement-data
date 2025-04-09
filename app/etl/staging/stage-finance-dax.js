@@ -1,5 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const config = require('../../config')
 const { financeDAX } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
@@ -178,7 +179,74 @@ const stageFinanceDAX = async (monthDayFormat = false, folder = 'financeDAX') =>
     }
   ]
 
-  return downloadAndProcessFile(folder, financeDAX, columns, mapping, transformer)
+  let excludedFields = []
+  if (config.etlConfig.excludeCalculationData) {
+    excludedFields = [
+      targetColumnNames.accounttype,
+      targetColumnNames.accrualgjaccountentryrecid,
+      targetColumnNames.accrualledgerdimensionaccount,
+      targetColumnNames.accrualstatus,
+      targetColumnNames.admindebt,
+      targetColumnNames.advpayflag,
+      targetColumnNames.amounteur,
+      targetColumnNames.annexiitranstype,
+      targetColumnNames.applicationreference,
+      targetColumnNames.bpallocationtype,
+      targetColumnNames.claimrefnum,
+      targetColumnNames.claimsettlementdate,
+      targetColumnNames.createdby,
+      targetColumnNames.createddatetime,
+      targetColumnNames.crosscompliance,
+      targetColumnNames.currencycode,
+      targetColumnNames.dataareaid,
+      targetColumnNames.datawarehouserunnum,
+      targetColumnNames.daxinvoicenum,
+      targetColumnNames.deliverybody,
+      targetColumnNames.dummyt104,
+      targetColumnNames.dwhtxntype,
+      targetColumnNames.eurunnumber,
+      targetColumnNames.euyearenddate,
+      targetColumnNames.euyearstartdate,
+      targetColumnNames.exchfundedeur,
+      targetColumnNames.exchfundedgbp,
+      targetColumnNames.exchratecalctype,
+      targetColumnNames.f106gbp,
+      targetColumnNames.festxnnum,
+      targetColumnNames.festxnlinenum,
+      targetColumnNames.fundedby,
+      targetColumnNames.glaccountentryrecid,
+      targetColumnNames.idvoucher,
+      targetColumnNames.invoicedate,
+      targetColumnNames.irregularitydebt,
+      targetColumnNames.iseurelevant,
+      targetColumnNames.journalname,
+      targetColumnNames.journalnum,
+      targetColumnNames.legacyfarmeraccount,
+      targetColumnNames.lineamounteur,
+      targetColumnNames.ljtransrecid,
+      targetColumnNames.modifiedby,
+      targetColumnNames.modifieddatetime,
+      targetColumnNames.oedate,
+      targetColumnNames.partition,
+      targetColumnNames.penalty,
+      targetColumnNames.postingdate,
+      targetColumnNames.reason,
+      targetColumnNames.reportingtype,
+      targetColumnNames.retention,
+      targetColumnNames.runnumber,
+      targetColumnNames.schemeexchangerate,
+      targetColumnNames.sectiontype,
+      targetColumnNames.settlementrecid,
+      targetColumnNames.settlementvoucher1,
+      targetColumnNames.transactiontype,
+      targetColumnNames.transrecid,
+      targetColumnNames.transtxt,
+      targetColumnNames.voucher,
+      targetColumnNames.yearendrunnumber
+    ]
+  }
+
+  return downloadAndProcessFile(folder, financeDAX, columns, mapping, excludedFields, transformer)
 }
 
 const stageFinanceDAXDelinked = async () => {

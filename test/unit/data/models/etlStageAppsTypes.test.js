@@ -28,30 +28,6 @@ describe('etlStageAppsTypes Model', () => {
 
     expect(attributes.etlInsertedDt).toBeDefined()
     expect(attributes.etlInsertedDt.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.appTypeId).toBeDefined()
-    expect(attributes.appTypeId.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.sectorPCode).toBeDefined()
-    expect(attributes.sectorPCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.sectorSCode).toBeDefined()
-    expect(attributes.sectorSCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.shortDescription).toBeDefined()
-    expect(attributes.shortDescription.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.extDescription).toBeDefined()
-    expect(attributes.extDescription.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.year).toBeDefined()
-    expect(attributes.year.type.key).toBe(DataTypes.INTEGER.key)
-
-    expect(attributes.winOpenDate).toBeDefined()
-    expect(attributes.winOpenDate.type.key).toBe(DataTypes.DATE.key)
-
-    expect(attributes.winCloseDate).toBeDefined()
-    expect(attributes.winCloseDate.type.key).toBe(DataTypes.DATE.key)
   })
 
   test('should have correct options', () => {

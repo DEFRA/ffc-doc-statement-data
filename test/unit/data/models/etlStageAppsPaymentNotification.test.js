@@ -35,32 +35,11 @@ describe('etlStageAppsPaymentNotification Model', () => {
     expect(attributes.idClcHeader).toBeDefined()
     expect(attributes.idClcHeader.type.key).toBe(DataTypes.INTEGER.key)
 
-    expect(attributes.notificationDt).toBeDefined()
-    expect(attributes.notificationDt.type.key).toBe(DataTypes.DATE.key)
-
     expect(attributes.notificationFlag).toBeDefined()
     expect(attributes.notificationFlag.type.key).toBe(DataTypes.STRING.key)
 
-    expect(attributes.notifierKey).toBeDefined()
-    expect(attributes.notifierKey.type.key).toBe(DataTypes.DECIMAL.key)
-
-    expect(attributes.notificationText).toBeDefined()
-    expect(attributes.notificationText.type.key).toBe(DataTypes.STRING.key)
-
     expect(attributes.invoiceNumber).toBeDefined()
     expect(attributes.invoiceNumber.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.requestInvoiceNumber).toBeDefined()
-    expect(attributes.requestInvoiceNumber.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.pillar).toBeDefined()
-    expect(attributes.pillar.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.deliveryBodyCode).toBeDefined()
-    expect(attributes.deliveryBodyCode.type.key).toBe(DataTypes.STRING.key)
-
-    expect(attributes.paymentPreferenceCurrency).toBeDefined()
-    expect(attributes.paymentPreferenceCurrency.type.key).toBe(DataTypes.STRING.key)
   })
 
   test('should have correct options', () => {

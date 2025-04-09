@@ -9,7 +9,7 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   appsTypes: { folder: 'appsTypesFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -60,6 +60,7 @@ test('stageAppsTypes downloads file and runs ETL process', async () => {
     columns,
     table: appsTypes,
     mapping,
-    file: 'appsTypesFolder/export.csv'
+    file: 'appsTypesFolder/export.csv',
+    excludedFields: []
   })
 })

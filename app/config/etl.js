@@ -13,6 +13,7 @@ const schema = Joi.object({
   dwhExtractsFolder: Joi.string().required(),
   etlLogsFolder: Joi.string().required(),
   etlBatchSize: Joi.number().default(2000),
+  excludeCalculationData: Joi.boolean().default(true),
   applicationDetail: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
@@ -138,6 +139,7 @@ const config = {
   dwhExtractsFolder: 'dwh_extracts_sfi23',
   etlLogsFolder: 'logs',
   etlBatchSize: 2000,
+  excludeCalculationData: process.env.EXCLUDE_CALCULATION_DATA,
   applicationDetail: {
     folder: applicationDetail,
     fileMask: 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_\\d{8}_\\d{6}(_v\\d+)?.csv'

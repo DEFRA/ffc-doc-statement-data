@@ -9,7 +9,7 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   appsPaymentNotification: { folder: 'appsPaymentNotificationFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -17,6 +17,12 @@ jest.mock('../../../../app/constants/tables', () => ({
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
+}))
+jest.mock('../../../../app/config', () => ({
+  etlConfig: {
+    excludeCalculationData: true,
+    appsPaymentNotification: { folder: 'appsPaymentNotificationFolder' }
+  }
 }))
 
 test('stageAppsPaymentNotifications downloads file and runs ETL process', async () => {
@@ -66,6 +72,15 @@ test('stageAppsPaymentNotifications downloads file and runs ETL process', async 
     columns,
     table: appsPaymentNotification,
     mapping,
-    file: 'appsPaymentNotificationFolder/export.csv'
+    file: 'appsPaymentNotificationFolder/export.csv',
+    excludedFields: [
+      'deliveryBodyCode',
+      'notificationDt',
+      'notificationText',
+      'notifierKey',
+      'paymentPreferenceCurrency',
+      'pillar',
+      'requestInvoiceNumber'
+    ]
   })
 })

@@ -1,17 +1,17 @@
 const config = require('../../config')
-const storageConfig = config.storageConfig
+const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationPayment = async (startDate, transaction) => {
   const tablesToCheck = [
-    storageConfig.appsPaymentNotification.folder,
-    storageConfig.cssContractApplications.folder
+    etlConfig.appsPaymentNotification.folder,
+    etlConfig.cssContractApplications.folder
   ]
 
   const folderToAliasMap = {
-    [storageConfig.appsPaymentNotification.folder]: 'APN',
-    [storageConfig.cssContractApplications.folder]: 'CA'
+    [etlConfig.appsPaymentNotification.folder]: 'APN',
+    [etlConfig.cssContractApplications.folder]: 'CA'
   }
 
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
@@ -67,7 +67,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         OR ("changeType" = 'UPDATE' AND ("applicationId", "idClcHeader") NOT IN (SELECT "applicationId", "idClcHeader" FROM updatedrows));
   `
 
-  const batchSize = storageConfig.etlBatchSize
+  const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
     const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
