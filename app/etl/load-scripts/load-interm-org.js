@@ -44,17 +44,17 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
   "updatedrows" AS (
     UPDATE ${dbConfig.schema}."etlIntermOrg" interm
     SET
-      "addressLine1" = "newData"."addressLine1",
-      "addressLine2" = "newData"."addressLine2",
-      "addressLine3" = "newData"."addressLine3",
-      "city" = "newData"."city",
-      "county" = "newData"."county",
-      "postcode" = "newData"."postcode",
-      "emailAddress" = "newData"."emailAddress",
-      "frn" = "newData"."frn",
-      "sbi" = "newData"."sbi",
-      "name" = "newData"."name",
-      "updated" = "newData"."updated",
+      "addressLine1" = newdata."addressLine1",
+      "addressLine2" = newdata."addressLine2",
+      "addressLine3" = newdata."addressLine3",
+      city = newdata.city,
+      county = newdata.county,
+      postcode = newdata.postcode,
+      "emailAddress" = newdata.emailaddress,
+      frn = newdata.frn,
+      sbi = newdata.sbi,
+      "name" = newdata.name,
+      updated = newdata.updated,
       "etlInsertedDt" = NOW()
     FROM "newData"
     WHERE "newData"."changeType" = 'UPDATE'
