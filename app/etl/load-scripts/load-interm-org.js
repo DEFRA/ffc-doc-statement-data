@@ -43,7 +43,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       city = newdata.city,
       county = newdata.county,
       postcode = newdata.postcode,
-      emailaddress = newdata.emailaddress,
+      "emailAddress" = newdata.emailaddress,
       frn = newdata.frn,
       sbi = newdata.sbi,
       "name" = newdata.name,
