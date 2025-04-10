@@ -62,7 +62,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     city,
     county,
     postcode,
-    emailaddress,
+    "emailAddress",
     frn,
     "name",
     "partyId",
