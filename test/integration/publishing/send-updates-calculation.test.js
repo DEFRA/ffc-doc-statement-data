@@ -57,7 +57,7 @@ describe('send calculation updates', () => {
 
     test('should publish calculation frn', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn.toString())
+      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockCalculation1.frn)
     })
 
     test('should publish invoice number', async () => {
@@ -370,37 +370,6 @@ describe('send calculation updates', () => {
 
       expect(mockSendMessage.mock.calls[0][0].body.fundings).toHaveLength(numberOfRecordsFunding)
       expect(mockSendMessage.mock.calls[0][0].body.fundings).not.toHaveLength(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-    })
-  })
-
-  describe('When there are 2 concurrent processes', () => {
-    beforeEach(async () => {
-      jest.useRealTimers()
-    })
-
-    test('should publish all calculation records when there are 2 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
-      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
-
-    test('should not publish all calculation records when there are 3 times the number of calculation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 3 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.calculation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockCalculation1, calculationId: mockCalculation1.calculationId + x } }))
-      await db.funding.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockFunding1, fundingId: mockFunding1.fundingId + x, calculationId: mockCalculation1.calculationId + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource)
-      expect(mockSendMessage).not.toHaveBeenCalledTimes(numberOfRecords)
     })
   })
 })

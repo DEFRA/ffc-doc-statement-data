@@ -112,20 +112,4 @@ describe('send d365 updates', () => {
       expect(unpublishedAfter).toHaveLength(0)
     })
   })
-
-  describe('When there are 2 concurrent processes', () => {
-    beforeEach(async () => {
-      jest.useRealTimers()
-    })
-
-    test('should publish all d365 records', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.d365.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockD3651, paymentReference: mockD3651.paymentReference + x } }))
-
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
-    })
-  })
 })

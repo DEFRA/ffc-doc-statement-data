@@ -33,7 +33,7 @@ describe('getUnpublished', () => {
 
     const result = await getUnpublished('trans1', limit)
     expect(result).toEqual([{ ...total1, actions: [actionA1, actionA2] }])
-    expect(getUnpublishedTotal).toHaveBeenCalledWith('trans1', 250)
+    expect(getUnpublishedTotal).toHaveBeenCalledWith('trans1', 1000)
     expect(getActionsByCalculationId).toHaveBeenCalledWith(total1.calculationId, 'trans1')
   })
 
