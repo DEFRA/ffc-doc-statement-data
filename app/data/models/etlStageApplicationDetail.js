@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     pkid: DataTypes.INTEGER,
-    applicationId: DataTypes.INTEGER
+    applicationId: DataTypes.INTEGER,
+    subjectId: DataTypes.INTEGER
   },
   {
     tableName: 'etlStageApplicationDetail',

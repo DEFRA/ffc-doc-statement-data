@@ -3,30 +3,37 @@ const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const tablesToCheck = [
+const defaultTablesToCheck = [
   etlConfig.organisation.folder,
   etlConfig.businessAddress.folder
 ]
 
-const folderToAliasMap = {
+const defaultFolderToAliasMap = {
   [etlConfig.organisation.folder]: 'O',
   [etlConfig.businessAddress.folder]: 'A'
 }
 
-const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-  WITH newdata AS (
+const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
+    return
+  }
+
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+ WITH "newData" AS (
     SELECT
-      O.sbi,
+      O."sbi",
       A."businessAddress1" AS "addressLine1",
       A."businessAddress2" AS "addressLine2",
       A."businessAddress3" AS "addressLine3",
-      A."businessCity" AS city,
-      A."businessCounty" AS county,
-      A."businessPostCode" AS postcode,
-      A."businessEmailAddr" AS emailaddress,
-      A.frn,
-      A."businessName" AS name,
-      O."lastUpdatedOn"::date AS updated,
+      A."businessCity" AS "city",
+      A."businessCounty" AS "county",
+      A."businessPostCode" AS "postcode",
+      A."businessEmailAddr" AS "emailAddress",
+      A."frn",
+      A."businessName" AS "name",
+      O."lastUpdatedOn"::date AS "updated",
       O."partyId",
       ${tableAlias}."changeType"
     FROM ${dbConfig.schema}."etlStageOrganisation" O
@@ -34,28 +41,28 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
-  updatedrows AS (
+  "updatedrows" AS (
     UPDATE ${dbConfig.schema}."etlIntermOrg" interm
     SET
-      "addressLine1" = newdata."addressLine1",
-      "addressLine2" = newdata."addressLine2",
-      "addressLine3" = newdata."addressLine3",
-      city = newdata.city,
-      county = newdata.county,
-      postcode = newdata.postcode,
-      "emailAddress" = newdata.emailaddress,
-      frn = newdata.frn,
-      sbi = newdata.sbi,
-      "name" = newdata.name,
-      updated = newdata.updated,
+      "addressLine1" = "newData"."addressLine1",
+      "addressLine2" = "newData"."addressLine2",
+      "addressLine3" = "newData"."addressLine3",
+      city = "newData".city,
+      county = "newData".county,
+      postcode = "newData".postcode,
+      "emailAddress" = "newData".emailaddress,
+      frn = "newData".frn,
+      sbi = "newData".sbi,
+      "name" = "newData".name,
+      updated = "newData".updated,
       "etlInsertedDt" = NOW()
-    FROM newdata
-    WHERE newdata."changeType" = 'UPDATE'
-      AND interm."partyId" = newdata."partyId"
+    FROM "newData"
+    WHERE "newData"."changeType" = 'UPDATE'
+      AND interm."partyId" = "newData"."partyId"
     RETURNING interm."partyId"
   )
   INSERT INTO ${dbConfig.schema}."etlIntermOrg" (
-    sbi,
+    "sbi",
     "addressLine1",
     "addressLine2",
     "addressLine3",
@@ -76,23 +83,15 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     city,
     county,
     postcode,
-    emailaddress,
+    "emailAddress",
     frn,
     "name",
     "partyId",
     updated
-  FROM newdata
+  FROM "newData"
   WHERE "changeType" = 'INSERT'
     OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 `
-
-const loadIntermOrg = async (startDate, transaction) => {
-  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
-
-  if (!etlStageLogs.length) {
-    return
-  }
-
   const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
@@ -111,6 +110,20 @@ const loadIntermOrg = async (startDate, transaction) => {
   }
 }
 
+const loadIntermOrgDelinked = async (startDate, transaction) => {
+  const tablesToCheck = [
+    etlConfig.organisationDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.organisationDelinked.folder]: 'O',
+    [etlConfig.businessAddressDelinked.folder]: 'A'
+  }
+
+  return loadIntermOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
+}
+
 module.exports = {
-  loadIntermOrg
+  loadIntermOrg,
+  loadIntermOrgDelinked
 }
