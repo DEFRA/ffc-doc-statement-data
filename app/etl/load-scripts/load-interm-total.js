@@ -32,7 +32,7 @@ SELECT DISTINCT
   D."invoiceid",
   CD."calculationId"
 FROM ${dbConfig.schema}."etlIntermFinanceDax" D 
-JOIN "etlStageCalculationDetails" CD ON D."claimId" = CD."applicationId"
+JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD ON D."claimId" = CD."applicationId"
 WHERE D."paymentRef" LIKE 'PY%'
     AND D."etlInsertedDt" > :startDate
 GROUP BY 
