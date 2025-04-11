@@ -37,7 +37,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
       O."partyId",
       ${tableAlias}."changeType"
     FROM ${dbConfig.schema}."etlStageOrganisation" O
-    INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A."sbi" = O."sbi"
+    INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
