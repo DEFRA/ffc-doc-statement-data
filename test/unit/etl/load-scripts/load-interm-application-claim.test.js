@@ -53,7 +53,7 @@ describe('loadIntermApplicationClaim', () => {
         cl.pkid,
         cl."changeType"
       FROM public."etlStageCssContractApplications" cl
-      LEFT JOIN public."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      INNER JOIN public."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
       LEFT JOIN public."etlStageCssContracts" cc ON cl."contractId" = cc."contractId"
       WHERE cl."dataSourceSCode" = 'CAPCLM'
         AND cl."etlId" BETWEEN 1 AND 2
