@@ -1,67 +1,87 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const etlConfig = config.etlConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationPayment = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.appsPaymentNotification.folder)
-  if (!etlStageLog) {
+  const tablesToCheck = [
+    etlConfig.appsPaymentNotification.folder,
+    etlConfig.cssContractApplications.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.appsPaymentNotification.folder]: 'APN',
+    [etlConfig.cssContractApplications.folder]: 'CA'
+  }
+
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
     return
   }
 
-  const query = `
-    WITH new_data AS (
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+    WITH newdata AS (
       SELECT
-        CL.application_id,
-        APN.invoice_number,
-        substring(APN.invoice_number, position('A' in APN.invoice_number) + 2, length(APN.invoice_number) - (position('A' in APN.invoice_number) + 1))::integer AS invoice_id,
-        id_clc_header,
-        APN.change_type
-      FROM etl_stage_apps_payment_notification APN
-      INNER JOIN etl_stage_css_contract_applications CA 
-        ON APN.application_id = CA.application_id
-      INNER JOIN etl_stage_css_contract_applications CL 
-        ON CA.contract_id = CL.contract_id
-      WHERE CA.data_source_s_code = 'CAPCLM'
-        AND CL.data_source_s_code = '000001'
-        AND APN.notification_flag = 'P'
-        AND APN.etl_id BETWEEN :idFrom AND :idTo
+        CL."applicationId",
+        APN."invoiceNumber",
+        substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
+        "idClcHeader",
+        ${tableAlias}."changeType"
+      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA 
+        ON APN."applicationId" = CA."applicationId"
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CL 
+        ON CA."contractId" = CL."contractId"
+      WHERE CA."dataSourceSCode" = 'CAPCLM'
+        AND CL."dataSourceSCode" = '000001'
+        AND APN."notificationFlag" = 'P'
+        AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
+        ${exclusionCondition}
     ),
-    updated_rows AS (
-      UPDATE etl_interm_application_payment interm
+    updatedrows AS (
+      UPDATE ${dbConfig.schema}."etlIntermApplicationPayment" interm
       SET
-        invoice_number = new_data.invoice_number,
-        invoice_id = new_data.invoice_id,
-        etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.application_id = new_data.application_id
-        AND interm.id_clc_header = new_data.id_clc_header
-      RETURNING interm.application_id, interm.id_clc_header
+        "invoiceNumber" = newdata."invoiceNumber",
+        "invoiceId" = newdata."invoiceId",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm."applicationId" = newdata."applicationId"
+        AND interm."idClcHeader" = newdata."idClcHeader"
+      RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO etl_interm_application_payment (
-      application_id,
-      invoice_number,
-      invoice_id,
-      id_clc_header
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationPayment" (
+      "applicationId",
+      "invoiceNumber",
+      "invoiceId",
+      "idClcHeader"
     )
     SELECT
-      application_id,
-      invoice_number,
-      invoice_id,
-      id_clc_header
-    FROM new_data
-      WHERE change_type = 'INSERT'
-        OR (change_type = 'UPDATE' AND (application_id, id_clc_header) NOT IN (SELECT application_id, id_clc_header FROM updated_rows));
+      "applicationId",
+      "invoiceNumber",
+      "invoiceId",
+      "idClcHeader"
+    FROM newdata
+      WHERE "changeType" = 'INSERT'
+        OR ("changeType" = 'UPDATE' AND ("applicationId", "idClcHeader") NOT IN (SELECT "applicationId", "idClcHeader" FROM updatedrows));
   `
 
-  const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
-  for (let i = idFrom; i <= idTo; i += batchSize) {
-    console.log(`Processing application payment records ${i} to ${Math.min(i + batchSize - 1, idTo)}`)
-    await executeQuery(query, {
-      idFrom,
-      idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+  const batchSize = etlConfig.etlBatchSize
+  let exclusionScript = ''
+  for (const log of etlStageLogs) {
+    const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
+    const folder = folderMatch ? folderMatch[1] : ''
+    const tableAlias = folderToAliasMap[folder]
+
+    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
+      console.log(`Processing application payment records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.idTo)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
+      await executeQuery(query, {}, transaction)
+    }
+
+    console.log(`Processed application payment records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

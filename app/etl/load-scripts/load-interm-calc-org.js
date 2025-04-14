@@ -1,86 +1,110 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const etlConfig = config.etlConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermCalcOrg = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.appsPaymentNotification.folder)
+const tablesToCheck = [
+  etlConfig.appsPaymentNotification.folder,
+  etlConfig.cssContractApplications.folder,
+  etlConfig.financeDAX.folder,
+  etlConfig.businessAddress.folder,
+  etlConfig.calculationsDetails.folder
+]
 
-  if (!etlStageLog) {
+const folderToAliasMap = {
+  [etlConfig.appsPaymentNotification.folder]: 'APN',
+  [etlConfig.cssContractApplications.folder]: 'APP',
+  [etlConfig.financeDAX.folder]: 'SD',
+  [etlConfig.businessAddress.folder]: 'BAC',
+  [etlConfig.calculationsDetails.folder]: 'CD'
+}
+
+const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+    WITH newdata AS (
+      SELECT
+        CD."calculationId",
+        BAC.sbi,
+        BAC.frn,
+        CD."applicationId",
+        CD."calculationDt",
+        CD."idClcHeader",
+        ${tableAlias}."changeType"
+      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CLAIM 
+        ON CLAIM."applicationId" = APN."applicationId" 
+        AND CLAIM."dataSourceSCode" = 'CAPCLM'
+      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" APP 
+        ON APP."contractId" = CLAIM."contractId" 
+        AND APP."dataSourceSCode" = '000001'
+      INNER JOIN ${dbConfig.schema}."etlIntermFinanceDax" D 
+        ON D."claimId" = CLAIM."applicationId"
+      INNER JOIN ${dbConfig.schema}."etlStageFinanceDax" SD 
+        ON SD.invoiceid = D.invoiceid
+      INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" BAC 
+        ON BAC.frn = SD.custvendac
+      INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD 
+        ON CD."applicationId" = APN."applicationId" 
+        AND CD."idClcHeader" = APN."idClcHeader"
+        AND CD.ranked = 1
+      WHERE APN."notificationFlag" = 'P'
+        AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
+        ${exclusionCondition}
+      GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", ${tableAlias}."changeType"
+    ),
+    updatedrows AS (
+      UPDATE ${dbConfig.schema}."etlIntermCalcOrg" interm
+      SET
+        sbi = newdata.sbi,
+        frn = newdata.frn,
+        "calculationDate" = newdata."calculationDt",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm."calculationId" = newdata."calculationId"
+        AND interm."idClcHeader" = newdata."idClcHeader"
+      RETURNING interm."calculationId", interm."idClcHeader"
+    )
+    INSERT INTO ${dbConfig.schema}."etlIntermCalcOrg" (
+      "calculationId",
+      sbi,
+      frn,
+      "applicationId",
+      "calculationDate",
+      "idClcHeader"
+    )
+    SELECT
+      "calculationId",
+      sbi,
+      frn,
+      "applicationId",
+      "calculationDt",
+      "idClcHeader"
+    FROM newdata
+    WHERE "changeType" = 'INSERT'
+      OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
+  `
+const loadIntermCalcOrg = async (startDate, transaction) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
     return
   }
 
-  const query = `
-    WITH new_data AS (
-      SELECT
-        CD.calculation_id,
-        BAC.sbi,
-        BAC.frn,
-        CD.application_id,
-        CD.calculation_dt,
-        CD.id_clc_header,
-        APN.change_type
-      FROM etl_stage_apps_payment_notification APN
-      INNER JOIN etl_stage_css_contract_applications CLAIM 
-        ON CLAIM.application_id = APN.application_id 
-        AND CLAIM.data_source_s_code = 'CAPCLM'
-      INNER JOIN etl_stage_css_contract_applications APP 
-        ON APP.contract_id = CLAIM.contract_id 
-        AND APP.data_source_s_code = '000001'
-      INNER JOIN etl_interm_finance_dax D 
-        ON D.claim_id = CLAIM.application_id
-      INNER JOIN etl_stage_finance_dax SD 
-        ON SD.invoiceid = D.invoiceid
-      INNER JOIN etl_stage_business_address_contact_v BAC 
-        ON BAC.frn = SD.custvendac
-      INNER JOIN etl_stage_calculation_details CD 
-        ON CD.application_id = APN.application_id 
-        AND CD.id_clc_header = APN.id_clc_header
-        AND CD.ranked = 1
-      WHERE APN.notification_flag = 'P'
-        AND APN.etl_id BETWEEN :idFrom AND :idTo
-      GROUP BY CD.calculation_id, BAC.sbi, BAC.frn, CD.application_id, CD.calculation_dt, CD.id_clc_header, APN.change_type
-    ),
-    updated_rows AS (
-      UPDATE etl_interm_calc_org interm
-      SET
-        sbi = new_data.sbi,
-        frn = new_data.frn,
-        calculation_date = new_data.calculation_dt,
-        etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.calculation_id = new_data.calculation_id
-        AND interm.id_clc_header = new_data.id_clc_header
-      RETURNING interm.calculation_id, interm.id_clc_header
-    )
-    INSERT INTO etl_interm_calc_org (
-      calculation_id,
-      sbi,
-      frn,
-      application_id,
-      calculation_date,
-      id_clc_header
-    )
-    SELECT
-      calculation_id,
-      sbi,
-      frn,
-      application_id,
-      calculation_dt,
-      id_clc_header
-    FROM new_data
-    WHERE change_type = 'INSERT'
-      OR (change_type = 'UPDATE' AND (calculation_id, id_clc_header) NOT IN (SELECT calculation_id, id_clc_header FROM updated_rows));
-  `
+  const batchSize = etlConfig.etlBatchSize
+  let exclusionScript = ''
+  for (const log of etlStageLogs) {
+    const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
+    const folder = folderMatch ? folderMatch[1] : ''
+    const tableAlias = folderToAliasMap[folder]
 
-  const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
-  for (let i = idFrom; i <= idTo; i += batchSize) {
-    console.log(`Processing calcOrg records ${i} - ${Math.min(i + batchSize - 1, idTo)}`)
-    await executeQuery(query, {
-      idFrom,
-      idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
+      console.log(`Processing calcOrg records for ${folder} ${i} - ${Math.min(i + batchSize - 1, log.idTo)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
+      await executeQuery(query, {}, transaction)
+    }
+
+    console.log(`Processed calcOrg records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

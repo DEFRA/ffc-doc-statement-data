@@ -1,93 +1,113 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const etlConfig = config.etlConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
-const loadIntermOrg = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.organisation.folder)
+const tablesToCheck = [
+  etlConfig.organisation.folder,
+  etlConfig.businessAddress.folder
+]
 
-  if (!etlStageLog) {
+const folderToAliasMap = {
+  [etlConfig.organisation.folder]: 'O',
+  [etlConfig.businessAddress.folder]: 'A'
+}
+
+const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+  WITH newdata AS (
+    SELECT
+      O.sbi,
+      A."businessAddress1" AS "addressLine1",
+      A."businessAddress2" AS "addressLine2",
+      A."businessAddress3" AS "addressLine3",
+      A."businessCity" AS city,
+      A."businessCounty" AS county,
+      A."businessPostCode" AS postcode,
+      A."businessEmailAddr" AS emailaddress,
+      A.frn,
+      A."businessName" AS name,
+      O."lastUpdatedOn"::date AS updated,
+      O."partyId",
+      ${tableAlias}."changeType"
+    FROM ${dbConfig.schema}."etlStageOrganisation" O
+    INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
+      ${exclusionCondition}
+  ),
+  updatedrows AS (
+    UPDATE ${dbConfig.schema}."etlIntermOrg" interm
+    SET
+      "addressLine1" = newdata."addressLine1",
+      "addressLine2" = newdata."addressLine2",
+      "addressLine3" = newdata."addressLine3",
+      city = newdata.city,
+      county = newdata.county,
+      postcode = newdata.postcode,
+      "emailAddress" = newdata.emailaddress,
+      frn = newdata.frn,
+      sbi = newdata.sbi,
+      "name" = newdata.name,
+      updated = newdata.updated,
+      "etlInsertedDt" = NOW()
+    FROM newdata
+    WHERE newdata."changeType" = 'UPDATE'
+      AND interm."partyId" = newdata."partyId"
+    RETURNING interm."partyId"
+  )
+  INSERT INTO ${dbConfig.schema}."etlIntermOrg" (
+    sbi,
+    "addressLine1",
+    "addressLine2",
+    "addressLine3",
+    city,
+    county,
+    postcode,
+    "emailAddress",
+    frn,
+    "name",
+    "partyId",
+    updated
+  )
+  SELECT
+    sbi,
+    "addressLine1",
+    "addressLine2",
+    "addressLine3",
+    city,
+    county,
+    postcode,
+    emailaddress,
+    frn,
+    "name",
+    "partyId",
+    updated
+  FROM newdata
+  WHERE "changeType" = 'INSERT'
+    OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
+`
+
+const loadIntermOrg = async (startDate, transaction) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
     return
   }
 
-  const query = `
-    WITH new_data AS (
-      SELECT
-        O.sbi,
-        A.business_address1 AS addressLine1,
-        A.business_address2 AS addressLine2,
-        A.business_address3 AS addressLine3,
-        A.business_city AS city,
-        A.business_county AS county,
-        A.business_post_code AS postcode,
-        A.business_email_addr AS emailaddress,
-        A.frn,
-        A.business_name AS name,
-        O.last_updated_on::date AS updated,
-        O.change_type,
-        O.party_id
-      FROM etl_stage_organisation O
-      LEFT JOIN etl_stage_business_address_contact_v A ON A.sbi = O.sbi
-      WHERE O.etl_id BETWEEN :idFrom AND :idTo
-    ),
-    updated_rows AS (
-      UPDATE etl_interm_org interm
-      SET
-        addressLine1 = new_data.addressLine1,
-        addressLine2 = new_data.addressLine2,
-        addressLine3 = new_data.addressLine3,
-        city = new_data.city,
-        county = new_data.county,
-        postcode = new_data.postcode,
-        emailaddress = new_data.emailaddress,
-        frn = new_data.frn,
-        sbi = new_data.sbi,
-        "name" = new_data.name,
-        updated = new_data.updated,
-        etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.party_id = new_data.party_id
-      RETURNING interm.party_id
-    )
-    INSERT INTO etl_interm_org (
-      sbi,
-      addressLine1,
-      addressLine2,
-      addressLine3,
-      city,
-      county,
-      postcode,
-      emailaddress,
-      frn,
-      "name",
-      party_id,
-      updated
-    )
-    SELECT
-      sbi,
-      addressLine1,
-      addressLine2,
-      addressLine3,
-      city,
-      county,
-      postcode,
-      emailaddress,
-      frn,
-      "name",
-      party_id,
-      updated
-    FROM new_data
-    WHERE change_type = 'INSERT'
-      OR (change_type = 'UPDATE' AND party_id NOT IN (SELECT party_id FROM updated_rows));
-  `
-  const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
-  for (let i = idFrom; i <= idTo; i += batchSize) {
-    console.log(`Processing org records ${i} - ${Math.min(i + batchSize - 1, idTo)}`)
-    await executeQuery(query, {
-      idFrom,
-      idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+  const batchSize = etlConfig.etlBatchSize
+  let exclusionScript = ''
+  for (const log of etlStageLogs) {
+    const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
+    const folder = folderMatch ? folderMatch[1] : ''
+    const tableAlias = folderToAliasMap[folder]
+
+    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
+      console.log(`Processing org records for folder ${folder} ${i} - ${Math.min(i + batchSize - 1, log.idTo)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
+      await executeQuery(query, {}, transaction)
+    }
+
+    console.log(`Processed org records for folder ${folder}`)
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

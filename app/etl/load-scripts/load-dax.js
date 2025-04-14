@@ -1,20 +1,21 @@
 const db = require('../../data')
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 
 const loadDAX = async (startDate, transaction) => {
   await db.sequelize.query(`
-    INSERT INTO dax (
+    INSERT INTO ${dbConfig.schema}.dax (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )
     SELECT DISTINCT
-      T.payment_ref AS paymentReference,
-      T.calculation_id AS calculationId,
-      T.quarter AS paymentPeriod, 
-      T.total_amount AS paymentAmount,
-      T.transdate AS transactionDate 
-    FROM etl_interm_total T
-    WHERE T.etl_inserted_dt > :startDate
-    ON CONFLICT ("paymentReference") DO NOTHING;
+      T."paymentRef" AS "paymentReference",
+      T."calculationId" AS "calculationId",
+      T.quarter AS "paymentPeriod", 
+      T."totalAmount" AS "paymentAmount",
+      T.transdate AS "transactionDate" 
+    FROM ${dbConfig.schema}."etlIntermTotal" T
+    WHERE T."etlInsertedDt" > :startDate;
   `, {
     replacements: {
       startDate

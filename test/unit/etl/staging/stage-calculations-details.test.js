@@ -1,12 +1,12 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { calculationsDetailsTable } = require('../../../../app/constants/tables')
+const { calculationsDetails } = require('../../../../app/constants/tables')
 const { stageCalculationDetails } = require('../../../../app/etl/staging/stage-calculations-details')
+const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/storage')
+jest.mock('../../../../app/config/etl')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -20,7 +20,6 @@ describe('stageCalculationDetails', () => {
 
   test('should download the file and run the ETL process', async () => {
     const mockFile = 'Calculations_Details_MV/export.csv'
-    const mockTempFilePath = 'mock-temp-file-path'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -34,33 +33,33 @@ describe('stageCalculationDetails', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'APPLICATION_ID',
-        targetColumn: 'application_id',
+        targetColumn: 'applicationId',
         targetType: 'number'
       },
       {
         column: 'ID_CLC_HEADER',
-        targetColumn: 'id_clc_header',
+        targetColumn: 'idClcHeader',
         targetType: 'number'
       },
       {
         column: 'CALCULATION_ID',
-        targetColumn: 'calculation_id',
+        targetColumn: 'calculationId',
         targetType: 'number'
       },
       {
         column: 'CALCULATION_DT',
-        targetColumn: 'calculation_dt',
+        targetColumn: 'calculationDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
@@ -71,19 +70,18 @@ describe('stageCalculationDetails', () => {
       }
     ]
 
-    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath)
     uuidv4.mockReturnValue(mockUuid)
-    storage.downloadFile = jest.fn().mockResolvedValue()
+    const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+    const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+    storage.downloadFileAsStream = jest.fn().mockResolvedValue(mockReadableStream)
 
     await stageCalculationDetails()
 
-    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging'
-    expect(path.join).toHaveBeenCalledWith(parentDir, `calculationDetails-${mockUuid}.csv`)
-    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath)
+    expect(storage.downloadFileAsStream).toHaveBeenCalledWith(mockFile)
     expect(runEtlProcess).toHaveBeenCalledWith({
-      tempFilePath: mockTempFilePath,
+      fileStream: mockReadableStream,
       columns: mockColumns,
-      table: calculationsDetailsTable,
+      table: calculationsDetails,
       mapping: mockMapping,
       file: mockFile
     })

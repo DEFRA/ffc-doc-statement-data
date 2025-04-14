@@ -1,63 +1,119 @@
-const { businessAddressTable } = require('../../constants/tables')
+const sourceColumnNames = require('../../constants/source-column-names')
+const targetColumnNames = require('../../constants/target-column-names')
+const { businessAddress } = require('../../constants/tables')
 const { downloadAndProcessFile, dateTimeFormat } = require('./stage-utils')
 const config = require('../../config')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+const { COMPANY_NAME, LOCATION_STREET, LOCATION_ZIP_CODE, LOCATION_CITY, INTERNET_EMAIL } = require('../../constants/fakers')
+
+const columns = [
+  sourceColumnNames.CHANGE_TYPE,
+  sourceColumnNames.CHANGE_TIME,
+  sourceColumnNames.SBI,
+  sourceColumnNames.FRN,
+  sourceColumnNames.BUSINESS_NAME,
+  sourceColumnNames.ACCOUNTABLE_PEOPLE_COMPLETED,
+  sourceColumnNames.FINANCIAL_TO_BUSINESS_ADDR,
+  sourceColumnNames.CORR_AS_BUSINESS_ADDR,
+  sourceColumnNames.BUSINESS_ADDRESS1,
+  sourceColumnNames.BUSINESS_ADDRESS2,
+  sourceColumnNames.BUSINESS_ADDRESS3,
+  sourceColumnNames.BUSINESS_CITY,
+  sourceColumnNames.BUSINESS_COUNTY,
+  sourceColumnNames.BUSINESS_COUNTRY,
+  sourceColumnNames.BUSINESS_POST_CODE,
+  sourceColumnNames.BUSINESS_LANDLINE,
+  sourceColumnNames.BUSINESS_MOBILE,
+  sourceColumnNames.BUSINESS_EMAIL_ADDR,
+  sourceColumnNames.CORRESPONDENCE_ADDRESS1,
+  sourceColumnNames.CORRESPONDENCE_ADDRESS2,
+  sourceColumnNames.CORRESPONDENCE_ADDRESS3,
+  sourceColumnNames.CORRESPONDENCE_CITY,
+  sourceColumnNames.CORRESPONDENCE_COUNTY,
+  sourceColumnNames.CORRESPONDENCE_COUNTRY,
+  sourceColumnNames.CORRESPONDENCE_POST_CODE,
+  sourceColumnNames.CORRESPONDENCE_LANDLINE,
+  sourceColumnNames.CORRESPONDENCE_MOBILE,
+  sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR
+]
+
+const mapping = [
+  { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
+  { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: dateTimeFormat },
+  { column: sourceColumnNames.SBI, targetColumn: targetColumnNames.sbi, targetType: NUMBER },
+  { column: sourceColumnNames.FRN, targetColumn: targetColumnNames.frn, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_NAME, targetColumn: targetColumnNames.businessName, targetType: VARCHAR },
+  { column: sourceColumnNames.ACCOUNTABLE_PEOPLE_COMPLETED, targetColumn: targetColumnNames.accountablePeopleCompleted, targetType: NUMBER },
+  { column: sourceColumnNames.FINANCIAL_TO_BUSINESS_ADDR, targetColumn: targetColumnNames.financialToBusinessAddr, targetType: NUMBER },
+  { column: sourceColumnNames.CORR_AS_BUSINESS_ADDR, targetColumn: targetColumnNames.corrAsBusinessAddr, targetType: NUMBER },
+  { column: sourceColumnNames.BUSINESS_ADDRESS1, targetColumn: targetColumnNames.businessAddress1, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_ADDRESS2, targetColumn: targetColumnNames.businessAddress2, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_ADDRESS3, targetColumn: targetColumnNames.businessAddress3, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_CITY, targetColumn: targetColumnNames.businessCity, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_COUNTY, targetColumn: targetColumnNames.businessCounty, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_COUNTRY, targetColumn: targetColumnNames.businessCountry, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_POST_CODE, targetColumn: targetColumnNames.businessPostCode, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_LANDLINE, targetColumn: targetColumnNames.businessLandline, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_MOBILE, targetColumn: targetColumnNames.businessMobile, targetType: VARCHAR },
+  { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, targetColumn: targetColumnNames.businessEmailAddr, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_ADDRESS1, targetColumn: targetColumnNames.correspondenceAddress1, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_ADDRESS2, targetColumn: targetColumnNames.correspondenceAddress2, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_ADDRESS3, targetColumn: targetColumnNames.correspondenceAddress3, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_CITY, targetColumn: targetColumnNames.correspondenceCity, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_COUNTY, targetColumn: targetColumnNames.correspondenceCounty, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_COUNTRY, targetColumn: targetColumnNames.correspondenceCountry, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_POST_CODE, targetColumn: targetColumnNames.correspondencePostCode, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_LANDLINE, targetColumn: targetColumnNames.correspondenceLandline, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_MOBILE, targetColumn: targetColumnNames.correspondenceMobile, targetType: VARCHAR },
+  { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, targetColumn: targetColumnNames.correspondenceEmailAddr, targetType: VARCHAR }
+]
+
+const transformer = [
+  { column: sourceColumnNames.BUSINESS_NAME, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
+]
+
+let nonProdTransformer = []
+if (!config.isProd) {
+  nonProdTransformer = [
+    { name: sourceColumnNames.BUSINESS_NAME, faker: COMPANY_NAME },
+    { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },
+    { name: sourceColumnNames.BUSINESS_POST_CODE, faker: LOCATION_ZIP_CODE },
+    { name: sourceColumnNames.BUSINESS_CITY, faker: LOCATION_CITY },
+    { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL },
+    { name: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, faker: INTERNET_EMAIL }
+  ]
+}
+
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.accountablePeopleCompleted,
+    targetColumnNames.businessCountry,
+    targetColumnNames.businessLandline,
+    targetColumnNames.businessMobile,
+    targetColumnNames.corrAsBusinessAddr,
+    targetColumnNames.correspondenceAddress1,
+    targetColumnNames.correspondenceAddress2,
+    targetColumnNames.correspondenceAddress3,
+    targetColumnNames.correspondenceCity,
+    targetColumnNames.correspondenceCountry,
+    targetColumnNames.correspondenceCounty,
+    targetColumnNames.correspondenceEmailAddr,
+    targetColumnNames.correspondenceLandline,
+    targetColumnNames.correspondenceMobile,
+    targetColumnNames.correspondencePostCode,
+    targetColumnNames.financialToBusinessAddr
+  ]
+}
 
 const stageBusinessAddressContacts = async () => {
-  const columns = [
-    'CHANGE_TYPE', 'CHANGE_TIME', 'SBI', 'FRN', 'BUSINESS_NAME', 'ACCOUNTABLE_PEOPLE_COMPLETED', 'FINANCIAL_TO_BUSINESS_ADDR', 'CORR_AS_BUSINESS_ADDR', 'BUSINESS_ADDRESS1', 'BUSINESS_ADDRESS2', 'BUSINESS_ADDRESS3', 'BUSINESS_CITY', 'BUSINESS_COUNTY', 'BUSINESS_COUNTRY', 'BUSINESS_POST_CODE', 'BUSINESS_LANDLINE', 'BUSINESS_MOBILE', 'BUSINESS_EMAIL_ADDR', 'CORRESPONDENCE_ADDRESS1', 'CORRESPONDENCE_ADDRESS2', 'CORRESPONDENCE_ADDRESS3', 'CORRESPONDENCE_CITY', 'CORRESPONDENCE_COUNTY', 'CORRESPONDENCE_COUNTRY', 'CORRESPONDENCE_POST_CODE', 'CORRESPONDENCE_LANDLINE', 'CORRESPONDENCE_MOBILE', 'CORRESPONDENCE_EMAIL_ADDR'
-  ]
-
-  const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: dateTimeFormat },
-    { column: 'SBI', targetColumn: 'sbi', targetType: 'number' },
-    { column: 'FRN', targetColumn: 'frn', targetType: 'varchar' },
-    { column: 'BUSINESS_NAME', targetColumn: 'business_name', targetType: 'varchar' },
-    { column: 'ACCOUNTABLE_PEOPLE_COMPLETED', targetColumn: 'accountable_people_completed', targetType: 'number' },
-    { column: 'FINANCIAL_TO_BUSINESS_ADDR', targetColumn: 'financial_to_business_addr', targetType: 'number' },
-    { column: 'CORR_AS_BUSINESS_ADDR', targetColumn: 'corr_as_business_addr', targetType: 'number' },
-    { column: 'BUSINESS_ADDRESS1', targetColumn: 'business_address1', targetType: 'varchar' },
-    { column: 'BUSINESS_ADDRESS2', targetColumn: 'business_address2', targetType: 'varchar' },
-    { column: 'BUSINESS_ADDRESS3', targetColumn: 'business_address3', targetType: 'varchar' },
-    { column: 'BUSINESS_CITY', targetColumn: 'business_city', targetType: 'varchar' },
-    { column: 'BUSINESS_COUNTY', targetColumn: 'business_county', targetType: 'varchar' },
-    { column: 'BUSINESS_COUNTRY', targetColumn: 'business_country', targetType: 'varchar' },
-    { column: 'BUSINESS_POST_CODE', targetColumn: 'business_post_code', targetType: 'varchar' },
-    { column: 'BUSINESS_LANDLINE', targetColumn: 'business_landline', targetType: 'varchar' },
-    { column: 'BUSINESS_MOBILE', targetColumn: 'business_mobile', targetType: 'varchar' },
-    { column: 'BUSINESS_EMAIL_ADDR', targetColumn: 'business_email_addr', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_ADDRESS1', targetColumn: 'correspondence_address1', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_ADDRESS2', targetColumn: 'correspondence_address2', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_ADDRESS3', targetColumn: 'correspondence_address3', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_CITY', targetColumn: 'correspondence_city', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_COUNTY', targetColumn: 'correspondence_county', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_COUNTRY', targetColumn: 'correspondence_country', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_POST_CODE', targetColumn: 'correspondence_post_code', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_LANDLINE', targetColumn: 'correspondence_landline', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_MOBILE', targetColumn: 'correspondence_mobile', targetType: 'varchar' },
-    { column: 'CORRESPONDENCE_EMAIL_ADDR', targetColumn: 'correspondence_email_addr', targetType: 'varchar' }
-  ]
-
-  const transformer = [
-    { column: 'BUSINESS_NAME', find: "'", replace: "''", all: true },
-    { column: 'BUSINESS_ADDRESS1', find: "'", replace: "''", all: true },
-    { column: 'BUSINESS_ADDRESS2', find: "'", replace: "''", all: true },
-    { column: 'BUSINESS_ADDRESS3', find: "'", replace: "''", all: true },
-    { column: 'BUSINESS_CITY', find: "'", replace: "''", all: true }
-  ]
-
-  let nonProdTransformer = []
-  if (!config.isProd) {
-    nonProdTransformer = [
-      { name: 'BUSINESS_NAME', faker: 'company.name' },
-      { name: 'BUSINESS_ADDRESS1', faker: 'location.street' },
-      { name: 'BUSINESS_POST_CODE', faker: 'location.zipCode' },
-      { name: 'BUSINESS_CITY', faker: 'location.city' },
-      { name: 'BUSINESS_EMAIL_ADDR', faker: 'internet.email' }
-    ]
-  }
-
-  return downloadAndProcessFile('businessAddress', 'businessAddress', businessAddressTable, columns, mapping, transformer, nonProdTransformer)
+  return downloadAndProcessFile('businessAddress', businessAddress, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 module.exports = {

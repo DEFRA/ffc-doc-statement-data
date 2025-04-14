@@ -1,15 +1,15 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageApplicationDetails } = require('../../../../app/etl/staging/stage-application-detail')
+const { applicationDetail } = require('../../../../app/constants/tables')
+const { Readable } = require('stream')
 
-jest.mock('path')
 jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
-  downloadFile: jest.fn()
+  downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   applicationDetail: { folder: 'appDetailFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -19,12 +19,19 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
 }))
 
+jest.mock('../../../../app/config', () => ({
+  etlConfig: {
+    excludeCalculationData: true,
+    applicationDetail: { folder: 'appDetailFolder' }
+  }
+}))
+
 test('stageApplicationDetails downloads file and runs ETL process', async () => {
   const mockUuid = '1234-5678-91011'
   uuidv4.mockReturnValue(mockUuid)
-  const mockTempFilePath = `applicationDetails-${mockUuid}.csv`
-  path.join.mockReturnValue(mockTempFilePath)
-  storage.downloadFile.mockResolvedValue()
+  const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+  const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+  storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
 
   const columns = [
     'CHANGE_TYPE',
@@ -54,40 +61,64 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
     { column: 'PKID', targetColumn: 'pkid', targetType: 'number' },
-    { column: 'DT_INSERT', targetColumn: 'dt_insert', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'DT_DELETE', targetColumn: 'dt_delete', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'SUBJECT_ID', targetColumn: 'subject_id', targetType: 'number' },
-    { column: 'UTE_ID', targetColumn: 'ute_id', targetType: 'number' },
-    { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
-    { column: 'APPLICATION_CODE', targetColumn: 'application_code', targetType: 'varchar' },
-    { column: 'AMENDED_APP_ID', targetColumn: 'amended_app_id', targetType: 'number' },
-    { column: 'APP_TYPE_ID', targetColumn: 'app_type_id', targetType: 'number' },
-    { column: 'PROXY_ID', targetColumn: 'proxy_id', targetType: 'number' },
-    { column: 'STATUS_P_CODE', targetColumn: 'status_p_code', targetType: 'varchar' },
-    { column: 'STATUS_S_CODE', targetColumn: 'status_s_code', targetType: 'varchar' },
-    { column: 'SOURCE_P_CODE', targetColumn: 'source_p_code', targetType: 'varchar' },
-    { column: 'SOURCE_S_CODE', targetColumn: 'source_s_code', targetType: 'varchar' },
-    { column: 'DT_START', targetColumn: 'dt_start', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'DT_END', targetColumn: 'dt_end', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'VALID_START_FLG', targetColumn: 'valid_start_flg', targetType: 'varchar' },
-    { column: 'VALID_END_FLG', targetColumn: 'valid_end_flg', targetType: 'varchar' },
-    { column: 'APP_ID_START', targetColumn: 'app_id_start', targetType: 'number' },
-    { column: 'APP_ID_END', targetColumn: 'app_id_end', targetType: 'number' },
-    { column: 'DT_REC_UPDATE', targetColumn: 'dt_rec_update', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'USER_ID', targetColumn: 'user_id', targetType: 'varchar' }
+    { column: 'DT_INSERT', targetColumn: 'dtInsert', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_DELETE', targetColumn: 'dtDelete', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'SUBJECT_ID', targetColumn: 'subjectId', targetType: 'number' },
+    { column: 'UTE_ID', targetColumn: 'uteId', targetType: 'number' },
+    { column: 'APPLICATION_ID', targetColumn: 'applicationId', targetType: 'number' },
+    { column: 'APPLICATION_CODE', targetColumn: 'applicationCode', targetType: 'varchar' },
+    { column: 'AMENDED_APP_ID', targetColumn: 'amendedAppId', targetType: 'number' },
+    { column: 'APP_TYPE_ID', targetColumn: 'appTypeId', targetType: 'number' },
+    { column: 'PROXY_ID', targetColumn: 'proxyId', targetType: 'number' },
+    { column: 'STATUS_P_CODE', targetColumn: 'statusPCode', targetType: 'varchar' },
+    { column: 'STATUS_S_CODE', targetColumn: 'statusSCode', targetType: 'varchar' },
+    { column: 'SOURCE_P_CODE', targetColumn: 'sourcePCode', targetType: 'varchar' },
+    { column: 'SOURCE_S_CODE', targetColumn: 'sourceSCode', targetType: 'varchar' },
+    { column: 'DT_START', targetColumn: 'dtStart', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_END', targetColumn: 'dtEnd', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'VALID_START_FLG', targetColumn: 'validStartFlg', targetType: 'varchar' },
+    { column: 'VALID_END_FLG', targetColumn: 'validEndFlg', targetType: 'varchar' },
+    { column: 'APP_ID_START', targetColumn: 'appIdStart', targetType: 'number' },
+    { column: 'APP_ID_END', targetColumn: 'appIdEnd', targetType: 'number' },
+    { column: 'DT_REC_UPDATE', targetColumn: 'dtRecUpdate', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'USER_ID', targetColumn: 'userId', targetType: 'varchar' }
+  ]
+
+  const excludedFields = [
+    'amendedAppId',
+    'applicationCode',
+    'appIdEnd',
+    'appIdStart',
+    'appTypeId',
+    'dtEnd',
+    'dtInsert',
+    'dtRecUpdate',
+    'dtStart',
+    'dtDelete',
+    'proxyId',
+    'sourcePCode',
+    'sourceSCode',
+    'statusPCode',
+    'statusSCode',
+    'subjectId',
+    'uteId',
+    'userId',
+    'validEndFlg',
+    'validStartFlg'
   ]
 
   await stageApplicationDetails()
 
-  expect(storage.downloadFile).toHaveBeenCalledWith('appDetailFolder/export.csv', mockTempFilePath)
+  expect(storage.downloadFileAsStream).toHaveBeenCalledWith('appDetailFolder/export.csv')
   expect(runEtlProcess).toHaveBeenCalledWith({
-    tempFilePath: mockTempFilePath,
+    fileStream: mockReadableStream,
     columns,
-    table: 'applicationDetailTable',
+    table: applicationDetail,
     mapping,
-    file: 'appDetailFolder/export.csv'
+    file: 'appDetailFolder/export.csv',
+    excludedFields
   })
 })

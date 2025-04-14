@@ -25,10 +25,10 @@ deployment:
   memoryThreshold: 70
 
 container:
-  requestMemory: 150Mi
-  requestCpu: 120m
-  limitMemory: 150Mi
-  limitCpu: 180m
+  requestMemory: 1024Mi
+  requestCpu: 340m
+  limitMemory: 1024Mi
+  limitCpu: 680m
   messageQueueHost: namespace.servicebus.windows.net
   dataTopicAddress: ffc-doc-statement-data
   demographicsTopicAddress: ffc-pay-demographics-extract
@@ -40,6 +40,7 @@ container:
   demographicsActive: true
   alertingTopicAddress: ffc-doc-alert
   etlProcessTopicErrorAddress: ffc-doc-alerting
+  excludeCalculationData: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

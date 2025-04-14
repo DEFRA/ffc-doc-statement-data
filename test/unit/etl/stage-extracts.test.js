@@ -2,7 +2,7 @@ const { writeToString } = require('@fast-csv/format')
 const storage = require('../../../app/storage')
 const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('../../../app/etl/staging')
 const { loadETLData } = require('../../../app/etl/load-etl-data')
-const { storageConfig } = require('../../../app/config')
+const { etlConfig } = require('../../../app/config')
 const ora = require('ora')
 const { stageExtracts } = require('../../../app/etl/stage-extracts')
 
@@ -15,18 +15,18 @@ jest.mock('../../../app/config')
 jest.mock('ora')
 
 const stageFunctions = [
-  { fn: stageApplicationDetails, label: storageConfig.applicationDetail.folder },
-  { fn: stageAppsTypes, label: storageConfig.appsTypes.folder },
-  { fn: stageAppsPaymentNotifications, label: storageConfig.appsPaymentNotification.folder },
-  { fn: stageBusinessAddressContacts, label: storageConfig.businessAddress.folder },
-  { fn: stageCalculationDetails, label: storageConfig.calculationsDetails.folder },
-  { fn: stageCSSContractApplications, label: storageConfig.cssContractApplications.folder },
-  { fn: stageCSSContract, label: storageConfig.cssContract.folder },
-  { fn: stageCSSOptions, label: storageConfig.cssOptions.folder },
-  { fn: stageDefraLinks, label: storageConfig.defraLinks.folder },
-  { fn: stageFinanceDAX, label: storageConfig.financeDAX.folder },
-  { fn: stageOrganisation, label: storageConfig.organisation.folder },
-  { fn: stageTCLCOption, label: storageConfig.tclcOption.folder }
+  { fn: stageApplicationDetails, label: etlConfig.applicationDetail.folder },
+  { fn: stageAppsTypes, label: etlConfig.appsTypes.folder },
+  { fn: stageAppsPaymentNotifications, label: etlConfig.appsPaymentNotification.folder },
+  { fn: stageBusinessAddressContacts, label: etlConfig.businessAddress.folder },
+  { fn: stageCalculationDetails, label: etlConfig.calculationsDetails.folder },
+  { fn: stageCSSContractApplications, label: etlConfig.cssContractApplications.folder },
+  { fn: stageCSSContract, label: etlConfig.cssContract.folder },
+  { fn: stageCSSOptions, label: etlConfig.cssOptions.folder },
+  { fn: stageDefraLinks, label: etlConfig.defraLinks.folder },
+  { fn: stageFinanceDAX, label: etlConfig.financeDAX.folder },
+  { fn: stageOrganisation, label: etlConfig.organisation.folder },
+  { fn: stageTCLCOption, label: etlConfig.tclcOption.folder }
 ]
 
 describe('ETL Process', () => {
@@ -170,6 +170,6 @@ describe('ETL Process', () => {
 
     await stageExtracts()
 
-    expect(mockSpinner.fail).toHaveBeenCalledWith(`${storageConfig.applicationDetail.folder} - Test error`)
+    expect(mockSpinner.fail).toHaveBeenCalledWith(`${etlConfig.applicationDetail.folder} - Test error`)
   })
 })

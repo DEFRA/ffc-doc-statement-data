@@ -1,12 +1,12 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { cssContractApplicationsTable } = require('../../../../app/constants/tables')
+const { cssContractApplications } = require('../../../../app/constants/tables')
 const { stageCSSContractApplications } = require('../../../../app/etl/staging/stage-css-contract-applications')
+const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/storage')
+jest.mock('../../../../app/config/etl')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -20,7 +20,6 @@ describe('stageCSSContractApplications', () => {
 
   test('should download the file and run the ETL process', async () => {
     const mockFile = 'CSS_Contract_Applications/export.csv'
-    const mockTempFilePath = 'mock-temp-file-path'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -46,12 +45,12 @@ describe('stageCSSContractApplications', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
@@ -62,106 +61,118 @@ describe('stageCSSContractApplications', () => {
       },
       {
         column: 'INSERT_DT',
-        targetColumn: 'insert_dt',
+        targetColumn: 'insertDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'DELETE_DT',
-        targetColumn: 'delete_dt',
+        targetColumn: 'deleteDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'CONTRACT_ID',
-        targetColumn: 'contract_id',
+        targetColumn: 'contractId',
         targetType: 'number'
       },
       {
         column: 'APPLICATION_ID',
-        targetColumn: 'application_id',
+        targetColumn: 'applicationId',
         targetType: 'number'
       },
       {
         column: 'TYPE_P_CODE',
-        targetColumn: 'type_p_code',
+        targetColumn: 'typePCode',
         targetType: 'varchar'
       },
       {
         column: 'TYPE_S_CODE',
-        targetColumn: 'type_s_code',
+        targetColumn: 'typeSCode',
         targetType: 'varchar'
       },
       {
         column: 'DATA_SOURCE_P_CODE',
-        targetColumn: 'data_source_p_code',
+        targetColumn: 'dataSourcePCode',
         targetType: 'varchar'
       },
       {
         column: 'DATA_SOURCE_S_CODE',
-        targetColumn: 'data_source_s_code',
+        targetColumn: 'dataSourceSCode',
         targetType: 'varchar'
       },
       {
         column: 'START_DT',
-        targetColumn: 'start_dt',
+        targetColumn: 'startDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'END_DT',
-        targetColumn: 'end_dt',
+        targetColumn: 'endDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'VALID_START_FLAG',
-        targetColumn: 'valid_start_flag',
+        targetColumn: 'validStartFlag',
         targetType: 'varchar'
       },
       {
         column: 'VALID_END_FLAG',
-        targetColumn: 'valid_end_flag',
+        targetColumn: 'validEndFlag',
         targetType: 'varchar'
       },
       {
         column: 'START_ACT_ID',
-        targetColumn: 'start_act_id',
+        targetColumn: 'startActId',
         targetType: 'number'
       },
       {
         column: 'END_ACT_ID',
-        targetColumn: 'end_act_id',
+        targetColumn: 'endActId',
         targetType: 'number'
       },
       {
         column: 'LAST_UPDATE_DT',
-        targetColumn: 'last_update_dt',
+        targetColumn: 'lastUpdateDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'USER_FLD',
-        targetColumn: 'USER',
+        targetColumn: 'user',
         targetType: 'varchar'
       }
     ]
 
-    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath)
     uuidv4.mockReturnValue(mockUuid)
-    storage.downloadFile = jest.fn().mockResolvedValue()
+    const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+    const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+    storage.downloadFileAsStream = jest.fn().mockResolvedValue(mockReadableStream)
 
     await stageCSSContractApplications()
 
-    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging'
-    expect(path.join).toHaveBeenCalledWith(parentDir, `cssContractApplications-${mockUuid}.csv`)
-    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath)
+    expect(storage.downloadFileAsStream).toHaveBeenCalledWith(mockFile)
     expect(runEtlProcess).toHaveBeenCalledWith({
-      tempFilePath: mockTempFilePath,
+      fileStream: mockReadableStream,
       columns: mockColumns,
-      table: cssContractApplicationsTable,
+      table: cssContractApplications,
       mapping: mockMapping,
-      file: mockFile
+      file: mockFile,
+      excludedFields: [
+        'dataSourcePCode',
+        'deleteDt',
+        'endActId',
+        'insertDt',
+        'lastUpdateDt',
+        'startActId',
+        'typePCode',
+        'typeSCode',
+        'user',
+        'validEndFlag',
+        'validStartFlag'
+      ]
     })
   })
 })

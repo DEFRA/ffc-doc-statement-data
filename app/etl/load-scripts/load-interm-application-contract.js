@@ -1,59 +1,79 @@
-const { storageConfig } = require('../../config')
+const config = require('../../config')
+const etlConfig = config.etlConfig
+const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
 
 const loadIntermApplicationContract = async (startDate, transaction) => {
-  const etlStageLog = await getEtlStageLogs(startDate, storageConfig.cssContractApplications.folder)
-  if (!etlStageLog) {
+  const tablesToCheck = [
+    etlConfig.cssContractApplications.folder,
+    etlConfig.cssContract.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.cssContractApplications.folder]: 'cl',
+    [etlConfig.cssContract.folder]: 'cc'
+  }
+
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
     return
   }
 
-  const query = `
-    WITH new_data AS (
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+    WITH newdata AS (
       SELECT
-        cc.contract_id,
-        MIN(cc.start_dt) AS agreementStart,
-        MIN(cc.end_dt) AS agreementEnd,
-        ca.application_id,
-        cl.change_type,
-        cl.pkid
-      FROM etl_stage_css_contract_applications cl
-      LEFT JOIN etl_stage_css_contract_applications ca ON cl.contract_id = ca.contract_id AND ca.data_source_s_code = '000001'
-      LEFT JOIN etl_stage_css_contracts cc ON cl.contract_id = cc.contract_id AND cc.contract_state_s_code = '000020'
-      WHERE cl.data_source_s_code = 'CAPCLM'
-        AND cl.etl_id BETWEEN :idFrom AND :idTo
-      GROUP BY cc.contract_id, ca.application_id, cl.change_type, cl.pkid
+        cc."contractId",
+        MIN(cc."startDt") AS "agreementStart",
+        MIN(cc."endDt") AS "agreementEnd",
+        ca."applicationId",
+        cl.pkid,
+        ${tableAlias}."changeType"
+      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
+      WHERE cl."dataSourceSCode" = 'CAPCLM'
+        AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
+        ${exclusionCondition}
+      GROUP BY cc."contractId", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
-    updated_rows AS (
-      UPDATE etl_interm_application_contract interm
+    updatedrows AS (
+      UPDATE ${dbConfig.schema}."etlIntermApplicationContract" interm
       SET
-        contract_id = new_data.contract_id,
-        agreementStart = new_data.agreementStart,
-        agreementEnd = new_data.agreementEnd,
-        application_id = new_data.application_id,
-        etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.pkid = new_data.pkid
+        "contractId" = newdata."contractId",
+        "agreementStart" = newdata."agreementStart",
+        "agreementEnd" = newdata."agreementEnd",
+        "applicationId" = newdata."applicationId",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO etl_interm_application_contract (
-      contract_id, agreementStart, agreementEnd, application_id, pkid
+    INSERT INTO ${dbConfig.schema}."etlIntermApplicationContract" (
+      "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
     )
-    SELECT contract_id, agreementStart, agreementEnd, application_id, pkid
-    FROM new_data
-    WHERE change_type = 'INSERT'
-      OR (change_type = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updated_rows));
+    SELECT "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
+    FROM newdata
+    WHERE "changeType" = 'INSERT'
+      OR ("changeType" = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedrows));
   `
 
-  const batchSize = storageConfig.etlBatchSize
-  const idFrom = etlStageLog.id_from
-  const idTo = etlStageLog.id_to
-  for (let i = idFrom; i <= idTo; i += batchSize) {
-    console.log(`Processing application contract records ${i} to ${Math.min(i + batchSize - 1, idTo)}`)
-    await executeQuery(query, {
-      idFrom,
-      idTo: Math.min(i + batchSize - 1, idTo)
-    }, transaction)
+  const batchSize = etlConfig.etlBatchSize
+  let exclusionScript = ''
+  for (const log of etlStageLogs) {
+    const folderMatch = log.file.match(/^(.*)\/export\.csv$/)
+    const folder = folderMatch ? folderMatch[1] : ''
+    const tableAlias = folderToAliasMap[folder]
+
+    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
+      console.log(`Processing application contract records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.idTo)}`)
+      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
+      await executeQuery(query, {}, transaction)
+    }
+
+    console.log(`Processed application claim records for ${folder}`)
+    exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 

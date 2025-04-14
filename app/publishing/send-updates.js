@@ -1,34 +1,39 @@
-const db = require('../data')
 const getPrimaryKeyValue = require('./get-primary-key-value')
 const sendMessage = require('./send-message')
 const removeDefunctValues = require('./remove-defunct-values')
 const validateUpdate = require('./validate-update')
+const { publishingConfig } = require('../config')
 
 const sendUpdates = async (type) => {
   const getUnpublished = require(`./${type}/get-unpublished`)
   const updatePublished = require(`./${type}/update-published`)
-  const transaction = await db.sequelize.transaction()
   let totalPublished = 0
+  const batchSize = publishingConfig.dataPublishingMaxBatchSizePerDataSource
 
-  try {
-    const outstanding = await getUnpublished(transaction)
-    for (const unpublished of outstanding) {
-      const sanitizedUpdate = removeDefunctValues(unpublished)
-      sanitizedUpdate.type = type
-      const isValid = validateUpdate(sanitizedUpdate, type)
-      if (isValid) {
-        await sendMessage(sanitizedUpdate, type)
-        const primaryKey = getPrimaryKeyValue(unpublished, type)
-        await updatePublished(primaryKey, transaction)
-        totalPublished++
-      }
+  let outstanding = []
+  do {
+    outstanding = await getUnpublished(null, batchSize)
+    if (outstanding.length) {
+      const batchPromises = outstanding.map(async (record) => {
+        const sanitizedUpdate = removeDefunctValues(record)
+        sanitizedUpdate.type = type
+        const isValid = validateUpdate(sanitizedUpdate, type)
+        if (isValid) {
+          await sendMessage(sanitizedUpdate, type)
+          const primaryKey = getPrimaryKeyValue(record, type)
+          await updatePublished(primaryKey)
+          totalPublished++
+        }
+      })
+      await Promise.all(batchPromises)
     }
-    await transaction.commit()
-    console.log('%i %s datasets published', totalPublished, type)
-  } catch (err) {
-    await transaction.rollback()
-    throw err
-  }
+
+    if (type === 'calculation' && outstanding.length > 0) {
+      break
+    }
+  } while (outstanding.length === batchSize)
+
+  console.log('%i %s datasets published', totalPublished, type)
 }
 
 module.exports = sendUpdates

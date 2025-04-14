@@ -5,61 +5,116 @@ exports[`loadIntermApplicationPayment should call sequelize.query with correct p
   "calls": [
     [
       "
-    WITH new_data AS (
+    WITH newdata AS (
       SELECT
-        CL.application_id,
-        APN.invoice_number,
-        substring(APN.invoice_number, position('A' in APN.invoice_number) + 2, length(APN.invoice_number) - (position('A' in APN.invoice_number) + 1))::integer AS invoice_id,
-        id_clc_header,
-        APN.change_type
-      FROM etl_stage_apps_payment_notification APN
-      INNER JOIN etl_stage_css_contract_applications CA 
-        ON APN.application_id = CA.application_id
-      INNER JOIN etl_stage_css_contract_applications CL 
-        ON CA.contract_id = CL.contract_id
-      WHERE CA.data_source_s_code = 'CAPCLM'
-        AND CL.data_source_s_code = '000001'
-        AND APN.notification_flag = 'P'
-        AND APN.etl_id BETWEEN :idFrom AND :idTo
+        CL."applicationId",
+        APN."invoiceNumber",
+        substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
+        "idClcHeader",
+        APN."changeType"
+      FROM public."etlStageAppsPaymentNotification" APN
+      INNER JOIN public."etlStageCssContractApplications" CA 
+        ON APN."applicationId" = CA."applicationId"
+      INNER JOIN public."etlStageCssContractApplications" CL 
+        ON CA."contractId" = CL."contractId"
+      WHERE CA."dataSourceSCode" = 'CAPCLM'
+        AND CL."dataSourceSCode" = '000001'
+        AND APN."notificationFlag" = 'P'
+        AND APN."etlId" BETWEEN 1 AND 2
+        
     ),
-    updated_rows AS (
-      UPDATE etl_interm_application_payment interm
+    updatedrows AS (
+      UPDATE public."etlIntermApplicationPayment" interm
       SET
-        invoice_number = new_data.invoice_number,
-        invoice_id = new_data.invoice_id,
-        etl_inserted_dt = NOW()
-      FROM new_data
-      WHERE new_data.change_type = 'UPDATE'
-        AND interm.application_id = new_data.application_id
-        AND interm.id_clc_header = new_data.id_clc_header
-      RETURNING interm.application_id, interm.id_clc_header
+        "invoiceNumber" = newdata."invoiceNumber",
+        "invoiceId" = newdata."invoiceId",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm."applicationId" = newdata."applicationId"
+        AND interm."idClcHeader" = newdata."idClcHeader"
+      RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO etl_interm_application_payment (
-      application_id,
-      invoice_number,
-      invoice_id,
-      id_clc_header
+    INSERT INTO public."etlIntermApplicationPayment" (
+      "applicationId",
+      "invoiceNumber",
+      "invoiceId",
+      "idClcHeader"
     )
     SELECT
-      application_id,
-      invoice_number,
-      invoice_id,
-      id_clc_header
-    FROM new_data
-      WHERE change_type = 'INSERT'
-        OR (change_type = 'UPDATE' AND (application_id, id_clc_header) NOT IN (SELECT application_id, id_clc_header FROM updated_rows));
+      "applicationId",
+      "invoiceNumber",
+      "invoiceId",
+      "idClcHeader"
+    FROM newdata
+      WHERE "changeType" = 'INSERT'
+        OR ("changeType" = 'UPDATE' AND ("applicationId", "idClcHeader") NOT IN (SELECT "applicationId", "idClcHeader" FROM updatedrows));
   ",
       {
         "raw": true,
-        "replacements": {
-          "idFrom": 1,
-          "idTo": 2,
-        },
-        "transaction": {},
+        "replacements": {},
+        "transaction": undefined,
+      },
+    ],
+    [
+      "
+    WITH newdata AS (
+      SELECT
+        CL."applicationId",
+        APN."invoiceNumber",
+        substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
+        "idClcHeader",
+        APN."changeType"
+      FROM public."etlStageAppsPaymentNotification" APN
+      INNER JOIN public."etlStageCssContractApplications" CA 
+        ON APN."applicationId" = CA."applicationId"
+      INNER JOIN public."etlStageCssContractApplications" CL 
+        ON CA."contractId" = CL."contractId"
+      WHERE CA."dataSourceSCode" = 'CAPCLM'
+        AND CL."dataSourceSCode" = '000001'
+        AND APN."notificationFlag" = 'P'
+        AND APN."etlId" BETWEEN 1 AND 2
+         AND APN."etlId" NOT BETWEEN 1 AND 2
+    ),
+    updatedrows AS (
+      UPDATE public."etlIntermApplicationPayment" interm
+      SET
+        "invoiceNumber" = newdata."invoiceNumber",
+        "invoiceId" = newdata."invoiceId",
+        "etlInsertedDt" = NOW()
+      FROM newdata
+      WHERE newdata."changeType" = 'UPDATE'
+        AND interm."applicationId" = newdata."applicationId"
+        AND interm."idClcHeader" = newdata."idClcHeader"
+      RETURNING interm."applicationId", interm."idClcHeader"
+    )
+    INSERT INTO public."etlIntermApplicationPayment" (
+      "applicationId",
+      "invoiceNumber",
+      "invoiceId",
+      "idClcHeader"
+    )
+    SELECT
+      "applicationId",
+      "invoiceNumber",
+      "invoiceId",
+      "idClcHeader"
+    FROM newdata
+      WHERE "changeType" = 'INSERT'
+        OR ("changeType" = 'UPDATE' AND ("applicationId", "idClcHeader") NOT IN (SELECT "applicationId", "idClcHeader" FROM updatedrows));
+  ",
+      {
+        "raw": true,
+        "replacements": {},
+        "transaction": undefined,
       },
     ],
   ],
   "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
     {
       "type": "return",
       "value": undefined,

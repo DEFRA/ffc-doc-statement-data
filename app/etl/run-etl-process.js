@@ -1,42 +1,32 @@
 const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-pay-etl-framework')
-const fs = require('fs')
 const config = require('../config')
 const dbConfig = config.dbConfig[config.env]
 const storage = require('../storage')
 const db = require('../data')
 const tableMappings = require('../constants/table-mappings')
-const { removeFirstLine, getFirstLineNumber } = require('./file-utils')
+const { getFirstLineNumber } = require('./file-utils')
 const publishEtlProcessError = require('../messaging/publish-etl-process-error')
 
-const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transformer, nonProdTransformer, file }) => {
+const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer, nonProdTransformer, excludedFields, file }) => {
   const etl = new Etl.Etl()
-
   const sequelizeModelName = tableMappings[table]
   const initialRowCount = await db[sequelizeModelName]?.count()
-  const idFrom = (await db[sequelizeModelName]?.max('etl_id') ?? 0) + 1
-  const rowCount = await getFirstLineNumber(tempFilePath)
-  await removeFirstLine(tempFilePath)
+  const idFrom = (await db[sequelizeModelName]?.max('etlId') ?? 0) + 1
+  const rowCount = await getFirstLineNumber(fileStream)
   const fileInProcess = await db.etlStageLog.create({
     file,
-    row_count: rowCount
+    rowCount
   })
 
   return new Promise((resolve, reject) => {
     (async () => {
-      if (!fs.existsSync(tempFilePath)) {
-        return resolve(true)
-      }
       try {
         const etlFlow = etl
-          .connection(await new Connections.PostgresDatabaseConnection({
-            username: dbConfig.username,
-            password: dbConfig.password,
-            host: dbConfig.host,
-            database: dbConfig.database,
-            port: dbConfig.port,
-            name: 'postgresConnection'
+          .connection(await new Connections.ProvidedConnection({
+            name: 'postgresConnection',
+            sequelize: db.sequelize
           }))
-          .loader(new Loaders.CSVLoader({ path: tempFilePath, columns }))
+          .loader(new Loaders.CSVLoader({ stream: fileStream, columns, startingLine: 3, relax: true }))
 
         if (nonProdTransformer && !config.isProd) {
           etlFlow.transform(new Transformers.FakerTransformer({
@@ -53,7 +43,9 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
             table,
             connection: 'postgresConnection',
             mapping,
-            includeErrors: false
+            includeErrors: false,
+            schema: dbConfig.schema,
+            ignoredColumns: excludedFields
           }))
           .pump()
           .on('finish', async (data) => {
@@ -64,23 +56,25 @@ const runEtlProcess = async ({ tempFilePath, columns, table, mapping, transforme
             })
           })
           .on('result', async (data) => {
-            await fs.promises.unlink(tempFilePath)
             await storage.deleteFile(file)
             const newRowCount = await db[sequelizeModelName]?.count()
-            const idTo = await db[sequelizeModelName]?.max('etl_id') ?? 0
+            const idTo = await db[sequelizeModelName]?.max('etlId') ?? 0
             await db.etlStageLog.update(
               {
-                rows_loaded_count: newRowCount - initialRowCount,
-                id_to: idTo,
-                id_from: idFrom < idTo ? idFrom : idTo,
-                ended_at: new Date()
+                rowsLoadedCount: newRowCount - initialRowCount,
+                idTo,
+                idFrom: idFrom < idTo ? idFrom : idTo,
+                endedAt: new Date()
               },
-              { where: { etl_id: fileInProcess.etl_id } }
+              { where: { etlId: fileInProcess.etlId } }
             )
             return resolve(data)
           })
+          .on('error', (error) => {
+            console.error('ETL Error:', error.message)
+            reject(error)
+          })
       } catch (e) {
-        await fs.promises.unlink(tempFilePath)
         await publishEtlProcessError(file, e)
         console.error('Unable to run ETL process:', e)
         return reject(e)

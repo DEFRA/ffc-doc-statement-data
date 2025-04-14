@@ -2,7 +2,7 @@ const { getDWHExtracts, moveFile } = require('../../../app/storage')
 const { renameExtracts } = require('../../../app/etl/rename-extracts')
 
 jest.mock('../../../app/', () => ({
-  storageConfig: {
+  etlConfig: {
     applicationDetail: { fileMask: 'appDetail', folder: 'appDetailFolder' },
     appsPaymentNotification: { fileMask: 'appPayment', folder: 'appPaymentFolder' },
     appsTypes: { fileMask: 'appTypes', folder: 'appTypesFolder' },
@@ -69,6 +69,6 @@ test('renameExtracts calls getDWHExtracts and moveFile with correct arguments', 
   await renameExtracts()
 
   expect(getDWHExtracts).toHaveBeenCalled()
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith('dwh_extracts_sfi23', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith('dwh_extracts_sfi23', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
 })

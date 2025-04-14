@@ -1,12 +1,12 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { cssOptionsTable } = require('../../../../app/constants/tables')
+const { cssOptions } = require('../../../../app/constants/tables')
 const { stageCSSOptions } = require('../../../../app/etl/staging/stage-css-options')
+const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/storage')
+jest.mock('../../../../app/config/etl')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -20,7 +20,6 @@ describe('stageCSSOptions', () => {
 
   test('should download the file and run the ETL process', async () => {
     const mockFile = 'CSS_Options/export.csv'
-    const mockTempFilePath = 'mock-temp-file-path'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -38,28 +37,28 @@ describe('stageCSSOptions', () => {
     const mockMapping = [
       {
         column: 'CHANGE_TYPE',
-        targetColumn: 'change_type',
+        targetColumn: 'changeType',
         targetType: 'varchar'
       },
       {
         column: 'CHANGE_TIME',
-        targetColumn: 'change_time',
+        targetColumn: 'changeTime',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'OPTION_TYPE_ID',
-        targetColumn: 'option_type_id',
+        targetColumn: 'optionTypeId',
         targetType: 'number'
       },
       {
         column: 'OPTION_DESCRIPTION',
-        targetColumn: 'option_description',
+        targetColumn: 'optionDescription',
         targetType: 'varchar'
       },
       {
         column: 'OPTION_LONG_DESCRIPTION',
-        targetColumn: 'option_long_description',
+        targetColumn: 'optionLongDescription',
         targetType: 'varchar'
       },
       {
@@ -69,48 +68,56 @@ describe('stageCSSOptions', () => {
       },
       {
         column: 'OPTION_CODE',
-        targetColumn: 'option_code',
+        targetColumn: 'optionCode',
         targetType: 'varchar'
       },
       {
         column: 'CONTRACT_TYPE_ID',
-        targetColumn: 'contract_type_id',
+        targetColumn: 'contractTypeId',
         targetType: 'number'
       },
       {
         column: 'START_DT',
-        targetColumn: 'start_dt',
+        targetColumn: 'startDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'END_DT',
-        targetColumn: 'end_dt',
+        targetColumn: 'endDt',
         targetType: 'date',
         format: 'DD-MM-YYYY HH24:MI:SS'
       },
       {
         column: 'GROUP_ID',
-        targetColumn: 'group_id',
+        targetColumn: 'groupId',
         targetType: 'varchar'
       }
     ]
 
-    jest.spyOn(path, 'join').mockReturnValue(mockTempFilePath)
     uuidv4.mockReturnValue(mockUuid)
-    storage.downloadFile = jest.fn().mockResolvedValue()
+    const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+    const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+    storage.downloadFileAsStream = jest.fn().mockResolvedValue(mockReadableStream)
 
     await stageCSSOptions()
 
-    const parentDir = path.resolve(__dirname, '../../../..') + '/app/etl/staging'
-    expect(path.join).toHaveBeenCalledWith(parentDir, `cssOptions-${mockUuid}.csv`)
-    expect(storage.downloadFile).toHaveBeenCalledWith(mockFile, mockTempFilePath)
+    expect(storage.downloadFileAsStream).toHaveBeenCalledWith(mockFile)
     expect(runEtlProcess).toHaveBeenCalledWith({
-      tempFilePath: mockTempFilePath,
+      fileStream: mockReadableStream,
       columns: mockColumns,
-      table: cssOptionsTable,
+      table: cssOptions,
       mapping: mockMapping,
-      file: mockFile
+      file: mockFile,
+      excludedFields: [
+        'contractTypeId',
+        'duration',
+        'groupId',
+        'optionCode',
+        'optionDescription',
+        'optionLongDescription',
+        'optionTypeId'
+      ]
     })
   })
 })

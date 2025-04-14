@@ -1,20 +1,23 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const loadIntermTotal = async (startDate, transaction) => {
   const query = `
-    INSERT INTO etl_interm_total (
-      payment_ref, quarter, total_amount,
-      transdate
+    INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
+      "paymentRef", quarter, "totalAmount",
+      transdate, invoiceid
     )
-    SELECT DISTINCT payment_ref, 
+    SELECT DISTINCT "paymentRef", 
       D.quarter,
-      SUM(transaction_amount) * -1 as total_amount,
-      transdate 
-    FROM etl_interm_finance_dax D 
-    WHERE D.payment_ref LIKE 'PY%' 
-      AND D.etl_inserted_dt > :startDate
-    GROUP BY transdate, quarter, payment_ref
-    ORDER BY payment_ref;
+      SUM("transactionAmount") * -1 as "totalAmount",
+      transdate,
+      invoiceid
+    FROM ${dbConfig.schema}."etlIntermFinanceDax" D 
+    WHERE D."paymentRef" LIKE 'PY%' 
+      AND D."etlInsertedDt" > :startDate
+    GROUP BY transdate, quarter, "paymentRef", invoiceid
+    ORDER BY "paymentRef";
   `
 
   await executeQuery(query, {

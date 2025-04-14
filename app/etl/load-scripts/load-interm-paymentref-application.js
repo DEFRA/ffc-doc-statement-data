@@ -1,14 +1,16 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const loadIntermPaymentrefApplication = async (startDate, transaction) => {
   const query = `
-    INSERT INTO etl_interm_paymentref_application(payment_ref, application_id)
+    INSERT INTO ${dbConfig.schema}."etlIntermPaymentrefApplication"("paymentRef", "applicationId")
     SELECT
-      T.payment_ref,
-      (SELECT claim_id AS application_id FROM etl_interm_finance_dax D WHERE D.payment_ref = T.payment_ref LIMIT 1)
-    FROM etl_interm_total T
-    WHERE T.etl_inserted_dt > :startDate
-    ON CONFLICT (payment_ref, application_id) DO NOTHING;
+      T."paymentRef",
+      (SELECT "claimId" AS "applicationId" FROM ${dbConfig.schema}."etlIntermFinanceDax" D WHERE D."paymentRef" = T."paymentRef" LIMIT 1)
+    FROM ${dbConfig.schema}."etlIntermTotal" T
+    WHERE T."etlInsertedDt" > :startDate
+    ON CONFLICT ("paymentRef", "applicationId") DO NOTHING;
   `
 
   await executeQuery(query, {

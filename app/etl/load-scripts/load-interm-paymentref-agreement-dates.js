@@ -1,22 +1,28 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const loadIntermPaymentrefAgreementDates = async (startDate, transaction) => {
   const query = `
-    INSERT INTO etl_interm_paymentref_agreement_dates (
-      payment_ref, agreementStart, agreementEnd
+    INSERT INTO ${dbConfig.schema}."etlIntermPaymentrefAgreementDates" (
+      "paymentRef", "agreementStart", "agreementEnd"
     )
     SELECT
-      DA.payment_ref,
-      (SELECT agreementStart FROM etl_interm_application_contract IAC WHERE IAC.contract_id = CA.contract_id LIMIT 1),
-      (SELECT agreementEnd FROM etl_interm_application_contract IAC WHERE IAC.contract_id = CA.contract_id LIMIT 1)
-    FROM etl_interm_finance_dax DA
-    INNER JOIN etl_stage_css_contract_applications CA ON CA.application_id = DA.claim_id
-    INNER JOIN etl_interm_application_contract IAC ON IAC.contract_id = CA.contract_id
-    WHERE DA.etl_inserted_dt > :startDate
-      AND IAC.agreementStart IS NOT NULL
-      AND IAC.agreementEnd IS NOT NULL
-    GROUP BY DA.payment_ref, CA.contract_id
-    ON CONFLICT (payment_ref, agreementStart, agreementEnd) DO NOTHING;
+      DA."paymentRef",
+      (SELECT "agreementStart" FROM ${dbConfig.schema}."etlIntermApplicationContract" IAC WHERE IAC."contractId" = CA."contractId" LIMIT 1),
+      (SELECT "agreementEnd" FROM ${dbConfig.schema}."etlIntermApplicationContract" IAC WHERE IAC."contractId" = CA."contractId" LIMIT 1)
+    FROM ${dbConfig.schema}."etlIntermFinanceDax" DA
+    INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA ON CA."applicationId" = DA."claimId"
+    INNER JOIN ${dbConfig.schema}."etlIntermApplicationContract" IAC ON IAC."contractId" = CA."contractId"
+    WHERE IAC."agreementStart" IS NOT NULL
+      AND IAC."agreementEnd" IS NOT NULL
+      AND (
+        DA."etlInsertedDt" > :startDate
+        OR CA."etlInsertedDt" > :startDate
+        OR IAC."etlInsertedDt" > :startDate
+      )
+    GROUP BY DA."paymentRef", CA."contractId"
+    ON CONFLICT ("paymentRef", "agreementStart", "agreementEnd") DO NOTHING;
   `
 
   await executeQuery(query, {

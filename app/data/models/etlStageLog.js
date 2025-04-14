@@ -1,19 +1,23 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const etlStageLog = sequelize.define('etlStageLog', {
-    etl_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    etl_inserted_dt: DataTypes.DATE,
+    etlId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    etlInsertedDt: DataTypes.DATE,
     file: DataTypes.STRING,
-    started_at: DataTypes.DATE,
-    ended_at: DataTypes.DATE,
-    row_count: DataTypes.INTEGER,
-    rows_loaded_count: DataTypes.INTEGER,
-    id_from: DataTypes.INTEGER,
-    id_to: DataTypes.INTEGER
+    startedAt: DataTypes.DATE,
+    endedAt: DataTypes.DATE,
+    rowCount: DataTypes.INTEGER,
+    rowsLoadedCount: DataTypes.INTEGER,
+    idFrom: DataTypes.INTEGER,
+    idTo: DataTypes.INTEGER
   },
   {
-    tableName: 'etl_stage_log',
+    tableName: 'etlStageLog',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
   return etlStageLog
 }

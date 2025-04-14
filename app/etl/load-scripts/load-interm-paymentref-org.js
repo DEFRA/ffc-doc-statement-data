@@ -1,13 +1,16 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const loadIntermPaymentrefOrg = async (startDate, transaction) => {
   const query = `
-    INSERT INTO etl_interm_paymentref_org (payment_ref, sbi, frn)
-    SELECT PA.payment_ref, O.sbi, O.frn::bigint 
-      FROM etl_interm_paymentref_application PA 
-    INNER JOIN etl_interm_calc_org O ON O.application_id = PA.application_id
-    WHERE PA.etl_inserted_dt > :startDate
-    GROUP BY PA.payment_ref, O.sbi, O.frn;
+    INSERT INTO ${dbConfig.schema}."etlIntermPaymentrefOrg" ("paymentRef", sbi, frn)
+    SELECT PA."paymentRef", O.sbi, O.frn::bigint 
+      FROM ${dbConfig.schema}."etlIntermPaymentrefApplication" PA 
+    INNER JOIN ${dbConfig.schema}."etlIntermCalcOrg" O ON O."applicationId" = PA."applicationId"
+    WHERE PA."etlInsertedDt" > :startDate
+      OR O."etlInsertedDt" > :startDate
+    GROUP BY PA."paymentRef", O.sbi, O.frn;
   `
 
   await executeQuery(query, {

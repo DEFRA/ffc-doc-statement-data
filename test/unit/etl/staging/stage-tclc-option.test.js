@@ -1,15 +1,15 @@
-const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageTCLCOption } = require('../../../../app/etl/staging/stage-tclc-option')
+const { tclcOption } = require('../../../../app/constants/tables')
+const { Readable } = require('stream')
 
-jest.mock('path')
 jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
-  downloadFile: jest.fn()
+  downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/storage', () => ({
+jest.mock('../../../../app/config/etl', () => ({
   tclcOption: { folder: 'tclcOptionFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
@@ -22,9 +22,9 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
 test('stageTCLCOption downloads file and runs ETL process', async () => {
   const mockUuid = '1234-5678-91011'
   uuidv4.mockReturnValue(mockUuid)
-  const mockTempFilePath = `tclcOption-${mockUuid}.csv`
-  path.join.mockReturnValue(mockTempFilePath)
-  storage.downloadFile.mockResolvedValue()
+  const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
+  const mockReadableStream = Readable.from(mockStreamData.split('\n'))
+  storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
 
   const columns = [
     'CHANGE_TYPE',
@@ -45,31 +45,32 @@ test('stageTCLCOption downloads file and runs ETL process', async () => {
   ]
 
   const mapping = [
-    { column: 'CHANGE_TYPE', targetColumn: 'change_type', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'change_time', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'APPLICATION_ID', targetColumn: 'application_id', targetType: 'number' },
-    { column: 'CALCULATION_ID', targetColumn: 'calculation_id', targetType: 'number' },
-    { column: 'OP_CODE', targetColumn: 'op_code', targetType: 'varchar' },
-    { column: 'SCO_UOM', targetColumn: 'sco_uom', targetType: 'varchar' },
+    { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'APPLICATION_ID', targetColumn: 'applicationId', targetType: 'number' },
+    { column: 'CALCULATION_ID', targetColumn: 'calculationId', targetType: 'number' },
+    { column: 'OP_CODE', targetColumn: 'opCode', targetType: 'varchar' },
+    { column: 'SCO_UOM', targetColumn: 'scoUom', targetType: 'varchar' },
     { column: 'COMMITMENT', targetColumn: 'commitment', targetType: 'number' },
-    { column: 'COMMITMENT_VAL', targetColumn: 'commitment_val', targetType: 'number' },
-    { column: 'AGREE_AMOUNT', targetColumn: 'agree_amount', targetType: 'number' },
-    { column: 'CLAIMED_PAY_AMOUNT', targetColumn: 'claimed_pay_amount', targetType: 'number' },
-    { column: 'VERIF_PAY_AMOUNT', targetColumn: 'verify_pay_amount', targetType: 'number' },
-    { column: 'FOUND_AMOUNT', targetColumn: 'found_amount', targetType: 'number' },
-    { column: 'OVERD_REDUCT_AMOUNT', targetColumn: 'overd_reduct_amount', targetType: 'number' },
-    { column: 'OVERD_PENALTY_AMOUNT', targetColumn: 'overd_penalty_amount', targetType: 'number' },
-    { column: 'NET1_AMOUNT', targetColumn: 'net1_amount', targetType: 'number' }
+    { column: 'COMMITMENT_VAL', targetColumn: 'commitmentVal', targetType: 'number' },
+    { column: 'AGREE_AMOUNT', targetColumn: 'agreeAmount', targetType: 'number' },
+    { column: 'CLAIMED_PAY_AMOUNT', targetColumn: 'claimedPayAmount', targetType: 'number' },
+    { column: 'VERIF_PAY_AMOUNT', targetColumn: 'verifyPayAmount', targetType: 'number' },
+    { column: 'FOUND_AMOUNT', targetColumn: 'foundAmount', targetType: 'number' },
+    { column: 'OVERD_REDUCT_AMOUNT', targetColumn: 'overdReductAmount', targetType: 'number' },
+    { column: 'OVERD_PENALTY_AMOUNT', targetColumn: 'overdPenaltyAmount', targetType: 'number' },
+    { column: 'NET1_AMOUNT', targetColumn: 'net1Amount', targetType: 'number' }
   ]
 
   await stageTCLCOption()
 
-  expect(storage.downloadFile).toHaveBeenCalledWith('tclcOptionFolder/export.csv', mockTempFilePath)
+  expect(storage.downloadFileAsStream).toHaveBeenCalledWith('tclcOptionFolder/export.csv')
   expect(runEtlProcess).toHaveBeenCalledWith({
-    tempFilePath: mockTempFilePath,
+    fileStream: mockReadableStream,
     columns,
-    table: 'tclcOptionTable',
+    table: tclcOption,
     mapping,
-    file: 'tclcOptionFolder/export.csv'
+    file: 'tclcOptionFolder/export.csv',
+    excludedFields: []
   })
 })

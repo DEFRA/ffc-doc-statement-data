@@ -1,6 +1,15 @@
 jest.mock('../../../app/data', () => ({
   sequelize: {
-    transaction: jest.fn()
+    transaction: jest.fn(),
+    query: jest.fn()
+  },
+  Sequelize: {
+    Op: {
+      gte: jest.fn()
+    }
+  },
+  etlStageLog: {
+    findAll: jest.fn().mockResolvedValue([])
   }
 }))
 
@@ -26,7 +35,12 @@ const {
   loadTotals,
   loadOrganisations
 } = require('../../../app/etl/load-scripts')
-
+jest.mock('../../../app/etl/manage-temp-tables', () => ({
+  deleteETLRecords: jest.fn().mockResolvedValue(undefined),
+  createTempTables: jest.fn().mockResolvedValue(undefined),
+  clearTempTables: jest.fn().mockResolvedValue(undefined),
+  restoreIntermTablesFromTemp: jest.fn().mockResolvedValue(undefined)
+}))
 jest.mock('sequelize')
 jest.mock('../../../app/etl/load-scripts')
 
@@ -48,33 +62,33 @@ describe('loadETLData', () => {
     expect(require('../../../app/data').sequelize.transaction).toHaveBeenCalledWith({
       isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
     })
-    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermApplicationClaim).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermApplicationContract).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermApplicationPayment).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermTotal).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermApplicationClaim).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermApplicationContract).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermApplicationPayment).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermTotal).toHaveBeenCalledWith('2023-01-01')
     expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermTotalClaim).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermPaymentrefApplication).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermPaymentrefOrg).toHaveBeenCalledWith('2023-01-01', transaction)
-    expect(loadIntermPaymentrefAgreementDates).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadIntermTotalClaim).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermPaymentrefApplication).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermPaymentrefOrg).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermPaymentrefAgreementDates).toHaveBeenCalledWith('2023-01-01')
     expect(loadTotals).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(transaction.commit).toHaveBeenCalled()
     expect(transaction.rollback).not.toHaveBeenCalled()
   })
 
-  test('should rollback transaction if any load script fails', async () => {
-    loadIntermFinanceDAX.mockRejectedValue(new Error('Test error'))
+  test('should rollback transaction if any transaction load script fails', async () => {
+    loadDAX.mockRejectedValue(new Error('Test error'))
 
     await expect(loadETLData('2023-01-01')).rejects.toThrow('Test error')
 
     expect(require('../../../app/data').sequelize.transaction).toHaveBeenCalledWith({
       isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
     })
-    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01', transaction)
+    expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(transaction.commit).not.toHaveBeenCalled()
     expect(transaction.rollback).toHaveBeenCalled()
   })

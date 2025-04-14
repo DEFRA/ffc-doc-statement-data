@@ -1,11 +1,10 @@
 const db = require('../../data')
 const { publishingConfig } = require('../../config')
 
-const getUnpublishedD365 = async (transaction) => {
+const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
   return db.d365.findAll({
     lock: true,
     skipLocked: true,
-    limit: publishingConfig.dataPublishingMaxBatchSizePerDataSource,
     where: {
       [db.Sequelize.Op.or]: [
         {
@@ -15,7 +14,8 @@ const getUnpublishedD365 = async (transaction) => {
     },
     attributes: ['paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
     raw: true,
-    transaction
+    transaction,
+    limit
   })
 }
 
