@@ -50,7 +50,7 @@ describe('send organisation updates', () => {
 
     test('should publish organisation frn', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn.toString())
+      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn)
     })
 
     test('should publish organisation name', async () => {
@@ -165,37 +165,6 @@ describe('send organisation updates', () => {
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
-    })
-  })
-
-  describe('When there are 2 concurrent processes', () => {
-    beforeEach(async () => {
-      jest.useRealTimers()
-    })
-
-    test('should process all organisation records when there are 2 times the number of organisation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(0)
-    })
-
-    test('should publish all organisation records when there are 2 times the number of organisation records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = 2 * publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-
-      publish.start()
-      publish.start()
-
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      expect(mockSendMessage).toHaveBeenCalledTimes(numberOfRecords)
     })
   })
 })

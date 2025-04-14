@@ -1,3 +1,6 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
   const number16 = 16
 
@@ -28,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'delinkedCalculation',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
 
   delinkedCalculation.associate = function (models) {

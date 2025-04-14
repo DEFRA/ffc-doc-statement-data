@@ -1,0 +1,22 @@
+services:
+  ffc-doc-statement-data:
+    build:
+      target: development
+    image: ffc-doc-statement-data-development
+    container_name: ffc-doc-statement-data-development
+    ports:
+      - "9282:9229"
+    user: root
+    volumes:
+      - ../.gitignore:/workspaces:cached/.gitignore
+      - ..:/workspaces:cached
+
+  ffc-doc-statement-data-postgres:
+    ports:
+      - "5482:5432"
+    shm_size: 1g
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
