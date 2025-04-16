@@ -50,7 +50,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
       city = "newData".city,
       county = "newData".county,
       postcode = "newData".postcode,
-      "emailAddress" = "newData".emailaddress,
+      "emailAddress" = "newData"."emailaddress",
       frn = "newData".frn,
       sbi = "newData".sbi,
       "name" = "newData".name,

@@ -34,7 +34,7 @@ exports[`loadIntermOrg should call sequelize.query with correct SQL and paramete
       city = "newData".city,
       county = "newData".county,
       postcode = "newData".postcode,
-      "emailAddress" = "newData".emailaddress,
+      "emailAddress" = "newData"."emailaddress",
       frn = "newData".frn,
       sbi = "newData".sbi,
       "name" = "newData".name,
