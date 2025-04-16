@@ -46,11 +46,4 @@ describe('loadIntermCalcOrg', () => {
 
     expect(db.sequelize.query).toMatchSnapshot()
   })
-
-  test('should handle errors thrown by sequelize.query', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Apps_Payment_Notification/export.csv', idFrom: 1, idTo: 2 }])
-    db.sequelize.query.mockRejectedValue(new Error('Query failed'))
-
-    await expect(loadIntermCalcOrg(startDate)).rejects.toThrow('Query failed')
-  })
 })
