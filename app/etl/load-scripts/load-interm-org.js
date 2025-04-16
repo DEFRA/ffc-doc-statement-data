@@ -1,7 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
-const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
+const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
   etlConfig.organisation.folder,
@@ -50,7 +50,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
       city = "newData".city,
       county = "newData".county,
       postcode = "newData".postcode,
-      "emailAddress" = "newData"."emailaddress",
+      "emailAddress" = "newData"."emailAddress",
       frn = "newData".frn,
       sbi = "newData".sbi,
       "name" = "newData".name,
@@ -99,11 +99,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
-      console.log(`Processing org records for folder ${folder} ${i} - ${Math.min(i + batchSize - 1, log.idTo)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
-      await executeQuery(query, {}, transaction)
-    }
+    await processWithWorkers(null, batchSize, log.idFrom, log.idTo, transaction, `org records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias)
 
     console.log(`Processed org records for folder ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`

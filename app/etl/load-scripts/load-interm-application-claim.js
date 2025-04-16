@@ -1,7 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
-const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
+const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const defaultTablesToCheck = [
   etlConfig.cssContractApplications.folder,
@@ -64,11 +64,7 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
-      console.log(`Processing application claim records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.idTo)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
-      await executeQuery(query, {}, transaction)
-    }
+    await processWithWorkers(null, batchSize, log.idFrom, log.idTo, transaction, `application claim records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias)
 
     console.log(`Processed application claim records for ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
