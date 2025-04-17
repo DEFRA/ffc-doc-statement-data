@@ -59,6 +59,7 @@ const limitConcurrency = async (promises, maxConcurrent) => {
 
 const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null) => {
   const workers = []
+  const workerPromises = []
   let activeWorkers = 0
 
   for (let i = idFrom; i <= idTo; i += batchSize) {
@@ -89,26 +90,28 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
     activeWorkers++
     workers.push(worker)
 
+    workerPromises.push(new Promise((resolve, reject) => {
+      worker.on('message', (message) => {
+        if (message.success) {
+          resolve()
+        } else {
+          reject(new Error(message.error))
+        }
+      })
+      worker.on('error', reject)
+      worker.on('exit', (code) => {
+        if (code !== 0) {
+          reject(new Error(`Worker stopped with exit code ${code}`))
+        }
+      })
+    }))
+
     worker.on('exit', () => {
       activeWorkers--
     })
   }
 
-  await Promise.all(workers.map(worker => new Promise((resolve, reject) => {
-    worker.on('message', (message) => {
-      if (message.success) {
-        resolve()
-      } else {
-        reject(new Error(message.error))
-      }
-    })
-    worker.on('error', reject)
-    worker.on('exit', (code) => {
-      if (code !== 0) {
-        reject(new Error(`Worker stopped with exit code ${code}`))
-      }
-    })
-  })))
+  await Promise.all(workerPromises)
 }
 
 module.exports = {
