@@ -3,7 +3,7 @@ const db = require('../../data')
 const { Worker } = require('worker_threads')
 const path = require('path')
 
-const MAX_WORKERS = 5 // Set the maximum number of workers
+const MAX_WORKERS = 10 // Set the maximum number of workers
 
 const getEtlStageLogs = async (startDate, folder) => {
   const folders = Array.isArray(folder) ? folder : [folder]
