@@ -1,7 +1,11 @@
 const { writeToString } = require('@fast-csv/format')
 const moment = require('moment')
 const storage = require('../storage')
-const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('./staging')
+const {
+  stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption,
+  stageApplicationDetailsDelinked, stageAppsTypesDelinked, stageAppsPaymentNotificationsDelinked, stageBusinessAddressContactsDelinked, stageCalculationDetailsDelinked, stageCSSContractApplicationsDelinked, stageCSSContractDelinked, stageCSSOptionsDelinked, stageDefraLinksDelinked, stageFinanceDAXDelinked, stageOrganisationDelinked, stageTCLCOptionDelinked,
+  stageAppCalcResultsDelinkPayments, stageTdeLinkingTransferTransactions
+} = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { etlConfig } = require('../config')
 const ora = require('ora')
@@ -37,7 +41,21 @@ const stageFunctions = [
   { fn: stageDefraLinks, label: etlConfig.defraLinks.folder },
   { fn: stageFinanceDAX, label: etlConfig.financeDAX.folder },
   { fn: stageOrganisation, label: etlConfig.organisation.folder },
-  { fn: stageTCLCOption, label: etlConfig.tclcOption.folder }
+  { fn: stageTCLCOption, label: etlConfig.tclcOption.folder },
+  { fn: stageApplicationDetailsDelinked, label: etlConfig.applicationDetailDelinked.folder },
+  { fn: stageAppsTypesDelinked, label: etlConfig.appsTypesDelinked.folder },
+  { fn: stageAppsPaymentNotificationsDelinked, label: etlConfig.appsPaymentNotificationDelinked.folder },
+  { fn: stageBusinessAddressContactsDelinked, label: etlConfig.businessAddressDelinked.folder },
+  { fn: stageCalculationDetailsDelinked, label: etlConfig.calculationsDetailsDelinked.folder },
+  { fn: stageCSSContractApplicationsDelinked, label: etlConfig.cssContractApplicationsDelinked.folder },
+  { fn: stageCSSContractDelinked, label: etlConfig.cssContractDelinked.folder },
+  { fn: stageCSSOptionsDelinked, label: etlConfig.cssOptionsDelinked.folder },
+  { fn: stageDefraLinksDelinked, label: etlConfig.defraLinksDelinked.folder },
+  { fn: stageFinanceDAXDelinked, label: etlConfig.financeDAXDelinked.folder },
+  { fn: stageOrganisationDelinked, label: etlConfig.organisationDelinked.folder },
+  { fn: stageTCLCOptionDelinked, label: etlConfig.tclcOptionDelinked.folder },
+  { fn: stageAppCalcResultsDelinkPayments, label: etlConfig.appCalculationResultsDelinkPayments.folder },
+  { fn: stageTdeLinkingTransferTransactions, label: etlConfig.tdeLinkingTransferTransactions.folder }
 ]
 
 const stageExtracts = async () => {

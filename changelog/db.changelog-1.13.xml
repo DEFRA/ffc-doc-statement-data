@@ -24,6 +24,9 @@
             <column name="applicationId" type="INTEGER">
                 <constraints nullable="true" />
             </column>
+            <column name="subjectId" type="INTEGER">
+                <constraints nullable="true" />
+            </column>
         </createTable>
         <createTable tableName="etlStageAppsPaymentNotification">
             <column name="changeType" type="VARCHAR">
@@ -253,6 +256,9 @@
                 <constraints nullable="true" />
             </column>
             <column name="subjectId" type="NUMBER(9,0)">
+                <constraints nullable="true" />
+            </column>
+            <column name="defraId" type="NUMBER(12,0)">
                 <constraints nullable="true" />
             </column>
         </createTable>

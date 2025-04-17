@@ -1,19 +1,19 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
-const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
+const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
-const loadIntermApplicationClaim = async (startDate, transaction) => {
-  const tablesToCheck = [
-    etlConfig.cssContractApplications.folder,
-    etlConfig.cssContract.folder
-  ]
+const defaultTablesToCheck = [
+  etlConfig.cssContractApplications.folder,
+  etlConfig.cssContract.folder
+]
 
-  const folderToAliasMap = {
-    [etlConfig.cssContractApplications.folder]: 'cl',
-    [etlConfig.cssContract.folder]: 'cc'
-  }
+const defaultFolderToAliasMap = {
+  [etlConfig.cssContractApplications.folder]: 'cl',
+  [etlConfig.cssContract.folder]: 'cc'
+}
 
+const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -64,17 +64,28 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
-      console.log(`Processing application claim records for ${folder} ${i} to ${Math.min(i + batchSize - 1, log.idTo)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
-      await executeQuery(query, {}, transaction)
-    }
+    await processWithWorkers(null, batchSize, log.idFrom, log.idTo, transaction, `application claim records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias)
 
     console.log(`Processed application claim records for ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 
+const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
+  const tablesToCheck = [
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.cssContractDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'cl',
+    [etlConfig.cssContractDelinked.folder]: 'cc'
+  }
+
+  return loadIntermApplicationClaim(startDate, transaction, tablesToCheck, folderToAliasMap)
+}
+
 module.exports = {
-  loadIntermApplicationClaim
+  loadIntermApplicationClaim,
+  loadIntermApplicationClaimDelinked
 }

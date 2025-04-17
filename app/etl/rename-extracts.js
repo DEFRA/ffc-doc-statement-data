@@ -14,7 +14,22 @@ const FILE_PATH_LOOKUP = {
   [etlConfig.financeDAX.fileMask]: etlConfig.financeDAX.folder,
   [etlConfig.organisation.fileMask]: etlConfig.organisation.folder,
   [etlConfig.tclcOption.fileMask]: etlConfig.tclcOption.folder,
-  [etlConfig.tclc.fileMask]: etlConfig.tclc.folder
+  [etlConfig.tclc.fileMask]: etlConfig.tclc.folder,
+  [etlConfig.applicationDetailDelinked.fileMask]: etlConfig.applicationDetailDelinked.folder,
+  [etlConfig.appsPaymentNotificationDelinked.fileMask]: etlConfig.appsPaymentNotificationDelinked.folder,
+  [etlConfig.appsTypesDelinked.fileMask]: etlConfig.appsTypesDelinked.folder,
+  [etlConfig.businessAddressDelinked.fileMask]: etlConfig.businessAddressDelinked.folder,
+  [etlConfig.calculationsDetailsDelinked.fileMask]: etlConfig.calculationsDetailsDelinked.folder,
+  [etlConfig.cssContractApplicationsDelinked.fileMask]: etlConfig.cssContractApplicationsDelinked.folder,
+  [etlConfig.cssContractDelinked.fileMask]: etlConfig.cssContractDelinked.folder,
+  [etlConfig.cssOptionsDelinked.fileMask]: etlConfig.cssOptionsDelinked.folder,
+  [etlConfig.defraLinksDelinked.fileMask]: etlConfig.defraLinksDelinked.folder,
+  [etlConfig.financeDAXDelinked.fileMask]: etlConfig.financeDAXDelinked.folder,
+  [etlConfig.organisationDelinked.fileMask]: etlConfig.organisationDelinked.folder,
+  [etlConfig.tclcOptionDelinked.fileMask]: etlConfig.tclcOptionDelinked.folder,
+  [etlConfig.tclcDelinked.fileMask]: etlConfig.tclcDelinked.folder,
+  [etlConfig.appCalculationResultsDelinkPayments.fileMask]: etlConfig.appCalculationResultsDelinkPayments.folder,
+  [etlConfig.tdeLinkingTransferTransactions.fileMask]: etlConfig.tdeLinkingTransferTransactions.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {

@@ -1,9 +1,9 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
-const { getEtlStageLogs, executeQuery } = require('./load-interm-utils')
+const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
-const tablesToCheck = [
+const defaultTablesToCheck = [
   etlConfig.appsPaymentNotification.folder,
   etlConfig.cssContractApplications.folder,
   etlConfig.financeDAX.folder,
@@ -11,7 +11,7 @@ const tablesToCheck = [
   etlConfig.calculationsDetails.folder
 ]
 
-const folderToAliasMap = {
+const defaultFolderToAliasMap = {
   [etlConfig.appsPaymentNotification.folder]: 'APN',
   [etlConfig.cssContractApplications.folder]: 'APP',
   [etlConfig.financeDAX.folder]: 'SD',
@@ -19,8 +19,15 @@ const folderToAliasMap = {
   [etlConfig.calculationsDetails.folder]: 'CD'
 }
 
-const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
-    WITH newdata AS (
+const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
+    return
+  }
+
+  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+    WITH "newData" AS (
       SELECT
         CD."calculationId",
         BAC.sbi,
@@ -54,14 +61,14 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     updatedrows AS (
       UPDATE ${dbConfig.schema}."etlIntermCalcOrg" interm
       SET
-        sbi = newdata.sbi,
-        frn = newdata.frn,
-        "calculationDate" = newdata."calculationDt",
+        sbi = "newData".sbi,
+        frn = "newData".frn,
+        "calculationDate" = "newData"."calculationDt",
         "etlInsertedDt" = NOW()
-      FROM newdata
-      WHERE newdata."changeType" = 'UPDATE'
-        AND interm."calculationId" = newdata."calculationId"
-        AND interm."idClcHeader" = newdata."idClcHeader"
+      FROM "newData"
+      WHERE "newData"."changeType" = 'UPDATE'
+        AND interm."calculationId" = "newData"."calculationId"
+        AND interm."idClcHeader" = "newData"."idClcHeader"
       RETURNING interm."calculationId", interm."idClcHeader"
     )
     INSERT INTO ${dbConfig.schema}."etlIntermCalcOrg" (
@@ -79,16 +86,10 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       "applicationId",
       "calculationDt",
       "idClcHeader"
-    FROM newdata
+    FROM "newData"
     WHERE "changeType" = 'INSERT'
       OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
   `
-const loadIntermCalcOrg = async (startDate, transaction) => {
-  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
-
-  if (!etlStageLogs.length) {
-    return
-  }
 
   const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
@@ -97,17 +98,34 @@ const loadIntermCalcOrg = async (startDate, transaction) => {
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    for (let i = log.idFrom; i <= log.idTo; i += batchSize) {
-      console.log(`Processing calcOrg records for ${folder} ${i} - ${Math.min(i + batchSize - 1, log.idTo)}`)
-      const query = queryTemplate(i, Math.min(i + batchSize - 1, log.idTo), tableAlias, exclusionScript)
-      await executeQuery(query, {}, transaction)
-    }
+    await processWithWorkers(null, batchSize, log.idFrom, log.idTo, transaction, 'calcOrg', queryTemplate, exclusionScript, tableAlias)
 
     console.log(`Processed calcOrg records for ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
   }
 }
 
+const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
+  const tablesToCheck = [
+    etlConfig.appsPaymentNotificationDelinked.folder,
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.financeDAXDelinked.folder,
+    etlConfig.businessAddressDelinked.folder,
+    etlConfig.calculationsDetailsDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.appsPaymentNotificationDelinked.folder]: 'APN',
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'APP',
+    [etlConfig.financeDAXDelinked.folder]: 'SD',
+    [etlConfig.businessAddressDelinked.folder]: 'BAC',
+    [etlConfig.calculationsDetailsDelinked.folder]: 'CD'
+  }
+
+  return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
+}
+
 module.exports = {
-  loadIntermCalcOrg
+  loadIntermCalcOrg,
+  loadIntermCalcOrgDelinked
 }
