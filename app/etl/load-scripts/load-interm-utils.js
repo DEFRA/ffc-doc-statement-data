@@ -58,17 +58,19 @@ const limitConcurrency = async (promises, maxConcurrent) => {
 }
 
 const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null) => {
-  const workers = []
   const workerPromises = []
-  let activeWorkers = 0
+  const activeWorkers = new Set()
 
   for (let i = idFrom; i <= idTo; i += batchSize) {
-    /* eslint-disable no-unmodified-loop-condition */
-    while (activeWorkers >= MAX_WORKERS) {
-      await new Promise(resolve => setTimeout(resolve, 100)) // Wait for a worker to become available
-    }
     const batchTo = Math.min(i + batchSize - 1, idTo)
+
+    // Wait if we have reached max workers
+    if (activeWorkers.size >= MAX_WORKERS) {
+      await Promise.race([...activeWorkers])
+    }
+
     console.log(`Processing ${recordType} records ${i} to ${batchTo}`)
+
     const workerData = {
       query,
       params: {
@@ -77,6 +79,7 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
       },
       transaction
     }
+
     if (queryTemplate && exclusionScript !== null && tableAlias) {
       // Build query per batch
       workerData.query = queryTemplate(i, batchTo, tableAlias, exclusionScript)
@@ -87,31 +90,38 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
       workerData
     })
 
-    activeWorkers++
-    workers.push(worker)
-
-    workerPromises.push(new Promise((resolve, reject) => {
+    const workerPromise = new Promise((resolve, reject) => {
       worker.on('message', (message) => {
         if (message.success) {
           resolve()
         } else {
-          reject(new Error(message.error))
+          reject(new Error(`Batch ${i}-${batchTo} failed: ${message.error}`))
         }
       })
-      worker.on('error', reject)
-      worker.on('exit', (code) => {
-        if (code !== 0) {
-          reject(new Error(`Worker stopped with exit code ${code}`))
-        }
-      })
-    }))
 
-    worker.on('exit', () => {
-      activeWorkers--
+      worker.on('error', (error) => {
+        reject(new Error(`Batch ${i}-${batchTo} failed with error: ${error.message}`))
+      })
+
+      worker.on('exit', (code) => {
+        activeWorkers.delete(workerPromise)
+        worker.terminate().catch(console.error)
+        if (code !== 0) {
+          reject(new Error(`Batch ${i}-${batchTo}: Worker stopped with exit code ${code}`))
+        }
+      })
     })
+
+    activeWorkers.add(workerPromise)
+    workerPromises.push(workerPromise)
   }
 
-  await Promise.all(workerPromises)
+  try {
+    await Promise.all(workerPromises)
+  } catch (error) {
+    console.error('Worker processing failed:', error)
+    throw error
+  }
 }
 
 module.exports = {
