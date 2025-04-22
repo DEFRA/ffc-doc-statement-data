@@ -1,13 +1,11 @@
-const os = require('os');
+const os = require('os')
 const db = require('../../data')
 
 const { Worker } = require('worker_threads')
-const path = require('path');
+const path = require('path')
 
-const numCPUs = os.cpus().length;
-console.log(`Number of CPU cores: ${numCPUs}`);
+const numCPUs = os.cpus().length
 const MAX_WORKERS = numCPUs === 2 ? 1 : numCPUs - 2 // Set the maximum number of workers
-console.log('Max workers set to: ', MAX_WORKERS)
 
 const getEtlStageLogs = async (startDate, folder) => {
   const folders = Array.isArray(folder) ? folder : [folder]
@@ -64,17 +62,32 @@ const limitConcurrency = async (promises, maxConcurrent) => {
 const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null) => {
   const workerPromises = []
   const activeWorkers = new Set()
+  // Synchronise control
+  const semaphore = {
+    count: 0,
+    queue: [],
+    async acquire () {
+      if (this.count < MAX_WORKERS) {
+        this.count++
+        return Promise.resolve()
+      }
+      return new Promise(resolve => this.queue.push(resolve))
+    },
+    release () {
+      this.count--
+      if (this.queue.length > 0) {
+        this.count++
+        const next = this.queue.shift()
+        next()
+      }
+    }
+  }
 
   for (let i = idFrom; i <= idTo; i += batchSize) {
     const batchTo = Math.min(i + batchSize - 1, idTo)
 
     // Wait if we have reached max workers
-    if (activeWorkers.size >= MAX_WORKERS) {
-      console.log('waiting!')
-      await Promise.race([...activeWorkers])
-    }
-
-    console.log('worker size', activeWorkers.size)
+    await semaphore.acquire()
 
     console.log(`Processing ${recordType} records ${i} to ${batchTo}`)
 
@@ -113,6 +126,7 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
       worker.on('exit', (code) => {
         activeWorkers.delete(workerPromise)
         worker.terminate().catch(console.error)
+        semaphore.release()
         if (code !== 0) {
           reject(new Error(`Batch ${i}-${batchTo}: Worker stopped with exit code ${code}`))
         }
