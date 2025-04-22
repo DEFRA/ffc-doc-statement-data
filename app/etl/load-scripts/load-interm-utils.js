@@ -1,9 +1,13 @@
+const os = require('os');
 const db = require('../../data')
 
 const { Worker } = require('worker_threads')
-const path = require('path')
+const path = require('path');
 
-const MAX_WORKERS = 10 // Set the maximum number of workers
+const numCPUs = os.cpus().length;
+console.log(`Number of CPU cores: ${numCPUs}`);
+const MAX_WORKERS = numCPUs === 2 ? 1 : numCPUs - 2 // Set the maximum number of workers
+console.log('Max workers set to: ', MAX_WORKERS)
 
 const getEtlStageLogs = async (startDate, folder) => {
   const folders = Array.isArray(folder) ? folder : [folder]
@@ -66,8 +70,11 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
 
     // Wait if we have reached max workers
     if (activeWorkers.size >= MAX_WORKERS) {
+      console.log('waiting!')
       await Promise.race([...activeWorkers])
     }
+
+    console.log('worker size', activeWorkers.size)
 
     console.log(`Processing ${recordType} records ${i} to ${batchTo}`)
 
