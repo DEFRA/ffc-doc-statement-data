@@ -5,37 +5,35 @@ const { applicationDetail } = require('../../constants/tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageApplicationDetails = async (monthDayFormat = false, folder = 'applicationDetail') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+const columns = [
+  sourceColumnNames.CHANGE_TYPE,
+  sourceColumnNames.CHANGE_TIME,
+  sourceColumnNames.PKID,
+  sourceColumnNames.DT_INSERT,
+  sourceColumnNames.DT_DELETE,
+  sourceColumnNames.SUBJECT_ID,
+  sourceColumnNames.UTE_ID,
+  sourceColumnNames.APPLICATION_ID,
+  sourceColumnNames.APPLICATION_CODE,
+  sourceColumnNames.AMENDED_APP_ID,
+  sourceColumnNames.APP_TYPE_ID,
+  sourceColumnNames.PROXY_ID,
+  sourceColumnNames.STATUS_P_CODE,
+  sourceColumnNames.STATUS_S_CODE,
+  sourceColumnNames.SOURCE_P_CODE,
+  sourceColumnNames.SOURCE_S_CODE,
+  sourceColumnNames.DT_START,
+  sourceColumnNames.DT_END,
+  sourceColumnNames.VALID_START_FLG,
+  sourceColumnNames.VALID_END_FLG,
+  sourceColumnNames.APP_ID_START,
+  sourceColumnNames.APP_ID_END,
+  sourceColumnNames.DT_REC_UPDATE,
+  sourceColumnNames.USER_ID
+]
 
-  const columns = [
-    sourceColumnNames.CHANGE_TYPE,
-    sourceColumnNames.CHANGE_TIME,
-    sourceColumnNames.PKID,
-    sourceColumnNames.DT_INSERT,
-    sourceColumnNames.DT_DELETE,
-    sourceColumnNames.SUBJECT_ID,
-    sourceColumnNames.UTE_ID,
-    sourceColumnNames.APPLICATION_ID,
-    sourceColumnNames.APPLICATION_CODE,
-    sourceColumnNames.AMENDED_APP_ID,
-    sourceColumnNames.APP_TYPE_ID,
-    sourceColumnNames.PROXY_ID,
-    sourceColumnNames.STATUS_P_CODE,
-    sourceColumnNames.STATUS_S_CODE,
-    sourceColumnNames.SOURCE_P_CODE,
-    sourceColumnNames.SOURCE_S_CODE,
-    sourceColumnNames.DT_START,
-    sourceColumnNames.DT_END,
-    sourceColumnNames.VALID_START_FLG,
-    sourceColumnNames.VALID_END_FLG,
-    sourceColumnNames.APP_ID_START,
-    sourceColumnNames.APP_ID_END,
-    sourceColumnNames.DT_REC_UPDATE,
-    sourceColumnNames.USER_ID
-  ]
-
-  const mapping = [
+const getMapping = (format) => {
+  return [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
     { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: sourceColumnNames.PKID, targetColumn: targetColumnNames.pkid, targetType: NUMBER },
@@ -61,33 +59,37 @@ const stageApplicationDetails = async (monthDayFormat = false, folder = 'applica
     { column: sourceColumnNames.DT_REC_UPDATE, targetColumn: targetColumnNames.dtRecUpdate, targetType: DATE, format },
     { column: sourceColumnNames.USER_ID, targetColumn: targetColumnNames.userId, targetType: VARCHAR }
   ]
+}
 
-  let excludedFields = []
-  if (config.etlConfig.excludeCalculationData) {
-    excludedFields = [
-      targetColumnNames.amendedAppId,
-      targetColumnNames.applicationCode,
-      targetColumnNames.appIdEnd,
-      targetColumnNames.appIdStart,
-      targetColumnNames.appTypeId,
-      targetColumnNames.dtEnd,
-      targetColumnNames.dtInsert,
-      targetColumnNames.dtRecUpdate,
-      targetColumnNames.dtStart,
-      targetColumnNames.dtDelete,
-      targetColumnNames.proxyId,
-      targetColumnNames.sourcePCode,
-      targetColumnNames.sourceSCode,
-      targetColumnNames.statusPCode,
-      targetColumnNames.statusSCode,
-      targetColumnNames.subjectId,
-      targetColumnNames.uteId,
-      targetColumnNames.userId,
-      targetColumnNames.validEndFlg,
-      targetColumnNames.validStartFlg
-    ]
-  }
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.amendedAppId,
+    targetColumnNames.applicationCode,
+    targetColumnNames.appIdEnd,
+    targetColumnNames.appIdStart,
+    targetColumnNames.appTypeId,
+    targetColumnNames.dtEnd,
+    targetColumnNames.dtInsert,
+    targetColumnNames.dtRecUpdate,
+    targetColumnNames.dtStart,
+    targetColumnNames.dtDelete,
+    targetColumnNames.proxyId,
+    targetColumnNames.sourcePCode,
+    targetColumnNames.sourceSCode,
+    targetColumnNames.statusPCode,
+    targetColumnNames.statusSCode,
+    targetColumnNames.subjectId,
+    targetColumnNames.uteId,
+    targetColumnNames.userId,
+    targetColumnNames.validEndFlg,
+    targetColumnNames.validStartFlg
+  ]
+}
 
+const stageApplicationDetails = async (monthDayFormat = false, folder = 'applicationDetail') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const mapping = getMapping(format)
   return downloadAndProcessFile(folder, applicationDetail, columns, mapping, excludedFields)
 }
 

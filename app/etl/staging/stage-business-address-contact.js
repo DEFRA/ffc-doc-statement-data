@@ -6,41 +6,39 @@ const config = require('../../config')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { COMPANY_NAME, LOCATION_STREET, LOCATION_ZIP_CODE, LOCATION_CITY, INTERNET_EMAIL } = require('../../constants/fakers')
 
-const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'businessAddress') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+const columns = [
+  sourceColumnNames.CHANGE_TYPE,
+  sourceColumnNames.CHANGE_TIME,
+  sourceColumnNames.SBI,
+  sourceColumnNames.FRN,
+  sourceColumnNames.BUSINESS_NAME,
+  sourceColumnNames.ACCOUNTABLE_PEOPLE_COMPLETED,
+  sourceColumnNames.FINANCIAL_TO_BUSINESS_ADDR,
+  sourceColumnNames.CORR_AS_BUSINESS_ADDR,
+  sourceColumnNames.BUSINESS_ADDRESS1,
+  sourceColumnNames.BUSINESS_ADDRESS2,
+  sourceColumnNames.BUSINESS_ADDRESS3,
+  sourceColumnNames.BUSINESS_CITY,
+  sourceColumnNames.BUSINESS_COUNTY,
+  sourceColumnNames.BUSINESS_COUNTRY,
+  sourceColumnNames.BUSINESS_POST_CODE,
+  sourceColumnNames.BUSINESS_LANDLINE,
+  sourceColumnNames.BUSINESS_MOBILE,
+  sourceColumnNames.BUSINESS_EMAIL_ADDR,
+  sourceColumnNames.CORRESPONDENCE_ADDRESS1,
+  sourceColumnNames.CORRESPONDENCE_ADDRESS2,
+  sourceColumnNames.CORRESPONDENCE_ADDRESS3,
+  sourceColumnNames.CORRESPONDENCE_CITY,
+  sourceColumnNames.CORRESPONDENCE_COUNTY,
+  sourceColumnNames.CORRESPONDENCE_COUNTRY,
+  sourceColumnNames.CORRESPONDENCE_POST_CODE,
+  sourceColumnNames.CORRESPONDENCE_LANDLINE,
+  sourceColumnNames.CORRESPONDENCE_MOBILE,
+  sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR
+]
 
-  const columns = [
-    sourceColumnNames.CHANGE_TYPE,
-    sourceColumnNames.CHANGE_TIME,
-    sourceColumnNames.SBI,
-    sourceColumnNames.FRN,
-    sourceColumnNames.BUSINESS_NAME,
-    sourceColumnNames.ACCOUNTABLE_PEOPLE_COMPLETED,
-    sourceColumnNames.FINANCIAL_TO_BUSINESS_ADDR,
-    sourceColumnNames.CORR_AS_BUSINESS_ADDR,
-    sourceColumnNames.BUSINESS_ADDRESS1,
-    sourceColumnNames.BUSINESS_ADDRESS2,
-    sourceColumnNames.BUSINESS_ADDRESS3,
-    sourceColumnNames.BUSINESS_CITY,
-    sourceColumnNames.BUSINESS_COUNTY,
-    sourceColumnNames.BUSINESS_COUNTRY,
-    sourceColumnNames.BUSINESS_POST_CODE,
-    sourceColumnNames.BUSINESS_LANDLINE,
-    sourceColumnNames.BUSINESS_MOBILE,
-    sourceColumnNames.BUSINESS_EMAIL_ADDR,
-    sourceColumnNames.CORRESPONDENCE_ADDRESS1,
-    sourceColumnNames.CORRESPONDENCE_ADDRESS2,
-    sourceColumnNames.CORRESPONDENCE_ADDRESS3,
-    sourceColumnNames.CORRESPONDENCE_CITY,
-    sourceColumnNames.CORRESPONDENCE_COUNTY,
-    sourceColumnNames.CORRESPONDENCE_COUNTRY,
-    sourceColumnNames.CORRESPONDENCE_POST_CODE,
-    sourceColumnNames.CORRESPONDENCE_LANDLINE,
-    sourceColumnNames.CORRESPONDENCE_MOBILE,
-    sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR
-  ]
-
-  const mapping = [
+const getMapping = (format) => {
+  return [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
     { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: sourceColumnNames.SBI, targetColumn: targetColumnNames.sbi, targetType: NUMBER },
@@ -70,51 +68,55 @@ const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'bu
     { column: sourceColumnNames.CORRESPONDENCE_MOBILE, targetColumn: targetColumnNames.correspondenceMobile, targetType: VARCHAR },
     { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, targetColumn: targetColumnNames.correspondenceEmailAddr, targetType: VARCHAR }
   ]
+}
 
-  const transformer = [
-    { column: sourceColumnNames.BUSINESS_NAME, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, find: "'", replace: "''", all: true },
-    { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
+const transformer = [
+  { column: sourceColumnNames.BUSINESS_NAME, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS1, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS2, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_ADDRESS3, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_CITY, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.BUSINESS_EMAIL_ADDR, find: "'", replace: "''", all: true },
+  { column: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, find: "'", replace: "''", all: true }
+]
+
+let nonProdTransformer = []
+if (!config.isProd) {
+  nonProdTransformer = [
+    { name: sourceColumnNames.BUSINESS_NAME, faker: COMPANY_NAME },
+    { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },
+    { name: sourceColumnNames.BUSINESS_POST_CODE, faker: LOCATION_ZIP_CODE },
+    { name: sourceColumnNames.BUSINESS_CITY, faker: LOCATION_CITY },
+    { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL },
+    { name: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, faker: INTERNET_EMAIL }
   ]
+}
 
-  let nonProdTransformer = []
-  if (!config.isProd) {
-    nonProdTransformer = [
-      { name: sourceColumnNames.BUSINESS_NAME, faker: COMPANY_NAME },
-      { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },
-      { name: sourceColumnNames.BUSINESS_POST_CODE, faker: LOCATION_ZIP_CODE },
-      { name: sourceColumnNames.BUSINESS_CITY, faker: LOCATION_CITY },
-      { name: sourceColumnNames.BUSINESS_EMAIL_ADDR, faker: INTERNET_EMAIL },
-      { name: sourceColumnNames.CORRESPONDENCE_EMAIL_ADDR, faker: INTERNET_EMAIL }
-    ]
-  }
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.accountablePeopleCompleted,
+    targetColumnNames.businessCountry,
+    targetColumnNames.businessLandline,
+    targetColumnNames.businessMobile,
+    targetColumnNames.corrAsBusinessAddr,
+    targetColumnNames.correspondenceAddress1,
+    targetColumnNames.correspondenceAddress2,
+    targetColumnNames.correspondenceAddress3,
+    targetColumnNames.correspondenceCity,
+    targetColumnNames.correspondenceCountry,
+    targetColumnNames.correspondenceCounty,
+    targetColumnNames.correspondenceEmailAddr,
+    targetColumnNames.correspondenceLandline,
+    targetColumnNames.correspondenceMobile,
+    targetColumnNames.correspondencePostCode,
+    targetColumnNames.financialToBusinessAddr
+  ]
+}
 
-  let excludedFields = []
-  if (config.etlConfig.excludeCalculationData) {
-    excludedFields = [
-      targetColumnNames.accountablePeopleCompleted,
-      targetColumnNames.businessCountry,
-      targetColumnNames.businessLandline,
-      targetColumnNames.businessMobile,
-      targetColumnNames.corrAsBusinessAddr,
-      targetColumnNames.correspondenceAddress1,
-      targetColumnNames.correspondenceAddress2,
-      targetColumnNames.correspondenceAddress3,
-      targetColumnNames.correspondenceCity,
-      targetColumnNames.correspondenceCountry,
-      targetColumnNames.correspondenceCounty,
-      targetColumnNames.correspondenceEmailAddr,
-      targetColumnNames.correspondenceLandline,
-      targetColumnNames.correspondenceMobile,
-      targetColumnNames.correspondencePostCode,
-      targetColumnNames.financialToBusinessAddr
-    ]
-  }
-
+const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'businessAddress') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const mapping = getMapping(format)
   return downloadAndProcessFile(folder, businessAddress, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 

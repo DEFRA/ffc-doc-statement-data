@@ -257,8 +257,8 @@ const config = {
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,
   managedIdentityClientId: process.env.AZURE_CLIENT_ID,
-  sfi23Enabled: true,
-  delinkedEnabled: false
+  sfi23Enabled: process.env.SFI_23_ENABLED,
+  delinkedEnabled: process.env.DELINKED_ENABLED
 }
 
 const result = schema.validate(config, {

@@ -1,43 +1,41 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+const { COMPANY_NAME } = require('../../constants/fakers')
 const { organisation } = require('../../constants/tables')
 const config = require('../../config')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageOrganisation = async (monthDayFormat = false, folder = 'organisation') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-  const { COMPANY_NAME } = require('../../constants/fakers')
+const columns = [
+  sourceColumnNames.CHANGE_TYPE,
+  sourceColumnNames.CHANGE_TIME,
+  sourceColumnNames.PARTY_ID,
+  sourceColumnNames.ORGANISATION_NAME,
+  sourceColumnNames.CONFIRMED_FLG,
+  sourceColumnNames.LAND_CONFIRMED_FLG,
+  sourceColumnNames.SBI,
+  sourceColumnNames.TAX_REGISTRATION_NUMBER,
+  sourceColumnNames.LEGAL_STATUS_TYPE_ID,
+  sourceColumnNames.BUSINESS_REFERENCE,
+  sourceColumnNames.BUSINESS_TYPE_ID,
+  sourceColumnNames.VENDOR_NUMBER,
+  sourceColumnNames.LAND_DETAILS_CONFIRMED_DT_KEY,
+  sourceColumnNames.BUSINESS_DET_CONFIRMED_DT_KEY,
+  sourceColumnNames.REGISTRATION_DATE,
+  sourceColumnNames.CHARITY_COMMISSION_REGNUM,
+  sourceColumnNames.COMPANIES_HOUSE_REGNUM,
+  sourceColumnNames.ADDITIONAL_BUSINESSES,
+  sourceColumnNames.AMENDED,
+  sourceColumnNames.TRADER_NUMBER,
+  sourceColumnNames.DATE_STARTED_FARMING,
+  sourceColumnNames.ACCOUNTABLE_PEOPLE_COMPLETED,
+  sourceColumnNames.FINANCIAL_TO_BUSINESS_ADDR,
+  sourceColumnNames.CORR_AS_BUSINESS_ADDR,
+  sourceColumnNames.LAST_UPDATED_ON
+]
 
-  const columns = [
-    sourceColumnNames.CHANGE_TYPE,
-    sourceColumnNames.CHANGE_TIME,
-    sourceColumnNames.PARTY_ID,
-    sourceColumnNames.ORGANISATION_NAME,
-    sourceColumnNames.CONFIRMED_FLG,
-    sourceColumnNames.LAND_CONFIRMED_FLG,
-    sourceColumnNames.SBI,
-    sourceColumnNames.TAX_REGISTRATION_NUMBER,
-    sourceColumnNames.LEGAL_STATUS_TYPE_ID,
-    sourceColumnNames.BUSINESS_REFERENCE,
-    sourceColumnNames.BUSINESS_TYPE_ID,
-    sourceColumnNames.VENDOR_NUMBER,
-    sourceColumnNames.LAND_DETAILS_CONFIRMED_DT_KEY,
-    sourceColumnNames.BUSINESS_DET_CONFIRMED_DT_KEY,
-    sourceColumnNames.REGISTRATION_DATE,
-    sourceColumnNames.CHARITY_COMMISSION_REGNUM,
-    sourceColumnNames.COMPANIES_HOUSE_REGNUM,
-    sourceColumnNames.ADDITIONAL_BUSINESSES,
-    sourceColumnNames.AMENDED,
-    sourceColumnNames.TRADER_NUMBER,
-    sourceColumnNames.DATE_STARTED_FARMING,
-    sourceColumnNames.ACCOUNTABLE_PEOPLE_COMPLETED,
-    sourceColumnNames.FINANCIAL_TO_BUSINESS_ADDR,
-    sourceColumnNames.CORR_AS_BUSINESS_ADDR,
-    sourceColumnNames.LAST_UPDATED_ON
-  ]
-
-  const mapping = [
+const getMapping = (format) => {
+  return [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
     { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
     { column: sourceColumnNames.PARTY_ID, targetColumn: targetColumnNames.partyId, targetType: NUMBER },
@@ -64,52 +62,56 @@ const stageOrganisation = async (monthDayFormat = false, folder = 'organisation'
     { column: sourceColumnNames.CORR_AS_BUSINESS_ADDR, targetColumn: targetColumnNames.corrAsBusinessAddr, targetType: NUMBER },
     { column: sourceColumnNames.LAST_UPDATED_ON, targetColumn: targetColumnNames.lastUpdatedOn, targetType: DATE, format }
   ]
+}
 
-  const transformer = [
+const transformer = [
+  {
+    column: sourceColumnNames.ORGANISATION_NAME,
+    find: '\'',
+    replace: '\'\'',
+    all: true
+  }
+]
+
+let nonProdTransformer = []
+if (!config.isProd) {
+  nonProdTransformer = [
     {
-      column: sourceColumnNames.ORGANISATION_NAME,
-      find: '\'',
-      replace: '\'\'',
-      all: true
+      name: sourceColumnNames.ORGANISATION_NAME,
+      faker: COMPANY_NAME
     }
   ]
+}
 
-  let nonProdTransformer = []
-  if (!config.isProd) {
-    nonProdTransformer = [
-      {
-        name: sourceColumnNames.ORGANISATION_NAME,
-        faker: COMPANY_NAME
-      }
-    ]
-  }
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.accountablePeopleCompleted,
+    targetColumnNames.additionalBusinesses,
+    targetColumnNames.amended,
+    targetColumnNames.businessDetConfirmedDtKey,
+    targetColumnNames.businessReference,
+    targetColumnNames.businessTypeId,
+    targetColumnNames.charityCommissionRegnum,
+    targetColumnNames.companiesHouseRegnum,
+    targetColumnNames.confirmedFlg,
+    targetColumnNames.corrAsBusinessAddr,
+    targetColumnNames.dateStartedFarming,
+    targetColumnNames.financialToBusinessAddr,
+    targetColumnNames.landConfirmedFlg,
+    targetColumnNames.landDetailsConfirmedDtKey,
+    targetColumnNames.legalStatusTypeId,
+    targetColumnNames.organisationName,
+    targetColumnNames.registrationDate,
+    targetColumnNames.taxRegistrationNumber,
+    targetColumnNames.traderNumber,
+    targetColumnNames.vendorNumber
+  ]
+}
 
-  let excludedFields = []
-  if (config.etlConfig.excludeCalculationData) {
-    excludedFields = [
-      targetColumnNames.accountablePeopleCompleted,
-      targetColumnNames.additionalBusinesses,
-      targetColumnNames.amended,
-      targetColumnNames.businessDetConfirmedDtKey,
-      targetColumnNames.businessReference,
-      targetColumnNames.businessTypeId,
-      targetColumnNames.charityCommissionRegnum,
-      targetColumnNames.companiesHouseRegnum,
-      targetColumnNames.confirmedFlg,
-      targetColumnNames.corrAsBusinessAddr,
-      targetColumnNames.dateStartedFarming,
-      targetColumnNames.financialToBusinessAddr,
-      targetColumnNames.landConfirmedFlg,
-      targetColumnNames.landDetailsConfirmedDtKey,
-      targetColumnNames.legalStatusTypeId,
-      targetColumnNames.organisationName,
-      targetColumnNames.registrationDate,
-      targetColumnNames.taxRegistrationNumber,
-      targetColumnNames.traderNumber,
-      targetColumnNames.vendorNumber
-    ]
-  }
-
+const stageOrganisation = async (monthDayFormat = false, folder = 'organisation') => {
+  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+  const mapping = getMapping(format)
   return downloadAndProcessFile(folder, organisation, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 

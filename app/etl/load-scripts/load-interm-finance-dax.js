@@ -20,7 +20,7 @@ const loadIntermFinanceDAX = async (startDate, transaction, folder = etlConfig.f
   const idFrom = etlStageLog[0].idFrom
   const idTo = etlStageLog[0].idTo
 
-  await processWithWorkers(query, batchSize, idFrom, idTo, transaction, 'financeDAX')
+  await processWithWorkers({ query, batchSize, idFrom, idTo, transaction, recordType: 'financeDAX' })
 }
 
 const loadIntermFinanceDAXDelinked = async (startDate, transaction) => {

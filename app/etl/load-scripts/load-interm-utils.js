@@ -59,7 +59,8 @@ const limitConcurrency = async (promises, maxConcurrent) => {
   return Promise.all(results)
 }
 
-const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null) => {
+const processWithWorkers = async (options) => {
+  const { query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
   const workerPromises = []
   const activeWorkers = new Set()
   // Synchronise control
