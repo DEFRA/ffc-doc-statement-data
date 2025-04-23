@@ -1,6 +1,26 @@
 const { etlConfig } = require('../../../../app/config')
 const db = require('../../../../app/data')
 const { loadIntermApplicationContract } = require('../../../../app/etl/load-scripts/load-interm-application-contract')
+const { processWithWorkers } = require('../../../../app/etl/load-scripts/load-interm-utils')
+
+// Mock the config module
+jest.mock('../../../../app/config', () => ({
+  etlConfig: {
+    cssContractApplications: {
+      folder: 'CSS_Contract_Applications'
+    },
+    cssContract: {
+      folder: 'CSS_Contract'
+    },
+    etlBatchSize: 1000
+  },
+  dbConfig: {
+    test: {
+      schema: 'test_schema'
+    }
+  },
+  env: 'test'
+}))
 
 jest.mock('../../../../app/data', () => ({
   sequelize: {
@@ -16,18 +36,32 @@ jest.mock('../../../../app/data', () => ({
   }
 }))
 
+jest.mock('../../../../app/etl/load-scripts/load-interm-utils', () => {
+  const actual = jest.requireActual('../../../../app/etl/load-scripts/load-interm-utils')
+  return {
+    ...actual,
+    processWithWorkers: jest.fn()
+  }
+})
+
 describe('loadIntermApplicationContract', () => {
   const startDate = '2023-01-01'
+  const transaction = {}
 
   beforeEach(() => {
     db.etlStageLog.findAll.mockClear()
     db.sequelize.query.mockClear()
+    processWithWorkers.mockClear()
   })
 
   test('should throw an error if multiple records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications/export.csv', idFrom: 1, idTo: 2 }, { file: 'CSS_Contract_Applications/export.csv', idFrom: 3, idTo: 4 }])
+    const file = `${etlConfig.cssContractApplications.folder}/export.csv`
+    db.etlStageLog.findAll.mockResolvedValue([
+      { idFrom: 1, idTo: 2, file, endedAt: new Date() },
+      { idFrom: 3, idTo: 4, file, endedAt: new Date() }
+    ])
 
-    await expect(loadIntermApplicationContract(startDate)).rejects.toThrow(
+    await expect(loadIntermApplicationContract(startDate, transaction)).rejects.toThrow(
       `Multiple records found for updates to ${etlConfig.cssContractApplications.folder}, expected only one`
     )
   })
@@ -35,56 +69,25 @@ describe('loadIntermApplicationContract', () => {
   test('should return if no records are found', async () => {
     db.etlStageLog.findAll.mockResolvedValue([])
 
-    await expect(loadIntermApplicationContract(startDate)).resolves.toBeUndefined()
-    expect(db.sequelize.query).not.toHaveBeenCalled()
+    await expect(loadIntermApplicationContract(startDate, transaction)).resolves.toBeUndefined()
+    expect(processWithWorkers).not.toHaveBeenCalled()
   })
 
-  test.skip('should call sequelize.query with correct SQL and parameters', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications/export.csv', idFrom: 1, idTo: 2 }])
+  test('should process records with worker threads', async () => {
+    const file = `${etlConfig.cssContractApplications.folder}/export.csv`
+    db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
+    processWithWorkers.mockResolvedValue(undefined)
 
-    await loadIntermApplicationContract(startDate)
+    await loadIntermApplicationContract(startDate, transaction)
 
-    expect(db.sequelize.query).toHaveBeenCalledWith(`
-    WITH newdata AS (
-      SELECT
-        cc."contractId",
-        MIN(cc."startDt") AS "agreementStart",
-        MIN(cc."endDt") AS "agreementEnd",
-        ca."applicationId",
-        cl.pkid,
-        cl."changeType"
-      FROM public."etlStageCssContractApplications" cl
-      INNER JOIN public."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
-      INNER JOIN public."etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
-      WHERE cl."dataSourceSCode" = 'CAPCLM'
-        AND cl."etlId" BETWEEN 1 AND 2
-        
-      GROUP BY cc."contractId", ca."applicationId", cl."changeType", cl.pkid
-    ),
-    updatedrows AS (
-      UPDATE public."etlIntermApplicationContract" interm
-      SET
-        "contractId" = newdata."contractId",
-        "agreementStart" = newdata."agreementStart",
-        "agreementEnd" = newdata."agreementEnd",
-        "applicationId" = newdata."applicationId",
-        "etlInsertedDt" = NOW()
-      FROM newdata
-      WHERE newdata."changeType" = 'UPDATE'
-        AND interm.pkid = newdata.pkid
-      RETURNING interm.pkid
-    )
-    INSERT INTO public."etlIntermApplicationContract" (
-      "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
-    )
-    SELECT "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
-    FROM newdata
-    WHERE "changeType" = 'INSERT'
-      OR ("changeType" = 'UPDATE' AND pkid NOT IN (SELECT pkid FROM updatedrows));
-  `, {
-      replacements: {},
-      raw: true,
-      transaction: undefined
-    })
+    expect(processWithWorkers).toHaveBeenCalled()
+  })
+
+  test('should handle errors thrown by worker threads', async () => {
+    const file = `${etlConfig.cssContractApplications.folder}/export.csv`
+    db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
+    processWithWorkers.mockRejectedValue(new Error('Worker processing failed'))
+
+    await expect(loadIntermApplicationContract(startDate, transaction)).rejects.toThrow('Worker processing failed')
   })
 })
