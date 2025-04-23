@@ -5,7 +5,8 @@ const { Worker } = require('worker_threads')
 const path = require('path')
 
 const numCPUs = os.cpus().length
-const MAX_WORKERS = numCPUs === 2 ? 1 : numCPUs - 2 // Set the maximum number of workers
+// 2 workers to each CPU (with some spare CPUs for redunancy) because I/O task
+const MAX_WORKERS = 2 * (numCPUs === 2 ? 1 : numCPUs - 2) // Set the maximum number of workers
 
 const getEtlStageLogs = async (startDate, folder) => {
   const folders = Array.isArray(folder) ? folder : [folder]
