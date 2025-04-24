@@ -25,7 +25,7 @@ describe('loadIntermOrg', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization/export.csv', idFrom: 1, idTo: 2 }, { file: 'Organization/export.csv', idFrom: 3, idTo: 4 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization_SFI23/export.csv', idFrom: 1, idTo: 2 }, { file: 'Organization_SFI23/export.csv', idFrom: 3, idTo: 4 }])
 
     await expect(loadIntermOrg(startDate)).rejects.toThrow(
       `Multiple records found for updates to ${etlConfig.organisation.folder}, expected only one`
@@ -40,7 +40,7 @@ describe('loadIntermOrg', () => {
   })
 
   test('should call sequelize.query with correct SQL and parameters', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization/export.csv', idFrom: 1, idTo: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'Organization_SFI23/export.csv', idFrom: 1, idTo: 2 }])
 
     await loadIntermOrg(startDate)
 

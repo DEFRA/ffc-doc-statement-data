@@ -19,7 +19,7 @@ describe('stageCSSOptions', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'CSS_Options/export.csv'
+    const mockFile = 'CSS_Options_SFI23/export.csv'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',

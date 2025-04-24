@@ -18,7 +18,7 @@ describe('stageFinanceDAX', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'Finance_Dax/export.csv'
+    const mockFile = 'Finance_Dax_SFI23/export.csv'
     const mockUuid = 'mock-uuid'
 
     uuidv4.mockReturnValue(mockUuid)

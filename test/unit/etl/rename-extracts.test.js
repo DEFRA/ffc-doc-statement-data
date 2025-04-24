@@ -59,9 +59,9 @@ test('getOutputPathFromFileName returns correct folder path', () => {
 })
 
 test('renameExtracts calls getDWHExtracts and moveFile with correct arguments', async () => {
-  const appDetailFolder = 'Application_Detail'
+  const appDetailFolder = 'Application_Detail_SFI23'
   const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
-  const appPaymentFolder = 'Apps_Payment_Notification'
+  const appPaymentFolder = 'Apps_Payment_Notification_SFI23'
   const appPaymentFile = 'SFI23_STMT_APPS_PAYMENT_NOTIFICATIONS_V_CHANGE_LOG_20241227_130800.csv'
   const mockExtracts = [`${appDetailFolder}/${appDetailFile}`, `${appPaymentFolder}/${appPaymentFile}`]
   getDWHExtracts.mockResolvedValue(mockExtracts)
@@ -69,6 +69,6 @@ test('renameExtracts calls getDWHExtracts and moveFile with correct arguments', 
   await renameExtracts()
 
   expect(getDWHExtracts).toHaveBeenCalled()
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith('dwh_extracts_SFI23', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith('dwh_extracts_SFI23', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
 })

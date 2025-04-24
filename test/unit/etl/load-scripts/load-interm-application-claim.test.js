@@ -25,7 +25,7 @@ describe('loadIntermApplicationClaim', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications/export.csv', idFrom: 1, idTo: 2 }, { file: 'CSS_Contract_Applications/export.csv', idFrom: 3, idTo: 4 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications_SFI23/export.csv', idFrom: 1, idTo: 2 }, { file: 'CSS_Contract_Applications_SFI23/export.csv', idFrom: 3, idTo: 4 }])
 
     await expect(loadIntermApplicationClaim(startDate)).rejects.toThrow(
       `Multiple records found for updates to ${etlConfig.cssContractApplications.folder}, expected only one`
@@ -40,7 +40,7 @@ describe('loadIntermApplicationClaim', () => {
   })
 
   test.skip('should call sequelize.query with correct SQL and parameters', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications/export.csv', idFrom: 1, idTo: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications_SFI23/export.csv', idFrom: 1, idTo: 2 }])
 
     await loadIntermApplicationClaim(startDate)
 
@@ -87,7 +87,7 @@ describe('loadIntermApplicationClaim', () => {
   })
 
   test.skip('should handle errors thrown by sequelize.query', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications/export.csv', idFrom: 1, idTo: 2 }])
+    db.etlStageLog.findAll.mockResolvedValue([{ file: 'CSS_Contract_Applications_SFI23/export.csv', idFrom: 1, idTo: 2 }])
     db.sequelize.query.mockRejectedValue(new Error('Query failed'))
 
     await expect(loadIntermApplicationClaim(startDate)).rejects.toThrow('Query failed')
