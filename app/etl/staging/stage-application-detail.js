@@ -80,7 +80,6 @@ const stageApplicationDetails = async (monthDayFormat = false, folder = 'applica
       targetColumnNames.sourceSCode,
       targetColumnNames.statusPCode,
       targetColumnNames.statusSCode,
-      targetColumnNames.subjectId,
       targetColumnNames.uteId,
       targetColumnNames.userId,
       targetColumnNames.validEndFlg,
