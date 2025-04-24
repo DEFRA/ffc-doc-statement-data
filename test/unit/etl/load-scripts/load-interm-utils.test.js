@@ -16,7 +16,8 @@ jest.mock('../../../../app/data', () => ({
   }
 }))
 
-jest.mock('worker_threads', () => {
+// Create a mock worker instance that can be reused
+const createMockWorker = () => {
   const mockWorker = {
     on: jest.fn((event, callback) => {
       if (event === 'message') {
@@ -36,9 +37,19 @@ jest.mock('worker_threads', () => {
       if (this.exitHandler) this.exitHandler(code)
     }
   }
+  return mockWorker
+}
+
+// Mock the Worker constructor
+jest.mock('worker_threads', () => {
+  const mockWorker = createMockWorker()
 
   return {
-    Worker: jest.fn().mockImplementation(() => mockWorker)
+    Worker: jest.fn().mockImplementation((path, options) => {
+      // Store the arguments for verification in tests
+      mockWorker.constructorArgs = { path, options }
+      return mockWorker
+    })
   }
 })
 
@@ -148,7 +159,14 @@ describe('load-interm-utils', () => {
       const transaction = {}
       const recordType = 'test'
 
-      const processPromise = processWithWorkers(query, batchSize, idFrom, idTo, transaction, recordType)
+      const processPromise = processWithWorkers({
+        query,
+        batchSize,
+        idFrom,
+        idTo,
+        transaction,
+        recordType
+      })
 
       // Wait for the worker to be set up
       await new Promise(resolve => setImmediate(resolve))
@@ -159,6 +177,7 @@ describe('load-interm-utils', () => {
 
       await processPromise
 
+      // Verify the Worker constructor was called with the correct arguments
       expect(Worker).toHaveBeenCalledWith(expect.any(String), {
         workerData: expect.objectContaining({
           query,
@@ -179,7 +198,14 @@ describe('load-interm-utils', () => {
       const transaction = {}
       const recordType = 'test'
 
-      const processPromise = processWithWorkers(query, batchSize, idFrom, idTo, transaction, recordType)
+      const processPromise = processWithWorkers({
+        query,
+        batchSize,
+        idFrom,
+        idTo,
+        transaction,
+        recordType
+      })
 
       // Wait for the worker to be set up
       await new Promise(resolve => setImmediate(resolve))
@@ -203,7 +229,7 @@ describe('load-interm-utils', () => {
       const exclusionScript = 'test script'
       const tableAlias = 'test_alias'
 
-      const processPromise = processWithWorkers(
+      const processPromise = processWithWorkers({
         query,
         batchSize,
         idFrom,
@@ -213,7 +239,7 @@ describe('load-interm-utils', () => {
         queryTemplate,
         exclusionScript,
         tableAlias
-      )
+      })
 
       // Wait for the worker to be set up
       await new Promise(resolve => setImmediate(resolve))
@@ -224,6 +250,7 @@ describe('load-interm-utils', () => {
 
       await processPromise
 
+      // Verify the Worker constructor was called with the correct arguments
       expect(Worker).toHaveBeenCalledWith(expect.any(String), {
         workerData: expect.objectContaining({
           query: expect.any(String),
