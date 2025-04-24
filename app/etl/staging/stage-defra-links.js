@@ -29,7 +29,6 @@ const stageDefraLinks = async (monthDayFormat = false, folder = 'defraLinks') =>
   let excludedFields = []
   if (config.etlConfig.excludeCalculationData) {
     excludedFields = [
-      targetColumnNames.defraId,
       targetColumnNames.defraType,
       targetColumnNames.mdmId
     ]
