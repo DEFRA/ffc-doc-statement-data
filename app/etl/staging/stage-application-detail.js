@@ -61,30 +61,30 @@ const getMapping = (format) => {
   ]
 }
 
-  let excludedFields = []
-  if (config.etlConfig.excludeCalculationData) {
-    excludedFields = [
-      targetColumnNames.amendedAppId,
-      targetColumnNames.applicationCode,
-      targetColumnNames.appIdEnd,
-      targetColumnNames.appIdStart,
-      targetColumnNames.appTypeId,
-      targetColumnNames.dtEnd,
-      targetColumnNames.dtInsert,
-      targetColumnNames.dtRecUpdate,
-      targetColumnNames.dtStart,
-      targetColumnNames.dtDelete,
-      targetColumnNames.proxyId,
-      targetColumnNames.sourcePCode,
-      targetColumnNames.sourceSCode,
-      targetColumnNames.statusPCode,
-      targetColumnNames.statusSCode,
-      targetColumnNames.uteId,
-      targetColumnNames.userId,
-      targetColumnNames.validEndFlg,
-      targetColumnNames.validStartFlg
-    ]
-  }
+let excludedFields = []
+if (config.etlConfig.excludeCalculationData) {
+  excludedFields = [
+    targetColumnNames.amendedAppId,
+    targetColumnNames.applicationCode,
+    targetColumnNames.appIdEnd,
+    targetColumnNames.appIdStart,
+    targetColumnNames.appTypeId,
+    targetColumnNames.dtEnd,
+    targetColumnNames.dtInsert,
+    targetColumnNames.dtRecUpdate,
+    targetColumnNames.dtStart,
+    targetColumnNames.dtDelete,
+    targetColumnNames.proxyId,
+    targetColumnNames.sourcePCode,
+    targetColumnNames.sourceSCode,
+    targetColumnNames.statusPCode,
+    targetColumnNames.statusSCode,
+    targetColumnNames.uteId,
+    targetColumnNames.userId,
+    targetColumnNames.validEndFlg,
+    targetColumnNames.validStartFlg
+  ]
+}
 
 const stageApplicationDetails = async (monthDayFormat = false, folder = 'applicationDetail') => {
   const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat

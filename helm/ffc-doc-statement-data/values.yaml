@@ -39,8 +39,8 @@ container:
   azureStorageCreateContainers: false
   demographicsActive: true
   excludeCalculationData: true
-  sfi23Enabled: true
-  delinkedEnabled: false
+  sfi23Enabled: false
+  delinkedEnabled: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data
