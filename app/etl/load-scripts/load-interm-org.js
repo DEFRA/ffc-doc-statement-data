@@ -13,15 +13,8 @@ const defaultFolderToAliasMap = {
   [etlConfig.businessAddress.folder]: 'A'
 }
 
-const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
-  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
-
-  if (!etlStageLogs.length) {
-    return
-  }
-
-  const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
- WITH "newData" AS (
+const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
+  WITH "newData" AS (
     SELECT
       O."sbi",
       A."businessAddress1" AS "addressLine1",
@@ -92,6 +85,14 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
   WHERE "changeType" = 'INSERT'
     OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 `
+
+const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+  const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
+
+  if (!etlStageLogs.length) {
+    return
+  }
+
   const batchSize = etlConfig.etlBatchSize
   let exclusionScript = ''
   for (const log of etlStageLogs) {
@@ -99,7 +100,7 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    await processWithWorkers(null, batchSize, log.idFrom, log.idTo, transaction, `org records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias)
+    await processWithWorkers({ query: null, batchSize, idFrom: log.idFrom, idTo: log.idTo, transaction, recordType: `org records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias })
 
     console.log(`Processed org records for folder ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`

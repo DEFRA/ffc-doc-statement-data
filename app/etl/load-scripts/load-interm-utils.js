@@ -60,9 +60,9 @@ const limitConcurrency = async (promises, maxConcurrent) => {
   return Promise.all(results)
 }
 
-const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null) => {
+const processWithWorkers = async (options) => {
+  const { query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
   const workerPromises = []
-  const activeWorkers = new Set()
   // Synchronise control
   const semaphore = {
     count: 0,
@@ -125,7 +125,6 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
       })
 
       worker.on('exit', (code) => {
-        activeWorkers.delete(workerPromise)
         worker.terminate().catch(console.error)
         semaphore.release()
         if (code !== 0) {
@@ -134,7 +133,6 @@ const processWithWorkers = async (query, batchSize, idFrom, idTo, transaction, r
       })
     })
 
-    activeWorkers.add(workerPromise)
     workerPromises.push(workerPromise)
   }
 

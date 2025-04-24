@@ -128,7 +128,9 @@ const schema = Joi.object({
   }).required(),
   useConnectionStr: Joi.boolean().default(false),
   createContainers: Joi.boolean().default(false),
-  managedIdentityClientId: Joi.string().optional()
+  managedIdentityClientId: Joi.string().optional(),
+  sfi23Enabled: Joi.boolean().default(true),
+  delinkedEnabled: Joi.boolean().default(true)
 })
 
 const config = {
@@ -136,7 +138,7 @@ const config = {
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   container: 'etl',
-  dwhExtractsFolder: 'dwh_extracts_delinked',
+  dwhExtractsFolder: 'dwh_extracts',
   etlLogsFolder: 'logs',
   etlBatchSize: 2000,
   excludeCalculationData: process.env.EXCLUDE_CALCULATION_DATA,
@@ -254,7 +256,9 @@ const config = {
   },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,
-  managedIdentityClientId: process.env.AZURE_CLIENT_ID
+  managedIdentityClientId: process.env.AZURE_CLIENT_ID,
+  sfi23Enabled: process.env.SFI_23_ENABLED,
+  delinkedEnabled: process.env.DELINKED_ENABLED
 }
 
 const result = schema.validate(config, {

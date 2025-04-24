@@ -64,7 +64,7 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    await processWithWorkers(null, batchSize, log.idFrom, log.idTo, transaction, `application claim records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias)
+    await processWithWorkers({ query: null, batchSize, idFrom: log.idFrom, idTo: log.idTo, transaction, recordType: `application claim records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias })
 
     console.log(`Processed application claim records for ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`
