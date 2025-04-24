@@ -78,7 +78,6 @@ describe('stageDefraLinks', () => {
       mapping: mockMapping,
       file: mockFile,
       excludedFields: [
-        'defraId',
         'defraType',
         'mdmId'
       ]

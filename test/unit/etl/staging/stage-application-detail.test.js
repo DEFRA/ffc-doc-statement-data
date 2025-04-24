@@ -103,7 +103,6 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
     'sourceSCode',
     'statusPCode',
     'statusSCode',
-    'subjectId',
     'uteId',
     'userId',
     'validEndFlg',
