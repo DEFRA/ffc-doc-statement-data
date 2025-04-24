@@ -46,16 +46,6 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
           etlFlow.transform(new Transformers.StringReplaceTransformer(transformer))
         }
 
-        // Log the destination configuration
-        console.log(`Destination config for ${table}:`, {
-          table,
-          connection: 'postgresConnection',
-          mapping,
-          includeErrors: false,
-          schema: dbConfig.schema,
-          ignoredColumns: excludedFields
-        })
-
         etlFlow
           .destination(new Destinations.PostgresDestination({
             table,
