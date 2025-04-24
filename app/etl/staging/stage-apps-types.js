@@ -2,11 +2,11 @@ const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
 const { appsTypes } = require('../../constants/tables')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
   const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
@@ -18,7 +18,7 @@ const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
     sourceColumnNames.EXT_DESCRIPTION,
     sourceColumnNames.YEAR,
     sourceColumnNames.WIN_OPEN_DATE,
-    sourceColumnNames.WIN_CLOSE_DATE
+    sourceColumnNames.WIN_CLOSE_DATE   
   ]
 
   const mapping = [
