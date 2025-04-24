@@ -17,6 +17,9 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
     rowCount
   })
 
+  // Get a fresh stream for the ETL process
+  const freshFileStream = await storage.downloadFileAsStream(file)
+  
   return new Promise((resolve, reject) => {
     (async () => {
       try {
@@ -25,7 +28,12 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             name: 'postgresConnection',
             sequelize: db.sequelize
           }))
-          .loader(new Loaders.CSVLoader({ stream: fileStream, columns, startingLine: 3, relax: true }))
+          .loader(new Loaders.CSVLoader({ 
+            stream: freshFileStream, 
+            columns, 
+            startingLine: 3,
+            relax: true
+          }))
 
         if (nonProdTransformer && !config.isProd) {
           etlFlow.transform(new Transformers.FakerTransformer({
@@ -38,6 +46,16 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
           etlFlow.transform(new Transformers.StringReplaceTransformer(transformer))
         }
 
+        // Log the destination configuration
+        console.log(`Destination config for ${table}:`, {
+          table,
+          connection: 'postgresConnection',
+          mapping,
+          includeErrors: false,
+          schema: dbConfig.schema,
+          ignoredColumns: excludedFields
+        })
+
         etlFlow
           .destination(new Destinations.PostgresDestination({
             table,
@@ -49,6 +67,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
           }))
           .pump()
           .on('finish', async (data) => {
+            console.log(`ETL process finished for ${table}.`)
             global.results.push({
               table,
               database: dbConfig.database,
@@ -75,6 +94,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             reject(error)
           })
       } catch (e) {
+        console.error('ETL process exception:', e)
         return reject(e)
       }
     })()
