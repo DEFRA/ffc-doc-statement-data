@@ -10,10 +10,10 @@ const loadETLData = async (startDate) => {
   })
 
   // Wrap each load function with logging
-  const wrapWithLogging = (fn, name) => async () => {
+  const wrapWithLogging = (fn, name) => async (_startDate = null, transaction = null) => {
     console.log(`Starting ${name} at ${new Date().toISOString()}`)
     try {
-      const result = await fn(startDate)
+      const result = transaction ? await fn(startDate, transaction) : await fn(startDate)
       console.log(`Completed ${name} at ${new Date().toISOString()}`)
       return result
     } catch (error) {
