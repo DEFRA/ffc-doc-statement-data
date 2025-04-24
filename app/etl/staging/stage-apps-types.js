@@ -18,7 +18,7 @@ const stageAppsTypes = async (monthDayFormat = false, folder = 'appsTypes') => {
     sourceColumnNames.EXT_DESCRIPTION,
     sourceColumnNames.YEAR,
     sourceColumnNames.WIN_OPEN_DATE,
-    sourceColumnNames.WIN_CLOSE_DATE   
+    sourceColumnNames.WIN_CLOSE_DATE
   ]
 
   const mapping = [

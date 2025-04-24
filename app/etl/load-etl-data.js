@@ -53,31 +53,31 @@ const loadETLData = async (startDate) => {
     console.log(`Starting batch 1 with ${promisesBatch1.length} promises at ${new Date().toISOString()}`)
     await Promise.all(promisesBatch1)
     console.log(`Completed batch 1 at ${new Date().toISOString()}`)
-    
+
     console.log(`Starting batch 2 with ${promisesBatch2.length} promises at ${new Date().toISOString()}`)
     await Promise.all(promisesBatch2)
     console.log(`Completed batch 2 at ${new Date().toISOString()}`)
-    
+
     console.log(`Starting batch 3 with ${promisesBatch3.length} promises at ${new Date().toISOString()}`)
     await Promise.all(promisesBatch3)
     console.log(`Completed batch 3 at ${new Date().toISOString()}`)
-    
+
     console.log(`Starting loadIntermPaymentrefOrg at ${new Date().toISOString()}`)
     await loadIntermPaymentrefOrg(startDate)
     console.log(`Completed loadIntermPaymentrefOrg at ${new Date().toISOString()}`)
-    
+
     console.log(`Starting loadTotals at ${new Date().toISOString()}`)
     await loadTotals(startDate, transaction)
     console.log(`Completed loadTotals at ${new Date().toISOString()}`)
-    
+
     console.log(`Starting loadDelinkedCalculation at ${new Date().toISOString()}`)
     await loadDelinkedCalculation(startDate, transaction)
     console.log(`Completed loadDelinkedCalculation at ${new Date().toISOString()}`)
-    
+
     console.log(`Starting loadD365 at ${new Date().toISOString()}`)
     await loadD365(startDate, transaction)
     console.log(`Completed loadD365 at ${new Date().toISOString()}`)
-    
+
     await transaction.commit()
     console.log(`ETL data successfully loaded at ${new Date().toISOString()}`)
   } catch (error) {

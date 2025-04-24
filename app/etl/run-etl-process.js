@@ -19,7 +19,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
 
   // Get a fresh stream for the ETL process
   const freshFileStream = await storage.downloadFileAsStream(file)
-  
+
   return new Promise((resolve, reject) => {
     (async () => {
       try {
@@ -28,9 +28,9 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
             name: 'postgresConnection',
             sequelize: db.sequelize
           }))
-          .loader(new Loaders.CSVLoader({ 
-            stream: freshFileStream, 
-            columns, 
+          .loader(new Loaders.CSVLoader({
+            stream: freshFileStream,
+            columns,
             startingLine: 3,
             relax: true
           }))
