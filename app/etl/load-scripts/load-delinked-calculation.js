@@ -27,30 +27,32 @@ INSERT INTO ${dbConfig.schema}."delinkedCalculation" (
     "paymentAmountCalculated"
 )
 SELECT 
-    P."calculationId" AS "calculationId",
-    P."applicationId" AS "applicationId",
+    P."calculationId",
+    P."applicationId",
     CAST(P."sbi" AS INTEGER),
     CAST(P."frn" AS VARCHAR),
-    CAST(P."paymentBand1" AS VARCHAR),
-    CAST(P."paymentBand2" AS VARCHAR),
-    CAST(P."paymentBand3" AS VARCHAR),
-    CAST(P."paymentBand4" AS VARCHAR),
-    CAST(P."percentageReduction1" AS VARCHAR),
-    CAST(P."percentageReduction2" AS VARCHAR),
-    CAST(P."percentageReduction3" AS VARCHAR),
-    CAST(P."percentageReduction4" AS VARCHAR),
-    CAST(P."progressiveReductions1" AS VARCHAR),
-    CAST(P."progressiveReductions2" AS VARCHAR),
-    CAST(P."progressiveReductions3" AS VARCHAR),
-    CAST(P."progressiveReductions4" AS VARCHAR),
-    CAST(P."referenceAmount" AS VARCHAR),
-    CAST(P."totalProgressiveReduction" AS VARCHAR),
-    CAST(P."totalDelinkedPayment" AS VARCHAR),
-    CAST(P."paymentAmountCalculated" AS VARCHAR)
+    SUM(CAST(P."paymentBand1" AS NUMERIC)) AS "paymentBand1",
+    SUM(CAST(P."paymentBand2" AS NUMERIC)) AS "paymentBand2",
+    SUM(CAST(P."paymentBand3" AS NUMERIC)) AS "paymentBand3",
+    SUM(CAST(P."paymentBand4" AS NUMERIC)) AS "paymentBand4",
+    SUM(CAST(P."percentageReduction1" AS NUMERIC)) AS "percentageReduction1",
+    SUM(CAST(P."percentageReduction2" AS NUMERIC)) AS "percentageReduction2",
+    SUM(CAST(P."percentageReduction3" AS NUMERIC)) AS "percentageReduction3",
+    SUM(CAST(P."percentageReduction4" AS NUMERIC)) AS "percentageReduction4",
+    SUM(CAST(P."progressiveReductions1" AS NUMERIC)) AS "progressiveReductions1",
+    SUM(CAST(P."progressiveReductions2" AS NUMERIC)) AS "progressiveReductions2",
+    SUM(CAST(P."progressiveReductions3" AS NUMERIC)) AS "progressiveReductions3",
+    SUM(CAST(P."progressiveReductions4" AS NUMERIC)) AS "progressiveReductions4",
+    SUM(CAST(P."referenceAmount" AS NUMERIC)) AS "referenceAmount",
+    SUM(CAST(P."totalProgressiveReduction" AS NUMERIC)) AS "totalProgressiveReduction",
+    SUM(CAST(P."totalDelinkedPayment" AS NUMERIC)) AS "totalDelinkedPayment",
+    SUM(CAST(P."paymentAmountCalculated" AS NUMERIC)) AS "paymentAmountCalculated"
 FROM 
     ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" P
 WHERE 
-    P."etlInsertedDt" > :startDate;
+    P."etlInsertedDt" > :startDate
+GROUP BY 
+    P."calculationId", P."applicationId", P."sbi", P."frn";
   `, {
     replacements: {
       startDate
