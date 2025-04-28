@@ -148,7 +148,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           "voucher",
           "yearendrunnumber",
         ],
-        "file": "Finance_Dax/export.csv",
+        "file": "Finance_Dax_SFI23/export.csv",
         "fileStream": Readable {
           "_destroy": [Function],
           "_events": {

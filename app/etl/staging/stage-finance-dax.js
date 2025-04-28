@@ -86,7 +86,7 @@ const columns = [
   sourceColumnNames.APPLICATIONREFERENCE
 ]
 
-const getMapping = (format) => {
+const getMapping1 = (format) => {
   return [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
     { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
@@ -113,7 +113,12 @@ const getMapping = (format) => {
     { column: sourceColumnNames.AMOUNTMSTGBP, targetColumn: targetColumnNames.amountmstgbp, targetType: NUMBER },
     { column: sourceColumnNames.QUARTER, targetColumn: targetColumnNames.quarter, targetType: VARCHAR },
     { column: sourceColumnNames.IDVOUCHER, targetColumn: targetColumnNames.idvoucher, targetType: VARCHAR },
-    { column: sourceColumnNames.TRANSTXT, targetColumn: targetColumnNames.transtxt, targetType: VARCHAR },
+    { column: sourceColumnNames.TRANSTXT, targetColumn: targetColumnNames.transtxt, targetType: VARCHAR }
+  ]
+}
+
+const getMapping2 = (format) => {
+  return [
     { column: sourceColumnNames.IRREGULARITYDEBT, targetColumn: targetColumnNames.irregularitydebt, targetType: NUMBER },
     { column: sourceColumnNames.SECTIONTYPE, targetColumn: targetColumnNames.sectiontype, targetType: NUMBER },
     { column: sourceColumnNames.TRANSRECID, targetColumn: targetColumnNames.transrecid, targetType: NUMBER },
@@ -167,6 +172,10 @@ const getMapping = (format) => {
     { column: sourceColumnNames.SCHEMETYPE, targetColumn: targetColumnNames.schemetype, targetType: NUMBER },
     { column: sourceColumnNames.APPLICATIONREFERENCE, targetColumn: targetColumnNames.applicationreference, targetType: VARCHAR }
   ]
+}
+
+const getMapping = (format) => {
+  return [...getMapping1(format), ...getMapping2(format)]
 }
 
 const transformer = [

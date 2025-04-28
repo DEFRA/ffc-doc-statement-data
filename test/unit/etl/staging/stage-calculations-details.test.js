@@ -19,7 +19,7 @@ describe('stageCalculationDetails', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'Calculations_Details_MV/export.csv'
+    const mockFile = 'Calculations_Details_MV_SFI23/export.csv'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',

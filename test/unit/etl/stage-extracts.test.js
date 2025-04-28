@@ -46,7 +46,7 @@ describe('ETL Process', () => {
     storage.getBlob.mockResolvedValue({
       upload: jest.fn().mockResolvedValue()
     })
-    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    storage.getFileList.mockResolvedValue(['Application_Detail_SFI23/file1'])
     loadETLData.mockResolvedValue()
 
     await stageExtracts()
@@ -68,7 +68,7 @@ describe('ETL Process', () => {
     storage.getBlob.mockResolvedValue({
       upload: uploadMock
     })
-    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    storage.getFileList.mockResolvedValue(['Application_Detail_SFI23/file1'])
     loadETLData.mockResolvedValue()
 
     await stageExtracts()
@@ -89,7 +89,7 @@ describe('ETL Process', () => {
     storage.getBlob.mockResolvedValue({
       upload: jest.fn().mockResolvedValue()
     })
-    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    storage.getFileList.mockResolvedValue(['Application_Detail_SFI23/file1'])
     loadETLData.mockResolvedValue()
 
     const mockDate = new Date()
@@ -118,18 +118,18 @@ describe('ETL Process', () => {
     ora.mockReturnValue(mockSpinner)
 
     storage.getFileList.mockResolvedValue([
-      'Application_Detail/file1',
-      'Apps_Types/file2',
-      'Apps_Payment_Notification/file3',
-      'Business_address_contact_v/file4',
-      'Calculations_Details_MV/file5',
-      'CSS_Contract_Applications/file6',
-      'CSS_Contract/file7',
-      'CSS_Options/file8',
-      'Defra_Links/file9',
-      'Finance_Dax/file10',
-      'Organization/file11',
-      'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option/file12'
+      'Application_Detail_SFI23/file1',
+      'Apps_Types_SFI23/file2',
+      'Apps_Payment_Notification_SFI23/file3',
+      'Business_address_contact_v_SFI23/file4',
+      'Calculations_Details_MV_SFI23/file5',
+      'CSS_Contract_Applications_SFI23/file6',
+      'CSS_Contract_SFI23/file7',
+      'CSS_Options_SFI23/file8',
+      'Defra_Links_SFI23/file9',
+      'Finance_Dax_SFI23/file10',
+      'Organization_SFI23/file11',
+      'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option_SFI23/file12'
     ])
     stageApplicationDetails.mockResolvedValue()
     stageAppsTypes.mockResolvedValue()
@@ -164,7 +164,7 @@ describe('ETL Process', () => {
     }
     ora.mockReturnValue(mockSpinner)
 
-    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    storage.getFileList.mockResolvedValue(['Application_Detail_SFI23/file1'])
     stageApplicationDetails.mockRejectedValue(new Error('Test error'))
 
     await stageExtracts()
@@ -176,7 +176,7 @@ describe('ETL Process', () => {
     etlConfig.sfi23Enabled = true
     etlConfig.delinkedEnabled = false
 
-    storage.getFileList.mockResolvedValue(['Application_Detail/file1'])
+    storage.getFileList.mockResolvedValue(['Application_Detail_SFI23/file1'])
 
     stageApplicationDetails.mockResolvedValue()
     stageAppsTypes.mockResolvedValue()
@@ -197,7 +197,7 @@ describe('ETL Process', () => {
     etlConfig.delinkedEnabled = true
 
     storage.getFileList.mockResolvedValue([
-      'Application_Detail/file1',
+      'Application_Detail_SFI23/file1',
       'Apps_Types_Delinked/file2'
     ])
 
@@ -222,9 +222,9 @@ describe('ETL Process', () => {
   test('should call the correct functions for their respective folders', async () => {
     etlConfig.sfi23Enabled = true
     storage.getFileList.mockResolvedValue([
-      'Application_Detail/file1',
-      'Apps_Types/file2',
-      'Apps_Payment_Notification/file3'
+      'Application_Detail_SFI23/file1',
+      'Apps_Types_SFI23/file2',
+      'Apps_Payment_Notification_SFI23/file3'
     ])
 
     stageApplicationDetails.mockResolvedValue()
