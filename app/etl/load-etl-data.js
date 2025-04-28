@@ -26,7 +26,6 @@ const loadETLData = async (startDate) => {
     wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAX')(),
     wrapWithLogging(loadIntermFinanceDAXDelinked, 'loadIntermFinanceDAXDelinked')(),
     wrapWithLogging(loadIntermOrg, 'loadIntermOrg')(),
-    wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(),
     wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')(),
     wrapWithLogging(loadIntermApplicationClaim, 'loadIntermApplicationClaim')(),
     wrapWithLogging(loadIntermApplicationClaimDelinked, 'loadIntermApplicationClaimDelinked')(),
@@ -36,46 +35,43 @@ const loadETLData = async (startDate) => {
 
   const promisesBatch2 = [
     wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrg')(),
+    wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(),
     wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(),
     wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')(),
-    wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, transaction),
-    wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
+    wrapWithLogging(loadOrganisations, 'loadOrganisations')(),
+    wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')()
   ]
 
   const promisesBatch3 = [
-    wrapWithLogging(loadDAX, 'loadDAX')(startDate, transaction),
+    wrapWithLogging(loadDAX, 'loadDAX')(),
     wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')(),
     wrapWithLogging(loadIntermTotalClaim, 'loadIntermTotalClaim')(),
-    wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')(startDate)
+    wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')()
   ]
 
   try {
-    console.log(`Starting batch 1 with ${promisesBatch1.length} promises at ${new Date().toISOString()}`)
-    await Promise.all(promisesBatch1)
-    console.log(`Completed batch 1 at ${new Date().toISOString()}`)
-
-    console.log(`Starting batch 2 with ${promisesBatch2.length} promises at ${new Date().toISOString()}`)
-    await Promise.all(promisesBatch2)
-    console.log(`Completed batch 2 at ${new Date().toISOString()}`)
-
-    console.log(`Starting batch 3 with ${promisesBatch3.length} promises at ${new Date().toISOString()}`)
-    await Promise.all(promisesBatch3)
-    console.log(`Completed batch 3 at ${new Date().toISOString()}`)
+    const batches = [promisesBatch1, promisesBatch2, promisesBatch3]
+    
+    for (const [index, batch] of batches.entries()) {
+      console.log(`Starting batch ${index + 1} with ${batch.length} promises at ${new Date().toISOString()}`)
+      await Promise.all(batch)
+      console.log(`Completed batch ${index + 1} at ${new Date().toISOString()}`)
+    }
 
     console.log(`Starting loadIntermPaymentrefOrg at ${new Date().toISOString()}`)
     await loadIntermPaymentrefOrg(startDate)
     console.log(`Completed loadIntermPaymentrefOrg at ${new Date().toISOString()}`)
 
     console.log(`Starting loadTotals at ${new Date().toISOString()}`)
-    await loadTotals(startDate, transaction)
+    await loadTotals(startDate)
     console.log(`Completed loadTotals at ${new Date().toISOString()}`)
 
     console.log(`Starting loadDelinkedCalculation at ${new Date().toISOString()}`)
-    await loadDelinkedCalculation(startDate, transaction)
+    await loadDelinkedCalculation(startDate)
     console.log(`Completed loadDelinkedCalculation at ${new Date().toISOString()}`)
 
     console.log(`Starting loadD365 at ${new Date().toISOString()}`)
-    await loadD365(startDate, transaction)
+    await loadD365(startDate)
     console.log(`Completed loadD365 at ${new Date().toISOString()}`)
 
     await transaction.commit()
