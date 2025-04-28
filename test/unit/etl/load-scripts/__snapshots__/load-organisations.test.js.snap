@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadOrganisations should call sequelize.query with correct parameters 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+    INSERT INTO public.organisations (
+      sbi, "addressLine1", "addressLine2",
+      "addressLine3", city, county,
+      postcode, "emailAddress", frn,
+      "name", updated
+    )
+    SELECT DISTINCT ON (sbi)
+      sbi, "addressLine1", "addressLine2",
+      "addressLine3", city, county,
+      SUBSTRING(postcode, 1, 7), "emailAddress", frn::integer,
+      "name", NOW()
+    FROM public."etlIntermOrg" O
+    WHERE O."etlInsertedDt" > :startDate
+    ORDER BY sbi, "etlInsertedDt" DESC;
+  ",
+      {
+        "raw": true,
+        "replacements": {
+          "startDate": 2023-01-01T00:00:00.000Z,
+        },
+        "transaction": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
