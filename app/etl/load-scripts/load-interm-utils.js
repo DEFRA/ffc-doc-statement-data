@@ -62,7 +62,7 @@ const limitConcurrency = async (promises, maxConcurrent) => {
 
 const processWithWorkers = async (options) => {
   const { query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
-  const workerPromises = []
+  
   // Synchronise control
   const semaphore = {
     count: 0,
@@ -133,14 +133,13 @@ const processWithWorkers = async (options) => {
       })
     })
 
-    workerPromises.push(workerPromise)
-  }
-
-  try {
-    await Promise.all(workerPromises)
-  } catch (error) {
-    console.error('Worker processing failed:', error)
-    throw error
+    // Wait for this batch to complete before starting the next one
+    try {
+      await workerPromise
+    } catch (error) {
+      console.error('Worker processing failed:', error)
+      throw error
+    }
   }
 }
 
