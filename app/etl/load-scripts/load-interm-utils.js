@@ -62,7 +62,7 @@ const limitConcurrency = async (promises, maxConcurrent) => {
 
 const processWithWorkers = async (options) => {
   const { query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
-  
+
   // Synchronise control
   const semaphore = {
     count: 0,

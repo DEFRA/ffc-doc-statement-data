@@ -51,7 +51,7 @@ const loadETLData = async (startDate) => {
 
   try {
     const batches = [promisesBatch1, promisesBatch2, promisesBatch3]
-    
+
     for (const [index, batch] of batches.entries()) {
       console.log(`Starting batch ${index + 1} with ${batch.length} promises at ${new Date().toISOString()}`)
       await Promise.all(batch)
