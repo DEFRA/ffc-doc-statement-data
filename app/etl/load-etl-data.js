@@ -31,14 +31,14 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermApplicationClaimDelinked, 'loadIntermApplicationClaimDelinked')()
     await wrapWithLogging(loadIntermApplicationContract, 'loadIntermApplicationContract')()
     await wrapWithLogging(loadIntermApplicationPayment, 'loadIntermApplicationPayment')()
-  
+
     await wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrg')()
     await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')()
     await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')()
     await wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')()
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')()
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')()
-  
+
     await wrapWithLogging(loadDAX, 'loadDAX')()
     await wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')()
     await wrapWithLogging(loadIntermTotalClaim, 'loadIntermTotalClaim')()
