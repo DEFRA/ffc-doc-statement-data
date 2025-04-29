@@ -8,40 +8,28 @@ const loadETLData = async (startDate) => {
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
   })
 
-  const promisesBatch1 = [
-    loadIntermFinanceDAX(startDate),
-    loadIntermFinanceDAXDelinked(startDate),
-    loadIntermOrg(startDate),
-    loadIntermCalcOrgDelinked(startDate),
-    loadIntermOrgDelinked(startDate),
-    loadIntermApplicationClaim(startDate),
-    loadIntermApplicationClaimDelinked(startDate),
-    loadIntermApplicationContract(startDate),
-    loadIntermApplicationPayment(startDate)
-  ]
-
-  const promisesBatch2 = [
-    loadIntermCalcOrg(startDate),
-    loadIntermTotal(startDate),
-    loadIntermTotalDelinked(startDate),
-    loadOrganisations(startDate, transaction),
-    loadIntermPaymentrefAgreementDates(startDate)
-  ]
-
-  const promisesBatch3 = [
-    loadDAX(startDate, transaction),
-    loadIntermAppCalcResultsDelinkPayment(startDate),
-    loadIntermTotalClaim(startDate),
-    loadIntermPaymentrefApplication(startDate)
-  ]
-
   try {
-    await Promise.all(promisesBatch1)
-    await Promise.all(promisesBatch2)
-    await Promise.all(promisesBatch3)
+    await loadIntermFinanceDAX(startDate)
+    await loadIntermFinanceDAXDelinked(startDate)
+    await loadIntermOrg(startDate)
+    await loadIntermCalcOrgDelinked(startDate)
+    await loadIntermOrgDelinked(startDate)
+    await loadIntermApplicationClaim(startDate)
+    await loadIntermApplicationClaimDelinked(startDate)
+    await loadIntermApplicationContract(startDate)
+    await loadIntermApplicationPayment(startDate)
+    await loadIntermCalcOrg(startDate)
+    await loadIntermTotal(startDate)
+    await loadIntermTotalDelinked(startDate)
+    await loadIntermPaymentrefAgreementDates(startDate)
+    await loadIntermAppCalcResultsDelinkPayment(startDate)
+    await loadIntermTotalClaim(startDate)
+    await loadIntermPaymentrefApplication(startDate)
     await loadIntermPaymentrefOrg(startDate)
+    await loadOrganisations(startDate, transaction)
     await loadTotals(startDate, transaction)
     await loadDelinkedCalculation(startDate, transaction)
+    await loadDAX(startDate, transaction)
     await loadD365(startDate, transaction)
     await transaction.commit()
     console.log('ETL data successfully loaded')
