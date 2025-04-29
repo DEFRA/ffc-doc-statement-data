@@ -6,35 +6,43 @@ let blobServiceClient
 let containersInitialised
 let foldersInitialised
 
-const folderList = [
-  config.applicationDetail.folder,
-  config.appsPaymentNotification.folder,
-  config.appsTypes.folder,
-  config.businessAddress.folder,
-  config.calculationsDetails.folder,
-  config.cssContractApplications.folder,
-  config.cssContract.folder,
-  config.cssOptions.folder,
-  config.defraLinks.folder,
-  config.financeDAX.folder,
-  config.organisation.folder,
-  config.tclcOption.folder,
-  config.applicationDetailDelinked.folder,
-  config.appsPaymentNotificationDelinked.folder,
-  config.appsTypesDelinked.folder,
-  config.businessAddressDelinked.folder,
-  config.calculationsDetailsDelinked.folder,
-  config.cssContractApplicationsDelinked.folder,
-  config.cssContractDelinked.folder,
-  config.cssOptionsDelinked.folder,
-  config.defraLinksDelinked.folder,
-  config.financeDAXDelinked.folder,
-  config.organisationDelinked.folder,
-  config.tclcOptionDelinked.folder,
-  config.tclcDelinked.folder,
-  config.appCalculationResultsDelinkPayments.folder,
-  config.tdeLinkingTransferTransactions.folder
-]
+const folderList = []
+if (config.sfi23Enabled) {
+  folderList.push(
+    config.applicationDetail.folder,
+    config.appsPaymentNotification.folder,
+    config.appsTypes.folder,
+    config.businessAddress.folder,
+    config.calculationsDetails.folder,
+    config.cssContractApplications.folder,
+    config.cssContract.folder,
+    config.cssOptions.folder,
+    config.defraLinks.folder,
+    config.financeDAX.folder,
+    config.organisation.folder,
+    config.tclcOption.folder
+  )
+}
+
+if (config.delinkedEnabled) {
+  folderList.push(
+    config.applicationDetailDelinked.folder,
+    config.appsPaymentNotificationDelinked.folder,
+    config.appsTypesDelinked.folder,
+    config.businessAddressDelinked.folder,
+    config.calculationsDetailsDelinked.folder,
+    config.cssContractApplicationsDelinked.folder,
+    config.cssContractDelinked.folder,
+    config.cssOptionsDelinked.folder,
+    config.defraLinksDelinked.folder,
+    config.financeDAXDelinked.folder,
+    config.organisationDelinked.folder,
+    config.tclcOptionDelinked.folder,
+    config.tclcDelinked.folder,
+    config.appCalculationResultsDelinkPayments.folder,
+    config.tdeLinkingTransferTransactions.folder
+  )
+}
 
 if (config.useConnectionStr) {
   console.log('Using connection string for BlobServiceClient')
