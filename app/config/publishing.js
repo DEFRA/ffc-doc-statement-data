@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
 const defaultDataPublishingBatchSize = 1000
-const defaultPollingInterval = 1800000
+const defaultPollingInterval = 3600000
 
 const schema = Joi.object({
   dataPublishingMaxBatchSizePerDataSource: Joi.number().default(defaultDataPublishingBatchSize),
