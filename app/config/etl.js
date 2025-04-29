@@ -140,7 +140,7 @@ const config = {
   container: 'etl',
   dwhExtractsFolder: 'dwh_extracts_delinked',
   etlLogsFolder: 'logs',
-  etlBatchSize: 2000,
+  etlBatchSize: 4000,
   excludeCalculationData: process.env.EXCLUDE_CALCULATION_DATA,
   applicationDetail: {
     folder: applicationDetail,
