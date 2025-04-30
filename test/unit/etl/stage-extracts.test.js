@@ -12,6 +12,16 @@ jest.mock('../../../app/etl/staging')
 jest.mock('../../../app/etl/load-etl-data')
 jest.mock('../../../app/config')
 jest.mock('ora')
+jest.mock('../../../app/config', () => {
+  const originalModule = jest.requireActual('../../../app/config')
+  return {
+    ...originalModule,
+    etlConfig: {
+      ...originalModule.etlConfig,
+      sfi23Enabled: true
+    }
+  }
+})
 
 const stageFunctions = [
   { fn: stageApplicationDetails, label: etlConfig.applicationDetail.folder },
