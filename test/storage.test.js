@@ -26,7 +26,7 @@ jest.mock('@azure/storage-blob', () => {
               pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'success' })
             })
           }),
-          listBlobsFlat: jest.fn().mockImplementation(async function* () {
+          listBlobsFlat: jest.fn().mockImplementation(async function * () {
             yield { name: 'applicationDetail/export.csv' }
             yield { name: 'appsPaymentNotification/export.csv' }
             yield { name: 'appsPaymentNotificationDelinked/export.csv' }
@@ -46,7 +46,7 @@ jest.mock('@azure/storage-blob', () => {
               pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'success' })
             })
           }),
-          listBlobsFlat: jest.fn().mockImplementation(async function* () {
+          listBlobsFlat: jest.fn().mockImplementation(async function * () {
             yield { name: 'applicationDetail/export.csv' }
             yield { name: 'appsPaymentNotification/export.csv' }
           })
@@ -152,7 +152,7 @@ describe('deleteFile', () => {
 describe('getDWHExtracts', () => {
   test('should return list of DWH extracts', async () => {
     const fileList = await getDWHExtracts()
-    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv', 'appsPaymentNotificationDelinked/export.csv', 'applicationDetailDelinked/export.csv'])
+    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv', 'appsPaymentNotificationDelinked/export.csv'])
   })
 })
 
