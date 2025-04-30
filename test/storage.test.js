@@ -89,7 +89,8 @@ jest.mock('../app/config/etl', () => ({
   managedIdentityClientId: 'fake-managed-identity-client-id',
   container: 'fake-container',
   createContainers: true,
-  dwhExtractsFolder: 'dwhExtractsFolder'
+  dwhExtractsFolder: 'dwhExtractsFolder',
+  sfi23Enabled: true
 }))
 
 describe('BlobServiceClient initialization', () => {
