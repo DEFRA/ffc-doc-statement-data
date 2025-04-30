@@ -9,6 +9,7 @@ let foldersInitialised
 const folderList = []
 
 if (config.sfi23Enabled) {
+  console.log('Include SFI 23 folders')
   folderList.push(
     config.applicationDetail.folder,
     config.appsPaymentNotification.folder,
@@ -26,6 +27,7 @@ if (config.sfi23Enabled) {
 }
 
 if (config.delinkedEnabled) {
+  console.log('Include Delinked folders')
   folderList.push(
     config.applicationDetailDelinked.folder,
     config.appsPaymentNotificationDelinked.folder,
