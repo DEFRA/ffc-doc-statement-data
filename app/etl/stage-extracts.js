@@ -10,24 +10,9 @@ const { loadETLData } = require('./load-etl-data')
 const { etlConfig } = require('../config')
 const ora = require('ora')
 
-let completed = 0
-
 global.results = []
 
-let total
 let startDate
-
-const checkComplete = async () => {
-  if (completed < total) {
-    setTimeout(checkComplete, etlConfig.checkCompleteTimeoutMs)
-  } else {
-    console.log('All ETL extracts loaded')
-    const body = await writeToString(global.results)
-    const outboundBlobClient = await storage.getBlob(`${etlConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
-    await outboundBlobClient.upload(body, body.length)
-    await loadETLData(startDate)
-  }
-}
 
 const stageFunctions = []
 
@@ -71,20 +56,23 @@ const stageExtracts = async () => {
   startDate = new Date()
   const etlFiles = await storage.getFileList()
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
-  total = foldersToStage.length
   if (etlFiles.length) {
     for (const { fn, label } of stageFunctions) {
       if (foldersToStage.includes(label)) {
         const spinner = ora(label).start()
         await fn()
           .then(() => spinner.succeed(`${label} - staged`))
-          .catch((e) => spinner.fail(`${label} - ${e.message}`))
-          .finally(() => {
-            completed += 1
+          .catch((e) => {
+            spinner.fail(`${label} - ${e.message}`)
+            throw new Error(`ETL execution stopped due to error in ${label}: ${e.message}`)
           })
       }
     }
-    await checkComplete()
+    console.log('All ETL extracts loaded')
+    const body = await writeToString(global.results)
+    const outboundBlobClient = await storage.getBlob(`${etlConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
+    await outboundBlobClient.upload(body, body.length)
+    await loadETLData(startDate)
   } else {
     console.info('No DWH files identified for processing')
   }
