@@ -152,7 +152,7 @@ describe('deleteFile', () => {
 describe('getDWHExtracts', () => {
   test('should return list of DWH extracts', async () => {
     const fileList = await getDWHExtracts()
-    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv', 'appsPaymentNotificationDelinked/export.csv'])
+    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv', 'appsPaymentNotificationDelinked/export.csv', 'applicationDetailDelinked/export.csv'])
   })
 })
 
