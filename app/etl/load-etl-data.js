@@ -5,15 +5,22 @@ const { deleteETLRecords } = require('./delete-etl-records')
 
 const loadETLData = async (startDate) => {
   console.log(`Starting ETL data load at ${new Date().toISOString()}`)
-  const transaction = await db.sequelize.transaction({
+
+  // Split transactions into two because when the first one accesses data
+  // a snapshot of the database is created. But data is added outside of the
+  // transaction after this which queries now in the second transaction require.
+  const firstTransaction = await db.sequelize.transaction({
+    isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
+  })
+  const secondTransaction = await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
   })
 
   // Wrap each load function with logging
   const wrapWithLogging = (fn, name) => async (_startDate = null, transaction = null) => {
-    console.log(`Starting ${name} at ${new Date().toISOString()}`)
+    console.log(`Starting ${name} at ${new Date().toISOString()} using startDate: ${startDate}`)
     try {
-      const result = transaction ? await fn(startDate, transaction) : await fn(startDate)
+      const result = transaction ? await fn(_startDate, transaction) : await fn(_startDate)
       console.log(`Completed ${name} at ${new Date().toISOString()}`)
       return result
     } catch (error) {
@@ -23,38 +30,41 @@ const loadETLData = async (startDate) => {
   }
 
   try {
-    await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAX')()
-    await wrapWithLogging(loadIntermFinanceDAXDelinked, 'loadIntermFinanceDAXDelinked')()
-    await wrapWithLogging(loadIntermOrg, 'loadIntermOrg')()
-    await wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')()
-    await wrapWithLogging(loadIntermApplicationClaim, 'loadIntermApplicationClaim')()
-    await wrapWithLogging(loadIntermApplicationClaimDelinked, 'loadIntermApplicationClaimDelinked')()
-    await wrapWithLogging(loadIntermApplicationContract, 'loadIntermApplicationContract')()
-    await wrapWithLogging(loadIntermApplicationPayment, 'loadIntermApplicationPayment')()
+    await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAX')(startDate)
+    await wrapWithLogging(loadIntermFinanceDAXDelinked, 'loadIntermFinanceDAXDelinked')(startDate)
+    await wrapWithLogging(loadIntermOrg, 'loadIntermOrg')(startDate)
+    await wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')(startDate)
+    await wrapWithLogging(loadIntermApplicationClaim, 'loadIntermApplicationClaim')(startDate)
+    await wrapWithLogging(loadIntermApplicationClaimDelinked, 'loadIntermApplicationClaimDelinked')(startDate)
+    await wrapWithLogging(loadIntermApplicationContract, 'loadIntermApplicationContract')(startDate)
+    await wrapWithLogging(loadIntermApplicationPayment, 'loadIntermApplicationPayment')(startDate)
 
-    await wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrg')()
-    await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')()
-    await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')()
-    await wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')()
-    await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, transaction)
-    await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')()
+    await wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrg')(startDate)
+    await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(startDate)
+    await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(startDate)
+    await wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')(startDate)
+    await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
+    await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
 
-    await wrapWithLogging(loadDAX, 'loadDAX')(startDate, transaction)
-    await wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')()
-    await wrapWithLogging(loadIntermTotalClaim, 'loadIntermTotalClaim')()
-    await wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')()
+    await wrapWithLogging(loadDAX, 'loadDAX')(startDate, firstTransaction)
 
-    await wrapWithLogging(loadIntermPaymentrefOrg, 'loadIntermPaymentrefOrg')()
-    await wrapWithLogging(loadTotals, 'loadTotals')(startDate, transaction)
-    await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, transaction)
-    await wrapWithLogging(loadD365, 'loadD365')(startDate, transaction)
+    await wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')(startDate)
+    await wrapWithLogging(loadIntermTotalClaim, 'loadIntermTotalClaim')(startDate)
+    await wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')(startDate)
 
-    await transaction.commit()
+    await wrapWithLogging(loadIntermPaymentrefOrg, 'loadIntermPaymentrefOrg')(startDate)
+    await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
+    await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
+    await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
+
+    await firstTransaction.commit()
+    await secondTransaction.commit()
     console.log(`ETL data successfully loaded at ${new Date().toISOString()}`)
   } catch (error) {
     console.error(`Error loading ETL data: ${error.message} at ${new Date().toISOString()}`)
     await deleteETLRecords(startDate)
-    await transaction.rollback()
+    await firstTransaction.rollback()
+    await secondTransaction.rollback()
     throw error
   }
 }
