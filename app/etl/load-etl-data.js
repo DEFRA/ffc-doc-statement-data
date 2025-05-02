@@ -48,6 +48,8 @@ const loadETLData = async (startDate) => {
 
     await wrapWithLogging(loadDAX, 'loadDAX')(startDate, firstTransaction)
 
+    await firstTransaction.commit()
+
     await wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')(startDate)
     await wrapWithLogging(loadIntermTotalClaim, 'loadIntermTotalClaim')(startDate)
     await wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')(startDate)
@@ -57,7 +59,6 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
     await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
 
-    await firstTransaction.commit()
     await secondTransaction.commit()
     console.log(`ETL data successfully loaded at ${new Date().toISOString()}`)
   } catch (error) {
