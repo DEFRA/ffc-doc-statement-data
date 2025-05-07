@@ -69,6 +69,6 @@ test('renameExtracts calls getDWHExtracts and moveFile with correct arguments', 
   await renameExtracts()
 
   expect(getDWHExtracts).toHaveBeenCalled()
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts_delinked', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts_delinked', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
 })
