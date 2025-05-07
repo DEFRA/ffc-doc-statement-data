@@ -138,7 +138,7 @@ const config = {
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   container: 'etl',
-  dwhExtractsFolder: 'dwh_extracts_delinked',
+  dwhExtractsFolder: 'dwh_extracts',
   etlLogsFolder: 'logs',
   etlBatchSize: 4000,
   excludeCalculationData: process.env.EXCLUDE_CALCULATION_DATA,
