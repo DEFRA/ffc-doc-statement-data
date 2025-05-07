@@ -29,6 +29,8 @@ jest.mock('@azure/storage-blob', () => {
           listBlobsFlat: jest.fn().mockImplementation(async function * () {
             yield { name: 'applicationDetail/export.csv' }
             yield { name: 'appsPaymentNotification/export.csv' }
+            yield { name: 'appsPaymentNotificationDelinked/export.csv' }
+            yield { name: 'applicationDetailDelinked/export.csv' }
           })
         })
       })),
@@ -90,7 +92,8 @@ jest.mock('../app/config/etl', () => ({
   container: 'fake-container',
   createContainers: true,
   dwhExtractsFolder: 'dwhExtractsFolder',
-  sfi23Enabled: true
+  sfi23Enabled: true,
+  delinkedEnabled: true
 }))
 
 describe('BlobServiceClient initialization', () => {
@@ -102,16 +105,14 @@ describe('BlobServiceClient initialization', () => {
 })
 
 describe('getFileList', () => {
-  test('should return list of files', async () => {
-    const listBlobsFlatMock = jest.fn().mockResolvedValue([
-      { name: 'applicationDetail/export.csv' },
-      { name: 'appsPaymentNotification/export.csv' }
-    ])
-    BlobServiceClient.prototype.getContainerClient = jest.fn().mockReturnValue({
-      listBlobsFlat: listBlobsFlatMock
-    })
+  test('should return list of files including delinked files', async () => {
     const fileList = await getFileList()
-    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
+    expect(fileList).toEqual([
+      'applicationDetail/export.csv',
+      'appsPaymentNotification/export.csv',
+      'applicationDetailDelinked/export.csv',
+      'appsPaymentNotificationDelinked/export.csv'
+    ])
   })
 })
 
@@ -121,8 +122,8 @@ describe('getBlob', () => {
       getBlockBlobClient: jest.fn().mockReturnValue({})
     })
     const blobClient = await getBlob('filename')
-    expect(blobClient).toBeDefined() // Check that an object is returned
-    expect(typeof blobClient).toBe('object') // Ensure the returned value is an object
+    expect(blobClient).toBeDefined()
+    expect(typeof blobClient).toBe('object')
   })
 })
 
@@ -151,7 +152,7 @@ describe('deleteFile', () => {
 describe('getDWHExtracts', () => {
   test('should return list of DWH extracts', async () => {
     const fileList = await getDWHExtracts()
-    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
+    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv', 'appsPaymentNotificationDelinked/export.csv', 'applicationDetailDelinked/export.csv'])
   })
 })
 

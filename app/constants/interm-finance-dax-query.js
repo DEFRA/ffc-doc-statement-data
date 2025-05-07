@@ -17,11 +17,11 @@ WITH "newData" AS (
         FROM (
           SELECT
             lineamountmstgbp,
-            COALESCE(LAG(lineamountmstgbp, 1) OVER (ORDER BY D2.transdate ASC, D2.lineamountmstgbp ASC), 0) AS lag,
+            COALESCE(LAG(lineamountmstgbp, 1) OVER (ORDER BY D2.transdate DESC, D2.lineamountmstgbp DESC), 0) AS lag,
             D2.invoiceid
           FROM ${dbConfig.schema}."etlStageFinanceDax" D2
           WHERE D2.invoiceid = D.invoiceid
-            AND D2.lineamountmstgbp <= D.lineamountmstgbp
+            AND D2.lineamountmstgbp >= D.lineamountmstgbp
           ORDER BY D2.transdate ASC, D2.lineamountmstgbp ASC
           LIMIT 1
         ) B WHERE B.invoiceid = D.invoiceid)
