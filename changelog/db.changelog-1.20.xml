@@ -11,7 +11,6 @@
             <constraints nullable="false"/>
         </column>
     </addColumn>
-    <dropPrimaryKey tableName="d365" constraintName="d365_pkey"/>
     <addPrimaryKey columnNames="d365Id" constraintName="d365Id_pkey" tableName="d365"/>
 </changeSet>
 
