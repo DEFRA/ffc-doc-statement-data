@@ -1,6 +1,6 @@
 const db = require('../../../app/data')
 const updateDaxDatePublished = require('../../../app/publishing/dax/update-published')
-const mockDax = { paymentReference: 'test', datePublished: null }
+const mockDax = { daxId: 'test', datePublished: null }
 
 db.dax = {
   update: jest.fn()
@@ -13,10 +13,10 @@ describe('updateDaxDatePublished', () => {
 
   test('updateDaxDatePublished updates the correct data', async () => {
     const transaction = {}
-    await updateDaxDatePublished(mockDax.paymentReference, transaction)
+    await updateDaxDatePublished(mockDax.daxId, transaction)
     expect(db.dax.update).toHaveBeenCalledWith(
       { datePublished: expect.any(Date) },
-      { where: { paymentReference: mockDax.paymentReference }, transaction }
+      { where: { daxId: mockDax.daxId }, transaction }
     )
   })
 })

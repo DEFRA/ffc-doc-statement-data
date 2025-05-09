@@ -7,6 +7,7 @@ services:
     container_name: ffc-doc-statement-data
     depends_on:
       - ffc-doc-statement-data-postgres
+      - ffc-doc-statement-data-azurite
     environment:
       APPINSIGHTS_CLOUDROLE: ffc-doc-statement-data-local
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
@@ -22,11 +23,24 @@ services:
       POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
       DEMOGRAPHICS_TOPIC_ADDRESS: ${DEMOGRAPHICS_TOPIC_ADDRESS:-ffc-pay-demographics-extract}${MESSAGE_QUEUE_SUFFIX}
       DEMOGRAPHICS_SUBSCRIPTION_ADDRESS: ${DEMOGRAPHICS_SUBSCRIPTION_ADDRESS:-ffc-doc-demographics}${MESSAGE_QUEUE_SUFFIX}
+      AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://ffc-doc-statement-data:10000/devstoreaccount1;
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME:-devstoreaccount1}
+      AZURE_STORAGE_USE_CONNECTION_STRING: "true"
+      AZURE_STORAGE_CREATE_CONTAINERS: "true"
       DEMOGRAPHICS_ACTIVE: ${DEMOGRAPHICS_ACTIVE:-true}
+      EXCLUDE_CALCULATION_DATA: "true"
+      SFI23_ENABLED: "false"
+      DELINKED_ENABLED: "true"
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine
     environment:
       POSTGRES_DB: ffc_doc_statement_data
-      POSTGRES_PASSWORD: ppp
-      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+
+  ffc-doc-statement-data-azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.23.0
+    command: "azurite-blob --loose --blobHost 0.0.0.0"
+    labels:
+      com.docker.compose.pay.role: ffc-doc-statement-data-azurite

@@ -1,11 +1,14 @@
+const config = require('../../config')
+const dbConfig = config.dbConfig[config.env]
+
 module.exports = (sequelize, DataTypes) => {
-  const number16 = 16
+  const FRN_LENGTH = 16
 
   const delinkedCalculation = sequelize.define('delinkedCalculation', {
     applicationId: { type: DataTypes.INTEGER, allowNull: false },
     calculationId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     sbi: { type: DataTypes.INTEGER, allowNull: false },
-    frn: { type: DataTypes.STRING(number16), allowNull: false },
+    frn: { type: DataTypes.STRING(FRN_LENGTH), allowNull: false },
     paymentBand1: { type: DataTypes.STRING, allowNull: false },
     paymentBand2: { type: DataTypes.STRING, allowNull: false },
     paymentBand3: { type: DataTypes.STRING, allowNull: false },
@@ -28,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
   {
     tableName: 'delinkedCalculation',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    schema: dbConfig.schema
   })
 
   delinkedCalculation.associate = function (models) {

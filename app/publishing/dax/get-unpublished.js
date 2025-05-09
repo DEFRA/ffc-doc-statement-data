@@ -12,7 +12,7 @@ const getUnpublishedDax = async (transaction, limit = publishingConfig.dataPubli
         }
       ]
     },
-    attributes: ['paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
+    attributes: ['daxId', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
     raw: true,
     transaction,
     limit

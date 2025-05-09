@@ -16,7 +16,7 @@ describe('updateD365DatePublished', () => {
     await updateD365DatePublished(mockD365.paymentReference, transaction)
     expect(db.d365.update).toHaveBeenCalledWith(
       { datePublished: expect.any(Date) },
-      { where: { paymentReference: mockD365.paymentReference }, transaction }
+      { where: { d365Id: mockD365.paymentReference }, transaction }
     )
   })
 })

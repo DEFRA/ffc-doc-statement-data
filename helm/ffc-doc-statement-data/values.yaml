@@ -26,14 +26,21 @@ deployment:
 
 container:
   requestMemory: 1024Mi
-  requestCpu: 240m
+  requestCpu: 340m
   limitMemory: 1024Mi
-  limitCpu: 360m
+  limitCpu: 680m
   messageQueueHost: namespace.servicebus.windows.net
   dataTopicAddress: ffc-doc-statement-data
   demographicsTopicAddress: ffc-pay-demographics-extract
   demographicsSubscriptionAddress: ffc-doc-demographics
+  azureStorageConnectionString: dummy
+  azureStorageAccountName: ffcdoc
+  azureStorageUseConnectionString: false
+  azureStorageCreateContainers: false
   demographicsActive: true
+  excludeCalculationData: true
+  sfi23Enabled: false
+  delinkedEnabled: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

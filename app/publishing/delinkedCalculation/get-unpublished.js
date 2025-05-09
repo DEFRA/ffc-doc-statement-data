@@ -1,5 +1,4 @@
 const getUnpublishedDelinked = require('./get-unpublished-delinked')
-const updatePublished = require('./update-published')
 
 const getUnpublished = async (transaction) => {
   const delinked = await getUnpublishedDelinked(transaction)
@@ -16,11 +15,6 @@ const getUnpublished = async (transaction) => {
     } else {
       console.error('Missing calculationReference for item:', item)
     }
-  }
-
-  for (const item of unpublished) {
-    console.log('Updating item with calculationReference:', item.calculationReference)
-    await updatePublished(item.calculationReference, transaction)
   }
 
   return unpublished
