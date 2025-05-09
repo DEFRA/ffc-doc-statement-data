@@ -58,7 +58,6 @@ const stageExtracts = async () => {
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
 
   if (etlFiles.length) {
-    // Filter functions to only those that match folders to stage
     const functionsToRun = stageFunctions.filter(({ label }) => foldersToStage.includes(label))
 
     if (functionsToRun.length === 0) {
@@ -68,7 +67,6 @@ const stageExtracts = async () => {
 
     console.log(`Processing ${functionsToRun.length} folders in parallel`)
 
-    // Run all staging functions in parallel
     const stagingPromises = functionsToRun.map(({ fn, label }) => {
       const spinner = ora(label).start()
       return fn()
@@ -82,15 +80,12 @@ const stageExtracts = async () => {
         })
     })
 
-    // Wait for all staging functions to complete
     const results = await Promise.all(stagingPromises)
 
-    // Log results
     const body = await writeToString(global.results)
     const outboundBlobClient = await storage.getBlob(`${etlConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
     await outboundBlobClient.upload(body, body.length)
 
-    // Check if all operations were successful
     const failedOperations = results.filter(result => !result.success)
     if (failedOperations.length > 0) {
       console.error(`ETL process completed with ${failedOperations.length} failures:`)
@@ -99,7 +94,6 @@ const stageExtracts = async () => {
       console.log('All ETL extracts loaded successfully')
     }
 
-    // Proceed to load ETL data
     await loadETLData(startDate)
   } else {
     console.info('No DWH files identified for processing')
