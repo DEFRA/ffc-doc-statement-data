@@ -12,10 +12,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
   const initialRowCount = await db[sequelizeModelName]?.count()
   const idFrom = (await db[sequelizeModelName]?.max('etlId') ?? 0) + 1
   const rowCount = await getFirstLineNumber(fileStream)
-  const fileInProcess = await db.etlStageLog.create({
-    file,
-    rowCount
-  })
+  const fileInProcess = await db.etlStageLog.create({ file, rowCount })
 
   // Get a fresh stream for the ETL process
   const freshFileStream = await storage.downloadFileAsStream(file)
@@ -58,11 +55,7 @@ const runEtlProcess = async ({ fileStream, columns, table, mapping, transformer,
           .pump()
           .on('finish', async (data) => {
             console.log(`ETL process finished for ${table}.`)
-            global.results.push({
-              table,
-              database: dbConfig.database,
-              data
-            })
+            global.results.push({ table, database: dbConfig.database, data })
           })
           .on('result', async (data) => {
             await storage.deleteFile(file)

@@ -2,23 +2,7 @@ const db = require('../../data')
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
-const loadDelinkedCalculation = async (startDate, transaction) => {
-  console.log(`loadDelinkedCalculation - startDate: ${startDate}`)
-
-  // First check if we have data in the source table
-  const sourceDataCheck = await db.sequelize.query(`
-    SELECT COUNT(*) as count 
-    FROM ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" P
-    WHERE P."etlInsertedDt" > :startDate;
-  `, {
-    replacements: { startDate },
-    raw: true,
-    transaction
-  })
-
-  console.log(`loadDelinkedCalculation - Found ${sourceDataCheck[0][0].count} records to process`)
-
-  await db.sequelize.query(`
+const delinkedCalculationQuery = `
 INSERT INTO ${dbConfig.schema}."delinkedCalculation" (
     "calculationId",
     "applicationId",
@@ -67,7 +51,25 @@ WHERE
     P."etlInsertedDt" > :startDate
 GROUP BY 
     P."calculationId", P."applicationId", P."sbi", P."frn";
+`
+
+const loadDelinkedCalculation = async (startDate, transaction) => {
+  console.log(`loadDelinkedCalculation - startDate: ${startDate}`)
+
+  // First check if we have data in the source table
+  const sourceDataCheck = await db.sequelize.query(`
+    SELECT COUNT(*) as count 
+    FROM ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" P
+    WHERE P."etlInsertedDt" > :startDate;
   `, {
+    replacements: { startDate },
+    raw: true,
+    transaction
+  })
+
+  console.log(`loadDelinkedCalculation - Found ${sourceDataCheck[0][0].count} records to process`)
+
+  await db.sequelize.query(delinkedCalculationQuery, {
     replacements: {
       startDate
     },
