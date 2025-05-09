@@ -54,21 +54,6 @@ GROUP BY
 `
 
 const loadDelinkedCalculation = async (startDate, transaction) => {
-  console.log(`loadDelinkedCalculation - startDate: ${startDate}`)
-
-  // First check if we have data in the source table
-  const sourceDataCheck = await db.sequelize.query(`
-    SELECT COUNT(*) as count 
-    FROM ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" P
-    WHERE P."etlInsertedDt" > :startDate;
-  `, {
-    replacements: { startDate },
-    raw: true,
-    transaction
-  })
-
-  console.log(`loadDelinkedCalculation - Found ${sourceDataCheck[0][0].count} records to process`)
-
   await db.sequelize.query(delinkedCalculationQuery, {
     replacements: {
       startDate
@@ -76,23 +61,6 @@ const loadDelinkedCalculation = async (startDate, transaction) => {
     raw: true,
     transaction
   })
-
-  // Verify the insert worked
-  const insertedCount = await db.sequelize.query(`
-    SELECT COUNT(*) as count 
-    FROM ${dbConfig.schema}."delinkedCalculation"
-    WHERE "calculationId" IN (
-      SELECT "calculationId" 
-      FROM ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" 
-      WHERE "etlInsertedDt" > :startDate
-    );
-  `, {
-    replacements: { startDate },
-    raw: true,
-    transaction
-  })
-
-  console.log(`loadDelinkedCalculation - Inserted ${insertedCount[0][0].count} records`)
 }
 
 module.exports = {
