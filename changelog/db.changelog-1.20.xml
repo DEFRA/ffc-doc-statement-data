@@ -11,6 +11,7 @@
             <constraints nullable="false"/>
         </column>
     </addColumn>
+    <dropPrimaryKey tableName="d365" columnNames="paymentReference"/>
     <addPrimaryKey columnNames="d365Id" constraintName="d365Id_pkey" tableName="d365"/>
 </changeSet>
 
