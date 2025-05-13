@@ -46,63 +46,63 @@
         </createIndex>
 
         <createIndex indexName="idx_paymentBand1" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BAND1' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BAND1' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_paymentBand2" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BAND2' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BAND2' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_paymentBand3" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BAND3' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BAND3' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_paymentBand4" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BAND4' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BAND4' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_percentageReduction1" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BANDPRC1' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BANDPRC1' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_percentageReduction2" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BANDPRC2' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BANDPRC2' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_percentageReduction3" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BANDPRC3' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BANDPRC3' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_percentageReduction4" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PI_BPS_BANDPRC4' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PI_BPS_BANDPRC4' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_progressiveReductions1" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PROG_RED_BAND_1' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PROG_RED_BAND_1' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_progressiveReductions2" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PROG_RED_BAND_2' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PROG_RED_BAND_2' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_progressiveReductions3" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PROG_RED_BAND_3' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PROG_RED_BAND_3' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_progressiveReductions4" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'PROG_RED_BAND_4' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'PROG_RED_BAND_4' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_referenceAmount" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'CUR_REF_AMOUNT' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'CUR_REF_AMOUNT' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_totalProgressiveReduction" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'TOT_PRO_RED_AMO' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'TOT_PRO_RED_AMO' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
         <createIndex indexName="idx_totalDelinkedPayment" tableName="etlStageAppCalcResultsDelinkPayments">
-            <column name="(CASE WHEN 'variableName' = 'NE_TOT_AMOUNT' THEN CAST(value AS NUMERIC) ELSE 0 END)"/>
+            <expression>(CASE WHEN variableName = 'NE_TOT_AMOUNT' THEN CAST(value AS NUMERIC) ELSE 0 END)</expression>
         </createIndex>
 
     </changeSet>
