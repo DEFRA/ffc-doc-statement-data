@@ -129,7 +129,7 @@ const schema = Joi.object({
   useConnectionStr: Joi.boolean().default(false),
   createContainers: Joi.boolean().default(false),
   managedIdentityClientId: Joi.string().optional(),
-  sfi23Enabled: Joi.boolean().default(false),
+  sfi23Enabled: Joi.boolean().default(true),
   delinkedEnabled: Joi.boolean().default(true)
 })
 
