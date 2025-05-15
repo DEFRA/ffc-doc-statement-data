@@ -82,7 +82,8 @@ using a combination of `docker-compose.yaml` and `docker-compose.test.yaml`.
 The command given to `docker compose run` may be customised by passing
 arguments to the test script.
 
-Examples:
+Examples: 
+
 
 ```
 # Run all tests
