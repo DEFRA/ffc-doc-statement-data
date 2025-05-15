@@ -19,10 +19,10 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
 }))
 jest.mock('../../../../app/config', () => ({
-  isProd: false,
   etlConfig: {
     excludeCalculationData: true,
-    organisation: { folder: 'organisationFolder' }
+    organisation: { folder: 'organisationFolder' },
+    fakeData: true
   }
 }))
 

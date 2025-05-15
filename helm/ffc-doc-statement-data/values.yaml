@@ -41,6 +41,7 @@ container:
   excludeCalculationData: true
   sfi23Enabled: true
   delinkedEnabled: true
+  fakeData: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

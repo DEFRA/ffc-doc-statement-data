@@ -9,9 +9,6 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config', () => ({
-  isProd: false
-}))
 jest.mock('../../../../app/config/etl', () => ({
   businessAddress: { folder: 'businessAddressFolder' }
 }))
@@ -24,7 +21,8 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
     excludeCalculationData: true,
-    businessAddress: { folder: 'businessAddressFolder' }
+    businessAddress: { folder: 'businessAddressFolder' },
+    fakeData: true
   }
 }))
 
