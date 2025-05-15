@@ -138,6 +138,8 @@ const processWithWorkers = async (options) => {
       await workerPromise
     } catch (error) {
       console.error('Worker processing failed:', error)
+
+      // todo email...
       throw error
     }
   }
