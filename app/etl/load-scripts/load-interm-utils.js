@@ -60,10 +60,9 @@ const limitConcurrency = async (promises, maxConcurrent) => {
   return Promise.all(results)
 }
 
-const processWithWorkers = async (options) => {
+const processWithWorkers = async (options, maxRetries = 3, baseDelay = 500) => {
   const { query, batchSize, idFrom, idTo, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
 
-  // Synchronise control
   const semaphore = {
     count: 0,
     queue: [],
@@ -86,59 +85,65 @@ const processWithWorkers = async (options) => {
 
   for (let i = idFrom; i <= idTo; i += batchSize) {
     const batchTo = Math.min(i + batchSize - 1, idTo)
-
-    // Wait if we have reached max workers
     await semaphore.acquire()
-
     console.log(`Processing ${recordType} records ${i} to ${batchTo}`)
 
-    const workerData = {
-      query,
-      params: {
-        idFrom: i,
-        idTo: batchTo
-      },
-      transaction
-    }
+    let attempt = 0
+    let success = false
 
-    if (queryTemplate && exclusionScript !== null && tableAlias) {
-      // Build query per batch
-      workerData.query = queryTemplate(i, batchTo, tableAlias, exclusionScript)
-      workerData.params = {}
-    }
-
-    const worker = new Worker(path.resolve(__dirname, 'load-interm-worker.js'), {
-      workerData
-    })
-
-    const workerPromise = new Promise((resolve, reject) => {
-      worker.on('message', (message) => {
-        if (message.success) {
-          resolve()
-        } else {
-          reject(new Error(`Batch ${i}-${batchTo} failed: ${message.error}`))
+    while (attempt <= maxRetries && !success) {
+      try {
+        const workerData = {
+          query,
+          params: {
+            idFrom: i,
+            idTo: batchTo
+          },
+          transaction
         }
-      })
 
-      worker.on('error', (error) => {
-        reject(new Error(`Batch ${i}-${batchTo} failed with error: ${error.message}`))
-      })
-
-      worker.on('exit', (code) => {
-        worker.terminate().catch(console.error)
-        semaphore.release()
-        if (code !== 0) {
-          reject(new Error(`Batch ${i}-${batchTo}: Worker stopped with exit code ${code}`))
+        if (queryTemplate && exclusionScript !== null && tableAlias) {
+          workerData.query = queryTemplate(i, batchTo, tableAlias, exclusionScript)
+          workerData.params = {}
         }
-      })
-    })
 
-    // Wait for this batch to complete before starting the next one
-    try {
-      await workerPromise
-    } catch (error) {
-      console.error('Worker processing failed:', error)
-      throw error
+        const worker = new Worker(path.resolve(__dirname, 'load-interm-worker.js'), {
+          workerData
+        })
+
+        await new Promise((resolve, reject) => {
+          worker.on('message', (message) => {
+            if (message.success) {
+              success = true
+              resolve()
+            } else {
+              reject(new Error(`Batch ${i}-${batchTo} failed: ${message.error}`))
+            }
+          })
+
+          worker.on('error', (error) => {
+            reject(new Error(`Batch ${i}-${batchTo} failed with error: ${error.message}`))
+          })
+
+          worker.on('exit', (code) => {
+            worker.terminate().catch(console.error)
+            semaphore.release()
+            if (code !== 0) {
+              reject(new Error(`Batch ${i}-${batchTo}: Worker stopped with exit code ${code}`))
+            }
+          })
+        })
+      } catch (error) {
+        attempt++
+        if (attempt > maxRetries) {
+          console.error(`Worker processing failed after ${maxRetries} retries for batch ${i}-${batchTo}:`, error)
+          throw error
+        }
+
+        const delay = baseDelay * 2 ** (attempt - 1)
+        console.warn(`Retrying batch ${i}-${batchTo} (attempt ${attempt} of ${maxRetries}) after ${delay}ms due to error: ${error.message}`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
     }
   }
 }

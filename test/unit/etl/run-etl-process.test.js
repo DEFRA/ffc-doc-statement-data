@@ -109,6 +109,9 @@ describe('runEtlProcess', () => {
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
       on: jest.fn((event, callback) => {
+        if (event === 'error') {
+          callback(error)
+        }
         if (event === 'finish') {
           callback([])
         }
@@ -139,5 +142,60 @@ describe('runEtlProcess', () => {
       nonProdTransformer: {},
       file: 'someFile'
     })).rejects.toThrow('Test error')
+  })
+
+  test('should retry up to maxRetries and eventually throw if errors persist', async () => {
+    const mockFileData = 'first line\nsecond line\nthird line\n'
+    const mockFileStream = Readable.from([mockFileData])
+
+    storage.deleteFile.mockResolvedValue()
+    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
+    db.etlStageLog.update.mockResolvedValue()
+    db.etlStageApplicationDetail.create.mockResolvedValue()
+    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
+    getFirstLineNumber.mockResolvedValue(10)
+
+    const mockStreamAfterRemovingFirstLine = Readable.from(['second line\nthird line\n'])
+    require('../../../app/etl/file-utils').removeFirstLine.mockResolvedValue(mockStreamAfterRemovingFirstLine)
+
+    const error = new Error('Persistent ETL error')
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, callback) => {
+        if (event === 'error') {
+          callback(error)
+        }
+        return mockEtl
+      })
+    }
+
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.ProvidedConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
+
+    // Spy on setTimeout to avoid real delays
+    jest.spyOn(global, 'setTimeout').mockImplementation((fn) => fn())
+
+    await expect(runEtlProcess({
+      fileStream: mockFileStream,
+      columns: [],
+      table: 'someModel',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
+    }, 2, 1)).rejects.toThrow('Persistent ETL error')
+
+    expect(mockEtl.pump).toHaveBeenCalledTimes(3) // initial + 2 retries
+
+    global.setTimeout.mockRestore()
   })
 })

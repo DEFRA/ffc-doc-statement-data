@@ -17,15 +17,26 @@ const loadETLData = async (startDate) => {
   })
 
   // Wrap each load function with logging
-  const wrapWithLogging = (fn, name) => async (_startDate = null, transaction = null) => {
-    console.log(`Starting ${name} at ${new Date().toISOString()} using startDate: ${startDate}`)
-    try {
-      const result = transaction ? await fn(_startDate, transaction) : await fn(_startDate)
-      console.log(`Completed ${name} at ${new Date().toISOString()}`)
-      return result
-    } catch (error) {
-      console.error(`Error in ${name}: ${error.message}`)
-      throw error
+  const wrapWithLogging = (fn, name, maxRetries = 3, baseDelay = 500) => async (_startDate = null, transaction = null) => {
+    console.log(`Starting ${name} at ${new Date().toISOString()} using startDate: ${_startDate}`)
+
+    let attempt = 0
+    while (attempt <= maxRetries) {
+      try {
+        const result = transaction ? await fn(_startDate, transaction) : await fn(_startDate)
+        console.log(`Completed ${name} at ${new Date().toISOString()}`)
+        return result
+      } catch (error) {
+        attempt++
+        if (attempt > maxRetries) {
+          console.error(`Error in ${name} after ${maxRetries} retries: ${error.message}`)
+          throw error
+        }
+
+        const delay = baseDelay * 2 ** (attempt - 1)
+        console.warn(`Retrying ${name} (attempt ${attempt} of ${maxRetries}) after ${delay}ms due to error: ${error.message}`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
     }
   }
 
