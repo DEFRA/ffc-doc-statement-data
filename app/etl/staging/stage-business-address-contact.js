@@ -81,7 +81,7 @@ const transformer = [
 ]
 
 let nonProdTransformer = []
-if (!config.isProd) {
+if (config.etlConfig.fakeData) {
   nonProdTransformer = [
     { name: sourceColumnNames.BUSINESS_NAME, faker: COMPANY_NAME },
     { name: sourceColumnNames.BUSINESS_ADDRESS1, faker: LOCATION_STREET },

@@ -130,7 +130,8 @@ const schema = Joi.object({
   createContainers: Joi.boolean().default(false),
   managedIdentityClientId: Joi.string().optional(),
   sfi23Enabled: Joi.boolean().default(true),
-  delinkedEnabled: Joi.boolean().default(true)
+  delinkedEnabled: Joi.boolean().default(true),
+  fakeData: Joi.boolean().default(true)
 })
 
 const config = {
@@ -258,7 +259,8 @@ const config = {
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,
   managedIdentityClientId: process.env.AZURE_CLIENT_ID,
   sfi23Enabled: process.env.SFI_23_ENABLED,
-  delinkedEnabled: process.env.DELINKED_ENABLED
+  delinkedEnabled: process.env.DELINKED_ENABLED,
+  fakeData: process.env.FAKE_DATA
 }
 
 const result = schema.validate(config, {
