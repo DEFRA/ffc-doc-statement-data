@@ -16,7 +16,6 @@ jest.mock('../../../../app/data', () => ({
   }
 }))
 
-// Create a mock worker instance that can be reused
 const createMockWorker = () => {
   const mockWorker = {
     on: jest.fn((event, callback) => {
@@ -40,15 +39,13 @@ const createMockWorker = () => {
   return mockWorker
 }
 
-// Mock the Worker constructor
+const mockWorkers = []
 jest.mock('worker_threads', () => {
-  const mockWorker = createMockWorker()
-
   return {
-    Worker: jest.fn().mockImplementation((path, options) => {
-      // Store the arguments for verification in tests
-      mockWorker.constructorArgs = { path, options }
-      return mockWorker
+    Worker: jest.fn().mockImplementation(() => {
+      const worker = createMockWorker()
+      mockWorkers.push(worker)
+      return worker
     })
   }
 })
@@ -56,6 +53,7 @@ jest.mock('worker_threads', () => {
 describe('load-interm-utils', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockWorkers.length = 0
   })
 
   describe('getEtlStageLogs', () => {
@@ -144,18 +142,11 @@ describe('load-interm-utils', () => {
   })
 
   describe('processWithWorkers', () => {
-    let mockWorker
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-      mockWorker = require('worker_threads').Worker()
-    })
-
     test('should process data with workers', async () => {
       const query = 'SELECT * FROM test_table'
       const batchSize = 100
       const idFrom = 1
-      const idTo = 100 // Reduced to just one batch
+      const idTo = 100
       const transaction = {}
       const recordType = 'test'
 
@@ -168,16 +159,13 @@ describe('load-interm-utils', () => {
         recordType
       })
 
-      // Wait for the worker to be set up
       await new Promise(resolve => setImmediate(resolve))
 
-      // Simulate successful completion
-      mockWorker.emitMessage({ success: true })
-      mockWorker.emitExit(0)
+      mockWorkers[0].emitMessage({ success: true })
+      mockWorkers[0].emitExit(0)
 
       await processPromise
 
-      // Verify the Worker constructor was called with the correct arguments
       expect(Worker).toHaveBeenCalledWith(expect.any(String), {
         workerData: expect.objectContaining({
           query,
@@ -194,7 +182,7 @@ describe('load-interm-utils', () => {
       const query = 'SELECT * FROM test_table'
       const batchSize = 100
       const idFrom = 1
-      const idTo = 100 // Reduced to just one batch
+      const idTo = 100
       const transaction = {}
       const recordType = 'test'
 
@@ -207,12 +195,20 @@ describe('load-interm-utils', () => {
         recordType
       })
 
-      // Wait for the worker to be set up
-      await new Promise(resolve => setImmediate(resolve))
-
-      // Simulate error
-      mockWorker.emitMessage({ success: false, error: 'Worker error' })
-      mockWorker.emitExit(1)
+      for (let i = 0; i < 4; i++) {
+        await new Promise(resolve => {
+          const check = () => {
+            if (mockWorkers[i]) {
+              resolve()
+            } else {
+              setImmediate(check)
+            }
+          }
+          check()
+        })
+        mockWorkers[i].emitMessage({ success: false, error: 'Worker error' })
+        mockWorkers[i].emitExit(1)
+      }
 
       await expect(processPromise).rejects.toThrow('Batch 1-100 failed: Worker error')
     }, 5000)
@@ -221,7 +217,7 @@ describe('load-interm-utils', () => {
       const query = 'SELECT * FROM test_table'
       const batchSize = 100
       const idFrom = 1
-      const idTo = 100 // Reduced to just one batch
+      const idTo = 100
       const transaction = {}
       const recordType = 'test'
       const queryTemplate = (start, end, alias, script) =>
@@ -241,16 +237,13 @@ describe('load-interm-utils', () => {
         tableAlias
       })
 
-      // Wait for the worker to be set up
       await new Promise(resolve => setImmediate(resolve))
 
-      // Simulate successful completion
-      mockWorker.emitMessage({ success: true })
-      mockWorker.emitExit(0)
+      mockWorkers[0].emitMessage({ success: true })
+      mockWorkers[0].emitExit(0)
 
       await processPromise
 
-      // Verify the Worker constructor was called with the correct arguments
       expect(Worker).toHaveBeenCalledWith(expect.any(String), {
         workerData: expect.objectContaining({
           query: expect.any(String),
