@@ -41,8 +41,9 @@ container:
   alertingTopicAddress: ffc-doc-alert
   etlProcessTopicErrorAddress: ffc-doc-alerting
   excludeCalculationData: true
-  sfi23Enabled: false
+  sfi23Enabled: true
   delinkedEnabled: true
+  fakeData: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

@@ -27,4 +27,5 @@ data:
   EXCLUDE_CALCULATION_DATA: {{ quote .Values.container.excludeCalculationData }}
   SFI23_ENABLED: {{ quote .Values.container.sfi23Enabled }}
   DELINKED_ENABLED: {{ quote .Values.container.delinkedEnabled }}
+  FAKE_DATA: {{ quote .Values.container.fakeData }}
 {{- end -}}
