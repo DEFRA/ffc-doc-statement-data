@@ -30,7 +30,7 @@ const loadETLData = async (startDate) => {
         attempt++
         if (attempt > maxRetries) {
           console.error(`Error in ${name} after ${maxRetries} retries: ${error.message}`)
-          throw error
+          return Promise.reject(error)
         }
 
         const delay = baseDelay * 2 ** (attempt - 1)
