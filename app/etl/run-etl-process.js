@@ -44,12 +44,12 @@ const runEtlProcess = async ({
                 relax: true
               }))
 
-            if (nonProdTransformer && !config.isProd) {
-              etlFlow.transform(new Transformers.FakerTransformer({
-                columns: nonProdTransformer,
-                locale: 'en_GB'
-              }))
-            }
+        if (nonProdTransformer && config.etlConfig.fakeData) {
+          etlFlow.transform(new Transformers.FakerTransformer({
+            columns: nonProdTransformer,
+            locale: 'en_GB'
+          }))
+        }
 
             if (transformer) {
               etlFlow.transform(new Transformers.StringReplaceTransformer(transformer))

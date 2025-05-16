@@ -31,6 +31,7 @@ services:
       EXCLUDE_CALCULATION_DATA: "true"
       SFI23_ENABLED: ${SFI23_ENABLED:-true}
       DELINKED_ENABLED: ${DELINKED_ENABLED:-true}
+      FAKE_DATA: ${FAKE_DATA:-true}
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine
