@@ -2,6 +2,7 @@ const { Transaction } = require('sequelize')
 const db = require('../data')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
+const publishEtlProcessError = require('../messaging/publish-etl-process-error')
 
 const loadETLData = async (startDate) => {
   console.log(`Starting ETL data load at ${new Date().toISOString()}`)
@@ -25,6 +26,7 @@ const loadETLData = async (startDate) => {
       return result
     } catch (error) {
       console.error(`Error in ${name}: ${error.message}`)
+      await publishEtlProcessError(name, error)
       throw error
     }
   }

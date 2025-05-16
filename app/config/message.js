@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const docStatementData = 'ffc-doc-statement-data'
 
 const mqSchema = Joi.object({
   messageQueue: {
@@ -16,6 +17,11 @@ const mqSchema = Joi.object({
     address: Joi.string(),
     topic: Joi.string(),
     type: Joi.string().default('subscription')
+  },
+  publishEtlProcessError: {
+    address: Joi.string(),
+    topic: Joi.string(),
+    source: Joi.string()
   }
 })
 
@@ -35,6 +41,11 @@ const mqConfig = {
     address: process.env.DEMOGRAPHICS_SUBSCRIPTION_ADDRESS,
     topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
     type: 'subscription'
+  },
+  publishEtlProcessError: {
+    address: process.env.ALERTING_TOPIC_ADDRESS,
+    topic: process.env.ETL_PROCESS_TOPIC_ERROR_ADDRESS,
+    source: docStatementData
   }
 }
 
@@ -49,8 +60,10 @@ if (mqResult.error) {
 
 const dataTopic = { ...mqResult.value.messageQueue, ...mqResult.value.dataTopic }
 const updatesSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.updatesSubscription }
+const publishEtlProcessError = { ...mqResult.value.messageQueue, ...mqResult.value.publishEtlProcessError }
 
 module.exports = {
   dataTopic,
-  updatesSubscription
+  updatesSubscription,
+  publishEtlProcessError
 }

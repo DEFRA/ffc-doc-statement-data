@@ -13,6 +13,9 @@ jest.mock('../../../app/data', () => ({
   }
 }))
 
+jest.mock('../../../app/messaging/publish-etl-process-error', () => jest.fn())
+const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
+
 const { Transaction } = require('sequelize')
 Transaction.ISOLATION_LEVELS = {
   SERIALIZABLE: 'SERIALIZABLE'
@@ -78,6 +81,7 @@ describe('loadETLData', () => {
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(transaction.commit).toHaveBeenCalled()
     expect(transaction.rollback).not.toHaveBeenCalled()
+    expect(publishEtlProcessError).not.toHaveBeenCalled()
   })
 
   test('should rollback transaction if any transaction load script fails', async () => {
@@ -91,5 +95,6 @@ describe('loadETLData', () => {
     expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction)
     expect(transaction.commit).not.toHaveBeenCalled()
     expect(transaction.rollback).toHaveBeenCalled()
+    expect(publishEtlProcessError).toHaveBeenCalled()
   })
 })
