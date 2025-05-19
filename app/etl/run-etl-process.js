@@ -130,7 +130,7 @@ function runEtlFlow ({
   })
 }
 
-async function handleEtlResult ({ etlContext, file, table }) {
+async function handleEtlResult ({ etlContext, file }) {
   const { sequelizeModelName, initialRowCount, idFrom, fileInProcess } = etlContext
   await storage.deleteFile(file)
   const newRowCount = await db[sequelizeModelName]?.count()
