@@ -38,6 +38,7 @@ const loadETLData = async (startDate) => {
         await new Promise(resolve => setTimeout(resolve, delay))
       }
     }
+    return null
   }
 
   try {
