@@ -97,13 +97,13 @@ const runWorker = (workerData, i, batchTo, semaphore) => {
 }
 
 const processBatchWithRetries = async (options, i, batchTo, semaphore, maxRetries, baseDelay) => {
-  const { query, transaction, recordType, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
+  const { query, transaction, queryTemplate = null, exclusionScript = null, tableAlias = null } = options
   let attempt = 0
   let success = false
 
   while (attempt <= maxRetries && !success) {
     try {
-      let workerData = {
+      const workerData = {
         query,
         params: {
           idFrom: i,
