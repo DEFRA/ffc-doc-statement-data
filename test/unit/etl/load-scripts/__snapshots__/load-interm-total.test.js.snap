@@ -5,19 +5,50 @@ exports[`loadIntermTotal should call sequelize.query with correct parameters 1`]
   "calls": [
     [
       "
+WITH grouped AS (
+  SELECT
+    D."transdate",
+    D."quarter",
+    D."claimId",
+    SUM(D."transactionAmount") AS "totalAmount"
+  FROM public."etlIntermFinanceDax" D
+  WHERE D."etlInsertedDt" > :startDate
+  GROUP BY D."transdate", D."quarter", D."claimId"
+),
+ranked AS (
+  SELECT
+    g."transdate",
+    g."quarter",
+    g."claimId",
+    g."totalAmount",
+    D."paymentRef",
+    D."invoiceid",
+    ROW_NUMBER() OVER (
+      PARTITION BY g."transdate", g."quarter", g."claimId"
+      ORDER BY
+        CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
+        D."transactionAmount" DESC,
+        NULLIF(CAST(RIGHT(D."invoiceid", 1) AS INTEGER), NULL)
+    ) AS rn
+  FROM grouped g
+  JOIN public."etlIntermFinanceDax" D
+    ON D."transdate" = g."transdate"
+    AND D."quarter" = g."quarter"
+    AND D."claimId" = g."claimId"
+    AND D."etlInsertedDt" > :startDate
+)
 INSERT INTO public."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
   "transdate", "invoiceid"
 )
-SELECT DISTINCT "paymentRef", 
-  D."quarter",
-  SUM("transactionAmount") * -1 as "totalAmount",
+SELECT
+  "paymentRef", 
+  "quarter",
+  "totalAmount",
   "transdate",
   "invoiceid"
-FROM public."etlIntermFinanceDax" D 
-WHERE D."paymentRef" LIKE 'PY%' 
-  AND D."etlInsertedDt" > :startDate
-GROUP BY "transdate", "quarter", "paymentRef", "invoiceid"
+FROM ranked
+WHERE rn = 1 
 ORDER BY "paymentRef";
 ",
       {
