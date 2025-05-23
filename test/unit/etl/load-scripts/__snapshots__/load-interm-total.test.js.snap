@@ -48,7 +48,9 @@ SELECT
   "transdate",
   "invoiceid"
 FROM ranked
-WHERE rn = 1 
+WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" > 0 
 ORDER BY "paymentRef";
 ",
       {
