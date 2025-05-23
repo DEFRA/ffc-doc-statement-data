@@ -46,7 +46,9 @@ SELECT
   "transdate",
   "invoiceid"
 FROM ranked
-WHERE rn = 1 
+WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" > 0 
 ORDER BY "paymentRef";
 `
 
@@ -56,19 +58,21 @@ WITH grouped AS (
     D."transdate",
     D."quarter",
     D."claimId",
+    D.marketingyear,
     CD."calculationId",
     SUM(D."transactionAmount") AS "totalAmount"
   FROM ${dbConfig.schema}."etlIntermFinanceDax" D
   JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", CD."calculationId"
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear, CD."calculationId"
 ),
 ranked AS (
   SELECT
     g."transdate",
     g."quarter",
     g."claimId",
+    g.marketingyear,
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
@@ -85,6 +89,7 @@ ranked AS (
     ON D."transdate" = g."transdate"
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
+    AND D.marketingyear = g.marketingyear    
     AND D."etlInsertedDt" > :startDate
   JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
@@ -92,7 +97,7 @@ ranked AS (
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", "calculationId"
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
   "paymentRef",
@@ -100,9 +105,12 @@ SELECT
   "totalAmount",
   "transdate",
   "invoiceid",
-  "calculationId"
+  "calculationId",
+  marketingyear
 FROM ranked
 WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" > 0 
 ORDER BY "paymentRef";
 `
 
