@@ -12,7 +12,7 @@ const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPubl
         }
       ]
     },
-    attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
+    attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'marketingYear', 'transactionDate'],
     raw: true,
     transaction,
     limit

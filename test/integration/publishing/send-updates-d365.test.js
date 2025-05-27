@@ -66,6 +66,11 @@ describe('send d365 updates', () => {
       expect(mockSendMessage.mock.calls[0][0].body.paymentAmount).toBe(mockD3651.paymentAmount.toString())
     })
 
+    test('should publish d365 marketingYear', async () => {
+      await publish.start()
+      expect(mockSendMessage.mock.calls[0][0].body.marketingYear).toBe(mockD3651.marketingYear)
+    })
+
     test('should publish d365 transactionDate', async () => {
       await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.transactionDate).toBe(mockD3651.transactionDate.toISOString().split('T')[0])

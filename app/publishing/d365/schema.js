@@ -37,6 +37,10 @@ module.exports = Joi.object({
     'date.base': dateBaseMessage('transactionDate'),
     'any.required': requiredMessage('transactionDate')
   }),
+  marketingYear: Joi.number().required().messages({
+    'number.base': numberBaseMessage('marketingYear'),
+    'any.required': requiredMessage('marketingYear')
+  }),
   datePublished: Joi.date().messages({
     'date.base': dateBaseMessage('datePublished')
   }),
