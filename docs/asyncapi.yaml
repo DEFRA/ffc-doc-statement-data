@@ -215,6 +215,8 @@ components:
           $ref: '#/components/schemas/CalculationReference'
         paymentPeriod:
           $ref: '#/components/schemas/PaymentPeriod'
+        marketingYear:
+          $ref: '#/components/schemas/MarketingYear'
         paymentAmount:
           $ref: '#/components/schemas/PaymentAmount'
         transactionDate:
@@ -673,6 +675,10 @@ components:
       type: number
       description: An ID representing an organisation's legal status type
       example: 123456
+    MarketingYear:
+      type: string
+      description: Scheme marketing year
+      example: 2024
     MDMId:
       type: number
       description: MDM ID
