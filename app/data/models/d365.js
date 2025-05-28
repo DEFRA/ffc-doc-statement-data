@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     paymentPeriod: { type: DataTypes.STRING(PAYMENT_PERIOD_LENGTH), allowNull: true },
     paymentAmount: { type: DataTypes.DECIMAL, allowNull: false },
     transactionDate: { type: DataTypes.DATE, allowNull: false },
-    datePublished: { type: DataTypes.DATE, allowNull: true }
+    datePublished: { type: DataTypes.DATE, allowNull: true },
+    marketingYear: { type: DataTypes.INTEGER, allowNull: false }
   },
   {
     tableName: 'd365',
