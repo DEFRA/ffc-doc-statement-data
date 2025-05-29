@@ -6,13 +6,9 @@ const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPubl
     lock: true,
     skipLocked: true,
     where: {
-      [db.Sequelize.Op.or]: [
-        {
-          datePublished: null
-        }
-      ]
+      datePublished: null
     },
-    attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'paymentAmount', 'transactionDate'],
+    attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'marketingYear', 'paymentAmount', 'transactionDate'],
     raw: true,
     transaction,
     limit
