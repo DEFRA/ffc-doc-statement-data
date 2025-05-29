@@ -12,7 +12,7 @@ const loadD365 = async (startDate, transaction) => {
         T."paymentRef" AS "paymentReference",
         T."calculationId" AS "calculationId",
         T.quarter AS "paymentPeriod", 
-        T."totalAmount" AS "paymentAmount",
+        D."paymentAmountCalculated"::numeric AS "paymentAmount",
         T.transdate AS "transactionDate" 
     FROM ${dbConfig.schema}."etlIntermTotal" T
     JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
