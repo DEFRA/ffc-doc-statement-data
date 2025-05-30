@@ -8,16 +8,18 @@ WITH grouped AS (
     D."transdate",
     D."quarter",
     D."claimId",
+    D.marketingyear,
     SUM(D."transactionAmount") AS "totalAmount"
   FROM ${dbConfig.schema}."etlIntermFinanceDax" D
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId"
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
   SELECT
     g."transdate",
     g."quarter",
     g."claimId",
+    g.marketingyear,
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
@@ -33,18 +35,20 @@ ranked AS (
     ON D."transdate" = g."transdate"
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
+    AND D.marketingyear = g.marketingyear
     AND D."etlInsertedDt" > :startDate
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid"
+  "transdate", "invoiceid", marketingyear
 )
 SELECT
   "paymentRef", 
   "quarter",
   "totalAmount",
   "transdate",
-  "invoiceid"
+  "invoiceid",
+  marketingyear
 FROM ranked
 WHERE rn = 1
   AND "paymentRef" LIKE 'PY%'
@@ -119,7 +123,6 @@ const loadIntermTotal = async (startDate, transaction, query = defaultQuery) => 
 }
 
 const loadIntermTotalDelinked = async (startDate, transaction) => {
-  console.log('load totals into interm total')
   return loadIntermTotal(startDate, transaction, delinkedQuery)
 }
 
