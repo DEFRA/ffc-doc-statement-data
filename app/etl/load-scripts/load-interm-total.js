@@ -23,8 +23,9 @@ ranked AS (
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
+    CD."calculationId",
     ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId"
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
         CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
         D."transactionAmount" DESC,
@@ -37,6 +38,8 @@ ranked AS (
     AND D."claimId" = g."claimId"
     AND D.marketingyear = g.marketingyear
     AND D."etlInsertedDt" > :startDate
+  INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
+    ON D."claimId" = CD."applicationId"
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
@@ -48,6 +51,7 @@ SELECT
   "totalAmount",
   "transdate",
   "invoiceid",
+  "calculationId",
   marketingyear
 FROM ranked
 WHERE rn = 1
@@ -62,13 +66,10 @@ WITH grouped AS (
     D."quarter",
     D."claimId",
     D.marketingyear,
-    CD."calculationId",
     SUM(D."transactionAmount") AS "totalAmount"
   FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-  JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
-    ON D."claimId" = CD."applicationId"
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear, CD."calculationId"
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
   SELECT
@@ -79,9 +80,9 @@ ranked AS (
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
-    g."calculationId",
+    CD."calculationId",
     ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId", g."calculationId"
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
         CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
         D."transactionAmount" DESC,
@@ -94,9 +95,8 @@ ranked AS (
     AND D."claimId" = g."claimId"
     AND D.marketingyear = g.marketingyear    
     AND D."etlInsertedDt" > :startDate
-  JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
+  INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
-    AND CD."calculationId" = g."calculationId"
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
