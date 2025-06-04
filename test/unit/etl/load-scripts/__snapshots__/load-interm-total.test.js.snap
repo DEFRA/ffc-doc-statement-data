@@ -45,7 +45,7 @@ ranked AS (
 )
 INSERT INTO public."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", marketingyear
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
   "paymentRef", 

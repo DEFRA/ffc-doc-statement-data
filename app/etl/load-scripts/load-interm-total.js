@@ -43,7 +43,7 @@ ranked AS (
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", marketingyear
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
   "paymentRef", 
