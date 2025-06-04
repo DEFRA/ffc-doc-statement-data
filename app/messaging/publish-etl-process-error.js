@@ -8,8 +8,7 @@ const { DOC_STATEMENT_DATA_SOURCE } = require('../constants/doc-statement-data-s
 const publishEtlProcessError = async (file, error) => {
   const options = {
     time: new Date(),
-    id: uuidv4(),
-    source: config.publishEtlProcessError.source
+    id: uuidv4()
   }
 
   const body = {
