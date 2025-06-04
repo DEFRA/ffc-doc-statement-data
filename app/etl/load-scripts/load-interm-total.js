@@ -56,6 +56,7 @@ SELECT
 FROM ranked
 WHERE rn = 1
   AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" > 0
 ORDER BY "paymentRef";
 `
 
@@ -113,6 +114,7 @@ SELECT
 FROM ranked
 WHERE rn = 1
   AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" > 0
 ORDER BY "paymentRef";
 `
 
