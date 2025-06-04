@@ -3,6 +3,7 @@ const sendMessage = require('../../../app/messaging/send-message')
 const { v4: uuidv4 } = require('uuid')
 const config = require('../../../app/config')
 const { ETL_PROCESS_ERROR } = require('../../../app/constants/message-types')
+const { DOC_STATEMENT_DATA_SOURCE } = require('../../../app/constants/doc-statement-data-source')
 
 jest.mock('uuid')
 jest.mock('../../../app/messaging/send-message')
@@ -12,7 +13,7 @@ describe('publishEtlProcessError', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     uuidv4.mockReturnValue('mock-uuid')
-    config.publishEtlProcessError = { source: 'mock-source' }
+    config.publishEtlProcessError = { }
     jest.spyOn(console, 'log').mockImplementation(() => {})
   })
 
@@ -28,12 +29,10 @@ describe('publishEtlProcessError', () => {
         file: 'mock-file'
       },
       time: expect.any(Date),
-      id: 'mock-uuid',
-      type: ETL_PROCESS_ERROR,
-      source: 'mock-source'
+      id: 'mock-uuid'
     }
 
-    expect(sendMessage).toHaveBeenCalledWith(expectedBody, ETL_PROCESS_ERROR, config.publishEtlProcessError, {
+    expect(sendMessage).toHaveBeenCalledWith(expectedBody, ETL_PROCESS_ERROR, DOC_STATEMENT_DATA_SOURCE, config.publishEtlProcessError, {
       time: expect.any(Date),
       id: 'mock-uuid'
     })

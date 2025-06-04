@@ -38,7 +38,6 @@ container:
   azureStorageUseConnectionString: false
   azureStorageCreateContainers: false
   demographicsActive: true
-  alertingTopicAddress: ffc-doc-alert
   etlProcessTopicErrorAddress: ffc-doc-alerting
   excludeCalculationData: true
   sfi23Enabled: true
