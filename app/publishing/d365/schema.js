@@ -3,6 +3,7 @@ const { D365 } = require('../types')
 
 const paymentReferenceChars = 30
 const paymentPeriodChars = 200
+const marketingYearChars = 9999
 
 // Common message definitions
 const stringBaseMessage = (field) => `${field} should be a type of string`
@@ -23,6 +24,10 @@ module.exports = Joi.object({
   calculationReference: Joi.number().integer().messages({
     'number.base': numberBaseMessage('calculationReference'),
     'number.integer': integerMessage('calculationReference')
+  }),
+  marketingYear: Joi.number().integer().max(marketingYearChars).required().messages({
+    'number.base': integerMessage('marketingYear'),
+    'number.max': maxLengthMessage('marketingYear', marketingYearChars)
   }),
   paymentPeriod: Joi.string().max(paymentPeriodChars).allow('', null).optional().messages({
     'string.base': stringBaseMessage('paymentPeriod'),

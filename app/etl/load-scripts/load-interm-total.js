@@ -8,21 +8,24 @@ WITH grouped AS (
     D."transdate",
     D."quarter",
     D."claimId",
+    D.marketingyear,
     SUM(D."transactionAmount") AS "totalAmount"
   FROM ${dbConfig.schema}."etlIntermFinanceDax" D
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId"
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
   SELECT
     g."transdate",
     g."quarter",
     g."claimId",
+    g.marketingyear,
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
+    CD."calculationId",
     ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId"
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
         CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
         D."transactionAmount" DESC,
@@ -33,20 +36,26 @@ ranked AS (
     ON D."transdate" = g."transdate"
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
+    AND D.marketingyear = g.marketingyear
     AND D."etlInsertedDt" > :startDate
+  INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
+    ON D."claimId" = CD."applicationId"
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid"
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
   "paymentRef", 
   "quarter",
   "totalAmount",
   "transdate",
-  "invoiceid"
+  "invoiceid",
+  "calculationId",
+  marketingyear
 FROM ranked
-WHERE rn = 1 
+WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
 ORDER BY "paymentRef";
 `
 
@@ -56,25 +65,24 @@ WITH grouped AS (
     D."transdate",
     D."quarter",
     D."claimId",
-    CD."calculationId",
+    D.marketingyear,
     SUM(D."transactionAmount") AS "totalAmount"
   FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-  JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
-    ON D."claimId" = CD."applicationId"
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", CD."calculationId"
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
   SELECT
     g."transdate",
     g."quarter",
     g."claimId",
+    g.marketingyear,
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
-    g."calculationId",
+    CD."calculationId",
     ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId", g."calculationId"
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
         CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
         D."transactionAmount" DESC,
@@ -85,14 +93,14 @@ ranked AS (
     ON D."transdate" = g."transdate"
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
+    AND D.marketingyear = g.marketingyear    
     AND D."etlInsertedDt" > :startDate
-  JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
+  INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
-    AND CD."calculationId" = g."calculationId"
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", "calculationId"
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
   "paymentRef",
@@ -100,9 +108,11 @@ SELECT
   "totalAmount",
   "transdate",
   "invoiceid",
-  "calculationId"
+  "calculationId",
+  marketingyear
 FROM ranked
 WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
 ORDER BY "paymentRef";
 `
 
@@ -113,7 +123,6 @@ const loadIntermTotal = async (startDate, transaction, query = defaultQuery) => 
 }
 
 const loadIntermTotalDelinked = async (startDate, transaction) => {
-  console.log('load totals into interm total')
   return loadIntermTotal(startDate, transaction, delinkedQuery)
 }
 

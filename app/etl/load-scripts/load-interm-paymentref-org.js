@@ -10,7 +10,9 @@ const loadIntermPaymentrefOrg = async (startDate, transaction) => {
     INNER JOIN ${dbConfig.schema}."etlIntermCalcOrg" O ON O."applicationId" = PA."applicationId"
     WHERE PA."etlInsertedDt" > :startDate
       OR O."etlInsertedDt" > :startDate
-    GROUP BY PA."paymentRef", O.sbi, O.frn;
+    GROUP BY PA."paymentRef", O.sbi, O.frn
+    ON CONFLICT ("paymentRef", sbi, frn)
+    DO UPDATE SET "etlInsertedDt" = EXCLUDED."etlInsertedDt";
   `
 
   await executeQuery(query, {

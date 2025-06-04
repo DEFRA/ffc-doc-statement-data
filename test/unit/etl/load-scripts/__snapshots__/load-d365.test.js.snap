@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadD365 should call sequelize.query with correct SQL and parameters 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+    INSERT INTO public.d365 (
+        "paymentReference", "calculationId", "paymentPeriod",
+        "paymentAmount", "transactionDate", "marketingYear"
+    )
+    SELECT DISTINCT
+        T."paymentRef" AS "paymentReference",
+        T."calculationId" AS "calculationId",
+        T.quarter AS "paymentPeriod", 
+        D."paymentAmountCalculated"::numeric AS "paymentAmount",
+        T.transdate AS "transactionDate",
+        T.marketingyear AS "marketingYear" 
+    FROM public."etlIntermTotal" T
+    JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
+    WHERE T."etlInsertedDt" > :startDate;
+    ",
+      {
+        "raw": true,
+        "replacements": {
+          "startDate": "2023-01-01",
+        },
+        "transaction": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
