@@ -5,24 +5,14 @@ const { executeQuery } = require('./load-interm-utils')
 const loadIntermPaymentrefApplication = async (startDate, transaction) => {
   const query = `
     INSERT INTO ${dbConfig.schema}."etlIntermPaymentrefApplication"("paymentRef", "applicationId")
-    SELECT
+    SELECT DISTINCT ON (T."paymentRef")
       T."paymentRef",
-      (
-        SELECT "claimId" AS "applicationId"
-        FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-        WHERE D."paymentRef" = T."paymentRef"
-          AND POSITION(D."claimId" IN T.invoiceid) > 0
-        LIMIT 1
-      )
+      D."claimId" AS "applicationId"
     FROM ${dbConfig.schema}."etlIntermTotal" T
+    JOIN ${dbConfig.schema}."etlIntermFinanceDax" D
+      ON D."paymentRef" = T."paymentRef"
+      AND POSITION(D."claimId"::text IN T."invoiceid") > 0
     WHERE T."etlInsertedDt" > :startDate
-      AND (
-        SELECT "claimId"
-        FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-        WHERE D."paymentRef" = T."paymentRef"
-          AND POSITION(D."claimId" IN T."invoiceid") > 0
-        LIMIT 1
-      ) IS NOT NULL
     ON CONFLICT ("paymentRef", "applicationId") DO NOTHING;
   `
 

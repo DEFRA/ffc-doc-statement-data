@@ -30,7 +30,7 @@ exports[`loadTotals should call sequelize.query with correct parameters 1`] = `
       T."totalAmount" AS "totalPayments"
     FROM public."etlIntermTotal" T
     INNER JOIN public."etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
-    INNER JOIN public."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef" AND POSITION(PA."applicationId" IN T.invoiceid) > 0
+    INNER JOIN public."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef" AND POSITION(PA."applicationId"::text IN T.invoiceid) > 0
     INNER JOIN public."etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
     INNER JOIN public."etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
     INNER JOIN public."etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"
