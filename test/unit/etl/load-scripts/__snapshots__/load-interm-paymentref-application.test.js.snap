@@ -6,24 +6,14 @@ exports[`loadIntermPaymentrefApplication should call sequelize.query with correc
     [
       "
     INSERT INTO public."etlIntermPaymentrefApplication"("paymentRef", "applicationId")
-    SELECT
+    SELECT DISTINCT ON (T."paymentRef")
       T."paymentRef",
-      (
-        SELECT "claimId" AS "applicationId"
-        FROM public."etlIntermFinanceDax" D
-        WHERE D."paymentRef" = T."paymentRef"
-          AND POSITION(D."claimId" IN T.invoiceid) > 0
-        LIMIT 1
-      )
+      D."claimId" AS "applicationId"
     FROM public."etlIntermTotal" T
+    JOIN public."etlIntermFinanceDax" D
+      ON D."paymentRef" = T."paymentRef"
+      AND POSITION(D."claimId"::text IN T."invoiceid") > 0
     WHERE T."etlInsertedDt" > :startDate
-      AND (
-        SELECT "claimId"
-        FROM public."etlIntermFinanceDax" D
-        WHERE D."paymentRef" = T."paymentRef"
-          AND POSITION(D."claimId" IN T."invoiceid") > 0
-        LIMIT 1
-      ) IS NOT NULL
     ON CONFLICT ("paymentRef", "applicationId") DO NOTHING;
   ",
       {
