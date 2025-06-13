@@ -15,7 +15,9 @@ const loadDAX = async (startDate, transaction) => {
       T."totalAmount" AS "paymentAmount",
       T.transdate AS "transactionDate" 
     FROM ${dbConfig.schema}."etlIntermTotal" T
-    WHERE T."etlInsertedDt" > :startDate;
+    LEFT JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
+    WHERE T."etlInsertedDt" > :startDate
+      AND D."calculationId" IS NULL;
   `, {
     replacements: {
       startDate
