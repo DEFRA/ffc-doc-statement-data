@@ -124,6 +124,7 @@ function runEtlFlow ({
             reject(error)
           })
       } catch (e) {
+        console.error('ETL Initialization Error:', e.message)
         reject(e)
       }
     })()
