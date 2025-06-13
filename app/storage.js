@@ -97,21 +97,24 @@ const getBlob = async (filename) => {
   return container.getBlockBlobClient(filename)
 }
 
-const downloadFile = async (filename, tempFilePath) => {
-  const blob = await getBlob(filename)
-  return blob.downloadToFile(tempFilePath)
-}
-
 const downloadFileAsStream = async (filename) => {
-  const blob = await getBlob(filename)
-  const downloadResponse = await blob.download(0)
-  return downloadResponse.readableStreamBody
+  console.log(`Downloading file as stream: ${filename}`)
+  try {
+    const blob = await getBlob(filename)
+    const downloadResponse = await blob.download(0)
+    return downloadResponse.readableStreamBody
+  } catch (e) {
+    console.log(`An error occurred trying to download blob: ${e.message}`)
+    throw e
+  }
 }
 
 const deleteFile = async (filename) => {
-  const blob = await getBlob(filename)
+  console.log(`Deleting file: ${filename}`)
   try {
+    const blob = await getBlob(filename)
     await blob.delete()
+    console.log(`File deleted: ${filename}`)
     return true
   } catch (e) {
     console.log(`An error occurred trying to delete blob: ${e.message}`)
@@ -146,7 +149,6 @@ const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destina
 
 module.exports = {
   getFileList,
-  downloadFile,
   downloadFileAsStream,
   deleteFile,
   getDWHExtracts,

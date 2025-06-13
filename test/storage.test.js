@@ -1,7 +1,6 @@
 const { BlobServiceClient } = require('@azure/storage-blob')
 const {
   getFileList,
-  downloadFile,
   downloadFileAsStream,
   deleteFile,
   getDWHExtracts,
@@ -124,13 +123,6 @@ describe('getBlob', () => {
     const blobClient = await getBlob('filename')
     expect(blobClient).toBeDefined()
     expect(typeof blobClient).toBe('object')
-  })
-})
-
-describe('downloadFile', () => {
-  test('should download file to tempFilePath', async () => {
-    const result = await downloadFile('filename', 'tempFilePath')
-    expect(result).toBe(true)
   })
 })
 
