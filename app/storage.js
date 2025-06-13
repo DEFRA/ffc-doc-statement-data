@@ -145,15 +145,18 @@ const deleteAllETLExtracts = async () => {
   containersInitialised ?? await initialiseContainers()
   console.log('Deleting all ETL extracts')
   try {
+    const deletePromises = []
     for (const folder of folderList) {
       for await (const file of container.listBlobsFlat({ prefix: folder })) {
-        if (file.name.endsWith('export.csv')) {
-          console.log(`Deleting file: ${file.name}`)
-          const blob = container.getBlockBlobClient(file.name)
-          await blob.delete()
+        if (!file.name.endsWith('export.csv')) {
+          continue
         }
+        console.log(`Deleting file: ${file.name}`)
+        const blob = container.getBlockBlobClient(file.name)
+        deletePromises.push(blob.delete())
       }
     }
+    await Promise.all(deletePromises)
     console.log('All ETL extracts deleted')
     return true
   } catch (e) {
