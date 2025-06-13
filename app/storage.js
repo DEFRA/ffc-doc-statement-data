@@ -144,16 +144,22 @@ const getDWHExtracts = async () => {
 const deleteAllETLExtracts = async () => {
   containersInitialised ?? await initialiseContainers()
   console.log('Deleting all ETL extracts')
-  for (const folder of folderList) {
-    for await (const file of container.listBlobsFlat({ prefix: folder })) {
-      if (file.name.endsWith('export.csv')) {
-        console.log(`Deleting file: ${file.name}`)
-        const blob = container.getBlockBlobClient(file.name)
-        await blob.delete()
+  try {
+    for (const folder of folderList) {
+      for await (const file of container.listBlobsFlat({ prefix: folder })) {
+        if (file.name.endsWith('export.csv')) {
+          console.log(`Deleting file: ${file.name}`)
+          const blob = container.getBlockBlobClient(file.name)
+          await blob.delete()
+        }
       }
     }
+    console.log('All ETL extracts deleted')
+    return true
+  } catch (e) {
+    console.log(`An error occurred trying to delete ETL extracts: ${e.message}`)
+    return false
   }
-  console.log('All ETL extracts deleted')
 }
 
 const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destinationFilename) => {
@@ -176,5 +182,7 @@ module.exports = {
   getDWHExtracts,
   moveFile,
   getBlob,
-  deleteAllETLExtracts
+  deleteAllETLExtracts,
+  initialiseContainers,
+  initialiseFolders
 }
