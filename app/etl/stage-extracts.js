@@ -1,5 +1,3 @@
-const { writeToString } = require('@fast-csv/format')
-const moment = require('moment')
 const storage = require('../storage')
 const {
   stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption,
@@ -9,8 +7,6 @@ const {
 const { loadETLData } = require('./load-etl-data')
 const { etlConfig } = require('../config')
 const ora = require('ora')
-
-global.results = []
 
 let startDate
 
@@ -82,19 +78,15 @@ const stageExtracts = async () => {
 
     const results = await Promise.all(stagingPromises)
 
-    const body = await writeToString(global.results)
-    const outboundBlobClient = await storage.getBlob(`${etlConfig.etlLogsFolder}/ETL_Import_Results_${moment().format('YYYYMMDD HH:mm:ss')}`)
-    await outboundBlobClient.upload(body, body.length)
-
     const failedOperations = results.filter(result => !result.success)
     if (failedOperations.length > 0) {
       console.error(`ETL process completed with ${failedOperations.length} failures:`)
       failedOperations.forEach(op => console.error(`- ${op.label}: ${op.error}`))
     } else {
       console.log('All ETL extracts loaded successfully')
+      await loadETLData(startDate)
     }
-
-    await loadETLData(startDate)
+    await storage.deleteAllETLExtracts()
   } else {
     console.info('No DWH files identified for processing')
   }
