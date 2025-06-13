@@ -5,7 +5,8 @@ const {
   deleteFile,
   getDWHExtracts,
   moveFile,
-  getBlob
+  getBlob,
+  deleteAllETLExtracts
 } = require('../app/storage')
 
 jest.mock('@azure/storage-blob', () => {
@@ -244,5 +245,16 @@ describe('deleteAllETLExtracts', () => {
     const result = await storage.deleteAllETLExtracts()
     expect(result).toBe(false)
     expect(mockDelete).toHaveBeenCalledTimes(1)
+  })
+
+  test('should successfully delete files from multiple folders', async () => {
+    mockListBlobsFlat.mockImplementation(async function * () {
+      yield { name: 'folder1/export.csv' }
+      yield { name: 'folder2/export.csv' }
+      yield { name: 'folder3/export.csv' }
+    })
+
+    const result = await deleteAllETLExtracts()
+    expect(result).toBe(true)
   })
 })
