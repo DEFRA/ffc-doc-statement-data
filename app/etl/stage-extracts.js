@@ -84,9 +84,9 @@ const stageExtracts = async () => {
       failedOperations.forEach(op => console.error(`- ${op.label}: ${op.error}`))
     } else {
       console.log('All ETL extracts loaded successfully')
+      await loadETLData(startDate)
     }
-
-    await loadETLData(startDate)
+    await storage.deleteAllETLExtracts()
   } else {
     console.info('No DWH files identified for processing')
   }

@@ -82,7 +82,6 @@ describe('runEtlProcess', () => {
     })
 
     expect(result).toEqual([])
-    expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
     expect(db.etlStageLog.update).toHaveBeenCalled()
   })
 
@@ -368,7 +367,6 @@ describe('runEtlProcess', () => {
     })
 
     expect(result).toEqual([])
-    expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
     expect(db.etlStageLog.update).toHaveBeenCalled()
   })
 })
