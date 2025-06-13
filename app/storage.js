@@ -94,7 +94,14 @@ const getFileList = async () => {
 
 const getBlob = async (filename) => {
   containersInitialised ?? await initialiseContainers()
-  return container.getBlockBlobClient(filename)
+  console.log(`Getting blob for filename: ${filename}`)
+  try {
+    const blob = container.getBlockBlobClient(filename)
+    return blob
+  } catch (e) {
+    console.log(`An error occurred trying to get blob: ${e.message}`)
+    throw e
+  }
 }
 
 const downloadFileAsStream = async (filename) => {
