@@ -13,7 +13,7 @@ exports[`loadD365 should call sequelize.query with correct SQL and parameters 1`
         T."paymentRef" AS "paymentReference",
         T."calculationId" AS "calculationId",
         T.quarter AS "paymentPeriod", 
-        D."paymentAmountCalculated"::numeric AS "paymentAmount",
+        T."totalAmount" AS "paymentAmount",
         T.transdate AS "transactionDate",
         T.marketingyear AS "marketingYear" 
     FROM public."etlIntermTotal" T
