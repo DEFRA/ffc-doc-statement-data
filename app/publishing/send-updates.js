@@ -22,6 +22,8 @@ const sendUpdates = async (type) => {
     }
 
     console.log('Delinked subset processing active:', status)
+  } else if (type === DELINKED) {
+    console.log('Delinked subset processing disabled - processing normally')
   }
 
   const getUnpublished = require(`./${type}/get-unpublished`)
@@ -94,7 +96,7 @@ const sendUpdates = async (type) => {
     }
   } while (outstanding.length === batchSize)
 
-  console.log('%i %s datasets published', totalPublished, type)
+  console.log(`${totalPublished} ${type} datasets published`)
 }
 
 module.exports = sendUpdates
