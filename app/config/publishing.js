@@ -2,15 +2,22 @@ const Joi = require('joi')
 
 const defaultDataPublishingBatchSize = 1000
 const defaultPollingInterval = 3600000
+const processDelinkedSubsetAmount = 10
 
 const schema = Joi.object({
   dataPublishingMaxBatchSizePerDataSource: Joi.number().default(defaultDataPublishingBatchSize),
-  pollingInterval: Joi.number().integer().default(defaultPollingInterval)
+  pollingInterval: Joi.number().integer().default(defaultPollingInterval),
+  publishingEnabled: Joi.boolean().default(true),
+  subsetProcessDelinked: Joi.boolean().default(true), // true means it will only process a subset before stopping, ensure false before release.
+  processDelinkedSubsetAmount: Joi.number().integer().min(1).default(processDelinkedSubsetAmount)
 })
 
 const config = {
   dataPublishingMaxBatchSizePerDataSource: process.env.DATA_PUBLISHING_MAX_BATCH_SIZE_PER_DATA_SOURCE,
-  pollingInterval: process.env.POLLING_INTERVAL
+  pollingInterval: process.env.POLLING_INTERVAL,
+  publishingEnabled: process.env.PUBLISHING_ENABLED,
+  subsetProcessDelinked: process.env.SUBSET_PROCESS_DELINKED,
+  processDelinkedSubsetAmount: process.env.PROCESS_DELINKED_SUBSET_AMOUNT
 }
 
 const result = schema.validate(config, {
