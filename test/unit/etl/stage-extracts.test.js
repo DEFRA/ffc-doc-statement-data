@@ -23,6 +23,11 @@ jest.mock('../../../app/config', () => {
   }
 })
 
+jest.mock('../../../app/messaging/create-alerts', () => ({
+  createAlerts: jest.fn()
+}))
+const { createAlerts } = require('../../../app/messaging/create-alerts')
+
 const stageFunctions = [
   { fn: stageApplicationDetails, label: etlConfig.applicationDetail.folder },
   { fn: stageAppsTypes, label: etlConfig.appsTypes.folder },
@@ -246,5 +251,96 @@ describe('ETL Process', () => {
     expect(stageApplicationDetails).toHaveBeenCalled()
     expect(stageAppsTypes).toHaveBeenCalled()
     expect(stageAppsPaymentNotifications).toHaveBeenCalled()
+  })
+
+  test('should call createAlerts when staging operations fail', async () => {
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+
+    storage.getFileList.mockResolvedValue([
+      'Application_Detail_SFI23/file1',
+      'Apps_Types_SFI23/file2'
+    ])
+
+    stageApplicationDetails.mockRejectedValue(new Error('First error'))
+    stageAppsTypes.mockRejectedValue(new Error('Second error'))
+
+    await stageExtracts()
+
+    expect(createAlerts).toHaveBeenCalledWith([
+      {
+        file: etlConfig.applicationDetail.folder,
+        message: 'First error'
+      },
+      {
+        file: etlConfig.appsTypes.folder,
+        message: 'Second error'
+      }
+    ])
+  })
+
+  test('should not call createAlerts when all staging operations succeed', async () => {
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+
+    storage.getFileList.mockResolvedValue([
+      'Application_Detail_SFI23/file1',
+      'Apps_Types_SFI23/file2'
+    ])
+
+    stageApplicationDetails.mockResolvedValue()
+    stageAppsTypes.mockResolvedValue()
+
+    await stageExtracts()
+
+    expect(createAlerts).not.toHaveBeenCalled()
+  })
+
+  test('should not call createAlerts when no files to process', async () => {
+    storage.getFileList.mockResolvedValue([])
+
+    await stageExtracts()
+
+    expect(createAlerts).not.toHaveBeenCalled()
+  })
+
+  test('should call createAlerts with multiple errors when some operations fail', async () => {
+    const mockSpinner = {
+      start: jest.fn().mockReturnThis(),
+      succeed: jest.fn().mockReturnThis(),
+      fail: jest.fn().mockReturnThis()
+    }
+    ora.mockReturnValue(mockSpinner)
+
+    storage.getFileList.mockResolvedValue([
+      'Application_Detail_SFI23/file1',
+      'Apps_Types_SFI23/file2',
+      'Apps_Payment_Notification_SFI23/file3'
+    ])
+
+    stageApplicationDetails.mockResolvedValue()
+    stageAppsTypes.mockRejectedValue(new Error('Types error'))
+    stageAppsPaymentNotifications.mockRejectedValue(new Error('Payments error'))
+
+    await stageExtracts()
+
+    expect(createAlerts).toHaveBeenCalledWith([
+      {
+        file: etlConfig.appsTypes.folder,
+        message: 'Types error'
+      },
+      {
+        file: etlConfig.appsPaymentNotification.folder,
+        message: 'Payments error'
+      }
+    ])
   })
 })

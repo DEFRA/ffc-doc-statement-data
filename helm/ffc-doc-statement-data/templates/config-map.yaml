@@ -6,9 +6,11 @@ data:
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   {{- if and (.Values.environmentCode) (not .Values.pr) }}
   DATA_TOPIC_ADDRESS: {{ .Values.container.dataTopicAddress }}-{{ .Values.environmentCode }}
+  ALERT_TOPIC_ADDRESS: {{ .Values.container.alertTopicAddress }}-{{ .Values.environmentCode }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
   {{ else }}
   DATA_TOPIC_ADDRESS: {{ .Values.container.dataTopicAddress }}
+  ALERT_TOPIC_ADDRESS: {{ .Values.container.alertTopicAddress }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}
   {{- end }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}

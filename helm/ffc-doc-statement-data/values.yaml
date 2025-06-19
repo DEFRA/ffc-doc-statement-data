@@ -31,6 +31,7 @@ container:
   limitCpu: 680m
   messageQueueHost: namespace.servicebus.windows.net
   dataTopicAddress: ffc-doc-statement-data
+  alertTopicAddress: ffc-doc-alerting
   demographicsTopicAddress: ffc-pay-demographics-extract
   demographicsSubscriptionAddress: ffc-doc-demographics
   azureStorageConnectionString: dummy
