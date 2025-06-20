@@ -8,7 +8,7 @@ const schema = Joi.object({
   dataPublishingMaxBatchSizePerDataSource: Joi.number().default(defaultDataPublishingBatchSize),
   pollingInterval: Joi.number().integer().default(defaultPollingInterval),
   publishingEnabled: Joi.boolean().default(true),
-  subsetProcessDelinked: Joi.boolean().default(false),
+  subsetProcessDelinked: Joi.boolean().default(true),
   processDelinkedSubsetAmount: Joi.number().integer().min(1).default(processDelinkedSubsetAmount)
 })
 
