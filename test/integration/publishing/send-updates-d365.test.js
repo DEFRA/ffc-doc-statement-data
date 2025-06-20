@@ -11,6 +11,12 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
+jest.mock('../../../app/publishing/delinked-subset-counter', () => ({
+  shouldProcessDelinked: jest.fn().mockReturnValue(true),
+  incrementProcessedCount: jest.fn(),
+  getStatus: jest.fn().mockReturnValue({ limitReached: false, targetAmount: 1000, processedCount: 0 })
+}))
+
 const { mockD3651, mockD3652 } = require('../../mocks/d365')
 
 const originalConsoleLog = console.log
@@ -42,7 +48,7 @@ const db = require('../../../app/data')
 jest.mock('../../../app/publishing/send-updates', () => {
   const original = jest.requireActual('../../../app/publishing/send-updates')
   return function () {
-    console.log('%i %s datasets published', 1, 'd365')
+    console.log('1 d365 datasets published')
     return original.apply(this, arguments)
   }
 })
@@ -55,6 +61,8 @@ describe('send d365 updates', () => {
     jest.clearAllMocks()
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
+    publishingConfig.subsetProcessDelinked = false
+    publishingConfig.publishingEnabled = true
   })
 
   afterEach(async () => {
@@ -118,10 +126,10 @@ describe('send d365 updates', () => {
       expect(mockSendMessage.mock.calls[0][0].body.transactionDate).toBe(mockD3651.transactionDate.toISOString())
     })
 
-    test('should call a console log with number of datasets published for d365s', async () => {
+    test('should call a console log with number of datasets published for d365', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
       await publish.start()
-      expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'd365'])
+      expect(logSpy.mock.calls).toContainEqual(['1 d365 datasets published'])
     })
 
     test('should not publish same d365 on second run if record has not been updated', async () => {

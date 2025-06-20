@@ -11,6 +11,12 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
+jest.mock('../../../app/publishing/delinked-subset-counter', () => ({
+  shouldProcessDelinked: jest.fn().mockReturnValue(true),
+  incrementProcessedCount: jest.fn(),
+  getStatus: jest.fn().mockReturnValue({ limitReached: false, targetAmount: 1000, processedCount: 0 })
+}))
+
 const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
 
@@ -24,6 +30,8 @@ describe('send dax updates', () => {
     jest.clearAllMocks()
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
+    publishingConfig.subsetProcessDelinked = false
+    publishingConfig.publishingEnabled = true
   })
 
   afterEach(async () => {
@@ -70,10 +78,11 @@ describe('send dax updates', () => {
       await publish.start()
       expect(mockSendMessage.mock.calls[0][0].body.transactionDate).toBe(mockDax1.transactionDate.toISOString())
     })
+
     test('should call a console log with number of datasets published for daxs', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
       await publish.start()
-      expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'dax'])
+      expect(logSpy.mock.calls).toContainEqual(['1 dax datasets published'])
     })
 
     test('should not publish same dax on second run if record has not been updated', async () => {

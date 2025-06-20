@@ -24,6 +24,7 @@ describe('send calculation and organisation updates', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
+    publishingConfig.subsetProcessDelinked = false
   })
 
   afterEach(async () => {
@@ -241,6 +242,8 @@ describe('send calculation and organisation updates', () => {
     let numberOfRecords
 
     beforeEach(async () => {
+      publishingConfig.subsetProcessDelinked = false
+
       numberOfRecordsCalculation = Math.floor(publishingConfig.dataPublishingMaxBatchSizePerDataSource / 2)
       numberOfRecordsOrganisation = 1 + Math.ceil(publishingConfig.dataPublishingMaxBatchSizePerDataSource / 2)
       numberOfRecords = numberOfRecordsCalculation + numberOfRecordsOrganisation
