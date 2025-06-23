@@ -195,17 +195,21 @@ const sendUpdates = async (type) => {
 
 const processBatches = async (type, getUnpublished, updatePublished, batchSize, onProcessed) => {
   let outstanding = []
-  let continueProcessing = true
+  let shouldContinue = true
 
-  while (continueProcessing) {
+  while (shouldContinue) {
+    shouldContinue = await processNextBatch()
+  }
+
+  async function processNextBatch () {
     if (shouldStopProcessing(type)) {
       console.log(`${type} subset limit reached, stopping batch processing`)
-      break
+      return false
     }
 
     const effectiveBatchSize = calculateBatchSize(type, batchSize)
     if (effectiveBatchSize === 0) {
-      break
+      return false
     }
 
     outstanding = await getUnpublished(null, effectiveBatchSize)
@@ -213,10 +217,10 @@ const processBatches = async (type, getUnpublished, updatePublished, batchSize, 
     onProcessed(processed)
 
     if (shouldTerminateBatching(type, outstanding.length)) {
-      break
+      return false
     }
 
-    continueProcessing = outstanding.length === batchSize
+    return outstanding.length === batchSize
   }
 }
 
