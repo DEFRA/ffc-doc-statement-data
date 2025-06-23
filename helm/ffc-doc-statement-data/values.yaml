@@ -42,6 +42,9 @@ container:
   sfi23Enabled: true
   delinkedEnabled: true
   fakeData: true
+  subsetProcessDelinked: false
+  processDelinkedSubsetAmount: 10
+  publishingEnabled: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data
