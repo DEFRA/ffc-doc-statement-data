@@ -6,6 +6,7 @@ let subsetEstablished = false
 const processedDelinkedOrganisations = new Set() // Will store SBI/FRN values
 const processedDelinkedCalculations = new Set() // Will store calculationId values
 const processedDelinkedD365Records = new Set() // Will store d365Id values
+const PROGRESS_LOG_FREQUENCY = 5
 
 const subsetFilter = {
   organisationKeys: new Set(), // SBI/FRN values that should be processed
@@ -46,6 +47,28 @@ const establishSubsetFilter = async (getUnpublishedDelinkedCalc) => {
   console.log(`Subset filter established: ${subsetFilter.organisationKeys.size} organisations, ${subsetFilter.calculationIds.size} calculations`)
 }
 
+const isValidDelinkedCalculation = (record) => {
+  const calculationRef = record.calculationReference
+  return calculationRef && subsetFilter.calculationIds.has(calculationRef)
+}
+
+const isValidOrganisation = (record) => {
+  const orgKey = record.sbi || record.frn
+  if (!orgKey) {
+    return false
+  }
+  return subsetFilter.organisationKeys.has(orgKey) &&
+         !processedDelinkedOrganisations.has(orgKey)
+}
+
+const isValidD365 = (record) => {
+  const calculationRef = record.calculationReference
+  if (!calculationRef) {
+    return false
+  }
+  return subsetFilter.calculationIds.has(calculationRef)
+}
+
 const shouldProcessDelinkedRecord = (record, type) => {
   if (!publishingConfig.subsetProcessDelinked) {
     return true
@@ -59,32 +82,17 @@ const shouldProcessDelinkedRecord = (record, type) => {
     return false
   }
 
+  if (type === 'delinkedCalculation' && !shouldProcessDelinked()) {
+    return false
+  }
+
   switch (type) {
-    case 'delinkedCalculation': {
-      if (!shouldProcessDelinked()) {
-        return false
-      }
-      const calculationRef = record.calculationReference
-      return calculationRef && subsetFilter.calculationIds.has(calculationRef)
-    }
-
-    case 'organisation': {
-      const orgKey = record.sbi || record.frn
-      if (!orgKey) {
-        return false
-      }
-      return subsetFilter.organisationKeys.has(orgKey) &&
-             !processedDelinkedOrganisations.has(orgKey)
-    }
-
-    case 'd365': {
-      const calculationRef = record.calculationReference
-      if (!calculationRef) {
-        return false
-      }
-      return subsetFilter.calculationIds.has(calculationRef)
-    }
-
+    case 'delinkedCalculation':
+      return isValidDelinkedCalculation(record)
+    case 'organisation':
+      return isValidOrganisation(record)
+    case 'd365':
+      return isValidD365(record)
     default:
       return false
   }
@@ -142,8 +150,10 @@ const incrementProcessedCount = (count = 1) => {
 
   if (processedCount >= publishingConfig.processDelinkedSubsetAmount) {
     console.log(`Delinked subset processing: ${processedCount}/${publishingConfig.processDelinkedSubsetAmount} processed - limit reached`)
-  } else if (processedCount % 5 === 0) {
+  } else if (processedCount % PROGRESS_LOG_FREQUENCY === 0) {
     console.log(`Delinked subset processing: ${processedCount}/${publishingConfig.processDelinkedSubsetAmount} processed`)
+  } else {
+    console.log(`Delinked subset processing: ${processedCount} processed`)
   }
 }
 

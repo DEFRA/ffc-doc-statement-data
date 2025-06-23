@@ -81,10 +81,10 @@ const processInParallel = async (records, type, updatePublished) => {
   }
 
   const batchPromises = records.map(async (record) => {
-    if (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-      if (!delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
-        return false
-      }
+    if (SHARED_TYPES.includes(type) &&
+        publishingConfig.subsetProcessDelinked &&
+        !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
+      return false
     }
 
     const sanitizedUpdate = removeDefunctValues(record)
