@@ -10,15 +10,8 @@ const DELINKED_SCHEME_TYPES = [DELINKED, D365]
 const SHARED_TYPES = [ORGANISATION]
 
 const needsSubsetFiltering = (type) => {
-  if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-    return true
-  }
-
-  if (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-    return true
-  }
-
-  return false
+  return (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) ||
+         (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked)
 }
 
 const ensureSubsetFilterEstablished = async () => {
@@ -202,26 +195,29 @@ const sendUpdates = async (type) => {
 
 const processBatches = async (type, getUnpublished, updatePublished, batchSize, onProcessed) => {
   let outstanding = []
+  let continueProcessing = true
 
-  do {
+  while (continueProcessing) {
     if (shouldStopProcessing(type)) {
       console.log(`${type} subset limit reached, stopping batch processing`)
-      break
-    }
+      continueProcessing = false
+    } else {
+      const effectiveBatchSize = calculateBatchSize(type, batchSize)
+      if (effectiveBatchSize === 0) {
+        continueProcessing = false
+      } else {
+        outstanding = await getUnpublished(null, effectiveBatchSize)
+        const processed = await processBatch(outstanding, type, updatePublished)
+        onProcessed(processed)
 
-    const effectiveBatchSize = calculateBatchSize(type, batchSize)
-    if (effectiveBatchSize === 0) {
-      break
+        if (shouldTerminateBatching(type, outstanding.length)) {
+          continueProcessing = false
+        } else {
+          continueProcessing = outstanding.length === batchSize
+        }
+      }
     }
-
-    outstanding = await getUnpublished(null, effectiveBatchSize)
-    const processed = await processBatch(outstanding, type, updatePublished)
-    onProcessed(processed)
-
-    if (shouldTerminateBatching(type, outstanding.length)) {
-      break
-    }
-  } while (outstanding.length === batchSize)
+  }
 }
 
 module.exports = sendUpdates

@@ -148,16 +148,13 @@ const incrementProcessedCount = (count = 1) => {
 
   processedCount += count
 
-  let message = null
-
   if (processedCount >= publishingConfig.processDelinkedSubsetAmount) {
-    message = `Delinked subset processing: ${processedCount}/${publishingConfig.processDelinkedSubsetAmount} processed - limit reached`
-  } else if (processedCount % PROGRESS_LOG_FREQUENCY === 0) {
-    message = `Delinked subset processing: ${processedCount}/${publishingConfig.processDelinkedSubsetAmount} processed`
+    console.log(`Delinked subset processing: ${processedCount}/${publishingConfig.processDelinkedSubsetAmount} processed - limit reached`)
+    return
   }
 
-  if (message) {
-    console.log(message)
+  if (processedCount % PROGRESS_LOG_FREQUENCY === 0) {
+    console.log(`Delinked subset processing: ${processedCount}/${publishingConfig.processDelinkedSubsetAmount} processed`)
   }
 }
 
