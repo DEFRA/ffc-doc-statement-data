@@ -200,23 +200,23 @@ const processBatches = async (type, getUnpublished, updatePublished, batchSize, 
   while (continueProcessing) {
     if (shouldStopProcessing(type)) {
       console.log(`${type} subset limit reached, stopping batch processing`)
-      continueProcessing = false
-    } else {
-      const effectiveBatchSize = calculateBatchSize(type, batchSize)
-      if (effectiveBatchSize === 0) {
-        continueProcessing = false
-      } else {
-        outstanding = await getUnpublished(null, effectiveBatchSize)
-        const processed = await processBatch(outstanding, type, updatePublished)
-        onProcessed(processed)
-
-        if (shouldTerminateBatching(type, outstanding.length)) {
-          continueProcessing = false
-        } else {
-          continueProcessing = outstanding.length === batchSize
-        }
-      }
+      break
     }
+
+    const effectiveBatchSize = calculateBatchSize(type, batchSize)
+    if (effectiveBatchSize === 0) {
+      break
+    }
+
+    outstanding = await getUnpublished(null, effectiveBatchSize)
+    const processed = await processBatch(outstanding, type, updatePublished)
+    onProcessed(processed)
+
+    if (shouldTerminateBatching(type, outstanding.length)) {
+      break
+    }
+
+    continueProcessing = outstanding.length === batchSize
   }
 }
 
