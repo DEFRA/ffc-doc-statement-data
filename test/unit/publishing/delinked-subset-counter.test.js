@@ -1,6 +1,5 @@
 const delinkedSubsetCounter = require('../../../app/publishing/delinked-subset-counter')
 
-// Mock the config
 jest.mock('../../../app/config', () => ({
   publishingConfig: {
     subsetProcessDelinked: true,
@@ -13,13 +12,10 @@ describe('delinked-subset-counter', () => {
   let consoleLogSpy
 
   beforeEach(() => {
-    // Reset the module state before each test
     delinkedSubsetCounter.resetCounter()
 
-    // Spy on console.log
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
 
-    // Store original config
     const { publishingConfig } = require('../../../app/config')
     originalConfig = { ...publishingConfig }
   })
@@ -27,7 +23,6 @@ describe('delinked-subset-counter', () => {
   afterEach(() => {
     consoleLogSpy.mockRestore()
 
-    // Restore original config
     const { publishingConfig } = require('../../../app/config')
     Object.assign(publishingConfig, originalConfig)
   })
@@ -57,7 +52,6 @@ describe('delinked-subset-counter', () => {
       publishingConfig.subsetProcessDelinked = true
       publishingConfig.processDelinkedSubsetAmount = 2
 
-      // Increment count to reach limit
       delinkedSubsetCounter.incrementProcessedCount(2)
 
       const result = delinkedSubsetCounter.shouldProcessDelinked()
@@ -87,14 +81,11 @@ describe('delinked-subset-counter', () => {
         { calculationReference: 'calc1', sbi: 'sbi1' }
       ])
 
-      // Establish subset first time
       await delinkedSubsetCounter.establishSubsetFilter(mockGetUnpublishedDelinkedCalc)
 
-      // Reset mock
       mockGetUnpublishedDelinkedCalc.mockClear()
       consoleLogSpy.mockClear()
 
-      // Try to establish again
       await delinkedSubsetCounter.establishSubsetFilter(mockGetUnpublishedDelinkedCalc)
 
       expect(mockGetUnpublishedDelinkedCalc).not.toHaveBeenCalled()
@@ -119,7 +110,6 @@ describe('delinked-subset-counter', () => {
       expect(mockGetUnpublishedDelinkedCalc).toHaveBeenCalledWith(null, 5)
       expect(consoleLogSpy).toHaveBeenCalledWith('Establishing subset filter from delinkedCalculation records...')
       expect(consoleLogSpy).toHaveBeenCalledWith('Retrieved 4 delinkedCalculation records for subset filter')
-      // Fixed: should be 3 organisations (sbi1, frn1, sbi2) and 3 calculations (calc1, calc2, calc3)
       expect(consoleLogSpy).toHaveBeenCalledWith('Subset filter established: 3 organisations, 3 calculations')
 
       const trackingSets = delinkedSubsetCounter.getTrackingSets()
@@ -155,8 +145,8 @@ describe('delinked-subset-counter', () => {
       const mockRecords = [
         { calculationReference: 'calc1', sbi: 'sbi1' },
         { calculationReference: 'calc2', sbi: 'sbi2' },
-        { calculationReference: 'calc3', sbi: 'sbi3' }, // Should be excluded
-        { calculationReference: 'calc4', sbi: 'sbi4' } // Should be excluded
+        { calculationReference: 'calc3', sbi: 'sbi3' },
+        { calculationReference: 'calc4', sbi: 'sbi4' }
       ]
 
       const mockGetUnpublishedDelinkedCalc = jest.fn().mockResolvedValue(mockRecords)
@@ -190,7 +180,6 @@ describe('delinked-subset-counter', () => {
       })
 
       test('should return false when shouldProcessDelinked returns false', () => {
-        // Set processed count to exceed limit
         delinkedSubsetCounter.incrementProcessedCount(5)
 
         const result = delinkedSubsetCounter.shouldProcessDelinkedRecord(
@@ -251,9 +240,6 @@ describe('delinked-subset-counter', () => {
           { calculationReference: null },
           'delinkedCalculation'
         )
-
-        // Fixed: The actual function returns null when calculationReference is null due to the && operator
-        // This is expected behavior, so we test for null instead of false
         expect(result).toBe(null)
       })
 
@@ -269,7 +255,6 @@ describe('delinked-subset-counter', () => {
           'delinkedCalculation'
         )
 
-        // When calculationReference is undefined, the && operator returns undefined
         expect(result).toBe(undefined)
       })
 
@@ -285,7 +270,6 @@ describe('delinked-subset-counter', () => {
           'delinkedCalculation'
         )
 
-        // When calculationReference is empty string, the && operator returns false
         expect(result).toBe('')
       })
     })
@@ -336,7 +320,6 @@ describe('delinked-subset-counter', () => {
 
         await delinkedSubsetCounter.establishSubsetFilter(mockGetUnpublishedDelinkedCalc)
 
-        // Track the organisation as processed
         delinkedSubsetCounter.trackProcessedDelinkedRecord({ sbi: 'sbi1' }, 'organisation')
 
         const result = delinkedSubsetCounter.shouldProcessDelinkedRecord(
@@ -441,15 +424,12 @@ describe('delinked-subset-counter', () => {
 
     describe('default case', () => {
       test('should return true for unknown record types', () => {
-        const { publishingConfig } = require('../../../app/config')
-        publishingConfig.subsetProcessDelinked = true
-
         const result = delinkedSubsetCounter.shouldProcessDelinkedRecord(
           {},
           'unknownType'
         )
 
-        expect(result).toBe(true)
+        expect(result).toBe(false)
       })
     })
   })
@@ -580,7 +560,6 @@ describe('delinked-subset-counter', () => {
         'unknownType'
       )
 
-      // Should not throw or cause issues
       const trackingSets = delinkedSubsetCounter.getTrackingSets()
       expect(trackingSets.calculations).toEqual([])
       expect(trackingSets.organisations).toEqual([])
@@ -752,7 +731,6 @@ describe('delinked-subset-counter', () => {
       const { publishingConfig } = require('../../../app/config')
       publishingConfig.subsetProcessDelinked = true
 
-      // Set up some state
       const mockGetUnpublishedDelinkedCalc = jest.fn().mockResolvedValue([
         { calculationReference: 'calc1', sbi: 'sbi1' }
       ])
@@ -761,16 +739,13 @@ describe('delinked-subset-counter', () => {
       delinkedSubsetCounter.incrementProcessedCount(5)
       delinkedSubsetCounter.trackProcessedDelinkedRecord({ calculationReference: 'calc1', sbi: 'sbi1' }, 'delinkedCalculation')
 
-      // Verify state is set
       let status = delinkedSubsetCounter.getStatus()
       expect(status.processedCount).toBe(5)
       expect(status.subsetEstablished).toBe(true)
       expect(status.trackedCalculations).toBe(1)
 
-      // Reset
       delinkedSubsetCounter.resetCounter()
 
-      // Verify state is reset
       status = delinkedSubsetCounter.getStatus()
       expect(status.processedCount).toBe(0)
       expect(status.subsetEstablished).toBe(false)

@@ -48,7 +48,15 @@ const establishSubsetFilter = async (getUnpublishedDelinkedCalc) => {
 
 const shouldProcessDelinkedRecord = (record, type) => {
   if (!publishingConfig.subsetProcessDelinked) {
-    return true // No subset processing, allow all
+    return true
+  }
+
+  if (type === 'delinkedCalculation' && !subsetEstablished) {
+    return shouldProcessDelinked()
+  }
+
+  if (!subsetEstablished) {
+    return false
   }
 
   switch (type) {
@@ -56,11 +64,6 @@ const shouldProcessDelinkedRecord = (record, type) => {
       if (!shouldProcessDelinked()) {
         return false
       }
-
-      if (!subsetEstablished) {
-        return true // Allow delinkedCalculation to establish subset
-      }
-
       const calculationRef = record.calculationReference
       return calculationRef && subsetFilter.calculationIds.has(calculationRef)
     }
@@ -70,30 +73,43 @@ const shouldProcessDelinkedRecord = (record, type) => {
       if (!orgKey) {
         return false
       }
-
-      if (!subsetEstablished) {
-        return false
-      }
-
       return subsetFilter.organisationKeys.has(orgKey) &&
              !processedDelinkedOrganisations.has(orgKey)
     }
 
     case 'd365': {
-      if (!subsetEstablished) {
-        return false
-      }
-
       const calculationRef = record.calculationReference
       if (!calculationRef) {
         return false
       }
-
       return subsetFilter.calculationIds.has(calculationRef)
     }
 
     default:
-      return true // Non-delinked types are always allowed
+      return false
+  }
+}
+
+const trackDelinkedCalculation = (record) => {
+  if (record.calculationReference) {
+    processedDelinkedCalculations.add(record.calculationReference)
+  }
+  const orgKey = record.sbi || record.frn
+  if (orgKey) {
+    processedDelinkedOrganisations.add(orgKey)
+  }
+}
+
+const trackOrganisation = (record) => {
+  const orgKeyOrg = record.sbi || record.frn
+  if (orgKeyOrg) {
+    processedDelinkedOrganisations.add(orgKeyOrg)
+  }
+}
+
+const trackD365 = (record) => {
+  if (record.d365Id) {
+    processedDelinkedD365Records.add(record.d365Id)
   }
 }
 
@@ -103,29 +119,16 @@ const trackProcessedDelinkedRecord = (record, type) => {
   }
 
   switch (type) {
-    case 'delinkedCalculation': {
-      if (record.calculationReference) {
-        processedDelinkedCalculations.add(record.calculationReference)
-      }
-      const orgKey = record.sbi || record.frn
-      if (orgKey) {
-        processedDelinkedOrganisations.add(orgKey)
-      }
+    case 'delinkedCalculation':
+      trackDelinkedCalculation(record)
       break
-    }
-
-    case 'organisation': {
-      const orgKeyOrg = record.sbi || record.frn
-      if (orgKeyOrg) {
-        processedDelinkedOrganisations.add(orgKeyOrg)
-      }
+    case 'organisation':
+      trackOrganisation(record)
       break
-    }
-
     case 'd365':
-      if (record.d365Id) {
-        processedDelinkedD365Records.add(record.d365Id)
-      }
+      trackD365(record)
+      break
+    default:
       break
   }
 }

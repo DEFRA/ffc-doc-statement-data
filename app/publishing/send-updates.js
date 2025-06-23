@@ -33,33 +33,42 @@ const ensureSubsetFilterEstablished = async () => {
   }
 }
 
+const processRecord = async (record, type, updatePublished) => {
+  const sanitizedUpdate = removeDefunctValues(record)
+  sanitizedUpdate.type = type
+  const isValid = validateUpdate(sanitizedUpdate, type)
+
+  if (!isValid) {
+    return false
+  }
+
+  await sendMessage(sanitizedUpdate, type)
+  const primaryKey = getPrimaryKeyValue(record, type)
+  await updatePublished(primaryKey)
+
+  if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
+    delinkedSubsetCounter.trackProcessedDelinkedRecord(record, type)
+
+    if (type === DELINKED) {
+      delinkedSubsetCounter.incrementProcessedCount(1)
+    }
+  }
+
+  return true
+}
+
 const processSequentially = async (records, type, updatePublished) => {
   let processed = 0
 
   for (const record of records) {
-    if (needsSubsetFiltering(type)) {
-      if (!delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
-        continue // Skip this record
-      }
+    if (needsSubsetFiltering(type) &&
+        !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
+      continue
     }
 
-    const sanitizedUpdate = removeDefunctValues(record)
-    sanitizedUpdate.type = type
-    const isValid = validateUpdate(sanitizedUpdate, type)
-
-    if (isValid) {
-      await sendMessage(sanitizedUpdate, type)
-      const primaryKey = getPrimaryKeyValue(record, type)
-      await updatePublished(primaryKey)
+    const wasProcessed = await processRecord(record, type, updatePublished)
+    if (wasProcessed) {
       processed++
-
-      if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-        delinkedSubsetCounter.trackProcessedDelinkedRecord(record, type)
-
-        if (type === DELINKED) {
-          delinkedSubsetCounter.incrementProcessedCount(1)
-        }
-      }
     }
   }
 
