@@ -117,12 +117,42 @@ const calculateBatchSize = (type, defaultBatchSize) => {
   return defaultBatchSize
 }
 
-const sendUpdates = async (type) => {
-  if (!publishingConfig.publishingEnabled) {
-    console.log('Publishing is disabled via publishingEnabled=false flag')
-    return
+const shouldStopProcessing = (type) => {
+  return type === DELINKED &&
+         publishingConfig.subsetProcessDelinked &&
+         !delinkedSubsetCounter.shouldProcessDelinked()
+}
+
+const processBatch = async (outstanding, type, updatePublished) => {
+  if (!outstanding.length) {
+    return 0
   }
 
+  let processed = 0
+
+  if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
+    processed = await processSequentially(outstanding, type, updatePublished)
+  } else {
+    processed = await processInParallel(outstanding, type, updatePublished)
+  }
+
+  return processed
+}
+
+const shouldTerminateBatching = (type, outstandingLength) => {
+  if (type === 'calculation' && outstandingLength > 0) {
+    return true
+  }
+
+  if (shouldStopProcessing(type)) {
+    console.log(`${type} subset limit reached, stopping further processing`)
+    return true
+  }
+
+  return false
+}
+
+const setupProcessing = async (type) => {
   if (needsSubsetFiltering(type)) {
     await ensureSubsetFilterEstablished()
   }
@@ -133,12 +163,28 @@ const sendUpdates = async (type) => {
     if (status.limitReached) {
       console.log(`Skipping ${type} processing - DELINKED scheme subset limit reached`)
       console.log('Current status:', status)
-      return
+      return false
     }
 
     console.log(`Processing ${type} with DELINKED scheme subset control active:`, status)
   } else if (type === DELINKED) {
     console.log('DELINKED scheme subset processing disabled - processing normally')
+  } else {
+    console.log(`Processing ${type} normally`)
+  }
+
+  return true
+}
+
+const sendUpdates = async (type) => {
+  if (!publishingConfig.publishingEnabled) {
+    console.log('Publishing is disabled via publishingEnabled=false flag')
+    return
+  }
+
+  const shouldProceed = await setupProcessing(type)
+  if (!shouldProceed) {
+    return
   }
 
   const getUnpublished = require(`./${type}/get-unpublished`)
@@ -147,9 +193,18 @@ const sendUpdates = async (type) => {
   let totalPublished = 0
   const batchSize = publishingConfig.dataPublishingMaxBatchSizePerDataSource
 
+  await processBatches(type, getUnpublished, updatePublished, batchSize, (processed) => {
+    totalPublished += processed
+  })
+
+  console.log(`${totalPublished} ${type} datasets published`)
+}
+
+const processBatches = async (type, getUnpublished, updatePublished, batchSize, onProcessed) => {
   let outstanding = []
+
   do {
-    if (type === DELINKED && publishingConfig.subsetProcessDelinked && !delinkedSubsetCounter.shouldProcessDelinked()) {
+    if (shouldStopProcessing(type)) {
       console.log(`${type} subset limit reached, stopping batch processing`)
       break
     }
@@ -160,30 +215,13 @@ const sendUpdates = async (type) => {
     }
 
     outstanding = await getUnpublished(null, effectiveBatchSize)
+    const processed = await processBatch(outstanding, type, updatePublished)
+    onProcessed(processed)
 
-    if (outstanding.length) {
-      let processed = 0
-
-      if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-        processed = await processSequentially(outstanding, type, updatePublished)
-      } else {
-        processed = await processInParallel(outstanding, type, updatePublished)
-      }
-
-      totalPublished += processed
-    }
-
-    if (type === 'calculation' && outstanding.length > 0) {
-      break
-    }
-
-    if (type === DELINKED && publishingConfig.subsetProcessDelinked && !delinkedSubsetCounter.shouldProcessDelinked()) {
-      console.log(`${type} subset limit reached, stopping further processing`)
+    if (shouldTerminateBatching(type, outstanding.length)) {
       break
     }
   } while (outstanding.length === batchSize)
-
-  console.log(`${totalPublished} ${type} datasets published`)
 }
 
 module.exports = sendUpdates
