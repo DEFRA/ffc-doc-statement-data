@@ -33,6 +33,9 @@ services:
       SFI23_ENABLED: ${SFI23_ENABLED:-true}
       DELINKED_ENABLED: ${DELINKED_ENABLED:-true}
       FAKE_DATA: ${FAKE_DATA:-true}
+      SUBSET_PROCESS_DELINKED: ${SUBSET_PROCESS_DELINKED:-false}
+      PUBLISHING_ENABLED: ${PUBLISHING_ENABLED:-true}
+      PROCESS_DELINKED_SUBSET_AMOUNT: ${PROCESS_DELINKED_SUBSET_AMOUNT:-10}
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine
