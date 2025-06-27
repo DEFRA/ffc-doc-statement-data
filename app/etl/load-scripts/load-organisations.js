@@ -9,7 +9,7 @@ const loadOrganisations = async (startDate, transaction) => {
     SELECT DISTINCT ON (sbi)
       sbi, "addressLine1", "addressLine2",
       "addressLine3", city, county,
-      SUBSTRING(postcode, 1, 7) AS postcode, "emailAddress", frn::integer,
+      SUBSTRING(postcode, 1, 8) AS postcode, "emailAddress", frn::integer,
       "name", NOW() AS updated
     FROM ${dbConfig.schema}."etlIntermOrg" O
     WHERE O."etlInsertedDt" > :startDate
