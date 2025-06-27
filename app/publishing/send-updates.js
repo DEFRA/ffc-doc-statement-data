@@ -54,7 +54,7 @@ const processSequentially = async (records, type, updatePublished) => {
   let processed = 0
   const startTime = Date.now()
   let lastLogTime = startTime
-  const logIntervalMs = publishingConfig.logIntervalMs || 5 * 60 * 1000
+  const logIntervalMs = publishingConfig.logIntervalMs
 
   for (const record of records) {
     if (needsSubsetFiltering(type) &&
