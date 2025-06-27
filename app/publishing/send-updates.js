@@ -52,19 +52,34 @@ const processRecord = async (record, type, updatePublished) => {
 
 const processSequentially = async (records, type, updatePublished) => {
   let processed = 0
+  const startTime = Date.now()
+  let lastLogTime = startTime
+  // Use config or default to 5 minutes
+  const logIntervalMs = publishingConfig.logIntervalMs || 5 * 60 * 1000
 
-  for (const record of records) {
+  for (const [i, record] of records.entries()) {
     if (needsSubsetFiltering(type) &&
         !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
       continue
     }
 
-    const wasProcessed = await processRecord(record, type, updatePublished)
-    if (wasProcessed) {
-      processed++
+    try {
+      const wasProcessed = await processRecord(record, type, updatePublished)
+      if (wasProcessed) {
+        processed++
+      }
+    } catch (err) {
+      console.error(`Error processing record at index ${i}:`, err)
+    }
+
+    const now = Date.now()
+    if (now - lastLogTime >= logIntervalMs) {
+      console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
+      lastLogTime = now
     }
   }
 
+  console.log(`[${new Date().toISOString()}] Finished processing ${processed} records (out of ${records.length})`)
   return processed
 }
 
