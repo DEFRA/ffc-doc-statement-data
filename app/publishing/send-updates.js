@@ -52,6 +52,9 @@ const processRecord = async (record, type, updatePublished) => {
 
 const processSequentially = async (records, type, updatePublished) => {
   let processed = 0
+  const startTime = Date.now()
+  let lastLogTime = startTime
+  const logIntervalMs = publishingConfig.logIntervalMs
 
   for (const record of records) {
     if (needsSubsetFiltering(type) &&
@@ -63,8 +66,15 @@ const processSequentially = async (records, type, updatePublished) => {
     if (wasProcessed) {
       processed++
     }
+
+    const now = Date.now()
+    if (now - lastLogTime >= logIntervalMs) {
+      console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
+      lastLogTime = now
+    }
   }
 
+  console.log(`[${new Date().toISOString()}] Finished processing ${processed} records (out of ${records.length})`)
   return processed
 }
 

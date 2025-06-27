@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="1" author="Sam Plackett">
+        <tagDatabase tag="v1.23.0" />
+    </changeSet>
+
+    <changeSet id="2" author="Sam Plackett">
+        <sql>
+            WITH upsert AS (
+                SELECT DISTINCT ON (sbi)
+                sbi, "addressLine1", "addressLine2",
+                "addressLine3", city, county,
+                SUBSTRING(postcode, 1, 8) AS postcode, "emailAddress", frn::integer,
+                "name", NOW() AS updated
+                FROM "etlIntermOrg" O
+                ORDER BY sbi, "etlInsertedDt" DESC
+            )
+            INSERT INTO organisations (
+                sbi, "addressLine1", "addressLine2",
+                "addressLine3", city, county,
+                postcode, "emailAddress", frn,
+                "name", updated
+            )
+            SELECT
+                upsert.sbi, upsert."addressLine1", upsert."addressLine2",
+                upsert."addressLine3", upsert.city, upsert.county,
+                upsert.postcode, upsert."emailAddress", upsert.frn,
+                upsert."name", upsert.updated
+            FROM upsert
+            ON CONFLICT (sbi) DO UPDATE SET
+                postcode = EXCLUDED.postcode,
+                updated = EXCLUDED.updated;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
