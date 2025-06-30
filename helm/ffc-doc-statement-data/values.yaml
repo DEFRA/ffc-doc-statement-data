@@ -45,6 +45,7 @@ container:
   subsetProcessDelinked: false
   processDelinkedSubsetAmount: 10
   publishingEnabled: true
+  logIntervalMs: 60000
 
 postgresService:
   postgresDb: ffc_doc_statement_data

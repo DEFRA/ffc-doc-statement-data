@@ -28,4 +28,5 @@ data:
   PUBLISHING_ENABLED: {{ quote .Values.container.publishingEnabled }}
   SUBSET_PROCESS_DELINKED: {{ quote .Values.container.subsetProcessDelinked }}
   PROCESS_DELINKED_SUBSET_AMOUNT: {{ quote .Values.container.processDelinkedSubsetAmount }}
+  LOG_INTERVAL_MS: {{ quote .Values.container.logIntervalMs }}
 {{- end -}}

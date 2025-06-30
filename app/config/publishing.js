@@ -12,7 +12,6 @@ const schema = Joi.object({
   subsetProcessDelinked: Joi.boolean().default(false),
   processDelinkedSubsetAmount: Joi.number().integer().min(1).default(processDelinkedSubsetAmount),
   logIntervalMs: Joi.number().integer().default(logIntervalMs)
-
 })
 
 const config = {
