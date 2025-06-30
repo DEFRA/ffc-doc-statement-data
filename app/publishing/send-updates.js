@@ -57,12 +57,13 @@ const processSequentially = async (records, type, updatePublished) => {
   const logIntervalMs = publishingConfig.logIntervalMs
 
   for (const record of records) {
+    console.log('Identified a record to process, checking if valid...')
+    const now = Date.now()
+    if (now - lastLogTime >= logIntervalMs) {
+      console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
+      lastLogTime = now
+    }
     if (needsSubsetFiltering(type) && !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
-      const now = Date.now()
-      if (now - lastLogTime >= logIntervalMs) {
-        console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
-        lastLogTime = now
-      }
       continue
     }
 
@@ -85,14 +86,14 @@ const processInParallel = async (records, type, updatePublished) => {
   if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
     return processSequentially(records, type, updatePublished)
   }
-
   const batchPromises = records.map(async (record) => {
+    console.log('Identified a record to process, checking if valid...')
+    const now = Date.now()
+    if (now - lastLogTime >= logIntervalMs) {
+      console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
+      lastLogTime = now
+    }
     if (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked && !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
-      const now = Date.now()
-      if (now - lastLogTime >= logIntervalMs) {
-        console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
-        lastLogTime = now
-      }
       return false
     }
 
