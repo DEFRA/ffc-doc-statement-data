@@ -3,7 +3,7 @@ const Joi = require('joi')
 const defaultDataPublishingBatchSize = 1000
 const defaultPollingInterval = 3600000
 const processDelinkedSubsetAmount = 10
-const logIntervalMs = 600000
+const logIntervalMs = 60000
 
 const schema = Joi.object({
   dataPublishingMaxBatchSizePerDataSource: Joi.number().default(defaultDataPublishingBatchSize),
@@ -12,7 +12,6 @@ const schema = Joi.object({
   subsetProcessDelinked: Joi.boolean().default(false),
   processDelinkedSubsetAmount: Joi.number().integer().min(1).default(processDelinkedSubsetAmount),
   logIntervalMs: Joi.number().integer().default(logIntervalMs)
-
 })
 
 const config = {

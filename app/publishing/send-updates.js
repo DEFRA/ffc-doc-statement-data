@@ -77,14 +77,22 @@ const processSequentially = async (records, type, updatePublished) => {
 }
 
 const processInParallel = async (records, type, updatePublished) => {
+  let processed = 0
+  const startTime = Date.now()
+  let lastLogTime = startTime
+  const logIntervalMs = publishingConfig.logIntervalMs
+
   if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
     return processSequentially(records, type, updatePublished)
   }
 
   const batchPromises = records.map(async (record) => {
-    if (SHARED_TYPES.includes(type) &&
-        publishingConfig.subsetProcessDelinked &&
-        !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
+    if (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked && !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
+      const now = Date.now()
+      if (now - lastLogTime >= logIntervalMs) {
+        console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
+        lastLogTime = now
+      }
       return false
     }
 
@@ -96,6 +104,7 @@ const processInParallel = async (records, type, updatePublished) => {
       await sendMessage(sanitizedUpdate, type)
       const primaryKey = getPrimaryKeyValue(record, type)
       await updatePublished(primaryKey)
+      processed++
       return true
     }
     return false
