@@ -3,188 +3,71 @@ const sendMessage = require('./send-message')
 const removeDefunctValues = require('./remove-defunct-values')
 const validateUpdate = require('./validate-update')
 const { publishingConfig } = require('../config')
-const delinkedSubsetCounter = require('./delinked-subset-counter')
-const { ORGANISATION, DELINKED, D365 } = require('./types')
+const { getDelinkedBatchWithRelations } = require('./batch-record-selector')
+const { DELINKED } = require('./types')
 
-const DELINKED_SCHEME_TYPES = [DELINKED, D365]
-const SHARED_TYPES = [ORGANISATION]
-
-const needsSubsetFiltering = (type) => {
-  return (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) ||
-         (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked)
-}
-
-const ensureSubsetFilterEstablished = async () => {
-  if (publishingConfig.subsetProcessDelinked) {
-    const status = delinkedSubsetCounter.getStatus()
-    if (!status.subsetEstablished) {
-      console.log('Establishing subset filter before processing...')
-      const getUnpublishedDelinkedCalc = require('./delinkedCalculation/get-unpublished-delinked')
-      await delinkedSubsetCounter.establishSubsetFilter(getUnpublishedDelinkedCalc)
-      console.log('Subset filter established')
-    }
-  }
-}
-
-const processRecord = async (record, type, updatePublished) => {
-  const sanitizedUpdate = removeDefunctValues(record)
-  sanitizedUpdate.type = type
-  const isValid = validateUpdate(sanitizedUpdate, type)
-
-  if (!isValid) {
-    return false
-  }
-
-  await sendMessage(sanitizedUpdate, type)
-  const primaryKey = getPrimaryKeyValue(record, type)
-  await updatePublished(primaryKey)
-
-  if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-    delinkedSubsetCounter.trackProcessedDelinkedRecord(record, type)
-
-    if (type === DELINKED) {
-      delinkedSubsetCounter.incrementProcessedCount(1)
-    }
-  }
-
-  return true
-}
-
-const processSequentially = async (records, type, updatePublished) => {
-  let processed = 0
-  const startTime = Date.now()
-  let lastLogTime = startTime
-  const logIntervalMs = publishingConfig.logIntervalMs
-
-  for (const record of records) {
-    if (needsSubsetFiltering(type) && !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
-      const now = Date.now()
-      if (now - lastLogTime >= logIntervalMs) {
-        console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
-        lastLogTime = now
-      }
-      continue
-    }
-
-    const wasProcessed = await processRecord(record, type, updatePublished)
-    if (wasProcessed) {
-      processed++
-    }
-  }
-
-  console.log(`[${new Date().toISOString()}] Finished processing ${processed} records (out of ${records.length})`)
-  return processed
-}
-
-const processInParallel = async (records, type, updatePublished) => {
-  if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-    return processSequentially(records, type, updatePublished)
-  }
-
-  const batchPromises = records.map(async (record) => {
-    if (SHARED_TYPES.includes(type) &&
-        publishingConfig.subsetProcessDelinked &&
-        !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
-      return false
-    }
-
-    const sanitizedUpdate = removeDefunctValues(record)
-    sanitizedUpdate.type = type
-    const isValid = validateUpdate(sanitizedUpdate, type)
-
-    if (isValid) {
-      await sendMessage(sanitizedUpdate, type)
-      const primaryKey = getPrimaryKeyValue(record, type)
-      await updatePublished(primaryKey)
-      return true
-    }
-    return false
-  })
-
-  const results = await Promise.all(batchPromises)
-  return results.filter(Boolean).length
-}
-
-const calculateBatchSize = (type, defaultBatchSize) => {
-  if (type === DELINKED && publishingConfig.subsetProcessDelinked) {
-    const status = delinkedSubsetCounter.getStatus()
-    if (status.limitReached) {
-      return 0
-    }
-    const remainingToProcess = status.targetAmount - status.processedCount
-    return Math.min(defaultBatchSize, remainingToProcess)
-  }
-
-  return defaultBatchSize
-}
-
-const shouldStopProcessing = (type) => {
-  return type === DELINKED &&
-         publishingConfig.subsetProcessDelinked &&
-         !delinkedSubsetCounter.shouldProcessDelinked()
-}
-
-const processBatch = async (outstanding, type, updatePublished) => {
-  if (!outstanding.length) {
+const processDelinkedBatch = async (limit = 10) => {
+  console.log(`[${new Date().toISOString()}] Starting delinkedCalculation batch process...`)
+  const batch = await getDelinkedBatchWithRelations(limit)
+  if (!batch.length) {
+    console.log(`[${new Date().toISOString()}] No delinkedCalculation records to process.`)
     return 0
   }
 
   let processed = 0
-
-  if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
-    processed = await processSequentially(outstanding, type, updatePublished)
-  } else {
-    processed = await processInParallel(outstanding, type, updatePublished)
+  for (const { delinked, organisation, d365 } of batch) {
+    console.log(`[${new Date().toISOString()}] Processing delinkedCalculation ${delinked.calculationReference} (SBI: ${delinked.sbi})`)
+    try {
+      const payload = { ...delinked, organisation, d365 }
+      await sendMessage(payload, DELINKED)
+      await require('../data').delinkedCalculation.update(
+        { updated: new Date() },
+        { where: { calculationId: delinked.calculationReference } }
+      )
+      processed++
+      console.log(`[${new Date().toISOString()}] Processed delinkedCalculation ${delinked.calculationReference}`)
+    } catch (err) {
+      console.error(`[${new Date().toISOString()}] Error processing delinkedCalculation ${delinked.calculationReference}:`, err)
+    }
   }
-
+  console.log(`[${new Date().toISOString()}] Finished processing ${processed} delinkedCalculation records.`)
   return processed
 }
 
-const shouldTerminateBatching = (type, outstandingLength) => {
-  if (type === 'calculation' && outstandingLength > 0) {
-    return true
-  }
-
-  if (shouldStopProcessing(type)) {
-    console.log(`${type} subset limit reached, stopping further processing`)
-    return true
-  }
-
-  return false
-}
-
-const setupProcessing = async (type) => {
-  if (needsSubsetFiltering(type)) {
-    await ensureSubsetFilterEstablished()
-  }
-
-  if (type === DELINKED && publishingConfig.subsetProcessDelinked) {
-    const status = delinkedSubsetCounter.getStatus()
-
-    if (status.limitReached) {
-      console.log(`Skipping ${type} processing - DELINKED scheme subset limit reached`)
-      console.log('Current status:', status)
-      return false
+const processBatch = async (records, type, updatePublished) => {
+  let processed = 0
+  for (const record of records) {
+    const sanitizedUpdate = removeDefunctValues(record)
+    sanitizedUpdate.type = type
+    const isValid = validateUpdate(sanitizedUpdate, type)
+    if (!isValid) {
+      console.log(`[${new Date().toISOString()}] Skipped invalid record for ${type}`)
+      continue
     }
-
-    console.log(`Processing ${type} with DELINKED scheme subset control active:`, status)
-  } else if (type === DELINKED) {
-    console.log('DELINKED scheme subset processing disabled - processing normally')
-  } else {
-    console.log(`Processing ${type} normally`)
+    try {
+      await sendMessage(sanitizedUpdate, type)
+      const primaryKey = getPrimaryKeyValue(record, type)
+      await updatePublished(primaryKey)
+      processed++
+      console.log(`[${new Date().toISOString()}] Processed ${type} record with key ${primaryKey}`)
+    } catch (err) {
+      console.error(`[${new Date().toISOString()}] Error processing ${type} record:`, err)
+    }
   }
-
-  return true
+  return processed
 }
 
 const sendUpdates = async (type) => {
   if (!publishingConfig.publishingEnabled) {
-    console.log('Publishing is disabled via publishingEnabled=false flag')
+    console.log(`[${new Date().toISOString()}] Publishing is disabled via publishingEnabled=false flag`)
     return
   }
 
-  const shouldProceed = await setupProcessing(type)
-  if (!shouldProceed) {
+  console.log(`[${new Date().toISOString()}] Starting sendUpdates for type: ${type}`)
+
+  if (type === DELINKED) {
+    const processed = await processDelinkedBatch(publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+    console.log(`[${new Date().toISOString()}] ${processed} delinkedCalculation datasets published`)
     return
   }
 
@@ -192,44 +75,24 @@ const sendUpdates = async (type) => {
   const updatePublished = require(`./${type}/update-published`)
 
   let totalPublished = 0
-  const batchSize = publishingConfig.dataPublishingMaxBatchSizePerDataSource
+  let batchNumber = 1
+  let hasMore = true
 
-  await processBatches(type, getUnpublished, updatePublished, batchSize, (processed) => {
+  while (hasMore) {
+    console.log(`[${new Date().toISOString()}] Fetching batch #${batchNumber} for ${type}...`)
+    const records = await getUnpublished(null, publishingConfig.dataPublishingMaxBatchSizePerDataSource)
+    if (!records.length) {
+      console.log(`[${new Date().toISOString()}] No more ${type} records to process.`)
+      break
+    }
+    const processed = await processBatch(records, type, updatePublished)
     totalPublished += processed
-  })
-
-  console.log(`${totalPublished} ${type} datasets published`)
-}
-
-const processBatches = async (type, getUnpublished, updatePublished, batchSize, onProcessed) => {
-  let outstanding = []
-  let shouldContinue = true
-
-  while (shouldContinue) {
-    shouldContinue = await processNextBatch()
+    console.log(`[${new Date().toISOString()}] Batch #${batchNumber} processed: ${processed} records`)
+    hasMore = records.length === publishingConfig.dataPublishingMaxBatchSizePerDataSource
+    batchNumber++
   }
 
-  async function processNextBatch () {
-    if (shouldStopProcessing(type)) {
-      console.log(`${type} subset limit reached, stopping batch processing`)
-      return false
-    }
-
-    const effectiveBatchSize = calculateBatchSize(type, batchSize)
-    if (effectiveBatchSize === 0) {
-      return false
-    }
-
-    outstanding = await getUnpublished(null, effectiveBatchSize)
-    const processed = await processBatch(outstanding, type, updatePublished)
-    onProcessed(processed)
-
-    if (shouldTerminateBatching(type, outstanding.length)) {
-      return false
-    }
-
-    return outstanding.length === batchSize
-  }
+  console.log(`[${new Date().toISOString()}] ${totalPublished} ${type} datasets published`)
 }
 
 module.exports = sendUpdates
