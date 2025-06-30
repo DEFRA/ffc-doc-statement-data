@@ -34,7 +34,7 @@ const defaultPublishingPerType = async (type) => {
     }
   } while (outstanding.length === batchSize)
 
-  console.log('%i %s datasets published', totalPublished, type)
+  console.log(`${totalPublished} ${type} datasets published`)
 }
 
 module.exports = defaultPublishingPerType

@@ -2,15 +2,15 @@ const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
 module.exports = (sequelize, DataTypes) => {
-  const subsetCounter = sequelize.define('subsetCounter', {
+  const subsetCheck = sequelize.define('subsetCheck', {
     scheme: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
-    sent: DataTypes.INTEGER
+    subsetSent: DataTypes.BOOLEAN
   },
   {
-    tableName: 'subsetCounter',
+    tableName: 'subsetCheck',
     freezeTableName: true,
     timestamps: false,
     schema: dbConfig.schema
   })
-  return subsetCounter
+  return subsetCheck
 }

@@ -4,21 +4,21 @@
     <tagDatabase tag="v1.24.0" />
   </changeSet>
   <changeSet author="Sam Plackett" id="2">
-    <createTable tableName="subsetCounter">
+    <createTable tableName="subsetCheck">
       <column name="scheme" type="VARCHAR">
         <constraints primaryKey="true" nullable="false" />
       </column>
-      <column name="sent" type="INTEGER" />
+      <column name="subsetSent" type="BOOLEAN" />
     </createTable>
   </changeSet>
   <changeSet author="Sam Plackett" id="3">
-    <insert tableName="subsetCounter">
+    <insert tableName="subsetCheck">
       <column name="scheme" value="delinked" />
-      <column name="sent" valueNumeric="0" />
+      <column name="subsetSent" value="false" />
     </insert>
-    <insert tableName="subsetCounter">
+    <insert tableName="subsetCheck">
       <column name="scheme" value="sfi23" />
-      <column name="sent" valueNumeric="0" />
+      <column name="subsetSent" valueNumeric="false" />
     </insert>
   </changeSet>
 </databaseChangeLog>

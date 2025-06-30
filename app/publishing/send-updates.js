@@ -1,19 +1,19 @@
 const { publishingConfig } = require('../config')
-const { ORGANISATION, DELINKED_CALCULATION, D365, CALCULATION, DAX } = require('../constants/types')
+const { ORGANISATION, DELINKED_CALCULATION, D365, CALCULATION, DAX, TOTAL } = require('../constants/types')
 const { DELINKED } = require('../constants/schemes')
-const getSubsetCounter = require('./subset/get-subset-counter')
+const getSubsetCheck = require('./subset/get-subset-check')
 const defaultPublishingPerType = require('./default-publishing-per-type')
 const sendDelinkedSubset = require('./subset/send-delinked-subset')
 
 const setupProcessing = async (scheme) => {
   if (publishingConfig[scheme].subsetProcess) {
-    const count = await getSubsetCounter(scheme)
+    const count = await getSubsetCheck(scheme)
 
     if (!count) {
       console.log(`Error occurred determining ${scheme} records sent to date`)
       return false
     }
-    if (count.sent >= publishingConfig[scheme].subsetProcessAmount) {
+    if (count.subsetSent) {
       console.log(`Skipping ${scheme} processing - scheme subset limit reached`)
       return false
     }
@@ -43,6 +43,7 @@ const sendUpdates = async (scheme) => {
       types.push(DELINKED_CALCULATION)
       types.push(D365)
     } else {
+      types.push(TOTAL)
       types.push(CALCULATION)
       types.push(DAX)
     }

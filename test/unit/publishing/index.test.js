@@ -2,7 +2,7 @@ const { start } = require('../../../app/publishing')
 jest.mock('../../../app/publishing/send-updates')
 const sendUpdates = require('../../../app/publishing/send-updates')
 const { publishingConfig } = require('../../../app/config')
-const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('../../../app/constants/types')
+const { DELINKED, SFI23 } = require('../../../app/constants/schemes')
 
 describe('start publishing', () => {
   const originalPollingInterval = publishingConfig.pollingInterval
@@ -23,12 +23,8 @@ describe('start publishing', () => {
     sendUpdates.mockResolvedValueOnce()
 
     await start()
-    expect(sendUpdates).toHaveBeenCalledWith(ORGANISATION)
     expect(sendUpdates).toHaveBeenCalledWith(DELINKED)
-    expect(sendUpdates).toHaveBeenCalledWith(CALCULATION)
-    expect(sendUpdates).toHaveBeenCalledWith(TOTAL)
-    expect(sendUpdates).toHaveBeenCalledWith(DAX)
-    expect(sendUpdates).toHaveBeenCalledWith(D365)
+    expect(sendUpdates).toHaveBeenCalledWith(SFI23)
   })
 
   test('logs success message when all updates are sent', async () => {
@@ -46,7 +42,7 @@ describe('start publishing', () => {
     sendUpdates.mockRejectedValueOnce(error)
 
     await start()
-    expect(console.error).toHaveBeenCalledWith(`${'Error processing updates for ' + ORGANISATION}:`, error)
+    expect(console.error).toHaveBeenCalledWith(`${'Error processing updates for ' + DELINKED}:`, error)
   })
 
   test('handles errors during publishing and logs them', async () => {

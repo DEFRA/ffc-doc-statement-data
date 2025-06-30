@@ -1,7 +1,7 @@
 const db = require('../../data')
 
-const getSubsetCounter = async (scheme) => {
-  return db.subsetCounter.findAll({
+const getSubsetCheck = async (scheme) => {
+  return db.subsetCheck.findAll({
     lock: true,
     skipLocked: true,
     raw: true,
@@ -11,4 +11,4 @@ const getSubsetCounter = async (scheme) => {
   })
 }
 
-module.exports = getSubsetCounter
+module.exports = getSubsetCheck

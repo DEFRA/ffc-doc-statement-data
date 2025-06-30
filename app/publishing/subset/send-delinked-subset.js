@@ -4,6 +4,8 @@ const { publishingConfig } = require('../../config')
 const getRandomDelinkedCalculation = require('../delinkedCalculation/get-subset-delinked-calculation')
 const getRandomOrganisations = require('../organisation/get-subset-organisations')
 const sendSubset = require('./send-subset')
+const { DELINKED } = require('../../constants/schemes')
+const updateSubsetCheck = require('./update-subset-check')
 
 const sendDelinkedSubset = async () => {
   const randomD365Records = await getUnpublishedD365(null, publishingConfig.delinked.processSubsetAmount, true)
@@ -23,6 +25,7 @@ const sendDelinkedSubset = async () => {
       dataToPublish: randomD365Records
     }]
     await sendSubset(tablesToTarget)
+    await updateSubsetCheck(DELINKED, true)
   }
 }
 
