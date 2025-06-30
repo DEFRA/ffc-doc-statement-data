@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { DAX } = require('../types')
+const { DAX } = require('../../constants/types')
 const number30 = 30
 const number200 = 200
 

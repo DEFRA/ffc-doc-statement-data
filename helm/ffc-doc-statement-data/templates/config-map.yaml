@@ -27,6 +27,8 @@ data:
   FAKE_DATA: {{ quote .Values.container.fakeData }}
   PUBLISHING_ENABLED: {{ quote .Values.container.publishingEnabled }}
   SUBSET_PROCESS_DELINKED: {{ quote .Values.container.subsetProcessDelinked }}
+  SUBSET_PROCESS_SFI23: {{ quote .Values.container.subsetProcessSfi23 }}
   PROCESS_DELINKED_SUBSET_AMOUNT: {{ quote .Values.container.processDelinkedSubsetAmount }}
+  PROCESS_SFI23_SUBSET_AMOUNT: {{ quote .Values.container.processSfi23SubsetAmount }}
   LOG_INTERVAL_MS: {{ quote .Values.container.logIntervalMs }}
 {{- end -}}

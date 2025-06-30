@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { TOTAL } = require('../types')
+const { TOTAL } = require('../../constants/types')
 
 const minSbi = 105000000
 const maxSbi = 999999999

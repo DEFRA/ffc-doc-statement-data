@@ -1,4 +1,4 @@
-const { DELINKED } = require('../../../app/publishing/types')
+const { DELINKED } = require('../../../app/constants/types')
 const validateUpdate = require('../../../app/publishing/validate-update')
 const { mockDelinkedCalculation1 } = require('../../mocks/delinkedCalculation')
 let delinked

@@ -1,16 +1,16 @@
 const { publishingConfig } = require('../config')
+const { DELINKED, SFI23 } = require('../constants/schemes')
 const { renameExtracts, stageExtracts } = require('../etl')
 const sendUpdates = require('./send-updates')
-const { ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365 } = require('./types')
 
-const updateTypes = [ORGANISATION, DELINKED, CALCULATION, TOTAL, DAX, D365]
+const schemes = [DELINKED, SFI23]
 
 const processUpdates = async () => {
-  for (const type of updateTypes) {
+  for (const scheme of schemes) {
     try {
-      await sendUpdates(type)
+      await sendUpdates(scheme)
     } catch (err) {
-      console.error(`Error processing updates for ${type}:`, err)
+      console.error(`Error processing updates for ${scheme}:`, err)
     }
   }
 }

@@ -43,7 +43,9 @@ container:
   delinkedEnabled: true
   fakeData: true
   subsetProcessDelinked: false
+  subsetProcessSfi23: false
   processDelinkedSubsetAmount: 10
+  processSfi23SubsetAmount: 10
   publishingEnabled: true
   logIntervalMs: 60000
 

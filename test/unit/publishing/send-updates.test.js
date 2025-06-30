@@ -68,7 +68,7 @@ const sendUpdates = require('../../../app/publishing/send-updates')
 const sendMessage = require('../../../app/publishing/send-message')
 const delinkedSubsetCounter = require('../../../app/publishing/delinked-subset-counter')
 const validateUpdate = require('../../../app/publishing/validate-update')
-const { ORGANISATION, DELINKED, D365 } = require('../../../app/publishing/types')
+const { ORGANISATION, DELINKED, D365 } = require('../../../app/constants/types')
 
 describe('send-updates', () => {
   let consoleLogSpy
@@ -96,8 +96,8 @@ describe('send-updates', () => {
     publishingConfig.publishingEnabled = true
     publishingConfig.subsetProcessDelinked = false
 
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { })
 
     sendMessage.mockClear()
     sendMessage.mockImplementation(() => Promise.resolve())
@@ -121,8 +121,8 @@ describe('send-updates', () => {
     delinkedSubsetCounter.shouldProcessDelinkedRecord.mockReturnValue(true)
     delinkedSubsetCounter.shouldProcessDelinked.mockReturnValue(true)
     delinkedSubsetCounter.establishSubsetFilter.mockImplementation(() => Promise.resolve())
-    delinkedSubsetCounter.trackProcessedDelinkedRecord.mockImplementation(() => {})
-    delinkedSubsetCounter.incrementProcessedCount.mockImplementation(() => {})
+    delinkedSubsetCounter.trackProcessedDelinkedRecord.mockImplementation(() => { })
+    delinkedSubsetCounter.incrementProcessedCount.mockImplementation(() => { })
   })
 
   afterEach(() => {
