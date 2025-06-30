@@ -85,7 +85,7 @@ const processInParallel = async (records, type, updatePublished) => {
   if (DELINKED_SCHEME_TYPES.includes(type) && publishingConfig.subsetProcessDelinked) {
     return processSequentially(records, type, updatePublished)
   }
-
+  console.log('Identified a record to process, checking if valid...')
   const batchPromises = records.map(async (record) => {
     if (SHARED_TYPES.includes(type) && publishingConfig.subsetProcessDelinked && !delinkedSubsetCounter.shouldProcessDelinkedRecord(record, type)) {
       const now = Date.now()
