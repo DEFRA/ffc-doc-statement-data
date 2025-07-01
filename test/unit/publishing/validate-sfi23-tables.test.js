@@ -1,4 +1,4 @@
-const { DAX, TOTAL } = require('../../../app/publishing/types')
+const { DAX, TOTAL } = require('../../../app/constants/types')
 const validateUpdate = require('../../../app/publishing/validate-update')
 const { mockDax1 } = require('../../mocks/dax')
 const { mockTotal1 } = require('../../mocks/totals')

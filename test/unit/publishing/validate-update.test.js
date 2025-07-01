@@ -1,4 +1,4 @@
-const { ORGANISATION, CALCULATION } = require('../../../app/publishing/types')
+const { ORGANISATION, CALCULATION } = require('../../../app/constants/types')
 const validateUpdate = require('../../../app/publishing/validate-update')
 const { mockCalculation1 } = require('../../mocks/calculation')
 const { mockFunding1 } = require('../../mocks/funding')

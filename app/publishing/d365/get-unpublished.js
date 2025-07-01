@@ -1,8 +1,8 @@
 const db = require('../../data')
 const { publishingConfig } = require('../../config')
 
-const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
-  return db.d365.findAll({
+const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource, randomise = false) => {
+  const query = {
     lock: true,
     skipLocked: true,
     where: {
@@ -12,7 +12,13 @@ const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPubl
     raw: true,
     transaction,
     limit
-  })
+  }
+
+  if (randomise) {
+    query.order = db.sequelize.literal('random()')
+  }
+
+  return db.d365.findAll(query)
 }
 
 module.exports = getUnpublishedD365

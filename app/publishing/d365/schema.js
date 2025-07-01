@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { D365 } = require('../types')
+const { D365 } = require('../../constants/types')
 
 const paymentReferenceChars = 30
 const paymentPeriodChars = 200

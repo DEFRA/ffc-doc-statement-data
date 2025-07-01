@@ -26,7 +26,7 @@ deployment:
 
 container:
   requestMemory: 1024Mi
-  requestCpu: 1200m
+  requestCpu: 900m
   limitMemory: 1024Mi
   limitCpu: 1700m
   messageQueueHost: namespace.servicebus.windows.net
@@ -43,7 +43,9 @@ container:
   delinkedEnabled: true
   fakeData: true
   subsetProcessDelinked: false
+  subsetProcessSfi23: false
   processDelinkedSubsetAmount: 10
+  processSfi23SubsetAmount: 10
   publishingEnabled: true
   logIntervalMs: 60000
 
