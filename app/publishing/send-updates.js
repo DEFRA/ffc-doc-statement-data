@@ -18,6 +18,9 @@ const setupProcessing = async (scheme) => {
       return false
     }
     console.log(`Processing ${scheme} with subset control active`)
+  } else if (publishingConfig.delinked.subsetProcess || publishingConfig.sfi23.subsetProcess) {
+    console.log('A subset process is in operation, normal processing not completed')
+    return false
   } else {
     console.log(`Processing ${scheme} updates normally`)
   }
@@ -37,7 +40,7 @@ const sendUpdates = async (scheme) => {
 
   if (scheme === DELINKED && publishingConfig.delinked.subsetProcess) {
     await sendDelinkedSubset()
-  } else if (!publishingConfig.delinked.subsetProcess && !publishingConfig.sfi23.subsetProcess) {
+  } else {
     const types = [ORGANISATION]
     if (scheme === DELINKED) {
       types.push(DELINKED_CALCULATION)
@@ -50,8 +53,6 @@ const sendUpdates = async (scheme) => {
     for (const type of types) {
       await defaultPublishingPerType(type)
     }
-  } else {
-    console.log('A subset process is in operation, normal processing not completed')
   }
 }
 
