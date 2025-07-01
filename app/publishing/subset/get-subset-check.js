@@ -1,7 +1,7 @@
 const db = require('../../data')
 
 const getSubsetCheck = async (scheme) => {
-  return db.subsetCheck.findAll({
+  return db.subsetCheck.findOne({
     lock: true,
     skipLocked: true,
     raw: true,
