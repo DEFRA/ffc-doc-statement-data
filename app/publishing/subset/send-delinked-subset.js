@@ -26,6 +26,8 @@ const sendDelinkedSubset = async () => {
     }]
     await sendSubset(tablesToTarget)
     await updateSubsetCheck(DELINKED, true)
+  } else {
+    console.log('No records identified to send in Delinked subset')
   }
 }
 

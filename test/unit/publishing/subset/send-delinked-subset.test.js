@@ -28,12 +28,15 @@ describe('sendDelinkedSubset', () => {
 
   test('does nothing if no unpublished D365 records', async () => {
     mockGetUnpublishedD365.mockResolvedValue([])
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
     await sendDelinkedSubset()
     expect(mockGetUnpublishedD365).toHaveBeenCalled()
     expect(mockGetRandomDelinkedCalculation).not.toHaveBeenCalled()
     expect(mockGetRandomOrganisations).not.toHaveBeenCalled()
     expect(mockSendSubset).not.toHaveBeenCalled()
     expect(mockUpdateSubsetCheck).not.toHaveBeenCalled()
+    expect(consoleSpy).toHaveBeenCalledWith('No records identified to send in Delinked subset')
+    consoleSpy.mockRestore()
   })
 
   test('publishes subset when unpublished D365 records exist', async () => {

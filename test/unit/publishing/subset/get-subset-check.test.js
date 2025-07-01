@@ -1,7 +1,7 @@
-const mockFindAll = jest.fn()
+const mockFindOne = jest.fn()
 
 jest.mock('../../../../app/data', () => ({
-  subsetCheck: { findAll: mockFindAll }
+  subsetCheck: { findOne: mockFindOne }
 }))
 
 const getSubsetCheck = require('../../../../app/publishing/subset/get-subset-check')
@@ -12,10 +12,10 @@ describe('getSubsetCheck', () => {
   })
 
   test('returns subset checks for given scheme', async () => {
-    const mockResult = [{ id: 1, scheme: 'A' }]
-    mockFindAll.mockResolvedValue(mockResult)
+    const mockResult = { id: 1, scheme: 'A' }
+    mockFindOne.mockResolvedValue(mockResult)
     const result = await getSubsetCheck('A')
-    expect(mockFindAll).toHaveBeenCalledWith({
+    expect(mockFindOne).toHaveBeenCalledWith({
       lock: true,
       skipLocked: true,
       raw: true,
@@ -25,7 +25,7 @@ describe('getSubsetCheck', () => {
   })
 
   test('returns empty array if no results', async () => {
-    mockFindAll.mockResolvedValue([])
+    mockFindOne.mockResolvedValue([])
     const result = await getSubsetCheck('B')
     expect(result).toEqual([])
   })
