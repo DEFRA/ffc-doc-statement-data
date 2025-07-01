@@ -48,6 +48,7 @@ container:
   processSfi23SubsetAmount: 10
   publishingEnabled: true
   logIntervalMs: 60000
+  pollingInterval: 3600000
 
 postgresService:
   postgresDb: ffc_doc_statement_data

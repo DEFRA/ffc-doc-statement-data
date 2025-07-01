@@ -31,4 +31,5 @@ data:
   PROCESS_DELINKED_SUBSET_AMOUNT: {{ quote .Values.container.processDelinkedSubsetAmount }}
   PROCESS_SFI23_SUBSET_AMOUNT: {{ quote .Values.container.processSfi23SubsetAmount }}
   LOG_INTERVAL_MS: {{ quote .Values.container.logIntervalMs }}
+  POLLING_INTERVAL: {{ quote .Values.container.pollingInterval }}
 {{- end -}}
