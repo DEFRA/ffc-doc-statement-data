@@ -1,6 +1,6 @@
-const db = require('../../../app/data')
-const getUnpublishedDax = require('../../../app/publishing/dax/get-unpublished')
-const { mockDax1, mockDax2, mockDax3 } = require('../../mocks/dax')
+const db = require('../../../../app/data')
+const getUnpublishedDax = require('../../../../app/publishing/dax/get-unpublished')
+const { mockDax1, mockDax2, mockDax3 } = require('../../../mocks/dax')
 
 db.dax = {
   findAll: jest.fn()

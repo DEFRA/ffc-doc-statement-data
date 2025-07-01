@@ -18,8 +18,10 @@ const sendSubset = async (tablesToTarget) => {
         totalPublished++
       }
     })
-    await Promise.all(promises)
-    console.log('%i %s datasets published', totalPublished, table.type)
+    if (promises) {
+      await Promise.all(promises)
+      console.log('%i %s datasets published', totalPublished, table.type)
+    }
   }
 }
 

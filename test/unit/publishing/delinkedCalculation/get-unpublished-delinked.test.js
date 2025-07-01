@@ -1,10 +1,10 @@
-const getUnpublished = require('../../../app/publishing/delinkedCalculation/get-unpublished')
-const getUnpublishedDelinked = require('../../../app/publishing/delinkedCalculation/get-unpublished-delinked')
-const updatePublished = require('../../../app/publishing/delinkedCalculation/update-published')
-const { mockDelinkedCalculation1, mockDelinkedCalculation2, mockDelinkedCalculation3 } = require('../../mocks/delinkedCalculation')
+const getUnpublished = require('../../../../app/publishing/delinkedCalculation/get-unpublished')
+const getUnpublishedDelinked = require('../../../../app/publishing/delinkedCalculation/get-unpublished-delinked')
+const updatePublished = require('../../../../app/publishing/delinkedCalculation/update-published')
+const { mockDelinkedCalculation1, mockDelinkedCalculation2, mockDelinkedCalculation3 } = require('../../../mocks/delinkedCalculation')
 
-jest.mock('../../../app/publishing/delinkedCalculation/get-unpublished-delinked')
-jest.mock('../../../app/publishing/delinkedCalculation/update-published')
+jest.mock('../../../../app/publishing/delinkedCalculation/get-unpublished-delinked')
+jest.mock('../../../../app/publishing/delinkedCalculation/update-published')
 
 describe('getUnpublished', () => {
   beforeEach(() => {

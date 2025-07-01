@@ -1,5 +1,5 @@
-const db = require('../../../app/data')
-const updateD365DatePublished = require('../../../app/publishing/d365/update-published')
+const db = require('../../../../app/data')
+const updateD365DatePublished = require('../../../../app/publishing/d365/update-published')
 const mockD365 = { paymentReference: 'test', datePublished: null }
 
 db.d365 = {
