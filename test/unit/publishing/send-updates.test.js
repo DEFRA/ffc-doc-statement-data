@@ -120,6 +120,6 @@ describe('sendUpdates', () => {
     publishingConfig.delinked.subsetProcess = true
     publishingConfig.sfi23.subsetProcess = false
     await sendUpdates(SFI23)
-    expect(logSpy).toHaveBeenCalledWith('A subset process is in operation, normal processing not completed')
+    expect(logSpy).toHaveBeenCalledWith(`A subset process is in operation, normal processing not completed for ${SFI23}`)
   })
 })

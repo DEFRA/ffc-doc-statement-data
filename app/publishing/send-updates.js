@@ -19,7 +19,7 @@ const setupProcessing = async (scheme) => {
     }
     console.log(`Processing ${scheme} with subset control active`)
   } else if (publishingConfig.delinked.subsetProcess || publishingConfig.sfi23.subsetProcess) {
-    console.log('A subset process is in operation, normal processing not completed')
+    console.log(`A subset process is in operation, normal processing not completed for ${scheme}`)
     return false
   } else {
     console.log(`Processing ${scheme} updates normally`)
