@@ -7,6 +7,7 @@ const {
 const { loadETLData } = require('./load-etl-data')
 const { etlConfig } = require('../config')
 const ora = require('ora')
+const { createAlerts } = require('../messaging/create-alerts')
 
 let startDate
 
@@ -82,6 +83,11 @@ const stageExtracts = async () => {
     if (failedOperations.length > 0) {
       console.error(`ETL process completed with ${failedOperations.length} failures:`)
       failedOperations.forEach(op => console.error(`- ${op.label}: ${op.error}`))
+      const errors = failedOperations.map(op => ({
+        file: op.label,
+        message: op.error
+      }))
+      await createAlerts(errors)
     } else {
       console.log('All ETL extracts loaded successfully')
       await loadETLData(startDate)
