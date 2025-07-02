@@ -11,11 +11,7 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
-jest.mock('../../../app/publishing/delinked-subset-counter', () => ({
-  shouldProcessDelinked: jest.fn().mockReturnValue(true),
-  incrementProcessedCount: jest.fn(),
-  getStatus: jest.fn().mockReturnValue({ limitReached: false, targetAmount: 1000, processedCount: 0 })
-}))
+jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
 const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
@@ -30,7 +26,8 @@ describe('send dax updates', () => {
     jest.clearAllMocks()
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-    publishingConfig.subsetProcessDelinked = false
+    publishingConfig.delinked.subsetProcess = false
+    publishingConfig.sfi23.subsetProcess = false
     publishingConfig.publishingEnabled = true
   })
 

@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { DELINKED } = require('../types')
+const { DELINKED_CALCULATION } = require('../../constants/types')
 
 const minSbi = 105000000
 const maxSbi = 999999999
@@ -121,9 +121,9 @@ module.exports = Joi.object({
   datePublished: dateOptional.messages({
     'date.base': `datePublished ${messages.date.base}`
   }),
-  type: stringRequired.valid(DELINKED).messages({
+  type: stringRequired.valid(DELINKED_CALCULATION).messages({
     'string.base': `type ${messages.string.base}`,
     'any.required': `The field type ${messages.string.required}`,
-    'any.only': `type must be : ${DELINKED}`
+    'any.only': `type must be : ${DELINKED_CALCULATION}`
   })
 })

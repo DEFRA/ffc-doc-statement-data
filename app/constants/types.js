@@ -1,6 +1,6 @@
 module.exports = {
   ORGANISATION: 'organisation',
-  DELINKED: 'delinkedCalculation',
+  DELINKED_CALCULATION: 'delinkedCalculation',
   CALCULATION: 'calculation',
   TOTAL: 'total',
   DAX: 'dax',

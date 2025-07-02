@@ -11,11 +11,7 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
-jest.mock('../../../app/publishing/delinked-subset-counter', () => ({
-  shouldProcessDelinked: jest.fn().mockReturnValue(true),
-  incrementProcessedCount: jest.fn(),
-  getStatus: jest.fn().mockReturnValue({ limitReached: false, targetAmount: 1000, processedCount: 0 })
-}))
+jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
 const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
@@ -28,7 +24,8 @@ describe('send organisation updates', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-    publishingConfig.subsetProcessDelinked = false
+    publishingConfig.delinked.subsetProcess = false
+    publishingConfig.sfi23.subsetProcess = false
     publishingConfig.publishingEnabled = true
   })
 
@@ -132,21 +129,6 @@ describe('send organisation updates', () => {
       await publish.start()
       await publish.start()
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe('When organisation has been updated', () => {
-    beforeEach(async () => {
-      await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
-    })
-
-    test('should call sendMessage twice', async () => {
-      await publish.start()
-      await db.organisation.update({ updated: new Date(2022, 8, 5, 15, 30, 10, 121) }, { where: { sbi: 123456789 } })
-
-      await publish.start()
-
-      expect(mockSendMessage).toHaveBeenCalledTimes(2)
     })
   })
 

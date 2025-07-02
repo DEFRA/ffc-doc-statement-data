@@ -2,22 +2,38 @@ const Joi = require('joi')
 
 const defaultDataPublishingBatchSize = 1000
 const defaultPollingInterval = 3600000
-const processDelinkedSubsetAmount = 10
+const defaultSubsetAmount = 10
+const logIntervalMs = 600000
 
 const schema = Joi.object({
   dataPublishingMaxBatchSizePerDataSource: Joi.number().default(defaultDataPublishingBatchSize),
   pollingInterval: Joi.number().integer().default(defaultPollingInterval),
   publishingEnabled: Joi.boolean().default(true),
   subsetProcessDelinked: Joi.boolean().default(false),
-  processDelinkedSubsetAmount: Joi.number().integer().min(1).default(processDelinkedSubsetAmount)
+  delinked: Joi.object({
+    subsetProcess: Joi.boolean().default(false),
+    processSubsetAmount: Joi.number().integer().default(defaultSubsetAmount)
+  }).required(),
+  sfi23: Joi.object({
+    subsetProcess: Joi.boolean().default(false),
+    processSubsetAmount: Joi.number().integer().default(defaultSubsetAmount)
+  }).required(),
+  logIntervalMs: Joi.number().integer().default(logIntervalMs)
 })
 
 const config = {
   dataPublishingMaxBatchSizePerDataSource: process.env.DATA_PUBLISHING_MAX_BATCH_SIZE_PER_DATA_SOURCE,
   pollingInterval: process.env.POLLING_INTERVAL,
   publishingEnabled: process.env.PUBLISHING_ENABLED,
-  subsetProcessDelinked: process.env.SUBSET_PROCESS_DELINKED,
-  processDelinkedSubsetAmount: process.env.PROCESS_DELINKED_SUBSET_AMOUNT
+  delinked: {
+    subsetProcess: process.env.SUBSET_PROCESS_DELINKED,
+    processSubsetAmount: process.env.PROCESS_DELINKED_SUBSET_AMOUNT
+  },
+  sfi23: {
+    subsetProcess: process.env.SUBSET_PROCESS_SFI23,
+    processSubsetAmount: process.env.PROCESS_SFI23_SUBSET_AMOUNT
+  },
+  logIntervalMs: process.env.LOG_INTERVAL_MS
 }
 
 const result = schema.validate(config, {

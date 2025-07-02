@@ -1,5 +1,5 @@
-const db = require('../../../app/data')
-const { publishingConfig } = require('../../../app/config')
+const db = require('../../../../app/data')
+const { publishingConfig } = require('../../../../app/config')
 
 db.sequelize = { col: (col) => col }
 db.Sequelize = {
@@ -9,8 +9,8 @@ db.Sequelize = {
   }
 }
 
-const getUnpublishedTotals = require('../../../app/publishing/total/get-unpublished-total')
-const { mockTotal1, mockTotal2, mockTotal3 } = require('../../mocks/totals')
+const getUnpublishedTotals = require('../../../../app/publishing/total/get-unpublished-total')
+const { mockTotal1, mockTotal2, mockTotal3 } = require('../../../mocks/totals')
 
 db.total = {
   findAll: jest.fn()
