@@ -10,10 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     calculationId: DataTypes.BIGINT,
     invoiceid: DataTypes.STRING,
     etlInsertedDt: DataTypes.DATE,
-    marketingyear: DataTypes.INTEGER,
-    scheme: DataTypes.INTEGER,
-    frn: DataTypes.STRING,
-    sbi: DataTypes.INTEGER
+    marketingyear: DataTypes.INTEGER
   }, {
     tableName: 'etlIntermTotalZeroValues',
     freezeTableName: true,
