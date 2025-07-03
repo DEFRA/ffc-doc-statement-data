@@ -1,0 +1,183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadIntermTotalZeroValues should call sequelize.query with correct parameters 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+WITH grouped AS (
+  SELECT
+    D."transdate",
+    D."quarter",
+    D."claimId",
+    D.marketingyear,
+    D.scheme,
+    D.frn,
+    D.sbi,
+    SUM(D."transactionAmount") AS "totalAmount"
+  FROM public."etlIntermFinanceDax" D
+  WHERE D."etlInsertedDt" > :startDate
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear, D.scheme, D.frn, D.sbi
+),
+ranked AS (
+  SELECT
+    g."transdate",
+    g."quarter",
+    g."claimId",
+    g.marketingyear,
+    g.scheme,
+    g.frn,
+    g.sbi,
+    g."totalAmount",
+    D."paymentRef",
+    D."invoiceid",
+    CD."calculationId",
+    ROW_NUMBER() OVER (
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear, g.scheme, g.frn, g.sbi
+      ORDER BY
+        CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
+        D."transactionAmount" DESC,
+        NULLIF(CAST(RIGHT(D."invoiceid", 1) AS INTEGER), NULL)
+    ) AS rn
+  FROM grouped g
+  JOIN public."etlIntermFinanceDax" D
+    ON D."transdate" = g."transdate"
+    AND D."quarter" = g."quarter"
+    AND D."claimId" = g."claimId"
+    AND D.marketingyear = g.marketingyear
+    AND D.scheme = g.scheme
+    AND D.frn = g.frn
+    AND D.sbi = g.sbi
+    AND D."etlInsertedDt" > :startDate
+  INNER JOIN public."etlStageCalculationDetails" CD
+    ON D."claimId" = CD."applicationId"
+)
+INSERT INTO public."etlIntermTotalZeroValues" (
+  "paymentRef", "quarter", "totalAmount",
+  "transdate", "invoiceid", "calculationId", marketingyear, scheme, frn, sbi
+)
+SELECT
+  "paymentRef",
+  "quarter",
+  "totalAmount",
+  "transdate",
+  "invoiceid",
+  "calculationId",
+  marketingyear,
+  scheme,
+  frn,
+  sbi
+FROM ranked
+WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" <= 0
+ORDER BY "paymentRef";
+",
+      {
+        "raw": true,
+        "replacements": {
+          "startDate": 2023-01-01T00:00:00.000Z,
+        },
+        "transaction": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`loadIntermTotalZeroValuesDelinked should call sequelize.query with correct parameters 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+WITH grouped AS (
+  SELECT
+    D."transdate",
+    D."quarter",
+    D."claimId",
+    D.marketingyear,
+    D.scheme,
+    D.frn,
+    D.sbi,
+    SUM(D."transactionAmount") AS "totalAmount"
+  FROM public."etlIntermFinanceDax" D
+  WHERE D."etlInsertedDt" > :startDate
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear, D.scheme, D.frn, D.sbi
+),
+ranked AS (
+  SELECT
+    g."transdate",
+    g."quarter",
+    g."claimId",
+    g.marketingyear,
+    g.scheme,
+    g.frn,
+    g.sbi,
+    g."totalAmount",
+    D."paymentRef",
+    D."invoiceid",
+    CD."calculationId",
+    ROW_NUMBER() OVER (
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear, g.scheme, g.frn, g.sbi
+      ORDER BY
+        CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
+        D."transactionAmount" DESC,
+        NULLIF(CAST(RIGHT(D."invoiceid", 1) AS INTEGER), NULL)
+    ) AS rn
+  FROM grouped g
+  JOIN public."etlIntermFinanceDax" D
+    ON D."transdate" = g."transdate"
+    AND D."quarter" = g."quarter"
+    AND D."claimId" = g."claimId"
+    AND D.marketingyear = g.marketingyear
+    AND D.scheme = g.scheme
+    AND D.frn = g.frn
+    AND D.sbi = g.sbi
+    AND D."etlInsertedDt" > :startDate
+  INNER JOIN public."etlStageCalculationDetails" CD
+    ON D."claimId" = CD."applicationId"
+)
+INSERT INTO public."etlIntermTotalZeroValues" (
+  "paymentRef", "quarter", "totalAmount",
+  "transdate", "invoiceid", "calculationId", marketingyear, scheme, frn, sbi
+)
+SELECT
+  "paymentRef",
+  "quarter",
+  "totalAmount",
+  "transdate",
+  "invoiceid",
+  "calculationId",
+  marketingyear,
+  scheme,
+  frn,
+  sbi
+FROM ranked
+WHERE rn = 1
+  AND "paymentRef" LIKE 'PY%'
+  AND "totalAmount" <= 0
+ORDER BY "paymentRef";
+",
+      {
+        "raw": true,
+        "replacements": {
+          "startDate": 2023-01-01T00:00:00.000Z,
+        },
+        "transaction": {},
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

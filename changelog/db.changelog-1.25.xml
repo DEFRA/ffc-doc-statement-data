@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet author="AI" id="1">
+    <createTable tableName="etlIntermTotalZeroValues">
+      <column name="paymentRef" type="VARCHAR(255)" />
+      <column name="quarter" type="VARCHAR(255)" />
+      <column name="totalAmount" type="DECIMAL(18,2)" />
+      <column name="transdate" type="DATE" />
+      <column name="calculationId" type="BIGINT" />
+      <column name="invoiceid" type="VARCHAR(255)" />
+      <column name="etlInsertedDt" type="TIMESTAMP" />
+      <column name="marketingyear" type="INTEGER" />
+      <column name="scheme" type="INTEGER" />
+      <column name="frn" type="VARCHAR(255)" />
+      <column name="sbi" type="INTEGER" />
+    </createTable>
+  </changeSet>
+</databaseChangeLog> 
