@@ -11,13 +11,10 @@ WITH grouped AS (
     D."quarter",
     D."claimId",
     D.marketingyear,
-    D.scheme,
-    D.frn,
-    D.sbi,
     SUM(D."transactionAmount") AS "totalAmount"
   FROM public."etlIntermFinanceDax" D
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear, D.scheme, D.frn, D.sbi
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
   SELECT
@@ -25,15 +22,12 @@ ranked AS (
     g."quarter",
     g."claimId",
     g.marketingyear,
-    g.scheme,
-    g.frn,
-    g.sbi,
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
     CD."calculationId",
     ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear, g.scheme, g.frn, g.sbi
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
         CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
         D."transactionAmount" DESC,
@@ -45,28 +39,22 @@ ranked AS (
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
     AND D.marketingyear = g.marketingyear
-    AND D.scheme = g.scheme
-    AND D.frn = g.frn
-    AND D.sbi = g.sbi
     AND D."etlInsertedDt" > :startDate
   INNER JOIN public."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
 )
 INSERT INTO public."etlIntermTotalZeroValues" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", "calculationId", marketingyear, scheme, frn, sbi
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
-  "paymentRef",
+  "paymentRef", 
   "quarter",
   "totalAmount",
   "transdate",
   "invoiceid",
   "calculationId",
-  marketingyear,
-  scheme,
-  frn,
-  sbi
+  marketingyear
 FROM ranked
 WHERE rn = 1
   AND "paymentRef" LIKE 'PY%'
@@ -102,13 +90,10 @@ WITH grouped AS (
     D."quarter",
     D."claimId",
     D.marketingyear,
-    D.scheme,
-    D.frn,
-    D.sbi,
     SUM(D."transactionAmount") AS "totalAmount"
   FROM public."etlIntermFinanceDax" D
   WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear, D.scheme, D.frn, D.sbi
+  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
   SELECT
@@ -116,15 +101,12 @@ ranked AS (
     g."quarter",
     g."claimId",
     g.marketingyear,
-    g.scheme,
-    g.frn,
-    g.sbi,
     g."totalAmount",
     D."paymentRef",
     D."invoiceid",
     CD."calculationId",
     ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear, g.scheme, g.frn, g.sbi
+      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
         CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
         D."transactionAmount" DESC,
@@ -135,17 +117,14 @@ ranked AS (
     ON D."transdate" = g."transdate"
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
-    AND D.marketingyear = g.marketingyear
-    AND D.scheme = g.scheme
-    AND D.frn = g.frn
-    AND D.sbi = g.sbi
+    AND D.marketingyear = g.marketingyear    
     AND D."etlInsertedDt" > :startDate
   INNER JOIN public."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
 )
 INSERT INTO public."etlIntermTotalZeroValues" (
   "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", "calculationId", marketingyear, scheme, frn, sbi
+  "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
   "paymentRef",
@@ -154,10 +133,7 @@ SELECT
   "transdate",
   "invoiceid",
   "calculationId",
-  marketingyear,
-  scheme,
-  frn,
-  sbi
+  marketingyear
 FROM ranked
 WHERE rn = 1
   AND "paymentRef" LIKE 'PY%'
