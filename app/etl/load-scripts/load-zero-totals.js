@@ -4,7 +4,7 @@ const { executeQuery } = require('./load-interm-utils')
 
 const loadZeroTotals = async (startDate, transaction) => {
   const query = `
-    INSERT INTO ${dbConfig.schema}.totals (
+    INSERT INTO ${dbConfig.schema}.zeroTotals (
       "calculationId", "sbi", "frn", "agreementNumber",
       "claimId", "schemeType", "calculationDate",
       "invoiceNumber", "agreementStart", "agreementEnd",
