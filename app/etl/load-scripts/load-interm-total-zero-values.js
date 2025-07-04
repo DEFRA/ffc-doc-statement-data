@@ -131,4 +131,4 @@ const loadIntermTotalZeroValuesDelinked = async (startDate, transaction) => {
 module.exports = {
   loadIntermTotalZeroValues,
   loadIntermTotalZeroValuesDelinked
-} 
+}

@@ -48,4 +48,4 @@ const loadZeroTotals = async (startDate, transaction) => {
 
 module.exports = {
   loadZeroTotals
-} 
+}

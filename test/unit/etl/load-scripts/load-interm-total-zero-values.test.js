@@ -33,4 +33,4 @@ describe('loadIntermTotalZeroValuesDelinked', () => {
     await loadIntermTotalZeroValuesDelinked(startDate, mockTransaction)
     expect(db.sequelize.query).toMatchSnapshot()
   })
-}) 
+})

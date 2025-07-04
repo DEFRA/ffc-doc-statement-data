@@ -44,4 +44,4 @@ module.exports = (sequelize, DataTypes) => {
     })
   }
   return zeroTotal
-} 
+}
