@@ -1,6 +1,6 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadIntermTotalZeroValuesDelinked } = require('./load-scripts')
+const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadIntermTotalZeroValuesDelinked, loadZeroTotals } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 
 const loadETLData = async (startDate) => {
@@ -55,8 +55,8 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(startDate)
     await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(startDate)
     await wrapWithLogging(loadIntermTotalZeroValues, 'loadIntermTotalZeroValues')(startDate)
-    await wrapWithLogging(loadIntermTotalZeroValuesDelinked, 'loadIntermTotalZeroValuesDelinked')(startDate)
     await wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')(startDate)
+    await wrapWithLogging(loadIntermTotalZeroValuesDelinked, 'loadIntermTotalZeroValuesDelinked')(startDate)
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
 
@@ -70,6 +70,7 @@ const loadETLData = async (startDate) => {
 
     await wrapWithLogging(loadIntermPaymentrefOrg, 'loadIntermPaymentrefOrg')(startDate)
     await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
+    await wrapWithLogging(loadZeroTotals, 'loadZeroTotals')(startDate, secondTransaction)
     await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
     await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
 
