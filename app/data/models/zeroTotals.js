@@ -3,26 +3,26 @@ const dbConfig = config.dbConfig[config.env]
 
 module.exports = (sequelize, DataTypes) => {
   const totalDataModel = require('../../constants/total-data-model')(DataTypes)
-  const total = sequelize.define('total', totalDataModel,
+  const zeroTotal = sequelize.define('zeroTotal', totalDataModel,
     {
-      tableName: 'totals',
+      tableName: 'zeroTotals',
       freezeTableName: true,
       timestamps: false,
       schema: dbConfig.schema
     })
-  total.associate = function (models) {
-    total.hasMany(models.dax, {
+  zeroTotal.associate = function (models) {
+    zeroTotal.hasMany(models.dax, {
       foreignKey: 'calculationId',
       as: 'daxEntries'
     })
-    total.hasMany(models.action, {
+    zeroTotal.hasMany(models.action, {
       foreignKey: 'calculationId',
       as: 'actions'
     })
-    total.belongsTo(models.organisation, {
+    zeroTotal.belongsTo(models.organisation, {
       foreignKey: 'sbi',
       as: 'organisations'
     })
   }
-  return total
+  return zeroTotal
 }
