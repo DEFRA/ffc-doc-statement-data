@@ -15,6 +15,8 @@ const { loadTotals } = require('./load-totals')
 const { loadIntermAppCalcResultsDelinkPayment } = require('./load-interm-app-calc-results-delink-payment')
 const { loadDelinkedCalculation } = require('./load-delinked-calculation')
 const { loadD365 } = require('./load-d365')
+const { loadIntermTotalZeroValues, loadIntermTotalZeroValuesDelinked } = require('./load-interm-total-zero-values')
+const { loadZeroTotals } = require('./load-zero-totals')
 
 module.exports = {
   loadIntermFinanceDAX,
@@ -38,5 +40,8 @@ module.exports = {
   loadTotals,
   loadOrganisations,
   loadDelinkedCalculation,
-  loadD365
+  loadD365,
+  loadIntermTotalZeroValues,
+  loadIntermTotalZeroValuesDelinked,
+  loadZeroTotals
 }
