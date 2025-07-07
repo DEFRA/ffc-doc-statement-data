@@ -5,7 +5,7 @@ const defaultAccountNumber = 10
 const delinkedAccountNumber = 10
 const defaultStartOfInvoice = 'S'
 const delinkedStartOfInvoice = 'D'
-const defaultInvoicePattern = defaultStartOfInvoice + '%Z%'
+const defaultInvoicePattern = defaultStartOfInvoice + '%Z%V%'
 const delinkedInvoicePattern = delinkedStartOfInvoice + '%Z%'
 
 const loadIntermFinanceDAX = async (startDate, transaction, folder = etlConfig.financeDAX.folder, accountnum = defaultAccountNumber, invoicePattern = defaultInvoicePattern, startOfInvoice = defaultStartOfInvoice) => {

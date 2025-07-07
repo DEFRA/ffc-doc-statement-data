@@ -2,6 +2,7 @@ const { Transaction } = require('sequelize')
 const db = require('../data')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadIntermTotalZeroValuesDelinked, loadZeroTotals } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
+const { createAlerts } = require('../messaging/create-alerts')
 
 const loadETLData = async (startDate) => {
   console.log(`Starting ETL data load at ${new Date().toISOString()}`)
@@ -81,7 +82,7 @@ const loadETLData = async (startDate) => {
     await deleteETLRecords(startDate)
     await firstTransaction.rollback()
     await secondTransaction.rollback()
-    throw error
+    await createAlerts([{ file: 'Loading ETL data', message: error.message }])
   }
 }
 
