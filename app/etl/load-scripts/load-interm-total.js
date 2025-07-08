@@ -3,15 +3,32 @@ const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const defaultQuery = `
-WITH grouped AS (
+WITH latest AS (
   SELECT
     D."transdate",
     D."quarter",
     D."claimId",
     D.marketingyear,
-    SUM(D."transactionAmount") AS "totalAmount"
-  FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-  WHERE D."etlInsertedDt" > :startDate
+    D."transactionAmount",
+    D."paymentRef",
+    D."invoiceid",
+    D."etlInsertedDt",
+    ROW_NUMBER() OVER (
+      PARTITION BY D."transdate", D."quarter", D."claimId", D.marketingyear, D."paymentRef", D."invoiceid"
+      ORDER BY D."etlInsertedDt" DESC
+    ) AS rn
+  FROM ${dbConfig.schema}."etlIntermFinanceDax" FD
+),
+grouped AS (
+  SELECT
+    L."transdate",
+    L."quarter",
+    L."claimId",
+    L.marketingyear,
+    SUM(L."transactionAmount") AS "totalAmount",
+    MAX(L."etlInsertedDt") AS "updatedDt",
+  FROM latest L
+  WHERE rn = 1
   GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
 ),
 ranked AS (
@@ -37,7 +54,7 @@ ranked AS (
     AND D."quarter" = g."quarter"
     AND D."claimId" = g."claimId"
     AND D.marketingyear = g.marketingyear
-    AND D."etlInsertedDt" > :startDate
+    AND g."updatedDt" > :startDate
   INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
 )

@@ -17,7 +17,12 @@ const loadDAX = async (startDate, transaction) => {
     FROM ${dbConfig.schema}."etlIntermTotal" T
     LEFT JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
     WHERE T."etlInsertedDt" > :startDate
-      AND D."calculationId" IS NULL;
+      AND D."calculationId" IS NULL
+    ON CONFLICT ("paymentReference", "calculationId")
+    DO UPDATE SET
+      "paymentAmount" = EXCLUDED."paymentAmount",
+      "datePublished" = NULL;
+;
   `, {
     replacements: {
       startDate
