@@ -64,7 +64,7 @@ INSERT INTO ${dbConfig.schema}."etlIntermTotalZeroValues" (
   "transdate", "invoiceid", "calculationId", marketingyear
 )
 SELECT
-  "paymentRef", 
+  "paymentRef",
   "quarter",
   "totalAmount",
   "transdate",
