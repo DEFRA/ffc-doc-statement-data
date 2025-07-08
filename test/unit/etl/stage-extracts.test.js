@@ -1,7 +1,6 @@
 const { writeToString } = require('@fast-csv/format')
 const storage = require('../../../app/storage')
-const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption, stageApplicationDetailsDelinked, stageAppsTypesDelinked } = require('../../../app/etl/staging')
-const { loadETLData } = require('../../../app/etl/load-etl-data')
+const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('../../../app/etl/staging')
 const { etlConfig } = require('../../../app/config')
 const ora = require('ora')
 const { stageExtracts } = require('../../../app/etl/stage-extracts')
@@ -26,7 +25,6 @@ jest.mock('../../../app/config', () => {
 jest.mock('../../../app/messaging/create-alerts', () => ({
   createAlerts: jest.fn()
 }))
-const { createAlerts } = require('../../../app/messaging/create-alerts')
 
 const stageFunctions = [
   { fn: stageApplicationDetails, label: etlConfig.applicationDetail.folder },
