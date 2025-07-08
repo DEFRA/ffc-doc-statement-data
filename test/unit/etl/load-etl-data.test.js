@@ -49,7 +49,6 @@ const {
   loadIntermAppCalcResultsDelinkPayment,
   loadIntermFinanceDAXDelinked,
   loadDelinkedCalculation,
-  loadIntermTotalDelinked,
   loadD365,
   loadIntermApplicationClaimDelinked,
   loadIntermOrgDelinked,
@@ -96,7 +95,6 @@ describe('loadETLData', () => {
     expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermCalcOrgDelinked).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermTotal).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermTotalDelinked).toHaveBeenCalledWith('2023-01-01')
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction1)
     expect(loadIntermPaymentrefAgreementDates).toHaveBeenCalledWith('2023-01-01')
     expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction1)
