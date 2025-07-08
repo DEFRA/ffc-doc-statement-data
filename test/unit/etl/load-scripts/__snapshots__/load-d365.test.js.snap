@@ -18,7 +18,11 @@ exports[`loadD365 should call sequelize.query with correct SQL and parameters 1`
         T.marketingyear AS "marketingYear" 
     FROM public."etlIntermTotal" T
     JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
-    WHERE T."etlInsertedDt" > :startDate;
+    WHERE T."etlInsertedDt" > :startDate
+    ON CONFLICT ("paymentReference", "calculationId")
+    DO UPDATE SET
+      "paymentAmount" = EXCLUDED."paymentAmount",
+      "datePublished" = NULL;
     ",
       {
         "raw": true,
