@@ -59,7 +59,7 @@ ranked AS (
     ON D."claimId" = CD."applicationId"
   WHERE g."updatedDt" > :startDate
 )
-INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
+INSERT INTO ${dbConfig.schema}."etlIntermTotalZeroValues" (
   "paymentRef", "quarter", "totalAmount",
   "transdate", "invoiceid", "calculationId", marketingyear
 )
