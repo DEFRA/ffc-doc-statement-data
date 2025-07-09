@@ -3,16 +3,33 @@ const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
 const defaultQuery = `
-WITH grouped AS (
+WITH latest AS (
   SELECT
     D."transdate",
     D."quarter",
     D."claimId",
     D.marketingyear,
-    SUM(D."transactionAmount") AS "totalAmount"
+    D."transactionAmount",
+    D."paymentRef",
+    D."invoiceid",
+    D."etlInsertedDt",
+    ROW_NUMBER() OVER (
+      PARTITION BY D."transdate", D."quarter", D."claimId", D.marketingyear, D."paymentRef", D."invoiceid"
+      ORDER BY D."etlInsertedDt" DESC
+    ) AS rn
   FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-  WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
+),
+grouped AS (
+  SELECT
+    L."transdate",
+    L."quarter",
+    L."claimId",
+    L.marketingyear,
+    SUM(L."transactionAmount") AS "totalAmount",
+    MAX(L."etlInsertedDt") AS "updatedDt"
+  FROM latest L
+  WHERE rn = 1
+  GROUP BY L."transdate", L."quarter", L."claimId", L.marketingyear
 ),
 ranked AS (
   SELECT
@@ -21,83 +38,26 @@ ranked AS (
     g."claimId",
     g.marketingyear,
     g."totalAmount",
-    D."paymentRef",
-    D."invoiceid",
+    L."paymentRef",
+    L."invoiceid",
     CD."calculationId",
     ROW_NUMBER() OVER (
       PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
       ORDER BY
-        CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
-        D."transactionAmount" DESC,
-        NULLIF(CAST(RIGHT(D."invoiceid", 1) AS INTEGER), NULL)
+        CASE WHEN L."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
+        L."transactionAmount" DESC,
+        NULLIF(CAST(RIGHT(L."invoiceid", 1) AS INTEGER), NULL)
     ) AS rn
   FROM grouped g
-  JOIN ${dbConfig.schema}."etlIntermFinanceDax" D
-    ON D."transdate" = g."transdate"
-    AND D."quarter" = g."quarter"
-    AND D."claimId" = g."claimId"
-    AND D.marketingyear = g.marketingyear
-    AND D."etlInsertedDt" > :startDate
+  JOIN latest L
+    ON L."transdate" = g."transdate"
+    AND L."quarter" = g."quarter"
+    AND L."claimId" = g."claimId"
+    AND L.marketingyear = g.marketingyear
+    AND L.rn = 1
   INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
     ON D."claimId" = CD."applicationId"
-)
-INSERT INTO ${dbConfig.schema}."etlIntermTotalZeroValues" (
-  "paymentRef", "quarter", "totalAmount",
-  "transdate", "invoiceid", "calculationId", marketingyear
-)
-SELECT
-  "paymentRef", 
-  "quarter",
-  "totalAmount",
-  "transdate",
-  "invoiceid",
-  "calculationId",
-  marketingyear
-FROM ranked
-WHERE rn = 1
-  AND "paymentRef" LIKE 'PY%'
-  AND "totalAmount" <= 0
-ORDER BY "paymentRef";
-`
-
-const delinkedQuery = `
-WITH grouped AS (
-  SELECT
-    D."transdate",
-    D."quarter",
-    D."claimId",
-    D.marketingyear,
-    SUM(D."transactionAmount") AS "totalAmount"
-  FROM ${dbConfig.schema}."etlIntermFinanceDax" D
-  WHERE D."etlInsertedDt" > :startDate
-  GROUP BY D."transdate", D."quarter", D."claimId", D.marketingyear
-),
-ranked AS (
-  SELECT
-    g."transdate",
-    g."quarter",
-    g."claimId",
-    g.marketingyear,
-    g."totalAmount",
-    D."paymentRef",
-    D."invoiceid",
-    CD."calculationId",
-    ROW_NUMBER() OVER (
-      PARTITION BY g."transdate", g."quarter", g."claimId", g.marketingyear
-      ORDER BY
-        CASE WHEN D."paymentRef" LIKE 'PY%' THEN 0 ELSE 1 END,
-        D."transactionAmount" DESC,
-        NULLIF(CAST(RIGHT(D."invoiceid", 1) AS INTEGER), NULL)
-    ) AS rn
-  FROM grouped g
-  JOIN ${dbConfig.schema}."etlIntermFinanceDax" D
-    ON D."transdate" = g."transdate"
-    AND D."quarter" = g."quarter"
-    AND D."claimId" = g."claimId"
-    AND D.marketingyear = g.marketingyear    
-    AND D."etlInsertedDt" > :startDate
-  INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
-    ON D."claimId" = CD."applicationId"
+  WHERE g."updatedDt" > :startDate
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotalZeroValues" (
   "paymentRef", "quarter", "totalAmount",
@@ -124,11 +84,6 @@ const loadIntermTotalZeroValues = async (startDate, transaction, query = default
   }, transaction)
 }
 
-const loadIntermTotalZeroValuesDelinked = async (startDate, transaction) => {
-  return loadIntermTotalZeroValues(startDate, transaction, delinkedQuery)
-}
-
 module.exports = {
-  loadIntermTotalZeroValues,
-  loadIntermTotalZeroValuesDelinked
+  loadIntermTotalZeroValues
 }

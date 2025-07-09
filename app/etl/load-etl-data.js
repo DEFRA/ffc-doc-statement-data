@@ -1,6 +1,6 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadIntermTotalZeroValuesDelinked, loadZeroTotals } = require('./load-scripts')
+const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadZeroTotals } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
 
@@ -56,8 +56,6 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(startDate)
     await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(startDate)
     await wrapWithLogging(loadIntermTotalZeroValues, 'loadIntermTotalZeroValues')(startDate)
-    await wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')(startDate)
-    await wrapWithLogging(loadIntermTotalZeroValuesDelinked, 'loadIntermTotalZeroValuesDelinked')(startDate)
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
 

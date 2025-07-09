@@ -18,7 +18,12 @@ exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`]
     FROM public."etlIntermTotal" T
     LEFT JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
     WHERE T."etlInsertedDt" > :startDate
-      AND D."calculationId" IS NULL;
+      AND D."calculationId" IS NULL
+    ON CONFLICT ("paymentReference", "calculationId")
+    DO UPDATE SET
+      "paymentAmount" = EXCLUDED."paymentAmount",
+      "datePublished" = NULL;
+;
   ",
       {
         "raw": true,

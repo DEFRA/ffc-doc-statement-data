@@ -17,7 +17,11 @@ const loadD365 = async (startDate, transaction) => {
         T.marketingyear AS "marketingYear" 
     FROM ${dbConfig.schema}."etlIntermTotal" T
     JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
-    WHERE T."etlInsertedDt" > :startDate;
+    WHERE T."etlInsertedDt" > :startDate
+    ON CONFLICT ("paymentReference", "calculationId")
+    DO UPDATE SET
+      "paymentAmount" = EXCLUDED."paymentAmount",
+      "datePublished" = NULL;
     `, {
     replacements: {
       startDate
