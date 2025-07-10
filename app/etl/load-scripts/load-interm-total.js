@@ -56,7 +56,7 @@ ranked AS (
     AND L.marketingyear = g.marketingyear
     AND L.rn = 1
   INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
-    ON D."claimId" = CD."applicationId"
+    ON L."claimId" = CD."applicationId"
   WHERE g."updatedDt" > :startDate
 )
 INSERT INTO ${dbConfig.schema}."etlIntermTotal" (
