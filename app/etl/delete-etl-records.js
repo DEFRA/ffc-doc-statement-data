@@ -46,7 +46,7 @@ const deleteETLRecords = async (startDate, transaction) => {
     for (const table of etlIntermTables) {
       if (db[table]) {
         await db[table].destroy({
-          where: { etlId: { [db.Sequelize.Op.gte]: startDate } },
+          where: { etlInsertedDt: { [db.Sequelize.Op.gte]: startDate } },
           transaction
         })
         console.log(`Deleted records from intermediate table: ${table}`)
