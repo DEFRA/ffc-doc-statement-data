@@ -159,7 +159,7 @@ describe('deleteETLRecords', () => {
     await deleteETLRecords(startDate, transaction)
     for (const table of etlIntermTables) {
       expect(db[table].destroy).toHaveBeenCalledWith({
-        where: { etlId: { [db.Sequelize.Op.gte]: startDate } },
+        where: { etlInsertedDt: { [db.Sequelize.Op.gte]: startDate } },
         transaction
       })
       expect(logSpy).toHaveBeenCalledWith(`Deleted records from intermediate table: ${table}`)
