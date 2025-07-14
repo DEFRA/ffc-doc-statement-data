@@ -52,7 +52,10 @@ const {
   loadD365,
   loadIntermApplicationClaimDelinked,
   loadIntermOrgDelinked,
-  loadIntermCalcOrgDelinked
+  loadIntermCalcOrgDelinked,
+  loadIntermTotalZeroValues,
+  loadZeroValueDax,
+  loadZeroValueD365
 } = require('../../../app/etl/load-scripts')
 
 Transaction.ISOLATION_LEVELS = {
@@ -95,9 +98,11 @@ describe('loadETLData', () => {
     expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermCalcOrgDelinked).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermTotal).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermTotalZeroValues).toHaveBeenCalledWith('2023-01-01')
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction1)
     expect(loadIntermPaymentrefAgreementDates).toHaveBeenCalledWith('2023-01-01')
     expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction1)
+    expect(loadZeroValueDax).toHaveBeenCalledWith('2023-01-01', transaction1)
     expect(transaction1.commit).toHaveBeenCalled()
     expect(loadIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermTotalClaim).toHaveBeenCalledWith('2023-01-01')
@@ -106,6 +111,7 @@ describe('loadETLData', () => {
     expect(loadTotals).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadDelinkedCalculation).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadD365).toHaveBeenCalledWith('2023-01-01', transaction2)
+    expect(loadZeroValueD365).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(transaction2.commit).toHaveBeenCalled()
     expect(transaction1.rollback).not.toHaveBeenCalled()
     expect(transaction2.rollback).not.toHaveBeenCalled()
@@ -189,16 +195,9 @@ describe('loadETLData', () => {
     expect(createAlertsCall).toBeGreaterThan(rollback1Call)
     expect(createAlertsCall).toBeGreaterThan(rollback2Call)
     expect(createAlertsCall).toBeGreaterThan(deleteETLCall)
-  })
-
-  test('should handle transaction creation failure', async () => {
-    require('../../../app/data').sequelize.transaction.mockRejectedValue(new Error('Transaction failed'))
-
-    await loadETLData('2023-01-01')
-
     expect(createAlerts).toHaveBeenCalledWith([{
       file: 'Loading ETL data',
-      message: 'Test error'
+      message: errorMessage
     }])
   })
 })

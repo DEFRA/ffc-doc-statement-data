@@ -1,9 +1,7 @@
-const db = require('../../data')
-const config = require('../../config')
-const dbConfig = config.dbConfig[config.env]
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-const loadDAX = async (startDate, transaction) => {
-  await db.sequelize.query(`
+exports[`loadZeroValueDax should call sequelize.query with correct SQL and parameters 1`] = `
+"
     WITH unique_rows AS (
       SELECT DISTINCT ON (T."paymentRef", T."calculationId")
         T."paymentRef" AS "paymentReference",
@@ -11,13 +9,13 @@ const loadDAX = async (startDate, transaction) => {
         T.quarter AS "paymentPeriod",
         T."totalAmount" AS "paymentAmount",
         T.transdate AS "transactionDate"
-      FROM ${dbConfig.schema}."etlIntermTotal" T
-      LEFT JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
+      FROM public."etlIntermTotalZeroValues" T
+      LEFT JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
       WHERE T."etlInsertedDt" > :startDate
         AND D."calculationId" IS NULL
       ORDER BY T."paymentRef", T."calculationId", T."etlInsertedDt" DESC
     )
-    INSERT INTO ${dbConfig.schema}.dax (
+    INSERT INTO public.dax (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )
@@ -30,15 +28,5 @@ const loadDAX = async (startDate, transaction) => {
       "paymentAmount" = EXCLUDED."paymentAmount",
       "datePublished" = NULL;
 ;
-  `, {
-    replacements: {
-      startDate
-    },
-    raw: true,
-    transaction
-  })
-}
-
-module.exports = {
-  loadDAX
-}
+  "
+`;

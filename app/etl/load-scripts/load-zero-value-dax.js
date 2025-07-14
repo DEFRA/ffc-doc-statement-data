@@ -2,7 +2,7 @@ const db = require('../../data')
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
-const loadDAX = async (startDate, transaction) => {
+const loadZeroValueDax = async (startDate, transaction) => {
   await db.sequelize.query(`
     WITH unique_rows AS (
       SELECT DISTINCT ON (T."paymentRef", T."calculationId")
@@ -11,7 +11,7 @@ const loadDAX = async (startDate, transaction) => {
         T.quarter AS "paymentPeriod",
         T."totalAmount" AS "paymentAmount",
         T.transdate AS "transactionDate"
-      FROM ${dbConfig.schema}."etlIntermTotal" T
+      FROM ${dbConfig.schema}."etlIntermTotalZeroValues" T
       LEFT JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
       WHERE T."etlInsertedDt" > :startDate
         AND D."calculationId" IS NULL
@@ -40,5 +40,5 @@ const loadDAX = async (startDate, transaction) => {
 }
 
 module.exports = {
-  loadDAX
+  loadZeroValueDax
 }
