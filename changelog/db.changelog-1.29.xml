@@ -1,0 +1,63 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  
+  <changeSet author="Sam Plackett" id="1">
+    <tagDatabase tag="v1.29.0" />
+  </changeSet>
+
+  <changeSet author="Sam Plackett" id="2">
+    <dropTable tableName="zeroTotals" />
+  </changeSet>
+
+  <changeSet author="Sam Plackett" id="3">
+    <createTable tableName="zeroValueD365">
+        <column name="d365Id" type="BIGINT" autoIncrement="true">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="paymentReference" type="VARCHAR(30)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="calculationId" type="INTEGER"/>
+        <column name="paymentPeriod" type="VARCHAR(200)">
+            <constraints nullable="true"/>
+        </column>
+        <column name="paymentAmount" type="DECIMAL">
+            <constraints nullable="false"/>
+        </column>
+        <column name="transactionDate" type="DATE">
+            <constraints nullable="false"/>
+        </column>
+        <column name="marketingYear" type="INTEGER">
+          <constraints nullable="false"/>
+        </column>
+        <column name="dateCreated" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" />
+    </createTable>
+  </changeSet>
+
+  <changeSet author="Sam Plackett" id="4">
+    <createTable tableName="zeroValueDax">
+        <column name="d365Id" type="BIGINT" autoIncrement="true">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="paymentReference" type="VARCHAR(30)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="calculationId" type="INTEGER"/>
+        <column name="paymentPeriod" type="VARCHAR(200)">
+            <constraints nullable="true"/>
+        </column>
+        <column name="paymentAmount" type="DECIMAL">
+            <constraints nullable="false"/>
+        </column>
+        <column name="transactionDate" type="DATE">
+            <constraints nullable="false"/>
+        </column>
+        <column name="dateCreated" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" />
+    </createTable>
+  </changeSet>
+
+</databaseChangeLog>
