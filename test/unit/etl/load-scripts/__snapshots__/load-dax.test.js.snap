@@ -5,20 +5,27 @@ exports[`loadDAX should call sequelize.query with correct SQL and parameters 1`]
   "calls": [
     [
       "
+    WITH unique_rows AS (
+      SELECT DISTINCT ON (T."paymentRef", T."calculationId")
+        T."paymentRef" AS "paymentReference",
+        T."calculationId" AS "calculationId",
+        T.quarter AS "paymentPeriod",
+        T."totalAmount" AS "paymentAmount",
+        T.transdate AS "transactionDate"
+      FROM public."etlIntermTotal" T
+      LEFT JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
+      WHERE T."etlInsertedDt" > :startDate
+        AND D."calculationId" IS NULL
+      ORDER BY T."paymentRef", T."calculationId", T."etlInsertedDt" DESC
+    )
     INSERT INTO public.dax (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )
-    SELECT DISTINCT
-      T."paymentRef" AS "paymentReference",
-      T."calculationId" AS "calculationId",
-      T.quarter AS "paymentPeriod", 
-      T."totalAmount" AS "paymentAmount",
-      T.transdate AS "transactionDate" 
-    FROM public."etlIntermTotal" T
-    LEFT JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
-    WHERE T."etlInsertedDt" > :startDate
-      AND D."calculationId" IS NULL
+    SELECT 
+      "paymentReference", "calculationId", "paymentPeriod",
+      "paymentAmount", "transactionDate"
+    FROM unique_rows
     ON CONFLICT ("paymentReference", "calculationId")
     DO UPDATE SET
       "paymentAmount" = EXCLUDED."paymentAmount",
