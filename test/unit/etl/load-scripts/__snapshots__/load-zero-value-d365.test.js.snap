@@ -23,9 +23,5 @@ exports[`loadZeroValueD365 should call sequelize.query with correct SQL and para
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate", "marketingYear"
     FROM unique_rows
-    ON CONFLICT ("paymentReference", "calculationId")
-    DO UPDATE SET
-      "paymentAmount" = EXCLUDED."paymentAmount",
-      "datePublished" = NULL;
   "
 `;

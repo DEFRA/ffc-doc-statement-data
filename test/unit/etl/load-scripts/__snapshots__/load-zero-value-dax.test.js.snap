@@ -23,10 +23,6 @@ exports[`loadZeroValueDax should call sequelize.query with correct SQL and param
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     FROM unique_rows
-    ON CONFLICT ("paymentReference", "calculationId")
-    DO UPDATE SET
-      "paymentAmount" = EXCLUDED."paymentAmount",
-      "datePublished" = NULL;
 ;
   "
 `;

@@ -25,10 +25,6 @@ const loadZeroValueD365 = async (startDate, transaction) => {
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate", "marketingYear"
     FROM unique_rows
-    ON CONFLICT ("paymentReference", "calculationId")
-    DO UPDATE SET
-      "paymentAmount" = EXCLUDED."paymentAmount",
-      "datePublished" = NULL;
   `, {
     replacements: {
       startDate
