@@ -15,7 +15,7 @@ exports[`loadZeroValueDax should call sequelize.query with correct SQL and param
         AND D."calculationId" IS NULL
       ORDER BY T."paymentRef", T."calculationId", T."etlInsertedDt" DESC
     )
-    INSERT INTO public.dax (
+    INSERT INTO public."zeroValueDax" (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )
