@@ -17,7 +17,7 @@ const loadZeroValueDax = async (startDate, transaction) => {
         AND D."calculationId" IS NULL
       ORDER BY T."paymentRef", T."calculationId", T."etlInsertedDt" DESC
     )
-    INSERT INTO ${dbConfig.schema}.dax (
+    INSERT INTO ${dbConfig.schema}."zeroValueDax" (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate"
     )

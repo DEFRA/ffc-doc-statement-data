@@ -5,12 +5,20 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
   
-  <changeSet author="Sam Plackett" id="1">
-    <tagDatabase tag="v1.30.0" />
+  <changeSet author="John Barnard" id="1">
+    <tagDatabase tag="v1.31.0" />
+  </changeSet>
+  <changeSet author="John Barnard" id="2">
+    <addColumn tableName="zeroValueDax">
+      <column name="alertSent" type="BOOLEAN" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="zeroValueD365">
+      <column name="alertSent" type="BOOLEAN" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
   </changeSet>
 
-  <changeSet author="Sam Plackett" id="2">
-    <renameColumn tableName="zeroValueDax" oldColumnName="d365Id" newColumnName="daxId" columnDataType="BIGINT"/>
-  </changeSet>
-
-</databaseChangeLog>
+</databaseChangeLog> 
