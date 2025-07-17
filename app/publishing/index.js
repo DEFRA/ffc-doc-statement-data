@@ -3,9 +3,6 @@ const { DELINKED, SFI23 } = require('../constants/schemes')
 const { renameExtracts, stageExtracts } = require('../etl')
 const sendUpdates = require('./send-updates')
 const updateSubsetCheck = require('./subset/update-subset-check')
-const { createAlerts } = require('../messaging/create-alerts')
-const { ZERO_VALUE_STATEMENT } = require('../constants/alerts')
-const db = require('../data')
 const sendZeroValueAlerts = require('./send-zero-value-alerts')
 
 const schemes = [DELINKED, SFI23]

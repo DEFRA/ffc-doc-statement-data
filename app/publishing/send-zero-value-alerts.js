@@ -25,4 +25,4 @@ const sendZeroValueAlerts = async () => {
   }
 }
 
-module.exports = sendZeroValueAlerts 
+module.exports = sendZeroValueAlerts
