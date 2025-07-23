@@ -84,7 +84,6 @@ describe('runEtlProcess', () => {
     })
 
     expect(result).toEqual([])
-    expect(storage.deleteFile).toHaveBeenCalledWith('someFile')
     expect(db.etlStageLog.update).toHaveBeenCalled()
     expect(publishEtlProcessError).not.toHaveBeenCalled()
   })
@@ -330,5 +329,48 @@ describe('runEtlProcess', () => {
       nonProdTransformer: null,
       file: 'someFile'
     })).rejects.toThrow('ETL error event')
+  })
+
+  test('should continue ETL process if file is missing in blob storage', async () => {
+    const mockFileData = 'first line\nsecond line\nthird line\n'
+    const mockFileStream = Readable.from([mockFileData])
+
+    storage.deleteFile.mockResolvedValue(false) // Simulate file not found
+    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
+    db.etlStageLog.update.mockResolvedValue()
+    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
+    getFirstLineNumber.mockResolvedValue(10)
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, callback) => {
+        if (event === 'finish') callback([])
+        if (event === 'result') callback([])
+        return mockEtl
+      })
+    }
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.ProvidedConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => { })
+    Transformers.FakerTransformer.mockImplementation(() => { })
+    Transformers.StringReplaceTransformer.mockImplementation(() => { })
+    Destinations.PostgresDestination.mockImplementation(() => { })
+
+    const result = await runEtlProcess({
+      fileStream: mockFileStream,
+      columns: [],
+      table: 'someModel',
+      mapping: {},
+      transformer: null,
+      nonProdTransformer: null,
+      file: 'someFile'
+    })
+
+    expect(result).toEqual([])
+    expect(db.etlStageLog.update).toHaveBeenCalled()
   })
 })

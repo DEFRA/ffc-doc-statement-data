@@ -18,13 +18,13 @@ const runEtlProcess = async ({
   file
 }, maxRetries = 3, baseDelay = 500) => {
   let attempt = 0
+  const etlContext = await prepareEtlContext({ table, fileStream, file })
 
   while (attempt <= maxRetries) {
     try {
-      const etlContext = await prepareEtlContext({ table, fileStream, file })
       const freshFileStream = await storage.downloadFileAsStream(file)
 
-      return await runEtlFlow({
+      const result = await runEtlFlow({
         etlContext,
         columns,
         mapping,
@@ -35,6 +35,8 @@ const runEtlProcess = async ({
         freshFileStream,
         file
       })
+
+      return result
     } catch (error) {
       attempt++
       if (attempt > maxRetries) {
@@ -52,6 +54,7 @@ const runEtlProcess = async ({
 }
 
 async function prepareEtlContext ({ table, fileStream, file }) {
+  console.log('Preparing ETL context for table:', table)
   const sequelizeModelName = tableMappings[table]
   const initialRowCount = await db[sequelizeModelName]?.count()
   const idFrom = (await db[sequelizeModelName]?.max('etlId') ?? 0) + 1
@@ -108,10 +111,6 @@ function runEtlFlow ({
             ignoredColumns: excludedFields
           }))
           .pump()
-          .on('finish', async (data) => {
-            console.log(`ETL process finished for ${table}.`)
-            global.results.push({ table, database: dbConfig.database, data })
-          })
           .on('result', async (data) => {
             await handleEtlResult({
               etlContext,
@@ -122,9 +121,10 @@ function runEtlFlow ({
           })
           .on('error', (error) => {
             console.error('ETL Error:', error.message)
-            reject(error)
+            return reject(error)
           })
       } catch (e) {
+        console.error('ETL Initialization Error:', e.message)
         console.error('ETL process exception:', e)
         await publishEtlProcessError(file, e)
         reject(e)
@@ -135,7 +135,6 @@ function runEtlFlow ({
 
 async function handleEtlResult ({ etlContext, file }) {
   const { sequelizeModelName, initialRowCount, idFrom, fileInProcess } = etlContext
-  await storage.deleteFile(file)
   const newRowCount = await db[sequelizeModelName]?.count()
   const idTo = await db[sequelizeModelName]?.max('etlId') ?? 0
   await db.etlStageLog.update(

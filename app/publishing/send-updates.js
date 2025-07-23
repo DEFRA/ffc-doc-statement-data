@@ -1,39 +1,59 @@
-const getPrimaryKeyValue = require('./get-primary-key-value')
-const sendMessage = require('./send-message')
-const removeDefunctValues = require('./remove-defunct-values')
-const validateUpdate = require('./validate-update')
 const { publishingConfig } = require('../config')
+const { ORGANISATION, DELINKED_CALCULATION, D365, CALCULATION, DAX, TOTAL } = require('../constants/types')
+const { DELINKED } = require('../constants/schemes')
+const getSubsetCheck = require('./subset/get-subset-check')
+const defaultPublishingPerType = require('./default-publishing-per-type')
+const sendDelinkedSubset = require('./subset/send-delinked-subset')
 
-const sendUpdates = async (type) => {
-  const getUnpublished = require(`./${type}/get-unpublished`)
-  const updatePublished = require(`./${type}/update-published`)
-  let totalPublished = 0
-  const batchSize = publishingConfig.dataPublishingMaxBatchSizePerDataSource
+const setupProcessing = async (scheme) => {
+  if (publishingConfig[scheme].subsetProcess) {
+    const count = await getSubsetCheck(scheme)
 
-  let outstanding = []
-  do {
-    outstanding = await getUnpublished(null, batchSize)
-    if (outstanding.length) {
-      const batchPromises = outstanding.map(async (record) => {
-        const sanitizedUpdate = removeDefunctValues(record)
-        sanitizedUpdate.type = type
-        const isValid = validateUpdate(sanitizedUpdate, type)
-        if (isValid) {
-          await sendMessage(sanitizedUpdate, type)
-          const primaryKey = getPrimaryKeyValue(record, type)
-          await updatePublished(primaryKey)
-          totalPublished++
-        }
-      })
-      await Promise.all(batchPromises)
+    if (!count) {
+      console.log(`Error occurred determining ${scheme} records sent to date`)
+      return false
     }
-
-    if (type === 'calculation' && outstanding.length > 0) {
-      break
+    if (count.subsetSent) {
+      console.log(`Skipping ${scheme} processing - scheme subset limit reached`)
+      return false
     }
-  } while (outstanding.length === batchSize)
+    console.log(`Processing ${scheme} with subset control active`)
+  } else if (publishingConfig.delinked.subsetProcess || publishingConfig.sfi23.subsetProcess) {
+    console.log(`A subset process is in operation, normal processing not completed for ${scheme}`)
+    return false
+  } else {
+    console.log(`Processing ${scheme} updates normally`)
+  }
+  return true
+}
 
-  console.log('%i %s datasets published', totalPublished, type)
+const sendUpdates = async (scheme) => {
+  if (!publishingConfig.publishingEnabled) {
+    console.log('Publishing is disabled via publishingEnabled=false flag')
+    return
+  }
+
+  const shouldProceed = await setupProcessing(scheme)
+  if (!shouldProceed) {
+    return
+  }
+
+  if (scheme === DELINKED && publishingConfig.delinked.subsetProcess) {
+    await sendDelinkedSubset()
+  } else {
+    const types = [ORGANISATION]
+    if (scheme === DELINKED) {
+      types.push(DELINKED_CALCULATION)
+      types.push(D365)
+    } else {
+      types.push(TOTAL)
+      types.push(CALCULATION)
+      types.push(DAX)
+    }
+    for (const type of types) {
+      await defaultPublishingPerType(type)
+    }
+  }
 }
 
 module.exports = sendUpdates

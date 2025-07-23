@@ -6,10 +6,12 @@ data:
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   {{- if and (.Values.environmentCode) (not .Values.pr) }}
   DATA_TOPIC_ADDRESS: {{ .Values.container.dataTopicAddress }}-{{ .Values.environmentCode }}
+  ALERT_TOPIC_ADDRESS: {{ .Values.container.alertTopicAddress }}-{{ .Values.environmentCode }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
   ETL_PROCESS_TOPIC_ERROR_ADDRESS: {{ .Values.container.etlProcessTopicErrorAddress }}-{{ .Values.environmentCode }}
   {{ else }}
   DATA_TOPIC_ADDRESS: {{ .Values.container.dataTopicAddress }}
+  ALERT_TOPIC_ADDRESS: {{ .Values.container.alertTopicAddress }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}
   ETL_PROCESS_TOPIC_ERROR_ADDRESS: {{ .Values.container.etlProcessTopicErrorAddress }}
   {{- end }}
@@ -27,4 +29,11 @@ data:
   SFI23_ENABLED: {{ quote .Values.container.sfi23Enabled }}
   DELINKED_ENABLED: {{ quote .Values.container.delinkedEnabled }}
   FAKE_DATA: {{ quote .Values.container.fakeData }}
+  PUBLISHING_ENABLED: {{ quote .Values.container.publishingEnabled }}
+  SUBSET_PROCESS_DELINKED: {{ quote .Values.container.subsetProcessDelinked }}
+  SUBSET_PROCESS_SFI23: {{ quote .Values.container.subsetProcessSfi23 }}
+  PROCESS_DELINKED_SUBSET_AMOUNT: {{ quote .Values.container.processDelinkedSubsetAmount }}
+  PROCESS_SFI23_SUBSET_AMOUNT: {{ quote .Values.container.processSfi23SubsetAmount }}
+  LOG_INTERVAL_MS: {{ quote .Values.container.logIntervalMs }}
+  POLLING_INTERVAL: {{ quote .Values.container.pollingInterval }}
 {{- end -}}

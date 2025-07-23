@@ -1,7 +1,8 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadIntermTotalDelinked, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked } = require('./load-scripts')
+const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadZeroValueDax, loadZeroValueD365 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
+const { createAlerts } = require('../messaging/create-alerts')
 const publishEtlProcessError = require('../messaging/publish-etl-process-error')
 
 const loadETLData = async (startDate) => {
@@ -56,11 +57,12 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrg')(startDate)
     await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(startDate)
     await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(startDate)
-    await wrapWithLogging(loadIntermTotalDelinked, 'loadIntermTotalDelinked')(startDate)
+    await wrapWithLogging(loadIntermTotalZeroValues, 'loadIntermTotalZeroValues')(startDate)
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
 
     await wrapWithLogging(loadDAX, 'loadDAX')(startDate, firstTransaction)
+    await wrapWithLogging(loadZeroValueDax, 'loadZeroValueDAX')(startDate, firstTransaction)
 
     await firstTransaction.commit()
 
@@ -72,6 +74,7 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
     await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
     await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
+    await wrapWithLogging(loadZeroValueD365, 'loadZeroValueD365')(startDate, secondTransaction)
 
     await secondTransaction.commit()
     console.log(`ETL data successfully loaded at ${new Date().toISOString()}`)
@@ -80,7 +83,7 @@ const loadETLData = async (startDate) => {
     await deleteETLRecords(startDate)
     await firstTransaction.rollback()
     await secondTransaction.rollback()
-    throw error
+    await createAlerts([{ file: 'Loading ETL data', message: error.message }])
   }
 }
 

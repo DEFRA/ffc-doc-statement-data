@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadZeroValueDax should call sequelize.query with correct SQL and parameters 1`] = `
+"
+    WITH unique_rows AS (
+      SELECT DISTINCT ON (T."paymentRef", T."calculationId")
+        T."paymentRef" AS "paymentReference",
+        T."calculationId" AS "calculationId",
+        T.quarter AS "paymentPeriod",
+        T."totalAmount" AS "paymentAmount",
+        T.transdate AS "transactionDate"
+      FROM public."etlIntermTotalZeroValues" T
+      LEFT JOIN public."delinkedCalculation" D ON T."calculationId" = D."calculationId"
+      WHERE T."etlInsertedDt" > :startDate
+        AND D."calculationId" IS NULL
+      ORDER BY T."paymentRef", T."calculationId", T."etlInsertedDt" DESC
+    )
+    INSERT INTO public."zeroValueDax" (
+      "paymentReference", "calculationId", "paymentPeriod",
+      "paymentAmount", "transactionDate"
+    )
+    SELECT 
+      "paymentReference", "calculationId", "paymentPeriod",
+      "paymentAmount", "transactionDate"
+    FROM unique_rows
+;
+  "
+`;

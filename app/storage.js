@@ -94,24 +94,34 @@ const getFileList = async () => {
 
 const getBlob = async (filename) => {
   containersInitialised ?? await initialiseContainers()
-  return container.getBlockBlobClient(filename)
-}
-
-const downloadFile = async (filename, tempFilePath) => {
-  const blob = await getBlob(filename)
-  return blob.downloadToFile(tempFilePath)
+  console.log(`Getting blob for filename: ${filename}`)
+  try {
+    const blob = container.getBlockBlobClient(filename)
+    return blob
+  } catch (e) {
+    console.log(`An error occurred trying to get blob: ${e.message}`)
+    throw e
+  }
 }
 
 const downloadFileAsStream = async (filename) => {
-  const blob = await getBlob(filename)
-  const downloadResponse = await blob.download(0)
-  return downloadResponse.readableStreamBody
+  console.log(`Downloading file as stream: ${filename}`)
+  try {
+    const blob = await getBlob(filename)
+    const downloadResponse = await blob.download(0)
+    return downloadResponse.readableStreamBody
+  } catch (e) {
+    console.log(`An error occurred trying to download blob: ${e.message}`)
+    throw e
+  }
 }
 
 const deleteFile = async (filename) => {
-  const blob = await getBlob(filename)
+  console.log(`Deleting file: ${filename}`)
   try {
+    const blob = await getBlob(filename)
     await blob.delete()
+    console.log(`File deleted: ${filename}`)
     return true
   } catch (e) {
     console.log(`An error occurred trying to delete blob: ${e.message}`)
@@ -131,6 +141,41 @@ const getDWHExtracts = async () => {
   return fileList
 }
 
+const getETLExtractFilesFromFolder = async (folder) => {
+  const files = []
+  for await (const file of container.listBlobsFlat({ prefix: folder })) {
+    if (file.name.endsWith('export.csv')) {
+      files.push(file.name)
+    }
+  }
+  return files
+}
+
+const deleteAllETLExtracts = async () => {
+  containersInitialised ?? await initialiseContainers()
+  console.log('Deleting all ETL extracts')
+  try {
+    const filesToDelete = []
+    for (const folder of folderList) {
+      const files = await getETLExtractFilesFromFolder(folder)
+      filesToDelete.push(...files)
+    }
+
+    const deletePromises = filesToDelete.map(name => {
+      console.log(`Deleting file: ${name}`)
+      const blob = container.getBlockBlobClient(name)
+      return blob.delete()
+    })
+
+    await Promise.all(deletePromises)
+    console.log('All ETL extracts deleted')
+    return true
+  } catch (e) {
+    console.log(`An error occurred trying to delete ETL extracts: ${e.message}`)
+    return false
+  }
+}
+
 const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destinationFilename) => {
   const sourceBlob = await getBlob(`${sourceFolder}/${sourceFilename}`)
   const destinationBlob = await getBlob(`${destinationFolder}/${destinationFilename}`)
@@ -146,10 +191,13 @@ const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destina
 
 module.exports = {
   getFileList,
-  downloadFile,
   downloadFileAsStream,
   deleteFile,
   getDWHExtracts,
   moveFile,
-  getBlob
+  getBlob,
+  deleteAllETLExtracts,
+  initialiseContainers,
+  initialiseFolders,
+  getETLExtractFilesFromFolder
 }

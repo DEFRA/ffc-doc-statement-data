@@ -17,6 +17,9 @@ const mqSchema = Joi.object({
     topic: Joi.string(),
     type: Joi.string().default('subscription')
   },
+  alertTopic: {
+    address: Joi.string()
+  },
   publishEtlProcessErrorTopic: {
     address: Joi.string()
   }
@@ -39,6 +42,9 @@ const mqConfig = {
     topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
     type: 'subscription'
   },
+  alertTopic: {
+    address: process.env.ALERT_TOPIC_ADDRESS
+  },
   publishEtlProcessErrorTopic: {
     address: process.env.ETL_PROCESS_TOPIC_ERROR_ADDRESS
   }
@@ -55,10 +61,12 @@ if (mqResult.error) {
 
 const dataTopic = { ...mqResult.value.messageQueue, ...mqResult.value.dataTopic }
 const updatesSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.updatesSubscription }
+const alertTopic = { ...mqResult.value.messageQueue, ...mqResult.value.alertTopic }
 const publishEtlProcessError = { ...mqResult.value.messageQueue, ...mqResult.value.publishEtlProcessErrorTopic }
 
 module.exports = {
   dataTopic,
   updatesSubscription,
+  alertTopic,
   publishEtlProcessError
 }

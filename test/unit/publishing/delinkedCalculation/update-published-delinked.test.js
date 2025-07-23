@@ -1,5 +1,5 @@
-const db = require('../../../app/data')
-const updatePublished = require('../../../app/publishing/delinkedCalculation/update-published')
+const db = require('../../../../app/data')
+const updatePublished = require('../../../../app/publishing/delinkedCalculation/update-published')
 
 db.delinkedCalculation = {
   update: jest.fn()

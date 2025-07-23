@@ -1,6 +1,9 @@
-const db = require('../../../app/data')
-const { deleteETLRecords } = require('../../../app/etl/delete-etl-records')
+const etlIntermTables = require('../../../app/constants/etl-interm-tables')
 
+const intermTableMocks = {}
+etlIntermTables.forEach(table => {
+  intermTableMocks[table] = { destroy: jest.fn() }
+})
 jest.mock('../../../app/data', () => ({
   etlStageLog: {
     findAll: jest.fn(),
@@ -48,6 +51,7 @@ jest.mock('../../../app/data', () => ({
   etlStageTclcPiiPayClaimSfimt: {
     destroy: jest.fn()
   },
+  ...intermTableMocks,
   Sequelize: {
     Op: {
       gte: Symbol('gte'),
@@ -55,6 +59,9 @@ jest.mock('../../../app/data', () => ({
     }
   }
 }))
+
+const db = require('../../../app/data')
+const { deleteETLRecords } = require('../../../app/etl/delete-etl-records')
 
 describe('deleteETLRecords', () => {
   let transaction
@@ -136,6 +143,47 @@ describe('deleteETLRecords', () => {
     await deleteETLRecords(startDate, transaction)
 
     expect(warnSpy).toHaveBeenCalledWith('No mapped table found for folder: Unknown_folder, skipping...')
+  })
+
+  test('should delete records from all intermediate tables', async () => {
+    const startDate = new Date()
+    db.etlStageLog.findAll.mockResolvedValue([
+      {
+        dataValues: {
+          file: 'Application_Detail_SFI23/file1.csv',
+          idFrom: 1,
+          idTo: 10
+        }
+      }
+    ])
+    await deleteETLRecords(startDate, transaction)
+    for (const table of etlIntermTables) {
+      expect(db[table].destroy).toHaveBeenCalledWith({
+        where: { etlInsertedDt: { [db.Sequelize.Op.gte]: startDate } },
+        transaction
+      })
+      expect(logSpy).toHaveBeenCalledWith(`Deleted records from intermediate table: ${table}`)
+    }
+  })
+
+  test('should warn if an intermediate table does not exist in db', async () => {
+    const startDate = new Date()
+    db.etlStageLog.findAll.mockResolvedValue([
+      {
+        dataValues: {
+          file: 'Application_Detail_SFI23/file1.csv',
+          idFrom: 1,
+          idTo: 10
+        }
+      }
+    ])
+    // Remove one table from db mock
+    const missingTable = etlIntermTables[0]
+    delete db[missingTable]
+    await deleteETLRecords(startDate, transaction)
+    expect(warnSpy).toHaveBeenCalledWith(
+      `No mapped table found for intermediate table: ${missingTable}, skipping...`
+    )
   })
 
   test('should throw an error if an exception occurs', async () => {

@@ -29,7 +29,7 @@ const loadTotals = async (startDate, transaction) => {
       T."totalAmount" AS "totalPayments"
     FROM ${dbConfig.schema}."etlIntermTotal" T
     INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefOrg" PO ON PO."paymentRef" = T."paymentRef"
-    INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef"
+    INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefApplication" PA ON PA."paymentRef" = T."paymentRef" AND POSITION(PA."applicationId"::text IN T.invoiceid) > 0
     INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA ON CA."applicationId" = PA."applicationId" AND CA."dataSourceSCode" = 'CAPCLM'
     INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA2 ON CA."contractId" = CA2."contractId" AND CA2."dataSourceSCode" = '000001'
     INNER JOIN ${dbConfig.schema}."etlIntermPaymentrefAgreementDates" IPAD ON IPAD."paymentRef" = T."paymentRef"

@@ -11,6 +11,8 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
+jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
+
 const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
 
@@ -24,6 +26,9 @@ describe('send total updates', () => {
     jest.clearAllMocks()
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
+    publishingConfig.delinked.subsetProcess = false
+    publishingConfig.sfi23.subsetProcess = false
+    publishingConfig.publishingEnabled = true
   })
 
   afterEach(async () => {
@@ -185,7 +190,7 @@ describe('send total updates', () => {
     test('should call a console log with number of datasets published for total', async () => {
       const logSpy = jest.spyOn(global.console, 'log')
       await publish.start()
-      expect(logSpy.mock.calls).toContainEqual(['%i %s datasets published', 1, 'total'])
+      expect(logSpy.mock.calls).toContainEqual(['1 total datasets published'])
     })
 
     test('should not publish same total on second run if record has not been updated', async () => {
