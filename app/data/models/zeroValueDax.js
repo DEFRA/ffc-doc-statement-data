@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     paymentPeriod: { type: DataTypes.STRING(PAYMENT_PERIOD_LENGTH), allowNull: true },
     paymentAmount: { type: DataTypes.DECIMAL, allowNull: false },
     transactionDate: { type: DataTypes.DATE, allowNull: false },
-    dateCreated: { type: DataTypes.DATE, allowNull: false }
+    dateCreated: { type: DataTypes.DATE, allowNull: false },
+    alertSent: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
   },
   {
     tableName: 'zeroValueDax',
