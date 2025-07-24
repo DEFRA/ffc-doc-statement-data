@@ -3,6 +3,7 @@ const db = require('../data')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadZeroValueDax, loadZeroValueD365 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
+const publishEtlProcessError = require('../messaging/publish-etl-process-error')
 
 const loadETLData = async (startDate) => {
   console.log(`Starting ETL data load at ${new Date().toISOString()}`)
@@ -31,6 +32,7 @@ const loadETLData = async (startDate) => {
         attempt++
         if (attempt > maxRetries) {
           console.error(`Error in ${name} after ${maxRetries} retries: ${error.message}`)
+          await publishEtlProcessError(name, error)
           throw error
         }
 

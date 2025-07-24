@@ -5,6 +5,7 @@ const storage = require('../storage')
 const db = require('../data')
 const tableMappings = require('../constants/table-mappings')
 const { getFirstLineNumber } = require('./file-utils')
+const publishEtlProcessError = require('../messaging/publish-etl-process-error')
 
 const runEtlProcess = async ({
   fileStream,
@@ -124,6 +125,8 @@ function runEtlFlow ({
           })
       } catch (e) {
         console.error('ETL Initialization Error:', e.message)
+        console.error('ETL process exception:', e)
+        await publishEtlProcessError(file, e)
         reject(e)
       }
     })()
