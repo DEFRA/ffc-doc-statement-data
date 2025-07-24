@@ -26,7 +26,7 @@
   "license": "OGL-UK-3.0",
   "dependencies": {
     "@azure/identity": "4.4.1",
-    "@azure/storage-blob": "12.15.0",
+    "@azure/storage-blob": "12.14.0",
     "@fast-csv/format": "5.0.2",
     "applicationinsights": "2.9.6",
     "ffc-messaging": "2.10.1",
