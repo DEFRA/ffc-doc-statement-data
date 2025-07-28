@@ -12,15 +12,18 @@ const createAlerts = async (errors, type = ETL_PROCESS_ERROR) => {
 }
 
 const createAlert = (error, type) => {
+  const data = { ...error }
+  if (!data.message) {
+    data.message = data
+  }
   return {
     source: SOURCE,
     type,
-    data: {
-      ...error
-    }
+    data
   }
 }
 
 module.exports = {
-  createAlerts
+  createAlerts,
+  createAlert
 }

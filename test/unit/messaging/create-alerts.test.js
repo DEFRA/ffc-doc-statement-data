@@ -3,7 +3,7 @@ const { EventPublisher } = require('ffc-pay-event-publisher')
 
 const { SOURCE } = require('../../../app/constants/source')
 const { ETL_PROCESS_ERROR } = require('../../../app/constants/alerts')
-const { createAlerts } = require('../../../app/messaging/create-alerts')
+const { createAlerts, createAlert } = require('../../../app/messaging/create-alerts')
 
 describe('create-alerts', () => {
   const mockPublishEvents = jest.fn()
@@ -80,5 +80,23 @@ describe('create-alerts', () => {
     mockPublishEvents.mockRejectedValue(publishError)
 
     await expect(createAlerts([error])).rejects.toThrow(publishError)
+  })
+
+  test('should use error.message if present', () => {
+    const error = { message: 'Test error', code: 123 }
+    const alert = createAlert(error, ETL_PROCESS_ERROR)
+    expect(alert.data.message).toBe('Test error')
+    expect(alert.data.code).toBe(123)
+    expect(alert.source).toBe(SOURCE)
+    expect(alert.type).toBe(ETL_PROCESS_ERROR)
+  })
+
+  test('should set data.message to error object if message is missing', () => {
+    const error = { code: 456 }
+    const alert = createAlert(error, ETL_PROCESS_ERROR)
+    expect(alert.data.message).toEqual(alert.data)
+    expect(alert.data.code).toBe(456)
+    expect(alert.source).toBe(SOURCE)
+    expect(alert.type).toBe(ETL_PROCESS_ERROR)
   })
 })
