@@ -4,6 +4,7 @@ const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-p
 const storage = require('../../../app/storage')
 const db = require('../../../app/data')
 const { getFirstLineNumber } = require('../../../app/etl/file-utils')
+const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
 const { Readable } = require('stream')
 
 jest.mock('ffc-pay-etl-framework')
@@ -26,6 +27,7 @@ jest.mock('../../../app/data', () => ({
 }))
 jest.mock('../../../app/constants/table-mappings')
 jest.mock('../../../app/etl/file-utils')
+jest.mock('../../../app/messaging/publish-etl-process-error')
 
 describe('runEtlProcess', () => {
   beforeEach(() => {
@@ -83,6 +85,7 @@ describe('runEtlProcess', () => {
 
     expect(result).toEqual([])
     expect(db.etlStageLog.update).toHaveBeenCalled()
+    expect(publishEtlProcessError).not.toHaveBeenCalled()
   })
 
   test('should reject if an error occurs', async () => {
@@ -141,6 +144,7 @@ describe('runEtlProcess', () => {
       nonProdTransformer: {},
       file: 'someFile'
     })).rejects.toThrow('Test error')
+    expect(publishEtlProcessError).toHaveBeenCalled()
   })
 
   test('should retry up to maxRetries and eventually throw if errors persist', async () => {

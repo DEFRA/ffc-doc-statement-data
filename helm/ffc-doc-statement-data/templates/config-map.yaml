@@ -8,10 +8,12 @@ data:
   DATA_TOPIC_ADDRESS: {{ .Values.container.dataTopicAddress }}-{{ .Values.environmentCode }}
   ALERT_TOPIC_ADDRESS: {{ .Values.container.alertTopicAddress }}-{{ .Values.environmentCode }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
+  ETL_PROCESS_TOPIC_ERROR_ADDRESS: {{ .Values.container.etlProcessTopicErrorAddress }}-{{ .Values.environmentCode }}
   {{ else }}
   DATA_TOPIC_ADDRESS: {{ .Values.container.dataTopicAddress }}
   ALERT_TOPIC_ADDRESS: {{ .Values.container.alertTopicAddress }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}
+  ETL_PROCESS_TOPIC_ERROR_ADDRESS: {{ .Values.container.etlProcessTopicErrorAddress }}
   {{- end }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
   POSTGRES_HOST: {{ quote .Values.postgresService.postgresqlHost }}

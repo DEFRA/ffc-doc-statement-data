@@ -27,6 +27,9 @@ jest.mock('../../../app/etl/delete-etl-records', () => ({
 jest.mock('sequelize')
 jest.mock('../../../app/etl/load-scripts')
 
+jest.mock('../../../app/messaging/publish-etl-process-error', () => jest.fn())
+const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
+
 const { Transaction } = require('sequelize')
 const { createAlerts } = require('../../../app/messaging/create-alerts')
 const { loadETLData } = require('../../../app/etl/load-etl-data')
@@ -115,6 +118,7 @@ describe('loadETLData', () => {
     expect(transaction2.commit).toHaveBeenCalled()
     expect(transaction1.rollback).not.toHaveBeenCalled()
     expect(transaction2.rollback).not.toHaveBeenCalled()
+    expect(publishEtlProcessError).not.toHaveBeenCalled()
   })
 
   test('should rollback transactions and call deleteETLRecords if any load script fails', async () => {
@@ -128,6 +132,7 @@ describe('loadETLData', () => {
     expect(transaction1.rollback).toHaveBeenCalled()
     expect(transaction2.rollback).toHaveBeenCalled()
     expect(deleteETLRecords).toHaveBeenCalledWith('2023-01-01')
+    expect(publishEtlProcessError).toHaveBeenCalled()
   })
 
   test('should retry a failing load script and succeed if it eventually passes', async () => {
@@ -167,6 +172,39 @@ describe('loadETLData', () => {
     }])
 
     global.setTimeout.mockRestore()
+    expect(publishEtlProcessError).toHaveBeenCalled()
+  })
+
+  test('should call createAlerts with error details when a load script fails', async () => {
+    const errorMessage = 'Test error'
+    loadDAX.mockRejectedValue(new Error(errorMessage))
+
+    await loadETLData('2023-01-01')
+
+    expect(createAlerts).toHaveBeenCalledWith([{
+      file: 'Loading ETL data',
+      message: errorMessage
+    }])
+  })
+
+  test('should call createAlerts after rollback and deleteETLRecords', async () => {
+    const errorMessage = 'Test error'
+    loadDAX.mockRejectedValue(new Error(errorMessage))
+
+    await loadETLData('2023-01-01')
+
+    const rollback1Call = transaction1.rollback.mock.invocationCallOrder[0]
+    const rollback2Call = transaction2.rollback.mock.invocationCallOrder[0]
+    const deleteETLCall = deleteETLRecords.mock.invocationCallOrder[0]
+    const createAlertsCall = createAlerts.mock.invocationCallOrder[0]
+
+    expect(createAlertsCall).toBeGreaterThan(rollback1Call)
+    expect(createAlertsCall).toBeGreaterThan(rollback2Call)
+    expect(createAlertsCall).toBeGreaterThan(deleteETLCall)
+    expect(createAlerts).toHaveBeenCalledWith([{
+      file: 'Loading ETL data',
+      message: errorMessage
+    }])
   })
 
   test('should call createAlerts with error details when a load script fails', async () => {
