@@ -15,9 +15,7 @@ const createAlert = (error, type) => {
   return {
     source: SOURCE,
     type,
-    data: {
-      ...error
-    }
+    data: { ...error }
   }
 }
 

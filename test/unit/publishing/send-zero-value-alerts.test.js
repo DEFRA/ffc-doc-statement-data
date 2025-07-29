@@ -37,7 +37,7 @@ describe('sendZeroValueAlerts', () => {
     await sendZeroValueAlerts()
 
     expect(mockFindAllDax).toHaveBeenCalledWith({ where: { alertSent: false } })
-    expect(createAlerts).toHaveBeenCalledWith([{ id: 1 }, { id: 2 }], ZERO_VALUE_STATEMENT)
+    expect(createAlerts).toHaveBeenCalledWith([{ id: 1, message: 'Dax zero value alert for undefined' }, { id: 2, message: 'Dax zero value alert for undefined' }], ZERO_VALUE_STATEMENT)
     expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { alertSent: false } })
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 2 unsent DAX zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Sent alerts and marked as sent for 2 DAX records.')
@@ -66,7 +66,7 @@ describe('sendZeroValueAlerts', () => {
     await sendZeroValueAlerts()
 
     expect(mockFindAllD365).toHaveBeenCalledWith({ where: { alertSent: false } })
-    expect(createAlerts).toHaveBeenCalledWith([{ id: 3 }], ZERO_VALUE_STATEMENT)
+    expect(createAlerts).toHaveBeenCalledWith([{ id: 3, message: 'D365 zero value alert for undefined' }], ZERO_VALUE_STATEMENT)
     expect(mockUpdateD365).toHaveBeenCalledWith({ alertSent: true }, { where: { alertSent: false } })
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] No unsent DAX zero value records found.')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 1 unsent D365 zero value records. Sending alerts...')
