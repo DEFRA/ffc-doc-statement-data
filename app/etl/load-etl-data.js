@@ -61,9 +61,6 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
 
-    await wrapWithLogging(loadDAX, 'loadDAX')(startDate, firstTransaction)
-    await wrapWithLogging(loadZeroValueDax, 'loadZeroValueDAX')(startDate, firstTransaction)
-
     await firstTransaction.commit()
 
     await wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')(startDate)
@@ -73,6 +70,9 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermPaymentrefOrg, 'loadIntermPaymentrefOrg')(startDate)
     await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
     await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
+
+    await wrapWithLogging(loadDAX, 'loadDAX')(startDate, secondTransaction)
+    await wrapWithLogging(loadZeroValueDax, 'loadZeroValueDAX')(startDate, secondTransaction)
     await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
     await wrapWithLogging(loadZeroValueD365, 'loadZeroValueD365')(startDate, secondTransaction)
 
