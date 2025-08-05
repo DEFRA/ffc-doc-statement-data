@@ -104,8 +104,6 @@ describe('loadETLData', () => {
     expect(loadIntermTotalZeroValues).toHaveBeenCalledWith('2023-01-01')
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction1)
     expect(loadIntermPaymentrefAgreementDates).toHaveBeenCalledWith('2023-01-01')
-    expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction1)
-    expect(loadZeroValueDax).toHaveBeenCalledWith('2023-01-01', transaction1)
     expect(transaction1.commit).toHaveBeenCalled()
     expect(loadIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermTotalClaim).toHaveBeenCalledWith('2023-01-01')
@@ -113,6 +111,8 @@ describe('loadETLData', () => {
     expect(loadIntermPaymentrefOrg).toHaveBeenCalledWith('2023-01-01')
     expect(loadTotals).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadDelinkedCalculation).toHaveBeenCalledWith('2023-01-01', transaction2)
+    expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction2)
+    expect(loadZeroValueDax).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadD365).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadZeroValueD365).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(transaction2.commit).toHaveBeenCalled()
@@ -122,11 +122,11 @@ describe('loadETLData', () => {
   })
 
   test('should rollback transactions and call deleteETLRecords if any load script fails', async () => {
-    loadDAX.mockRejectedValue(new Error('Test error'))
+    loadOrganisations.mockRejectedValue(new Error('Test error'))
 
     await loadETLData('2023-01-01')
 
-    expect(loadDAX).toHaveBeenCalledTimes(4) // initial call and the 3 retries
+    expect(loadOrganisations).toHaveBeenCalledTimes(4) // initial call and the 3 retries
     expect(transaction1.commit).not.toHaveBeenCalled()
     expect(transaction2.commit).not.toHaveBeenCalled()
     expect(transaction1.rollback).toHaveBeenCalled()
@@ -137,7 +137,7 @@ describe('loadETLData', () => {
 
   test('should retry a failing load script and succeed if it eventually passes', async () => {
     let callCount = 0
-    loadDAX.mockImplementation(async () => {
+    loadOrganisations.mockImplementation(async () => {
       callCount++
       if (callCount < 3) {
         throw new Error('Intermittent error')
@@ -149,7 +149,7 @@ describe('loadETLData', () => {
 
     await loadETLData('2023-01-01')
 
-    expect(loadDAX).toHaveBeenCalledTimes(3)
+    expect(loadOrganisations).toHaveBeenCalledTimes(3)
     expect(transaction1.commit).toHaveBeenCalled()
     expect(transaction2.commit).toHaveBeenCalled()
 
@@ -157,7 +157,7 @@ describe('loadETLData', () => {
   })
 
   test('should handle failure after max retries', async () => {
-    loadDAX.mockImplementation(async () => {
+    loadOrganisations.mockImplementation(async () => {
       throw new Error('Persistent error')
     })
 
@@ -165,7 +165,7 @@ describe('loadETLData', () => {
 
     await loadETLData('2023-01-01')
 
-    expect(loadDAX).toHaveBeenCalledTimes(4) // initial + 3 retries
+    expect(loadOrganisations).toHaveBeenCalledTimes(4) // initial + 3 retries
     expect(createAlerts).toHaveBeenCalledWith([{
       file: 'Loading ETL data',
       message: 'Persistent error'
@@ -177,7 +177,7 @@ describe('loadETLData', () => {
 
   test('should call createAlerts with error details when a load script fails', async () => {
     const errorMessage = 'Test error'
-    loadDAX.mockRejectedValue(new Error(errorMessage))
+    loadOrganisations.mockRejectedValue(new Error(errorMessage))
 
     await loadETLData('2023-01-01')
 
@@ -189,7 +189,7 @@ describe('loadETLData', () => {
 
   test('should call createAlerts after rollback and deleteETLRecords', async () => {
     const errorMessage = 'Test error'
-    loadDAX.mockRejectedValue(new Error(errorMessage))
+    loadOrganisations.mockRejectedValue(new Error(errorMessage))
 
     await loadETLData('2023-01-01')
 
@@ -209,7 +209,7 @@ describe('loadETLData', () => {
 
   test('should call createAlerts with error details when a load script fails', async () => {
     const errorMessage = 'Test error'
-    loadDAX.mockRejectedValue(new Error(errorMessage))
+    loadOrganisations.mockRejectedValue(new Error(errorMessage))
 
     await loadETLData('2023-01-01')
 
@@ -221,7 +221,7 @@ describe('loadETLData', () => {
 
   test('should call createAlerts after rollback and deleteETLRecords', async () => {
     const errorMessage = 'Test error'
-    loadDAX.mockRejectedValue(new Error(errorMessage))
+    loadOrganisations.mockRejectedValue(new Error(errorMessage))
 
     await loadETLData('2023-01-01')
 
