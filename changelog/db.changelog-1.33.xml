@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="1" author="Sam Plackett">
+        <tagDatabase tag="v1.33.0" />
+    </changeSet>
+
+    <changeSet id="2" author="Sam Plackett">
+        <sql>
+            UPDATE d365 d
+            SET "datePublished" = o.published
+            FROM "delinkedCalculation" dc
+            JOIN organisations o ON o.sbi = dc.sbi
+            WHERE d."calculationId" = dc."calculationId"
+            AND d."datePublished" IS NULL
+            AND o.published IS NOT NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="3" author="Sam Plackett">
+        <sql>
+            UPDATE "delinkedCalculation" dc
+            SET "datePublished" = d."datePublished"
+            FROM d365 d
+            WHERE d."calculationId" = dc."calculationId"
+            AND dc."datePublished" IS NULL
+            AND d."datePublished" IS NOT NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
