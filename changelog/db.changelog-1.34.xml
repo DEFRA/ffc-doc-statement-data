@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="1" author="Sam Plackett">
+        <tagDatabase tag="v1.34.0" />
+    </changeSet>
+
+    <changeSet id="2" author="Sam Plackett">
+        <sql>
+            UPDATE organisations o
+            SET published = NULL
+            WHERE o.sbi IN (
+                SELECT sbi 
+                FROM "delinkedCalculation" 
+                WHERE "calculationId" IN (127228038, 127261904, 127453004, 127439545, 127416414, 127471835, 127267292, 127291096)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="3" author="Sam Plackett">
+        <sql>
+            UPDATE "delinkedCalculation" dc
+            SET "datePublished" = NULL
+            WHERE dc."calculationId" IN (127228038, 127261904, 127453004, 127439545, 127416414, 127471835, 127267292, 127291096)
+        </sql>
+    </changeSet>
+
+    <changeSet id="4" author="Sam Plackett">
+        <sql>
+            UPDATE d365 d
+            SET "datePublished" = NULL
+            WHERE d."calculationId" IN (127228038, 127261904, 127453004, 127439545, 127416414, 127471835, 127267292, 127291096)
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
