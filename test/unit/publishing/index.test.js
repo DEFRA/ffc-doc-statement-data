@@ -1,6 +1,5 @@
 const pathBase = '../../../app'
 
-// Hoisted mocks for modules used by app/publishing/index.js
 jest.mock('../../../app/publishing/send-updates', () => jest.fn())
 jest.mock('../../../app/etl', () => ({
   renameExtracts: jest.fn(),
@@ -10,7 +9,6 @@ jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn())
 jest.mock('../../../app/publishing/send-zero-value-alerts', () => jest.fn())
 jest.mock('../../../app/messaging/create-alerts', () => jest.fn())
 
-// Imports for constants (not mocked)
 const { DELINKED, SFI23 } = require(pathBase + '/constants/schemes')
 const { DATA_PUBLISHING_ERROR } = require(pathBase + '/constants/alerts')
 
@@ -25,10 +23,8 @@ describe('start publishing', () => {
   let publishingConfig
 
   beforeEach(() => {
-    // ensure fresh module and fresh module-level state (resetSinceRestart)
     jest.resetModules()
 
-    // re-require mocks and module under test
     sendUpdates = require(pathBase + '/publishing/send-updates')
     const etl = require(pathBase + '/etl')
     renameExtracts = etl.renameExtracts
@@ -51,7 +47,6 @@ describe('start publishing', () => {
   })
 
   test('calls subset reset, setup functions and sendUpdates with correct types', async () => {
-    // Arrange - happy paths for all mocked functions
     sendUpdates.mockResolvedValue()
     renameExtracts.mockResolvedValue()
     stageExtracts.mockResolvedValue()
@@ -59,19 +54,13 @@ describe('start publishing', () => {
     sendZeroValueAlerts.mockResolvedValue()
     createAlerts.mockResolvedValue()
 
-    // Act
     await start()
 
-    // Assert - subset reset called for each scheme
     expect(updateSubsetCheck).toHaveBeenCalledWith(DELINKED, false)
     expect(updateSubsetCheck).toHaveBeenCalledWith(SFI23, false)
-
-    // Assert - setup steps called
     expect(renameExtracts).toHaveBeenCalled()
     expect(stageExtracts).toHaveBeenCalled()
     expect(sendZeroValueAlerts).toHaveBeenCalled()
-
-    // Assert - sendUpdates called for both schemes
     expect(sendUpdates).toHaveBeenCalledWith(DELINKED)
     expect(sendUpdates).toHaveBeenCalledWith(SFI23)
   })
@@ -106,7 +95,6 @@ describe('start publishing', () => {
 
     await start()
 
-    // Expect createAlerts called with an array containing an alert object for the scheme and the alert type
     expect(createAlerts).toHaveBeenCalled()
     const [alertsArray, alertType] = createAlerts.mock.calls[0]
     expect(alertType).toBe(DATA_PUBLISHING_ERROR)
@@ -114,15 +102,15 @@ describe('start publishing', () => {
     expect(alertsArray[0]).toEqual(expect.objectContaining({
       message: error.message,
       scheme: DELINKED,
-      timestamp: expect.any(String)
+      timestamp: expect.any(String),
+      stack: error.stack
     }))
+    expect(isNaN(Date.parse(alertsArray[0].timestamp))).toBe(false)
   })
 
   test('creates an alert when top-level publishing throws and logs error', async () => {
     const testError = new Error('Top level failure')
-    // Simulate a top-level failure during renameExtracts
     renameExtracts.mockRejectedValueOnce(testError)
-    // keep other mocks present
     stageExtracts.mockResolvedValue()
     updateSubsetCheck.mockResolvedValue()
     sendZeroValueAlerts.mockResolvedValue()
@@ -132,19 +120,59 @@ describe('start publishing', () => {
 
     await start()
 
-    // Should log the top-level error
     expect(console.error).toHaveBeenCalledWith('Error during publishing:', testError)
-
-    // createAlerts should be invoked with an object containing the message and schemes list
     expect(createAlerts).toHaveBeenCalled()
     const [alertsArray, alertType] = createAlerts.mock.calls[0]
     expect(alertType).toBe(DATA_PUBLISHING_ERROR)
     expect(Array.isArray(alertsArray)).toBe(true)
     expect(alertsArray[0]).toEqual(expect.objectContaining({
       message: testError.message,
-      schemes: expect.any(Array),
+      schemes: [DELINKED, SFI23],
+      timestamp: expect.any(String),
+      stack: testError.stack
+    }))
+    expect(isNaN(Date.parse(alertsArray[0].timestamp))).toBe(false)
+  })
+
+  test('creates fallback alert message and undefined stack when sendUpdates rejects with non-Error', async () => {
+    sendUpdates.mockRejectedValueOnce({ not: 'an error' }).mockResolvedValueOnce()
+    renameExtracts.mockResolvedValue()
+    stageExtracts.mockResolvedValue()
+    updateSubsetCheck.mockResolvedValue()
+    sendZeroValueAlerts.mockResolvedValue()
+    createAlerts.mockResolvedValue()
+
+    await start()
+
+    expect(createAlerts).toHaveBeenCalled()
+    const [alertsArray, alertType] = createAlerts.mock.calls[0]
+    expect(alertType).toBe(DATA_PUBLISHING_ERROR)
+    expect(alertsArray[0]).toEqual(expect.objectContaining({
+      message: 'Error in processUpdates',
+      scheme: DELINKED,
       timestamp: expect.any(String)
     }))
+    expect(alertsArray[0].stack).toBeUndefined()
+  })
+
+  test('creates fallback alert message and undefined stack when top-level rejects with non-Error', async () => {
+    renameExtracts.mockRejectedValueOnce({ not: 'an error' })
+    stageExtracts.mockResolvedValue()
+    updateSubsetCheck.mockResolvedValue()
+    sendZeroValueAlerts.mockResolvedValue()
+    createAlerts.mockResolvedValue()
+
+    await start()
+
+    expect(createAlerts).toHaveBeenCalled()
+    const [alertsArray, alertType] = createAlerts.mock.calls[0]
+    expect(alertType).toBe(DATA_PUBLISHING_ERROR)
+    expect(alertsArray[0]).toEqual(expect.objectContaining({
+      message: 'Error in publishing loop',
+      schemes: [DELINKED, SFI23],
+      timestamp: expect.any(String)
+    }))
+    expect(alertsArray[0].stack).toBeUndefined()
   })
 
   test('restarts after polling interval', async () => {

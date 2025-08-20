@@ -17,8 +17,8 @@ const processUpdates = async () => {
     } catch (err) {
       console.error(`Error processing updates for ${scheme}:`, err)
       const alertPayload = {
-        message: err && err.message ? err.message : 'Error in processUpdates',
-        stack: err && err.stack ? err.stack : undefined,
+        message: err?.message ?? 'Error in processUpdates',
+        stack: err?.stack,
         scheme,
         timestamp: new Date().toISOString()
       }
@@ -44,8 +44,8 @@ const start = async () => {
   } catch (err) {
     console.error('Error during publishing:', err)
     const alertPayload = {
-      message: err && err.message ? err.message : 'Error in publishing loop',
-      stack: err && err.stack ? err.stack : undefined,
+      message: err?.message ?? 'Error in publishing loop',
+      stack: err?.stack,
       schemes: [DELINKED, SFI23],
       timestamp: new Date().toISOString()
     }
