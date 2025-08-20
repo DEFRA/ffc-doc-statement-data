@@ -1,4 +1,5 @@
 module.exports = {
   ETL_PROCESS_ERROR: 'uk.gov.defra.ffc.doc.warning.etl.process.error',
-  ZERO_VALUE_STATEMENT: 'uk.gov.defra.ffc.doc.warning.zero.value.statement'
+  ZERO_VALUE_STATEMENT: 'uk.gov.defra.ffc.doc.warning.zero.value.statement',
+  DATA_PUBLISHING_ERROR: 'uk.gov.defra.ffc.doc.data.publishing.error'
 }

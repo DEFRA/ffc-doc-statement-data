@@ -4,6 +4,8 @@ const { renameExtracts, stageExtracts } = require('../etl')
 const sendUpdates = require('./send-updates')
 const updateSubsetCheck = require('./subset/update-subset-check')
 const sendZeroValueAlerts = require('./send-zero-value-alerts')
+const createAlerts = require('../messaging/create-alerts')
+const { DATA_PUBLISHING_ERROR } = require('../constants/alerts')
 
 const schemes = [DELINKED, SFI23]
 let resetSinceRestart = false
@@ -14,6 +16,13 @@ const processUpdates = async () => {
       await sendUpdates(scheme)
     } catch (err) {
       console.error(`Error processing updates for ${scheme}:`, err)
+      const alertPayload = {
+        message: err && err.message ? err.message : 'Error in processUpdates',
+        stack: err && err.stack ? err.stack : undefined,
+        scheme,
+        timestamp: new Date().toISOString()
+      }
+      createAlerts([alertPayload], DATA_PUBLISHING_ERROR).catch(console.error)
     }
   }
 }
@@ -34,6 +43,14 @@ const start = async () => {
     console.log('All outstanding valid datasets published')
   } catch (err) {
     console.error('Error during publishing:', err)
+    const alertPayload = {
+      message: err && err.message ? err.message : 'Error in publishing loop',
+      stack: err && err.stack ? err.stack : undefined,
+      schemes: [DELINKED, SFI23],
+      timestamp: new Date().toISOString()
+    }
+
+    createAlerts([alertPayload], DATA_PUBLISHING_ERROR).catch(console.error)
   } finally {
     setTimeout(() => start(), publishingConfig.pollingInterval)
   }
