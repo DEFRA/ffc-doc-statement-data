@@ -5,6 +5,7 @@ const minSbi = 105000000
 const maxSbi = 999999999
 const minFrn = 1000000000
 const maxFrn = 9999999999
+const maxStringLength = 4000
 
 const stringRequired = Joi.string().required()
 const numberRequired = Joi.number().integer().required()
@@ -54,20 +55,24 @@ module.exports = Joi.object({
     'number.max': `frn should have a maximum value of ${maxFrn}`,
     'any.required': `The field frn ${messages.number.required}`
   }),
-  paymentBand1: stringRequired.messages({
+  paymentBand1: stringRequired.max(maxStringLength).messages({
     'string.base': `paymentBand1 ${messages.string.base}`,
+    'string.max': `paymentBand1 should have a maximum length of ${maxStringLength}`,
     'any.required': `The field paymentBand1 ${messages.string.required}`
   }),
-  paymentBand2: stringRequired.messages({
+  paymentBand2: stringRequired.max(maxStringLength).messages({
     'string.base': `paymentBand2 ${messages.string.base}`,
+    'string.max': `paymentBand2 should have a maximum length of ${maxStringLength}`,
     'any.required': `The field paymentBand2 ${messages.string.required}`
   }),
-  paymentBand3: stringRequired.messages({
+  paymentBand3: stringRequired.max(maxStringLength).messages({
     'string.base': `paymentBand3 ${messages.string.base}`,
+    'string.max': `paymentBand3 should have a maximum length of ${maxStringLength}`,
     'any.required': `The field paymentBand3 ${messages.string.required}`
   }),
-  paymentBand4: stringRequired.messages({
+  paymentBand4: stringRequired.max(maxStringLength).messages({
     'string.base': `paymentBand4 ${messages.string.base}`,
+    'string.max': `paymentBand4 should have a maximum length of ${maxStringLength}`,
     'any.required': `The field paymentBand4 ${messages.string.required}`
   }),
   percentageReduction1: stringRequired.pattern(percentageReductionPattern).messages({
