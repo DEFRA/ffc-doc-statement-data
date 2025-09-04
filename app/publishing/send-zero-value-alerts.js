@@ -1,41 +1,66 @@
-const { createAlerts } = require('../messaging/create-alerts')
+const { dataProcessingAlert } = require('../messaging/processing-alerts')
 const { ZERO_VALUE_STATEMENT } = require('../constants/alerts')
 const db = require('../data')
 
 const sendZeroValueAlerts = async () => {
-  // DAX
-  const daxUnsent = await db.zeroValueDax.findAll({ where: { alertSent: false } })
-  if (daxUnsent.length) {
-    console.log(`[ZeroValueAlerts] Found ${daxUnsent.length} unsent DAX zero value records. Sending alerts...`)
-    await createAlerts(
-      daxUnsent.map(r => {
-        const obj = r.toJSON()
-        obj.message = `Dax zero value alert for ${r.daxId}`
-        return obj
-      }),
-      ZERO_VALUE_STATEMENT
-    )
-    await db.zeroValueDax.update({ alertSent: true }, { where: { alertSent: false } })
-    console.log(`[ZeroValueAlerts] Sent alerts and marked as sent for ${daxUnsent.length} DAX records.`)
-  } else {
-    console.log('[ZeroValueAlerts] No unsent DAX zero value records found.')
+  const BATCH_SIZE = 500
+
+  const processBatch = async (unsentRecords, tableName, processName) => {
+    if (!unsentRecords.length) {
+      console.log(`[ZeroValueAlerts] No unsent ${tableName} zero value records found.`)
+      return
+    }
+
+    console.log(`[ZeroValueAlerts] Found ${unsentRecords.length} unsent ${tableName} zero value records. Sending alerts...`)
+
+    const promises = unsentRecords.map(async (record) => {
+      try {
+        await dataProcessingAlert(
+          {
+            process: `sendZeroValueAlerts - ${processName}`,
+            paymentReference: record.paymentReference,
+            paymentAmount: record.paymentAmount,
+            error: new Error(`Zero value ${processName} record found for paymentReference: ${record.paymentReference}`)
+          },
+          ZERO_VALUE_STATEMENT,
+          { throwOnPublishError: true }
+        )
+        await db[tableName].update({ alertSent: true }, { where: { id: record.id } })
+      } catch (err) {
+        console.error(`Failed to send alert for ${tableName} record ${record.id}, skipping update`, err)
+      }
+    })
+
+    await Promise.all(promises)
+    console.log(`[ZeroValueAlerts] Processed batch of ${unsentRecords.length} ${tableName} records.`)
   }
+
+  // DAX
+  let offset = 0
+  let hasMore = true
+  while (hasMore) {
+    const { rows: daxUnsent, count } = await db.zeroValueDax.findAndCountAll({
+      where: { alertSent: false },
+      limit: BATCH_SIZE,
+      offset
+    })
+    await processBatch(daxUnsent, 'zeroValueDax', 'DAX')
+    offset += BATCH_SIZE
+    if (offset >= count) hasMore = false
+  }
+
   // D365
-  const d365Unsent = await db.zeroValueD365.findAll({ where: { alertSent: false } })
-  if (d365Unsent.length) {
-    console.log(`[ZeroValueAlerts] Found ${d365Unsent.length} unsent D365 zero value records. Sending alerts...`)
-    await createAlerts(
-      d365Unsent.map(r => {
-        const obj = r.toJSON()
-        obj.message = `D365 zero value alert for ${r.d365Id}`
-        return obj
-      }),
-      ZERO_VALUE_STATEMENT
-    )
-    await db.zeroValueD365.update({ alertSent: true }, { where: { alertSent: false } })
-    console.log(`[ZeroValueAlerts] Sent alerts and marked as sent for ${d365Unsent.length} D365 records.`)
-  } else {
-    console.log('[ZeroValueAlerts] No unsent D365 zero value records found.')
+  offset = 0
+  hasMore = true
+  while (hasMore) {
+    const { rows: d365Unsent, count } = await db.zeroValueD365.findAndCountAll({
+      where: { alertSent: false },
+      limit: BATCH_SIZE,
+      offset
+    })
+    await processBatch(d365Unsent, 'zeroValueD365', 'D365')
+    offset += BATCH_SIZE
+    if (offset >= count) hasMore = false
   }
 }
 
