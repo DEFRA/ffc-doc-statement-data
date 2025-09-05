@@ -1,4 +1,3 @@
-// filepath: \home\bunglehaze\defra\ffc-doc-statement-data\app\messaging\create-alerts.js
 const { EventPublisher } = require('ffc-pay-event-publisher')
 const { SOURCE } = require('../constants/source')
 const { ETL_PROCESS_ERROR } = require('../constants/alerts')
