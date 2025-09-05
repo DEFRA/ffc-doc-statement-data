@@ -46,7 +46,9 @@ const sendZeroValueAlerts = async () => {
     })
     await processBatch(daxUnsent, 'zeroValueDax', 'DAX')
     offset += BATCH_SIZE
-    if (offset >= count) hasMore = false
+    if (offset >= count) {
+      hasMore = false
+    }
   }
 
   // D365
@@ -60,7 +62,9 @@ const sendZeroValueAlerts = async () => {
     })
     await processBatch(d365Unsent, 'zeroValueD365', 'D365')
     offset += BATCH_SIZE
-    if (offset >= count) hasMore = false
+    if (offset >= count) {
+      hasMore = false
+    }
   }
 }
 

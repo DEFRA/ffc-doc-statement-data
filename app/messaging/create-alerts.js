@@ -5,7 +5,9 @@ const { ETL_PROCESS_ERROR } = require('../constants/alerts')
 const messageConfig = require('../config/message')
 
 const createAlerts = async (inputs, type = ETL_PROCESS_ERROR) => {
-  if (!inputs?.length) return
+  if (!inputs?.length) {
+    return
+  }
 
   const isAlertArray = inputs.every(input =>
     typeof input === 'object' && input !== null &&
