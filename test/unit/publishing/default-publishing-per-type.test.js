@@ -61,7 +61,7 @@ describe('defaultPublishingPerType', () => {
     expect(mockUpdatePublished).not.toHaveBeenCalled()
   })
 
-  test('skips update if validateUpdate returns false', async () => {
+  test('does not skip update if validateUpdate returns false', async () => {
     const type = D365
     const batch1 = [{ id: 1 }]
     setupMocks(type, [batch1])
@@ -71,6 +71,6 @@ describe('defaultPublishingPerType', () => {
     await defaultPublishingPerType(type)
 
     expect(mockSendMessage).not.toHaveBeenCalled()
-    expect(mockUpdatePublished).not.toHaveBeenCalled()
+    expect(mockUpdatePublished).toHaveBeenCalledTimes(1)
   })
 })
