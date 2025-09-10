@@ -5,6 +5,7 @@ const minSbi = 105000000
 const maxSbi = 999999999
 const minFrn = 1000000000
 const maxFrn = 9999999999
+const decimalPlaces = 2
 const number5 = 5
 const number10 = 10
 const number15 = 15
@@ -65,19 +66,19 @@ module.exports = Joi.object({
     'date.base': 'agreementEnd should be a type of date',
     'any.required': 'The field agreementEnd is not present but it is required'
   }),
-  totalAdditionalPayments: Joi.number().precision(number15).required().messages({
+  totalAdditionalPayments: Joi.number().precision(decimalPlaces).required().messages({
     'number.base': 'totalAdditionalPayments should be a type of number',
-    'number.precision': `totalAdditionalPayments should have a precision of ${number15}`,
+    'number.precision': `totalAdditionalPayments should have a precision of ${decimalPlaces}`,
     'any.required': 'The field totalAdditionalPayments is not present but it is required'
   }),
-  totalActionPayments: Joi.number().precision(number15).required().messages({
+  totalActionPayments: Joi.number().precision(decimalPlaces).required().messages({
     'number.base': 'totalActionPayments should be a type of number',
-    'number.precision': `totalActionPayments should have a precision of ${number15}`,
+    'number.precision': `totalActionPayments should have a precision of ${decimalPlaces}`,
     'any.required': 'The field totalActionPayments is not present but it is required'
   }),
-  totalPayments: Joi.number().precision(number15).required().messages({
+  totalPayments: Joi.number().precision(decimalPlaces).required().messages({
     'number.base': 'totalPayments should be a type of number',
-    'number.precision': `totalPayments should have a precision of ${number15}`,
+    'number.precision': `totalPayments should have a precision of ${decimalPlaces}`,
     'any.required': 'The field totalPayments is not present but it is required'
   }),
   updated: Joi.date().required().messages({
@@ -85,9 +86,10 @@ module.exports = Joi.object({
     'any.required': 'The field updated is not present but it is required'
   }),
   datePublished: Joi.date().messages({
-    'date.base': 'datePublished should be a type of date'
+    'date.base': 'datePublished should be a type of date',
+    'any.required': 'The field datePublished is not present but it is required'
   }),
-  type: Joi.string().required().allow(TOTAL).messages({
+  type: Joi.string().required().valid(TOTAL).messages({
     'string.base': 'type should be a type of string',
     'any.required': 'The field type is not present but it is required',
     'any.only': `type must be : ${TOTAL}`
