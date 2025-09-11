@@ -1,5 +1,5 @@
 const { publishingConfig } = require('../config')
-const { ORGANISATION, DELINKED_CALCULATION, D365, CALCULATION, DAX, TOTAL } = require('../constants/types')
+const { ORGANISATION, DELINKED_CALCULATION, D365, DAX, TOTAL } = require('../constants/types')
 const { DELINKED } = require('../constants/schemes')
 const getSubsetCheck = require('./subset/get-subset-check')
 const defaultPublishingPerType = require('./default-publishing-per-type')
@@ -47,7 +47,6 @@ const sendUpdates = async (scheme) => {
       types.push(D365)
     } else {
       types.push(TOTAL)
-      types.push(CALCULATION)
       types.push(DAX)
     }
     for (const type of types) {

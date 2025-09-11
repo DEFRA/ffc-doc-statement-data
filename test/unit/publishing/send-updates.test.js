@@ -112,7 +112,7 @@ describe('sendUpdates', () => {
     publishingConfig.delinked.subsetProcess = false
     publishingConfig.sfi23.subsetProcess = false
     await sendUpdates(SFI23)
-    expect(defaultPublishingPerType).toHaveBeenCalledTimes(4)
+    expect(defaultPublishingPerType).toHaveBeenCalledTimes(3)
     expect(defaultPublishingPerType.mock.calls[0][0]).toBeDefined()
   })
 
