@@ -22,11 +22,5 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     schema: dbConfig.schema
   })
-  organisation.associate = function (models) {
-    organisation.hasMany(models.calculation, {
-      foreignKey: 'sbi',
-      as: 'calculations'
-    })
-  }
   return organisation
 }

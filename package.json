@@ -1,6 +1,10 @@
 {
   "name": "ffc-doc-statement-data",
+<<<<<<< HEAD
   "version": "3.1.19",
+=======
+  "version": "3.1.20",
+>>>>>>> main
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-doc-statement-data",
   "main": "app/index.js",

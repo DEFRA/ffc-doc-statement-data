@@ -10,7 +10,7 @@ jest.mock('../../../app/publishing/validate-update', () => mockValidateUpdate)
 jest.mock('../../../app/publishing/send-message', () => mockSendMessage)
 jest.mock('../../../app/publishing/get-primary-key-value', () => mockGetPrimaryKeyValue)
 
-const { CALCULATION } = require('../../../app/constants/types')
+const { D365 } = require('../../../app/constants/types')
 
 const publishingConfig = { dataPublishingMaxBatchSizePerDataSource: 2 }
 jest.mock('../../../app/config', () => ({ publishingConfig }))
@@ -34,7 +34,7 @@ describe('defaultPublishingPerType', () => {
   }
 
   test('publishes all records in batches for a generic type', async () => {
-    const type = 'd365'
+    const type = D365
     const batch1 = [{ id: 1 }, { id: 2 }]
     setupMocks(type, [batch1])
 
@@ -49,21 +49,8 @@ describe('defaultPublishingPerType', () => {
     expect(mockGetPrimaryKeyValue).toHaveBeenCalledTimes(2)
   })
 
-  test('stops after first batch for CALCULATION type', async () => {
-    const type = CALCULATION
-    const batch1 = [{ id: 1 }, { id: 2 }]
-    setupMocks(type, [batch1])
-
-    const defaultPublishingPerType = require('../../../app/publishing/default-publishing-per-type')
-    await defaultPublishingPerType(type)
-
-    expect(mockGetUnpublished).toHaveBeenCalledTimes(1)
-    expect(mockSendMessage).toHaveBeenCalledTimes(2)
-    expect(mockUpdatePublished).toHaveBeenCalledTimes(2)
-  })
-
   test('does not publish if no outstanding records', async () => {
-    const type = 'd365'
+    const type = D365
     setupMocks(type, [[]])
 
     const defaultPublishingPerType = require('../../../app/publishing/default-publishing-per-type')
@@ -74,8 +61,8 @@ describe('defaultPublishingPerType', () => {
     expect(mockUpdatePublished).not.toHaveBeenCalled()
   })
 
-  test('skips update if validateUpdate returns false', async () => {
-    const type = 'd365'
+  test('does not skip update if validateUpdate returns false', async () => {
+    const type = D365
     const batch1 = [{ id: 1 }]
     setupMocks(type, [batch1])
     mockValidateUpdate.mockReturnValueOnce(false)
@@ -84,6 +71,6 @@ describe('defaultPublishingPerType', () => {
     await defaultPublishingPerType(type)
 
     expect(mockSendMessage).not.toHaveBeenCalled()
-    expect(mockUpdatePublished).not.toHaveBeenCalled()
+    expect(mockUpdatePublished).toHaveBeenCalledTimes(1)
   })
 })

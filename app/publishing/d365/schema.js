@@ -3,7 +3,8 @@ const { D365 } = require('../../constants/types')
 
 const paymentReferenceChars = 30
 const paymentPeriodChars = 200
-const marketingYearChars = 9999
+const marketingYearMin = 2023
+const marketingYearMax = 2050
 
 // Common message definitions
 const stringBaseMessage = (field) => `${field} should be a type of string`
@@ -12,7 +13,6 @@ const requiredMessage = (field) => `The field ${field} is not present but it is 
 const maxLengthMessage = (field, length) => `${field} should have a maximum length of ${length}`
 const integerMessage = (field) => `${field} should be an integer`
 const dateBaseMessage = (field) => `${field} should be a type of date`
-const allowOnlyMessage = (field) => `${field} can only be empty string or null`
 const typeOnlyMessage = (field, type) => `${field} must be : ${type}`
 
 module.exports = Joi.object({
@@ -25,14 +25,16 @@ module.exports = Joi.object({
     'number.base': numberBaseMessage('calculationReference'),
     'number.integer': integerMessage('calculationReference')
   }),
-  marketingYear: Joi.number().integer().max(marketingYearChars).required().messages({
+  marketingYear: Joi.number().integer().min(marketingYearMin).max(marketingYearMax).required().messages({
     'number.base': integerMessage('marketingYear'),
-    'number.max': maxLengthMessage('marketingYear', marketingYearChars)
+    'number.max': `marketingYear must be less than or equal to ${marketingYearMax}`,
+    'number.min': `marketingYear must be greater than or equal to ${marketingYearMin}`,
+    'any.required': requiredMessage('marketingYear')
   }),
-  paymentPeriod: Joi.string().max(paymentPeriodChars).allow('', null).optional().messages({
+  paymentPeriod: Joi.string().max(paymentPeriodChars).required().messages({
     'string.base': stringBaseMessage('paymentPeriod'),
     'string.max': maxLengthMessage('paymentPeriod', paymentPeriodChars),
-    'any.allowOnly': allowOnlyMessage('paymentPeriod')
+    'any.required': requiredMessage('paymentPeriod')
   }),
   paymentAmount: Joi.number().required().messages({
     'number.base': numberBaseMessage('paymentAmount'),

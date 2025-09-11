@@ -21,10 +21,10 @@ const defaultPublishingPerType = async (type) => {
         const isValid = validateUpdate(sanitizedUpdate, type)
         if (isValid) {
           await sendMessage(sanitizedUpdate, type)
-          const primaryKey = getPrimaryKeyValue(record, type)
-          await updatePublished(primaryKey)
           totalPublished++
         }
+        const primaryKey = getPrimaryKeyValue(record, type)
+        await updatePublished(primaryKey)
       })
       await Promise.all(batchPromises)
     }
