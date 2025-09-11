@@ -135,9 +135,8 @@ module.exports = Joi.object({
     'string.pattern.base': `paymentAmountCalculated ${messages.string.patternMonetary}`,
     'any.required': `The field paymentAmountCalculated ${messages.string.required}`
   }),
-  updated: Joi.date().required().messages({
-    'date.base': `updated ${messages.date.base}`,
-    'any.required': `The field updated ${messages.string.required}`
+  updated: Joi.date().optional().messages({
+    'date.base': `updated ${messages.date.base}`
   }),
   datePublished: Joi.date().messages({
     'date.base': `datePublished ${messages.date.base}`,
