@@ -21,7 +21,7 @@ const sendZeroValueAlerts = async () => {
             process: `sendZeroValueAlerts - ${processName}`,
             paymentReference: record.paymentReference,
             paymentAmount: record.paymentAmount,
-            error: new Error(`Zero value ${processName} record found for paymentReference: ${record.paymentReference}`)
+            message: `Zero value ${processName} record found for paymentReference: ${record.paymentReference}`
           },
           ZERO_VALUE_STATEMENT,
           { throwOnPublishError: true }

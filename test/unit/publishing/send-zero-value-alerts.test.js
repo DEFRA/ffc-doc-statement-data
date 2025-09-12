@@ -1,6 +1,6 @@
 const mockDataProcessingAlert = jest.fn()
-const mockFindAndCountAllDax = jest.fn()
-const mockFindAndCountAllD365 = jest.fn()
+const mockFindAllDax = jest.fn()
+const mockFindAllD365 = jest.fn()
 const mockUpdateDax = jest.fn()
 const mockUpdateD365 = jest.fn()
 
@@ -10,12 +10,17 @@ jest.mock('../../../app/messaging/processing-alerts', () => ({
 
 jest.mock('../../../app/data', () => ({
   zeroValueDax: {
-    findAndCountAll: mockFindAndCountAllDax,
+    findAll: mockFindAllDax,
     update: mockUpdateDax
   },
   zeroValueD365: {
-    findAndCountAll: mockFindAndCountAllD365,
+    findAll: mockFindAllD365,
     update: mockUpdateD365
+  },
+  Sequelize: {
+    Op: {
+      gt: Symbol('gt')
+    }
   }
 }))
 
@@ -29,8 +34,8 @@ describe('sendZeroValueAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockDataProcessingAlert.mockReset()
-    mockFindAndCountAllDax.mockReset()
-    mockFindAndCountAllD365.mockReset()
+    mockFindAllDax.mockReset()
+    mockFindAllD365.mockReset()
     mockUpdateDax.mockReset()
     mockUpdateD365.mockReset()
     mockDataProcessingAlert.mockResolvedValue()
@@ -47,24 +52,28 @@ describe('sendZeroValueAlerts', () => {
 
   test('processes and sends alerts for unsent DAX records in single batch', async () => {
     const daxRecords = [
-      { id: 1, paymentReference: 'REF1', paymentAmount: 0 },
-      { id: 2, paymentReference: 'REF2', paymentAmount: 0 }
+      { daxId: 1, paymentReference: 'REF1', paymentAmount: 0 },
+      { daxId: 2, paymentReference: 'REF2', paymentAmount: 0 }
     ]
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: daxRecords, count: 2 })
-      .mockResolvedValueOnce({ rows: [], count: 2 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    mockFindAllDax
+      .mockResolvedValueOnce(daxRecords)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllDax).toHaveBeenCalledWith({ where: { alertSent: false }, limit: 500, offset: 0 })
+    expect(mockFindAllDax).toHaveBeenCalledWith({
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 0 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(2)
     expect(mockDataProcessingAlert).toHaveBeenCalledWith(
       {
         process: 'sendZeroValueAlerts - DAX',
         paymentReference: 'REF1',
         paymentAmount: 0,
-        error: new Error('Zero value DAX record found for paymentReference: REF1')
+        message: 'Zero value DAX record found for paymentReference: REF1'
       },
       ZERO_VALUE_STATEMENT,
       { throwOnPublishError: true }
@@ -74,95 +83,116 @@ describe('sendZeroValueAlerts', () => {
         process: 'sendZeroValueAlerts - DAX',
         paymentReference: 'REF2',
         paymentAmount: 0,
-        error: new Error('Zero value DAX record found for paymentReference: REF2')
+        message: 'Zero value DAX record found for paymentReference: REF2'
       },
       ZERO_VALUE_STATEMENT,
       { throwOnPublishError: true }
     )
-    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 1 } })
-    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 2 } })
+    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { daxId: 1 } })
+    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { daxId: 2 } })
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 2 unsent zeroValueDax zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 2 zeroValueDax records.')
-    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] No unsent zeroValueD365 zero value records found.')
   })
 
   test('logs when no unsent DAX records', async () => {
-    mockFindAndCountAllDax.mockResolvedValue({ rows: [], count: 0 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    mockFindAllDax.mockResolvedValue([])
+    mockFindAllD365.mockResolvedValue([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllDax).toHaveBeenCalledWith({ where: { alertSent: false }, limit: 500, offset: 0 })
+    expect(mockFindAllDax).toHaveBeenCalledWith({
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 0 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
     expect(mockDataProcessingAlert).not.toHaveBeenCalled()
     expect(mockUpdateDax).not.toHaveBeenCalled()
-    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] No unsent zeroValueDax zero value records found.')
-    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] No unsent zeroValueD365 zero value records found.')
   })
 
   test('processes and sends alerts for unsent D365 records', async () => {
-    mockFindAndCountAllDax.mockResolvedValue({ rows: [], count: 0 })
-    const d365Records = [{ id: 3, paymentReference: 'REF3', paymentAmount: 0 }]
-    mockFindAndCountAllD365
-      .mockResolvedValueOnce({ rows: d365Records, count: 1 })
-      .mockResolvedValueOnce({ rows: [], count: 1 })
+    mockFindAllDax.mockResolvedValue([])
+    const d365Records = [{ d365Id: 3, paymentReference: 'REF3', paymentAmount: 0 }]
+    mockFindAllD365
+      .mockResolvedValueOnce(d365Records)
+      .mockResolvedValueOnce([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllD365).toHaveBeenCalledWith({ where: { alertSent: false }, limit: 500, offset: 0 })
+    expect(mockFindAllD365).toHaveBeenCalledWith({
+      where: { alertSent: false, d365Id: { [require('../../../app/data').Sequelize.Op.gt]: 0 } },
+      order: [['d365Id', 'ASC']],
+      limit: 500
+    })
     expect(mockDataProcessingAlert).toHaveBeenCalledWith(
       {
         process: 'sendZeroValueAlerts - D365',
         paymentReference: 'REF3',
         paymentAmount: 0,
-        error: new Error('Zero value D365 record found for paymentReference: REF3')
+        message: 'Zero value D365 record found for paymentReference: REF3'
       },
       ZERO_VALUE_STATEMENT,
       { throwOnPublishError: true }
     )
-    expect(mockUpdateD365).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 3 } })
-    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] No unsent zeroValueDax zero value records found.')
+    expect(mockUpdateD365).toHaveBeenCalledWith({ alertSent: true }, { where: { d365Id: 3 } })
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 1 unsent zeroValueD365 zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 1 zeroValueD365 records.')
   })
 
   test('handles multiple batches for DAX with exact batch size', async () => {
-    const batch1 = Array(500).fill().map((_, i) => ({ id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
-    const batch2 = Array(500).fill().map((_, i) => ({ id: i + 501, paymentReference: `REF${i + 501}`, paymentAmount: 0 }))
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: batch1, count: 1000 })
-      .mockResolvedValueOnce({ rows: batch2, count: 1000 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    const batch1 = Array(500).fill().map((_, i) => ({ daxId: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
+    const batch2 = Array(500).fill().map((_, i) => ({ daxId: i + 501, paymentReference: `REF${i + 501}`, paymentAmount: 0 }))
+    mockFindAllDax
+      .mockResolvedValueOnce(batch1)
+      .mockResolvedValueOnce(batch2)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllDax).toHaveBeenCalledTimes(2)
-    expect(mockFindAndCountAllDax).toHaveBeenNthCalledWith(1, { where: { alertSent: false }, limit: 500, offset: 0 })
-    expect(mockFindAndCountAllDax).toHaveBeenNthCalledWith(2, { where: { alertSent: false }, limit: 500, offset: 500 })
+    expect(mockFindAllDax).toHaveBeenCalledTimes(3)
+    expect(mockFindAllDax).toHaveBeenNthCalledWith(1, {
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 0 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
+    expect(mockFindAllDax).toHaveBeenNthCalledWith(2, {
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 500 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
+    expect(mockFindAllDax).toHaveBeenNthCalledWith(3, {
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 1000 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(1000)
+    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 500 unsent zeroValueDax zero value records. Sending alerts...')
+    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 500 zeroValueDax records.')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 500 unsent zeroValueDax zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 500 zeroValueDax records.')
   })
 
   test('handles partial batch for D365', async () => {
-    mockFindAndCountAllDax.mockResolvedValue({ rows: [], count: 0 })
-    const partialBatch = Array(250).fill().map((_, i) => ({ id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
-    mockFindAndCountAllD365
-      .mockResolvedValueOnce({ rows: partialBatch, count: 250 })
+    mockFindAllDax.mockResolvedValue([])
+    const partialBatch = Array(250).fill().map((_, i) => ({ d365Id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
+    mockFindAllD365
+      .mockResolvedValueOnce(partialBatch)
+      .mockResolvedValueOnce([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllD365).toHaveBeenCalledTimes(1)
+    expect(mockFindAllD365).toHaveBeenCalledTimes(2)
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(250)
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 250 unsent zeroValueD365 zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 250 zeroValueD365 records.')
   })
 
   test('handles error in processing alert and skips update', async () => {
-    const daxRecords = [{ id: 1, paymentReference: 'REF1', paymentAmount: 0 }]
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: daxRecords, count: 1 })
-      .mockResolvedValueOnce({ rows: [], count: 1 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    const daxRecords = [{ daxId: 1, paymentReference: 'REF1', paymentAmount: 0 }]
+    mockFindAllDax
+      .mockResolvedValueOnce(daxRecords)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
     mockDataProcessingAlert.mockRejectedValueOnce(new Error('Publish failed'))
 
     await sendZeroValueAlerts()
@@ -175,37 +205,37 @@ describe('sendZeroValueAlerts', () => {
   })
 
   test('handles error in database update and logs error', async () => {
-    const daxRecords = [{ id: 1, paymentReference: 'REF1', paymentAmount: 0 }]
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: daxRecords, count: 1 })
-      .mockResolvedValueOnce({ rows: [], count: 1 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    const daxRecords = [{ daxId: 1, paymentReference: 'REF1', paymentAmount: 0 }]
+    mockFindAllDax
+      .mockResolvedValueOnce(daxRecords)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
     mockUpdateDax.mockRejectedValueOnce(new Error('Database update failed'))
 
     await sendZeroValueAlerts()
 
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(1)
-    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 1 } })
+    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { daxId: 1 } })
     expect(errorSpy).toHaveBeenCalledWith('Failed to send alert for zeroValueDax record 1, skipping update', expect.any(Error))
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 1 unsent zeroValueDax zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 1 zeroValueDax records.')
   })
 
   test('processes both DAX and D365 records in separate batches', async () => {
-    const daxRecords = [{ id: 1, paymentReference: 'REF1', paymentAmount: 0 }]
-    const d365Records = [{ id: 2, paymentReference: 'REF2', paymentAmount: 0 }]
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: daxRecords, count: 1 })
-      .mockResolvedValueOnce({ rows: [], count: 1 })
-    mockFindAndCountAllD365
-      .mockResolvedValueOnce({ rows: d365Records, count: 1 })
-      .mockResolvedValueOnce({ rows: [], count: 1 })
+    const daxRecords = [{ daxId: 1, paymentReference: 'REF1', paymentAmount: 0 }]
+    const d365Records = [{ d365Id: 2, paymentReference: 'REF2', paymentAmount: 0 }]
+    mockFindAllDax
+      .mockResolvedValueOnce(daxRecords)
+      .mockResolvedValueOnce([])
+    mockFindAllD365
+      .mockResolvedValueOnce(d365Records)
+      .mockResolvedValueOnce([])
 
     await sendZeroValueAlerts()
 
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(2)
-    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 1 } })
-    expect(mockUpdateD365).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 2 } })
+    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { daxId: 1 } })
+    expect(mockUpdateD365).toHaveBeenCalledWith({ alertSent: true }, { where: { d365Id: 2 } })
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 1 unsent zeroValueDax zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 1 zeroValueDax records.')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 1 unsent zeroValueD365 zero value records. Sending alerts...')
@@ -213,30 +243,39 @@ describe('sendZeroValueAlerts', () => {
   })
 
   test('handles offset calculation correctly with multiple batches', async () => {
-    const batch1 = Array(500).fill().map((_, i) => ({ id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
-    const batch2 = Array(100).fill().map((_, i) => ({ id: i + 501, paymentReference: `REF${i + 501}`, paymentAmount: 0 }))
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: batch1, count: 600 })
-      .mockResolvedValueOnce({ rows: batch2, count: 600 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    const batch1 = Array(500).fill().map((_, i) => ({ daxId: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
+    const batch2 = Array(100).fill().map((_, i) => ({ daxId: i + 501, paymentReference: `REF${i + 501}`, paymentAmount: 0 }))
+    mockFindAllDax
+      .mockResolvedValueOnce(batch1)
+      .mockResolvedValueOnce(batch2)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllDax).toHaveBeenCalledTimes(2)
-    expect(mockFindAndCountAllDax).toHaveBeenNthCalledWith(1, { where: { alertSent: false }, limit: 500, offset: 0 })
-    expect(mockFindAndCountAllDax).toHaveBeenNthCalledWith(2, { where: { alertSent: false }, limit: 500, offset: 500 })
+    expect(mockFindAllDax).toHaveBeenCalledTimes(3)
+    expect(mockFindAllDax).toHaveBeenNthCalledWith(1, {
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 0 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
+    expect(mockFindAllDax).toHaveBeenNthCalledWith(2, {
+      where: { alertSent: false, daxId: { [require('../../../app/data').Sequelize.Op.gt]: 500 } },
+      order: [['daxId', 'ASC']],
+      limit: 500
+    })
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(600)
   })
 
   test('handles mixed success and failure in same batch', async () => {
     const daxRecords = [
-      { id: 1, paymentReference: 'REF1', paymentAmount: 0 },
-      { id: 2, paymentReference: 'REF2', paymentAmount: 0 }
+      { daxId: 1, paymentReference: 'REF1', paymentAmount: 0 },
+      { daxId: 2, paymentReference: 'REF2', paymentAmount: 0 }
     ]
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: daxRecords, count: 2 })
-      .mockResolvedValueOnce({ rows: [], count: 2 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    mockFindAllDax
+      .mockResolvedValueOnce(daxRecords)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
     mockDataProcessingAlert
       .mockResolvedValueOnce() // First record succeeds
       .mockRejectedValueOnce(new Error('Second record fails')) // Second record fails
@@ -245,21 +284,51 @@ describe('sendZeroValueAlerts', () => {
 
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(2)
     expect(mockUpdateDax).toHaveBeenCalledTimes(1) // Only first record should be updated
-    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { id: 1 } })
+    expect(mockUpdateDax).toHaveBeenCalledWith({ alertSent: true }, { where: { daxId: 1 } })
     expect(errorSpy).toHaveBeenCalledWith('Failed to send alert for zeroValueDax record 2, skipping update', expect.any(Error))
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 2 unsent zeroValueDax zero value records. Sending alerts...')
     expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 2 zeroValueDax records.')
   })
 
   test('handles exact count boundary conditions', async () => {
-    const batch = Array(500).fill().map((_, i) => ({ id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
-    mockFindAndCountAllDax
-      .mockResolvedValueOnce({ rows: batch, count: 500 })
-    mockFindAndCountAllD365.mockResolvedValue({ rows: [], count: 0 })
+    const batch = Array(500).fill().map((_, i) => ({ daxId: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
+    mockFindAllDax
+      .mockResolvedValueOnce(batch)
+      .mockResolvedValueOnce([])
+    mockFindAllD365.mockResolvedValue([])
 
     await sendZeroValueAlerts()
 
-    expect(mockFindAndCountAllDax).toHaveBeenCalledTimes(1)
+    expect(mockFindAllDax).toHaveBeenCalledTimes(2)
     expect(mockDataProcessingAlert).toHaveBeenCalledTimes(500)
+  })
+
+  test('handles multiple batches for D365', async () => {
+    mockFindAllDax.mockResolvedValue([])
+    const batch1 = Array(500).fill().map((_, i) => ({ d365Id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
+    const batch2 = Array(200).fill().map((_, i) => ({ d365Id: i + 501, paymentReference: `REF${i + 501}`, paymentAmount: 0 }))
+    mockFindAllD365
+      .mockResolvedValueOnce(batch1)
+      .mockResolvedValueOnce(batch2)
+      .mockResolvedValueOnce([])
+
+    await sendZeroValueAlerts()
+
+    expect(mockFindAllD365).toHaveBeenCalledTimes(3)
+    expect(mockFindAllD365).toHaveBeenNthCalledWith(1, {
+      where: { alertSent: false, d365Id: { [require('../../../app/data').Sequelize.Op.gt]: 0 } },
+      order: [['d365Id', 'ASC']],
+      limit: 500
+    })
+    expect(mockFindAllD365).toHaveBeenNthCalledWith(2, {
+      where: { alertSent: false, d365Id: { [require('../../../app/data').Sequelize.Op.gt]: 500 } },
+      order: [['d365Id', 'ASC']],
+      limit: 500
+    })
+    expect(mockDataProcessingAlert).toHaveBeenCalledTimes(700)
+    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 500 unsent zeroValueD365 zero value records. Sending alerts...')
+    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 500 zeroValueD365 records.')
+    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Found 200 unsent zeroValueD365 zero value records. Sending alerts...')
+    expect(logSpy).toHaveBeenCalledWith('[ZeroValueAlerts] Processed batch of 200 zeroValueD365 records.')
   })
 })

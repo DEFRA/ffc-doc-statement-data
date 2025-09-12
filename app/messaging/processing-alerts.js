@@ -51,8 +51,6 @@ const deriveAlertData = (payload, processName) => {
     alertData.error = null
   }
 
-  alertData.plain_text = message
-
   return alertData
 }
 
