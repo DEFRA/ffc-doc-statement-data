@@ -13,6 +13,7 @@ const sendZeroValueAlerts = async () => {
 
     console.log(`[ZeroValueAlerts] Found ${unsentRecords.length} unsent ${tableName} zero value records. Sending alerts...`)
 
+    const idColumn = tableName.replace('zeroValue', '').toLowerCase() + 'Id'
     const promises = unsentRecords.map(async (record) => {
       try {
         await dataProcessingAlert(
@@ -25,9 +26,9 @@ const sendZeroValueAlerts = async () => {
           ZERO_VALUE_STATEMENT,
           { throwOnPublishError: true }
         )
-        await db[tableName].update({ alertSent: true }, { where: { id: record.id } })
+        await db[tableName].update({ alertSent: true }, { where: { [idColumn]: record[idColumn] } })
       } catch (err) {
-        console.error(`Failed to send alert for ${tableName} record ${record.id}, skipping update`, err)
+        console.error(`Failed to send alert for ${tableName} record ${record[idColumn]}, skipping update`, err)
       }
     })
 
@@ -36,35 +37,35 @@ const sendZeroValueAlerts = async () => {
   }
 
   // DAX
-  let offset = 0
-  let hasMore = true
-  while (hasMore) {
-    const { rows: daxUnsent, count } = await db.zeroValueDax.findAndCountAll({
-      where: { alertSent: false },
-      limit: BATCH_SIZE,
-      offset
+  let lastDaxId = 0
+  while (true) {
+    const daxUnsent = await db.zeroValueDax.findAll({
+      where: {
+        alertSent: false,
+        daxId: { [db.Sequelize.Op.gt]: lastDaxId }
+      },
+      order: [['daxId', 'ASC']],
+      limit: BATCH_SIZE
     })
+    if (!daxUnsent.length) break
     await processBatch(daxUnsent, 'zeroValueDax', 'DAX')
-    offset += BATCH_SIZE
-    if (offset >= count) {
-      hasMore = false
-    }
+    lastDaxId = daxUnsent[daxUnsent.length - 1].daxId
   }
 
   // D365
-  offset = 0
-  hasMore = true
-  while (hasMore) {
-    const { rows: d365Unsent, count } = await db.zeroValueD365.findAndCountAll({
-      where: { alertSent: false },
-      limit: BATCH_SIZE,
-      offset
+  let lastD365Id = 0
+  while (true) {
+    const d365Unsent = await db.zeroValueD365.findAll({
+      where: {
+        alertSent: false,
+        d365Id: { [db.Sequelize.Op.gt]: lastD365Id }
+      },
+      order: [['d365Id', 'ASC']],
+      limit: BATCH_SIZE
     })
+    if (!d365Unsent.length) break
     await processBatch(d365Unsent, 'zeroValueD365', 'D365')
-    offset += BATCH_SIZE
-    if (offset >= count) {
-      hasMore = false
-    }
+    lastD365Id = d365Unsent[d365Unsent.length - 1].d365Id
   }
 }
 
