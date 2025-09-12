@@ -47,7 +47,9 @@ const sendZeroValueAlerts = async () => {
       order: [['daxId', 'ASC']],
       limit: BATCH_SIZE
     })
-    if (!daxUnsent.length) break
+    if (!daxUnsent.length) {
+      break
+    }
     await processBatch(daxUnsent, 'zeroValueDax', 'DAX')
     lastDaxId = daxUnsent[daxUnsent.length - 1].daxId
   }
@@ -63,7 +65,9 @@ const sendZeroValueAlerts = async () => {
       order: [['d365Id', 'ASC']],
       limit: BATCH_SIZE
     })
-    if (!d365Unsent.length) break
+    if (!d365Unsent.length) {
+      break
+    }
     await processBatch(d365Unsent, 'zeroValueD365', 'D365')
     lastD365Id = d365Unsent[d365Unsent.length - 1].d365Id
   }
