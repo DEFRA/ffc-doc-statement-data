@@ -3,8 +3,11 @@ const { getAddressLines } = require('../../../app/messaging/get-address-lines')
 const { getSBI } = require('../../../app/messaging/get-sbi')
 const db = require('../../../app/data')
 const processDemographicsMessage = require('../../../app/messaging/process-demographics-message')
+const { validateDemographics } = require('../../../app/messaging/validate-demographics')
+const { VALIDATION } = require('../../../app/constants/errors')
 
 jest.mock('moment')
+jest.mock('../../../app/messaging/validate-demographics')
 jest.mock('../../../app/messaging/get-address-lines')
 jest.mock('../../../app/messaging/get-sbi')
 jest.mock('../../../app/data')
@@ -105,6 +108,40 @@ describe('process demographics message', () => {
     await processDemographicsMessage(demographicsData, receiver)
 
     expect(console.error).toHaveBeenCalledWith('Unable to process demographics message:', error)
+    expect(receiver.completeMessage).not.toHaveBeenCalled()
+  })
+
+  test('should call validateDemographics with correct data', async () => {
+    db.organisation.findOne.mockResolvedValue(null)
+    db.organisation.create.mockResolvedValue()
+    validateDemographics.mockImplementation(() => undefined)
+
+    await processDemographicsMessage(demographicsData, receiver)
+    expect(validateDemographics).toHaveBeenCalledWith(expect.objectContaining({
+      sbi: '123456789',
+      city: 'LONDON'
+    }))
+  })
+
+  test('should dead letter message if validation error occurs', async () => {
+    const validationError = { category: VALIDATION }
+    validateDemographics.mockImplementation(() => { throw validationError })
+    receiver.deadLetterMessage = jest.fn()
+
+    await processDemographicsMessage(demographicsData, receiver)
+
+    expect(receiver.deadLetterMessage).toHaveBeenCalledWith(demographicsData)
+    expect(receiver.completeMessage).not.toHaveBeenCalled()
+  })
+
+  test('should not dead letter if error is not validation', async () => {
+    const error = new Error('Other error')
+    validateDemographics.mockImplementation(() => { throw error })
+    receiver.deadLetterMessage = jest.fn()
+
+    await processDemographicsMessage(demographicsData, receiver)
+
+    expect(receiver.deadLetterMessage).not.toHaveBeenCalled()
     expect(receiver.completeMessage).not.toHaveBeenCalled()
   })
 })

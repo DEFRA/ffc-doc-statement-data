@@ -3,6 +3,8 @@ const moment = require('moment')
 const { getAddressLines } = require('./get-address-lines')
 const { getSBI } = require('./get-sbi')
 const db = require('../data')
+const { validateDemographics } = require('./validate-demographics')
+const { VALIDATION } = require('../constants/errors')
 
 const processDemographicsMessage = async (message, receiver) => {
   try {
@@ -21,6 +23,7 @@ const processDemographicsMessage = async (message, receiver) => {
       published: null,
       ...addressLines
     }
+    validateDemographics(demographicsData)
     if (demographicsData.sbi) {
       const existingSBI = await db.organisation.findOne({
         where: {
@@ -41,6 +44,9 @@ const processDemographicsMessage = async (message, receiver) => {
     await receiver.completeMessage(message)
   } catch (err) {
     console.error('Unable to process demographics message:', err)
+    if (err.category === VALIDATION) {
+      await receiver.deadLetterMessage(message)
+    }
   }
 }
 
