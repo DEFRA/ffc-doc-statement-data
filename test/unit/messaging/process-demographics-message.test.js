@@ -144,4 +144,18 @@ describe('process demographics message', () => {
     expect(receiver.deadLetterMessage).not.toHaveBeenCalled()
     expect(receiver.completeMessage).not.toHaveBeenCalled()
   })
+
+  test('should allow additional fields not in validation object', async () => {
+    db.organisation.findOne.mockResolvedValue(null)
+    db.organisation.create.mockResolvedValue()
+    validateDemographics.mockImplementation(() => undefined)
+
+    demographicsData.body.extraField = 'unexpected value'
+
+    await processDemographicsMessage(demographicsData, receiver)
+
+    expect(validateDemographics).toHaveBeenCalled()
+    expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)
+    expect(db.organisation.create).toHaveBeenCalled()
+  })
 })
