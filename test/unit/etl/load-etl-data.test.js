@@ -58,7 +58,8 @@ const {
   loadIntermCalcOrgDelinked,
   loadIntermTotalZeroValues,
   loadZeroValueDax,
-  loadZeroValueD365
+  loadZeroValueD365,
+  loadIntermOrgFromDay0
 } = require('../../../app/etl/load-scripts')
 
 Transaction.ISOLATION_LEVELS = {
@@ -92,6 +93,7 @@ describe('loadETLData', () => {
     })
     expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermFinanceDAXDelinked).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermOrgFromDay0).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermOrgDelinked).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermApplicationClaim).toHaveBeenCalledWith('2023-01-01')
@@ -207,35 +209,35 @@ describe('loadETLData', () => {
     }])
   })
 
-  test('should call createAlerts with error details when a load script fails', async () => {
-    const errorMessage = 'Test error'
-    loadOrganisations.mockRejectedValue(new Error(errorMessage))
-
+  test('should call loadIntermOrgFromDay0 and handle success', async () => {
     await loadETLData('2023-01-01')
-
-    expect(createAlerts).toHaveBeenCalledWith([{
-      file: 'Loading ETL data',
-      message: errorMessage
-    }])
+    expect(loadIntermOrgFromDay0).toHaveBeenCalledWith('2023-01-01')
   })
 
-  test('should call createAlerts after rollback and deleteETLRecords', async () => {
-    const errorMessage = 'Test error'
-    loadOrganisations.mockRejectedValue(new Error(errorMessage))
-
+  test('should skip loading intermOrg and intermOrgDelinked if day0OrgLoad is true', async () => {
+    loadIntermOrgFromDay0.mockResolvedValue(true)
     await loadETLData('2023-01-01')
+    expect(loadIntermOrg).not.toHaveBeenCalled()
+    expect(loadIntermOrgDelinked).not.toHaveBeenCalled()
+  })
 
-    const rollback1Call = transaction1.rollback.mock.invocationCallOrder[0]
-    const rollback2Call = transaction2.rollback.mock.invocationCallOrder[0]
-    const deleteETLCall = deleteETLRecords.mock.invocationCallOrder[0]
-    const createAlertsCall = createAlerts.mock.invocationCallOrder[0]
+  test('should load intermOrg and intermOrgDelinked if day0OrgLoad is false', async () => {
+    loadIntermOrgFromDay0.mockResolvedValue(false)
+    await loadETLData('2023-01-01')
+    expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01')
+    expect(loadIntermOrgDelinked).toHaveBeenCalledWith('2023-01-01')
+  })
 
-    expect(createAlertsCall).toBeGreaterThan(rollback1Call)
-    expect(createAlertsCall).toBeGreaterThan(rollback2Call)
-    expect(createAlertsCall).toBeGreaterThan(deleteETLCall)
-    expect(createAlerts).toHaveBeenCalledWith([{
-      file: 'Loading ETL data',
-      message: errorMessage
-    }])
+  test('should handle errors thrown by loadIntermFinanceDAX and rollback', async () => {
+    loadIntermFinanceDAX.mockRejectedValue(new Error('Finance DAX error'))
+    await loadETLData('2023-01-01')
+    expect(transaction1.rollback).toHaveBeenCalled()
+    expect(transaction2.rollback).toHaveBeenCalled()
+  })
+
+  test('should call publishEtlProcessError for each load function failure', async () => {
+    loadIntermFinanceDAX.mockRejectedValue(new Error('Finance DAX error'))
+    await loadETLData('2023-01-01')
+    expect(publishEtlProcessError).toHaveBeenCalledWith('loadIntermFinanceDAX', expect.any(Error))
   })
 })

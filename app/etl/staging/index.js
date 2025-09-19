@@ -12,6 +12,8 @@ const { stageOrganisation, stageOrganisationDelinked } = require('./stage-organi
 const { stageTCLCOption, stageTCLCOptionDelinked } = require('./stage-tclc-option')
 const { stageTdeLinkingTransferTransactions } = require('./stage-tde-linking-transfer-transactions')
 const { stageAppCalcResultsDelinkPayments } = require('./stage-app-calc-results-delink-payments')
+const { stageDay0BusinessAddressContacts } = require('./stage-day0-business-address-contact')
+const { stageDay0Organisation } = require('./stage-day0-organisation')
 
 module.exports = {
   stageApplicationDetails,
@@ -22,6 +24,8 @@ module.exports = {
   stageCSSContractApplications,
   stageCSSContract,
   stageCSSOptions,
+  stageDay0BusinessAddressContacts,
+  stageDay0Organisation,
   stageDefraLinks,
   stageFinanceDAX,
   stageOrganisation,

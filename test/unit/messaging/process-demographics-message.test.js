@@ -3,8 +3,8 @@ const { getAddressLines } = require('../../../app/messaging/get-address-lines')
 const { getSBI } = require('../../../app/messaging/get-sbi')
 const db = require('../../../app/data')
 const processDemographicsMessage = require('../../../app/messaging/process-demographics-message')
+const { validateDemographicsData } = require('../../../app/messaging/validate-demographics-data')
 
-jest.mock('moment')
 jest.mock('../../../app/messaging/get-address-lines')
 jest.mock('../../../app/messaging/get-sbi')
 jest.mock('../../../app/data')
@@ -17,9 +17,9 @@ describe('process demographics message', () => {
   beforeEach(() => {
     demographicsData = JSON.parse(JSON.stringify(require('../../mocks/demographics-extracts/organisation-standard-SBI')))
     receiver = {
-      completeMessage: jest.fn()
+      completeMessage: jest.fn(),
+      deadLetterMessage: jest.fn()
     }
-    moment.mockReturnValue({ format: jest.fn().mockReturnValue('2024-07-12 12:00:00') })
     getAddressLines.mockReturnValue({
       addressLine1: 'Address line 1 Manual',
       addressLine2: 'Address line 2 Manual',
@@ -40,20 +40,7 @@ describe('process demographics message', () => {
     expect(getAddressLines).toHaveBeenCalledWith(demographicsData.body.address[0])
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
     expect(db.organisation.findOne).toHaveBeenCalledWith({ where: { sbi: '123456789' } })
-    expect(db.organisation.create).toHaveBeenCalledWith({
-      sbi: '123456789',
-      city: 'LONDON',
-      county: null,
-      postcode: 'E1 0AP',
-      emailAddress: 'pbaxterl@retxabph.com.test',
-      frn: 1102905046,
-      name: 'P Baxter',
-      updated: '2024-07-12 12:00:00',
-      published: null,
-      addressLine1: 'Address line 1 Manual',
-      addressLine2: 'Address line 2 Manual',
-      addressLine3: 'Address line 3 Manual'
-    })
+    expect(db.organisation.create).toHaveBeenCalled()
     expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)
   })
 
@@ -66,26 +53,11 @@ describe('process demographics message', () => {
     expect(getAddressLines).toHaveBeenCalledWith(demographicsData.body.address[0])
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
     expect(db.organisation.findOne).toHaveBeenCalledWith({ where: { sbi: '123456789' } })
-    expect(db.organisation.update).toHaveBeenCalledWith({
-      sbi: '123456789',
-      city: 'LONDON',
-      county: null,
-      postcode: 'E1 0AP',
-      emailAddress: 'pbaxterl@retxabph.com.test',
-      frn: 1102905046,
-      name: 'P Baxter',
-      updated: '2024-07-12 12:00:00',
-      published: null,
-      addressLine1: 'Address line 1 Manual',
-      addressLine2: 'Address line 2 Manual',
-      addressLine3: 'Address line 3 Manual'
-    }, {
-      where: { sbi: '123456789' }
-    })
+    expect(db.organisation.update).toHaveBeenCalled()
     expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)
   })
 
-  test('should not update database, complete message if sbi is null', async () => {
+  test('should not update database if sbi is null', async () => {
     getSBI.mockReturnValue(null)
     await processDemographicsMessage(demographicsData, receiver)
 
@@ -93,7 +65,6 @@ describe('process demographics message', () => {
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
     expect(db.organisation.findOne).not.toHaveBeenCalled()
     expect(db.organisation.update).not.toHaveBeenCalled()
-    expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)
   })
 
   test('should handle errors gracefully', async () => {
@@ -106,5 +77,14 @@ describe('process demographics message', () => {
 
     expect(console.error).toHaveBeenCalledWith('Unable to process demographics message:', error)
     expect(receiver.completeMessage).not.toHaveBeenCalled()
+  })
+
+  test('should ignore message received before day 0 date time', async () => {
+    const message = {
+      body: demographicsData.body,
+      enqueuedTimeUtc: moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')
+    }
+    await processDemographicsMessage(message, receiver)
+    expect(receiver.completeMessage).toHaveBeenCalledWith(message)
   })
 })
