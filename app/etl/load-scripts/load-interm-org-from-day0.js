@@ -10,7 +10,6 @@ const tablesToCheck = [
 ]
 
 const queryTemplate = `
-  TRUNCATE TABLE ${dbConfig.schema}."etlIntermOrg" CASCADE;
   INSERT INTO ${dbConfig.schema}."etlIntermOrg" (
     "sbi",
     "addressLine1",
