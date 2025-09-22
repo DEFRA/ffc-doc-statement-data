@@ -40,12 +40,12 @@ const loadOrganisations = async (startDate, transaction) => {
     "name" = EXCLUDED."name",
     updated = EXCLUDED.updated;
   `
-  if (!mqConfig.day0DateTime) {
+  if (mqConfig.day0DateTime) {
+    console.log('Skipping organisation load as a day 0 cut has been loaded')
+  } else {
     await executeQuery(query, {
       startDate
     }, transaction)
-  } else {
-    console.log('Skipping organisation load as a day 0 cut has been loaded')
   }
 }
 

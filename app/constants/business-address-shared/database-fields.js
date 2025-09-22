@@ -1,4 +1,4 @@
-module.exports = (DataTypes) => {
+const sharedDatabaseFields = (DataTypes) => {
   return {
     etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
@@ -15,3 +15,5 @@ module.exports = (DataTypes) => {
     businessEmailAddr: DataTypes.STRING
   }
 }
+
+module.exports = sharedDatabaseFields

@@ -1,10 +1,10 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { COMPANY_NAME } = require('../../constants/fakers')
 const { organisation } = require('../../constants/tables')
 const config = require('../../config')
 const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { sharedTransformer, sharedNonProdTransformer } = require('../../constants/organisation-etl-shared')
 
 const columns = [
   sourceColumnNames.CHANGE_TYPE,
@@ -64,24 +64,9 @@ const getMapping = (format) => {
   ]
 }
 
-const transformer = [
-  {
-    column: sourceColumnNames.ORGANISATION_NAME,
-    find: '\'',
-    replace: '\'\'',
-    all: true
-  }
-]
+const transformer = sharedTransformer
 
-let nonProdTransformer = []
-if (config.etlConfig.fakeData) {
-  nonProdTransformer = [
-    {
-      name: sourceColumnNames.ORGANISATION_NAME,
-      faker: COMPANY_NAME
-    }
-  ]
-}
+const nonProdTransformer = sharedNonProdTransformer
 
 let excludedFields = []
 if (config.etlConfig.excludeCalculationData) {

@@ -2,13 +2,17 @@ const Joi = require('joi')
 const { ORGANISATION } = require('../../constants/types')
 const commonSchemas = require('../../constants/common-schemas')
 
+const one = 1
+const two = 2
+const three = 3
+
 module.exports = Joi.object({
   name: commonSchemas.name(),
   sbi: commonSchemas.sbi(),
   frn: commonSchemas.frn(),
-  addressLine1: commonSchemas.addressLine(1),
-  addressLine2: commonSchemas.addressLine(2),
-  addressLine3: commonSchemas.addressLine(3),
+  addressLine1: commonSchemas.addressLine(one),
+  addressLine2: commonSchemas.addressLine(two),
+  addressLine3: commonSchemas.addressLine(three),
   city: commonSchemas.city(),
   county: commonSchemas.county(),
   postcode: commonSchemas.postcode(),
