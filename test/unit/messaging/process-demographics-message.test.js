@@ -3,7 +3,6 @@ const { getAddressLines } = require('../../../app/messaging/get-address-lines')
 const { getSBI } = require('../../../app/messaging/get-sbi')
 const db = require('../../../app/data')
 const processDemographicsMessage = require('../../../app/messaging/process-demographics-message')
-const { validateDemographicsData } = require('../../../app/messaging/validate-demographics-data')
 
 jest.mock('../../../app/messaging/get-address-lines')
 jest.mock('../../../app/messaging/get-sbi')
