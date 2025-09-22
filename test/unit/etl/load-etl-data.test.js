@@ -13,6 +13,10 @@ jest.mock('../../../app/data', () => ({
   }
 }))
 
+jest.mock('../../../app/config/message', () => ({
+  day0DateTime: null
+}))
+
 jest.mock('../../../app/messaging/create-alerts', () => ({
   createAlerts: jest.fn()
 }))
@@ -128,7 +132,7 @@ describe('loadETLData', () => {
 
     await loadETLData('2023-01-01')
 
-    expect(loadOrganisations).toHaveBeenCalledTimes(4) // initial call and the 3 retries
+    expect(loadOrganisations).toHaveBeenCalledTimes(4)
     expect(transaction1.commit).not.toHaveBeenCalled()
     expect(transaction2.commit).not.toHaveBeenCalled()
     expect(transaction1.rollback).toHaveBeenCalled()
@@ -167,7 +171,7 @@ describe('loadETLData', () => {
 
     await loadETLData('2023-01-01')
 
-    expect(loadOrganisations).toHaveBeenCalledTimes(4) // initial + 3 retries
+    expect(loadOrganisations).toHaveBeenCalledTimes(4)
     expect(createAlerts).toHaveBeenCalledWith([{
       file: 'Loading ETL data',
       message: 'Persistent error'
@@ -214,15 +218,7 @@ describe('loadETLData', () => {
     expect(loadIntermOrgFromDay0).toHaveBeenCalledWith('2023-01-01')
   })
 
-  test('should skip loading intermOrg and intermOrgDelinked if day0OrgLoad is true', async () => {
-    loadIntermOrgFromDay0.mockResolvedValue(true)
-    await loadETLData('2023-01-01')
-    expect(loadIntermOrg).not.toHaveBeenCalled()
-    expect(loadIntermOrgDelinked).not.toHaveBeenCalled()
-  })
-
-  test('should load intermOrg and intermOrgDelinked if day0OrgLoad is false', async () => {
-    loadIntermOrgFromDay0.mockResolvedValue(false)
+  test('should load intermOrg and intermOrgDelinked if day0DateTime is not set', async () => {
     await loadETLData('2023-01-01')
     expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01')
     expect(loadIntermOrgDelinked).toHaveBeenCalledWith('2023-01-01')

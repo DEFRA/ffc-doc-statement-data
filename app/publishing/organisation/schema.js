@@ -1,6 +1,6 @@
 const Joi = require('joi')
-const commonSchemas = require('./commonSchemas') // Adjust the path accordingly
 const { ORGANISATION } = require('../../constants/types')
+const commonSchemas = require('../../constants/common-schemas')
 
 module.exports = Joi.object({
   name: commonSchemas.name(),

@@ -1,5 +1,6 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
+const mqConfig = require('../config/message')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadZeroValueDax, loadZeroValueD365, loadIntermOrgFromDay0 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
@@ -45,11 +46,11 @@ const loadETLData = async (startDate) => {
   }
 
   try {
-    const day0OrgLoad = await wrapWithLogging(loadIntermOrgFromDay0, 'loadIntermOrgFromDay0')(startDate)
+    await wrapWithLogging(loadIntermOrgFromDay0, 'loadIntermOrgFromDay0')(startDate)
 
     await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAX')(startDate)
     await wrapWithLogging(loadIntermFinanceDAXDelinked, 'loadIntermFinanceDAXDelinked')(startDate)
-    if (!day0OrgLoad) {
+    if (!mqConfig.day0DateTime) {
       await wrapWithLogging(loadIntermOrg, 'loadIntermOrg')(startDate)
       await wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')(startDate)
     }
