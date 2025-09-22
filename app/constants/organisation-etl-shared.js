@@ -1,6 +1,6 @@
-const sourceColumnNames = require('../../constants/source-column-names')
-const config = require('../../config')
-const { COMPANY_NAME } = require('../../constants/fakers')
+const sourceColumnNames = require('./source-column-names')
+const config = require('../config')
+const { COMPANY_NAME } = require('./fakers')
 
 const sharedTransformer = [
   {
