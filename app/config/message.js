@@ -23,7 +23,7 @@ const mqSchema = Joi.object({
   publishEtlProcessErrorTopic: {
     address: Joi.string()
   },
-  day0DateTime: Joi.date().default(new Date())
+  day0DateTime: Joi.date().allow(null, '')
 })
 
 const mqConfig = {
