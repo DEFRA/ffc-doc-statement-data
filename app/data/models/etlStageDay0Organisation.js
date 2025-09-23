@@ -2,7 +2,7 @@ const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
 const etlStageDay0Organisation = (sequelize, DataTypes) => {
-  const etlStageDay0Organisation = sequelize.define('etlStageDay0Organisation', {
+  const databaseDefinition = sequelize.define('etlStageDay0Organisation', {
     etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
     etlInsertedDt: DataTypes.DATE,
     organisationWid: DataTypes.INTEGER,
@@ -16,7 +16,7 @@ const etlStageDay0Organisation = (sequelize, DataTypes) => {
     timestamps: false,
     schema: dbConfig.schema
   })
-  return etlStageDay0Organisation
+  return databaseDefinition
 }
 
 module.exports = etlStageDay0Organisation
