@@ -49,7 +49,7 @@ const mqConfig = {
   publishEtlProcessErrorTopic: {
     address: process.env.ETL_PROCESS_TOPIC_ERROR_ADDRESS
   },
-  day0DateTime: process.env.DAY0_DATE_TIME ?? null
+  day0DateTime: process.env.DAY_0_DATE_TIME ?? null
 }
 
 const mqResult = mqSchema.validate(mqConfig, {
