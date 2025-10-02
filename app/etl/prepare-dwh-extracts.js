@@ -1,5 +1,6 @@
 const { etlConfig } = require('../config')
 const { getDWHExtracts, moveFile } = require('../storage')
+const { unzipDWHExtracts } = require('./unzip-dwh-extracts')
 
 const FILE_PATH_LOOKUP = {
   [etlConfig.applicationDetail.fileMask]: etlConfig.applicationDetail.folder,
@@ -43,7 +44,8 @@ const getOutputPathFromFileName = (fileName) => {
   return outputPath
 }
 
-const renameExtracts = async () => {
+const prepareDWHExtracts = async () => {
+  await unzipDWHExtracts()
   const extracts = await getDWHExtracts()
   for (const extract of extracts) {
     const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
@@ -53,5 +55,5 @@ const renameExtracts = async () => {
 }
 
 module.exports = {
-  renameExtracts
+  prepareDWHExtracts
 }

@@ -3,7 +3,7 @@ const storage = require('../../../app/storage')
 const { stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption } = require('../../../app/etl/staging')
 const { etlConfig } = require('../../../app/config')
 const ora = require('ora')
-const { stageExtracts } = require('../../../app/etl/stage-extracts')
+const { stageDWHExtracts } = require('../../../app/etl/stage-dwh-extracts')
 
 jest.mock('@fast-csv/format')
 jest.mock('../../../app/storage')
@@ -87,7 +87,7 @@ describe('ETL Process', () => {
 
     writeToString.mockResolvedValue('csv content')
 
-    await stageExtracts()
+    await stageDWHExtracts()
 
     expect(ora).toHaveBeenCalledTimes(stageFunctions.length)
     expect(mockSpinner.start).toHaveBeenCalledTimes(stageFunctions.length)

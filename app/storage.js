@@ -92,6 +92,16 @@ const getFileList = async () => {
   return fileList
 }
 
+const getZipFile = async () => {
+  containersInitialised ?? await initialiseContainers()
+  for await (const file of container.listBlobsFlat()) {
+    if (file.name.endsWith('.zip')) {
+      console.log(`Identified file: ${file.name}`)
+      return file.name
+    }
+  }
+}
+
 const getBlob = async (filename) => {
   containersInitialised ?? await initialiseContainers()
   console.log(`Getting blob for filename: ${filename}`)
@@ -199,5 +209,6 @@ module.exports = {
   deleteAllETLExtracts,
   initialiseContainers,
   initialiseFolders,
-  getETLExtractFilesFromFolder
+  getETLExtractFilesFromFolder,
+  getZipFile
 }

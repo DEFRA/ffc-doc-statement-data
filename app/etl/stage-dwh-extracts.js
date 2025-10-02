@@ -49,7 +49,7 @@ if (etlConfig.delinkedEnabled) {
   )
 }
 
-const stageExtracts = async () => {
+const stageDWHExtracts = async () => {
   startDate = new Date()
   const etlFiles = await storage.getFileList()
   const foldersToStage = etlFiles.map(file => file.split('/')[0])
@@ -99,5 +99,5 @@ const stageExtracts = async () => {
 }
 
 module.exports = {
-  stageExtracts
+  stageDWHExtracts
 }
