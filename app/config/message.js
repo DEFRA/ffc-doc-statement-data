@@ -52,6 +52,8 @@ const mqConfig = {
   day0DateTime: process.env.DAY_0_DATE_TIME ?? null
 }
 
+console.log('DAY_0_DATE_TIME from process env:', process.env.DAY_0_DATE_TIME)
+
 const mqResult = mqSchema.validate(mqConfig, {
   abortEarly: false
 })
@@ -66,6 +68,8 @@ const updatesSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.
 const alertTopic = { ...mqResult.value.messageQueue, ...mqResult.value.alertTopic }
 const publishEtlProcessError = { ...mqResult.value.messageQueue, ...mqResult.value.publishEtlProcessErrorTopic }
 const day0DateTime = mqResult.value.day0DateTime
+
+console.log('day0DateTime in config file:', day0DateTime)
 
 module.exports = {
   dataTopic,
