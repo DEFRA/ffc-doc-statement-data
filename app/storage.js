@@ -100,6 +100,7 @@ const getZipFile = async () => {
       return file.name
     }
   }
+  return null
 }
 
 const getBlob = async (filename) => {

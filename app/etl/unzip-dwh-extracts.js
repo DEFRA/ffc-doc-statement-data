@@ -2,7 +2,7 @@ const unzipper = require('unzipper')
 const { getZipFile, downloadFileAsStream, deleteFile, getBlob } = require('../storage')
 const config = require('../config/etl')
 
-const unzipAndUpload = async (zipStream, zipFilename) => {
+const unzipAndUpload = async (zipStream) => {
   const uploadedFiles = []
 
   return new Promise((resolve, reject) => {
@@ -48,7 +48,7 @@ const unzipDWHExtracts = async () => {
   const zipFile = await getZipFile()
   if (zipFile) {
     const downloadStream = await downloadFileAsStream(zipFile)
-    await unzipAndUpload(downloadStream, zipFile)
+    await unzipAndUpload(downloadStream)
     await deleteFile(zipFile)
     console.log(`Processed and deleted zip file: ${zipFile}`)
   } else {
