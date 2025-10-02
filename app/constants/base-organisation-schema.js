@@ -30,31 +30,31 @@ const baseOrganisationSchema = {
     'number.max': `frn should have a maximum value of ${MAX_FRN}`,
     'any.required': 'The field frn is not present but it is required'
   }),
-  addressLine1: Joi.string().max(MAX_ADDRESS_LINE_LENGTH).optional().allow('').messages({
+  addressLine1: Joi.string().max(MAX_ADDRESS_LINE_LENGTH).optional().allow('', null).messages({
     'string.base': 'addressLine1 should be a type of string',
     'string.max': `addressLine1 should have a maximum length of ${MAX_ADDRESS_LINE_LENGTH}`
   }),
-  addressLine2: Joi.string().max(MAX_ADDRESS_LINE_LENGTH).optional().allow('').messages({
+  addressLine2: Joi.string().max(MAX_ADDRESS_LINE_LENGTH).optional().allow('', null).messages({
     'string.base': 'addressLine2 should be a type of string',
     'string.max': `addressLine2 should have a maximum length of ${MAX_ADDRESS_LINE_LENGTH}`
   }),
-  addressLine3: Joi.string().max(MAX_ADDRESS_LINE_LENGTH).optional().allow('').messages({
+  addressLine3: Joi.string().max(MAX_ADDRESS_LINE_LENGTH).optional().allow('', null).messages({
     'string.base': 'addressLine3 should be a type of string',
     'string.max': `addressLine3 should have a maximum length of ${MAX_ADDRESS_LINE_LENGTH}`
   }),
-  city: Joi.string().max(MAX_CITY_COUNTY_LENGTH).optional().allow('').messages({
+  city: Joi.string().max(MAX_CITY_COUNTY_LENGTH).optional().allow('', null).messages({
     'string.base': 'city should be a type of string',
     'string.max': `city should have a maximum length of ${MAX_CITY_COUNTY_LENGTH}`
   }),
-  county: Joi.string().max(MAX_CITY_COUNTY_LENGTH).optional().allow('').messages({
+  county: Joi.string().max(MAX_CITY_COUNTY_LENGTH).optional().allow('', null).messages({
     'string.base': 'county should be a type of string',
     'string.max': `county should have a maximum length of ${MAX_CITY_COUNTY_LENGTH}`
   }),
-  postcode: Joi.string().max(MAX_POSTCODE_LENGTH).optional().allow('').messages({
+  postcode: Joi.string().max(MAX_POSTCODE_LENGTH).optional().allow('', null).messages({
     'string.base': 'postcode should be a type of string',
     'string.max': `postcode should have a maximum length of ${MAX_POSTCODE_LENGTH}`
   }),
-  emailAddress: Joi.string().max(MAX_EMAIL_LENGTH).optional().allow('').messages({
+  emailAddress: Joi.string().max(MAX_EMAIL_LENGTH).optional().allow('', null).messages({
     'string.base': 'emailAddress should be a type of string',
     'string.max': `emailAddress should have a maximum length of ${MAX_EMAIL_LENGTH}`
   }),
