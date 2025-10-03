@@ -1,4 +1,4 @@
-const util = require('util')
+const util = require('node:util')
 const schema = require('./demographics-schema')
 const { VALIDATION } = require('../constants/error-categories')
 

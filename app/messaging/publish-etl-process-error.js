@@ -1,4 +1,4 @@
-const util = require('util')
+const util = require('node:util')
 const { ETL_PROCESS_ERROR } = require('../constants/message-types')
 const sendMessage = require('./send-message')
 const config = require('../config')

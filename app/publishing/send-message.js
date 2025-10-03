@@ -1,7 +1,7 @@
 const config = require('../config')
 const { MessageSender } = require('ffc-messaging')
 const createMessage = require('./create-message')
-const util = require('util')
+const util = require('node:util')
 
 let sender
 

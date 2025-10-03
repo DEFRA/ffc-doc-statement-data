@@ -1,4 +1,4 @@
-const util = require('util')
+const util = require('node:util')
 const moment = require('moment')
 const { getAddressLines } = require('./get-address-lines')
 const { getSBI } = require('./get-sbi')
