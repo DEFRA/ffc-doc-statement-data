@@ -6,7 +6,8 @@ const {
   getDWHExtracts,
   moveFile,
   getBlob,
-  deleteAllETLExtracts
+  deleteAllETLExtracts,
+  getZipFile
 } = require('../app/storage')
 
 jest.mock('@azure/storage-blob', () => {
@@ -29,8 +30,8 @@ jest.mock('@azure/storage-blob', () => {
           listBlobsFlat: jest.fn().mockImplementation(async function * () {
             yield { name: 'applicationDetail/export.csv' }
             yield { name: 'appsPaymentNotification/export.csv' }
-            yield { name: 'appsPaymentNotificationDelinked/export.csv' }
-            yield { name: 'applicationDetailDelinked/export.csv' }
+            yield { name: 'somefile.zip' }
+            yield { name: 'anotherfile.txt' }
           })
         })
       })),
@@ -109,10 +110,15 @@ describe('getFileList', () => {
     const fileList = await getFileList()
     expect(fileList).toEqual([
       'applicationDetail/export.csv',
-      'appsPaymentNotification/export.csv',
-      'applicationDetailDelinked/export.csv',
-      'appsPaymentNotificationDelinked/export.csv'
+      'appsPaymentNotification/export.csv'
     ])
+  })
+})
+
+describe('getZipFile', () => {
+  test('should return the name of the first zip file found', async () => {
+    const zipFileName = await getZipFile()
+    expect(zipFileName).toBe('somefile.zip')
   })
 })
 
@@ -145,7 +151,7 @@ describe('deleteFile', () => {
 describe('getDWHExtracts', () => {
   test('should return list of DWH extracts', async () => {
     const fileList = await getDWHExtracts()
-    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv', 'appsPaymentNotificationDelinked/export.csv', 'applicationDetailDelinked/export.csv'])
+    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
   })
 })
 

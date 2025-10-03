@@ -1,6 +1,6 @@
 const { publishingConfig } = require('../config')
 const { DELINKED, SFI23 } = require('../constants/schemes')
-const { renameExtracts, stageExtracts } = require('../etl')
+const { prepareDWHExtracts, stageDWHExtracts } = require('../etl')
 const sendUpdates = require('./send-updates')
 const updateSubsetCheck = require('./subset/update-subset-check')
 const sendZeroValueAlerts = require('./send-zero-value-alerts')
@@ -27,8 +27,8 @@ const start = async () => {
       await updateSubsetCheck(SFI23, false)
       resetSinceRestart = true
     }
-    await renameExtracts()
-    await stageExtracts()
+    await prepareDWHExtracts()
+    await stageDWHExtracts()
     await processUpdates()
     await sendZeroValueAlerts()
     console.log('All outstanding valid datasets published')

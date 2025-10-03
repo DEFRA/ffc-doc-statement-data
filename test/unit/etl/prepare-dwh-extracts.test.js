@@ -1,5 +1,6 @@
 const { getDWHExtracts, moveFile } = require('../../../app/storage')
-const { renameExtracts } = require('../../../app/etl/rename-extracts')
+const { prepareDWHExtracts } = require('../../../app/etl/prepare-dwh-extracts')
+const { unzipDWHExtracts } = require('../../../app/etl/unzip-dwh-extracts')
 
 jest.mock('../../../app/', () => ({
   etlConfig: {
@@ -25,50 +26,26 @@ jest.mock('../../../app/storage', () => ({
   moveFile: jest.fn()
 }))
 
-const FILE_PATH_LOOKUP = {
-  appDetail: 'appDetailFolder',
-  appPayment: 'appPaymentFolder',
-  appTypes: 'appTypesFolder',
-  businessAddr: 'businessAddrFolder',
-  calcDetails: 'calcDetailsFolder',
-  cssContractApp: 'cssContractAppFolder',
-  cssContract: 'cssContractFolder',
-  cssOptions: 'cssOptionsFolder',
-  defraLinks: 'defraLinksFolder',
-  financeDAX: 'financeDAXFolder',
-  organisation: 'organisationFolder',
-  tclcOption: 'tclcOptionFolder',
-  tclc: 'tclcFolder'
-}
+jest.mock('../../../app/etl/unzip-dwh-extracts', () => ({
+  unzipDWHExtracts: jest.fn()
+}))
 
-const getOutputPathFromFileName = (fileName) => {
-  let outputPath
-  for (const [key, value] of Object.entries(FILE_PATH_LOOKUP)) {
-    if (fileName.match(new RegExp(key))) {
-      outputPath = value
-      break
-    }
-  }
-  return outputPath
-}
-
-test('getOutputPathFromFileName returns correct folder path', () => {
-  expect(getOutputPathFromFileName('appDetailFile')).toBe('appDetailFolder')
-  expect(getOutputPathFromFileName('appPaymentFile')).toBe('appPaymentFolder')
-  expect(getOutputPathFromFileName('unknownFile')).toBeUndefined()
-})
-
-test('renameExtracts calls getDWHExtracts and moveFile with correct arguments', async () => {
+test('prepareDWHExtracts calls unzipDWHExtracts, getDWHExtracts, and moveFile with correct arguments', async () => {
+  const dwhExtractsFolder = 'dwh_extracts'
   const appDetailFolder = 'Application_Detail_SFI23'
   const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
   const appPaymentFolder = 'Apps_Payment_Notification_SFI23'
   const appPaymentFile = 'SFI23_STMT_APPS_PAYMENT_NOTIFICATIONS_V_CHANGE_LOG_20241227_130800.csv'
   const mockExtracts = [`${appDetailFolder}/${appDetailFile}`, `${appPaymentFolder}/${appPaymentFile}`]
+
   getDWHExtracts.mockResolvedValue(mockExtracts)
 
-  await renameExtracts()
+  await prepareDWHExtracts()
+
+  expect(unzipDWHExtracts).toHaveBeenCalledTimes(1)
 
   expect(getDWHExtracts).toHaveBeenCalled()
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
-  expect(moveFile).toHaveBeenCalledWith('dwh_extracts', appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
+
+  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
 })
