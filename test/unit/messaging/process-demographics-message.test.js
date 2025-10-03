@@ -84,6 +84,6 @@ describe('process demographics message', () => {
       enqueuedTimeUtc: moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')
     }
     await processDemographicsMessage(message, receiver)
-    expect(receiver.completeMessage).toHaveBeenCalledWith(message)
+    expect(receiver.completeMessage).not.toHaveBeenCalled()
   })
 })

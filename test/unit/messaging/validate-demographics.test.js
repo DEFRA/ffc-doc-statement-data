@@ -9,7 +9,7 @@ describe('validateDemographics', () => {
       county: 'Greater London',
       postcode: 'SW1A 1AA',
       emailAddress: 'test@example.com',
-      frn: '987654321',
+      frn: '9876543210',
       name: 'John Doe',
       updated: '2024-06-01T12:00:00Z',
       published: null,
