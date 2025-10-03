@@ -7,6 +7,8 @@ module.exports = {
   etlStageCssContractApplications: 'etlStageCssContractApplications',
   etlStageCssContracts: 'etlStageCssContracts',
   etlStageCssOptions: 'etlStageCssOptions',
+  etlStageDay0BusinessAddressContactV: 'etlStageDay0BusinessAddressContactV',
+  etlStageDay0Organisation: 'etlStageDay0Organisation',
   etlStageDefraLinks: 'etlStageDefraLinks',
   etlStageFinanceDax: 'etlStageFinanceDax',
   etlStageOrganisation: 'etlStageOrganisation',

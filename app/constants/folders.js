@@ -26,5 +26,7 @@ module.exports = {
   tclcOptionDelinked: 'capd_dwh_ods.tclc_pii_pay_claim_sfimt_option_Delinked',
   tclcDelinked: 'tclc_pii_pay_claim_sfimt_Delinked',
   appCalculationResultsDelinkPayments: 'appCalcResultsDelinkPayments',
-  tdeLinkingTransferTransactions: 'tdeLinkingTransferTransactions'
+  tdeLinkingTransferTransactions: 'tdeLinkingTransferTransactions',
+  day0Organisation: 'day0Organisation',
+  day0BusinessAddress: 'day0BusinessAddress'
 }

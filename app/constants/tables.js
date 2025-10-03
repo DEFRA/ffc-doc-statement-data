@@ -14,5 +14,7 @@ module.exports = {
   tclcOption: 'etlStageTclcPiiPayClaimSfimtOption',
   tclc: 'etlStageTclcPiiPayClaimSfimt',
   appCalcResultsDelinkPayments: 'etlStageAppCalcResultsDelinkPayments',
-  tdeLinkingTransferTransactions: 'etlStageTdeLinkingTransferTransactions'
+  tdeLinkingTransferTransactions: 'etlStageTdeLinkingTransferTransactions',
+  day0Organisation: 'etlStageDay0Organisation',
+  day0BusinessAddress: 'etlStageDay0BusinessAddressContactV'
 }

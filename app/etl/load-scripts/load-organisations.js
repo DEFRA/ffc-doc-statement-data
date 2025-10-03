@@ -1,5 +1,6 @@
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
+const mqConfig = require('../../config/message')
 const { executeQuery } = require('./load-interm-utils')
 
 const loadOrganisations = async (startDate, transaction) => {
@@ -39,10 +40,13 @@ const loadOrganisations = async (startDate, transaction) => {
     "name" = EXCLUDED."name",
     updated = EXCLUDED.updated;
   `
-
-  await executeQuery(query, {
-    startDate
-  }, transaction)
+  if (mqConfig.day0DateTime) {
+    console.log('Skipping organisation load as a day 0 cut has been loaded')
+  } else {
+    await executeQuery(query, {
+      startDate
+    }, transaction)
+  }
 }
 
 module.exports = {

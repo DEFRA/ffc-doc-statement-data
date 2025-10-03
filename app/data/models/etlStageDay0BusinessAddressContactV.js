@@ -2,17 +2,17 @@ const config = require('../../config')
 const databaseFields = require('../../constants/business-address-shared/database-fields')
 const dbConfig = config.dbConfig[config.env]
 
-module.exports = (sequelize, DataTypes) => {
-  const etlStageBusinessAddressContactV = sequelize.define('etlStageBusinessAddressContactV', {
-    changeType: DataTypes.STRING,
-    changeTime: DataTypes.DATE,
+const etlStageDay0BusinessAddressContactV = (sequelize, DataTypes) => {
+  const databaseDefinition = sequelize.define('etlStageDay0BusinessAddressContactV', {
     ...databaseFields(DataTypes)
   },
   {
-    tableName: 'etlStageBusinessAddressContactV',
+    tableName: 'etlStageDay0BusinessAddressContactV',
     freezeTableName: true,
     timestamps: false,
     schema: dbConfig.schema
   })
-  return etlStageBusinessAddressContactV
+  return databaseDefinition
 }
+
+module.exports = etlStageDay0BusinessAddressContactV

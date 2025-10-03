@@ -6,7 +6,10 @@ let blobServiceClient
 let containersInitialised
 let foldersInitialised
 
-const folderList = []
+const folderList = [
+  config.day0Organisation.folder,
+  config.day0BusinessAddress.folder
+]
 
 if (config.sfi23Enabled) {
   console.log('Include SFI 23 folders')
