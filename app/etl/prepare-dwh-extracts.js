@@ -30,7 +30,9 @@ const FILE_PATH_LOOKUP = {
   [etlConfig.tclcOptionDelinked.fileMask]: etlConfig.tclcOptionDelinked.folder,
   [etlConfig.tclcDelinked.fileMask]: etlConfig.tclcDelinked.folder,
   [etlConfig.appCalculationResultsDelinkPayments.fileMask]: etlConfig.appCalculationResultsDelinkPayments.folder,
-  [etlConfig.tdeLinkingTransferTransactions.fileMask]: etlConfig.tdeLinkingTransferTransactions.folder
+  [etlConfig.tdeLinkingTransferTransactions.fileMask]: etlConfig.tdeLinkingTransferTransactions.folder,
+  [etlConfig.day0Organisation.fileMask]: etlConfig.day0Organisation.folder,
+  [etlConfig.day0BusinessAddress.fileMask]: etlConfig.day0BusinessAddress.folder
 }
 
 const getOutputPathFromFileName = (fileName) => {

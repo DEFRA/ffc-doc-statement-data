@@ -79,6 +79,8 @@ jest.mock('../app/config/etl', () => ({
   cssContractApplicationsDelinked: { folder: 'cssContractApplicationsDelinked' },
   cssContractDelinked: { folder: 'cssContractDelinked' },
   cssOptionsDelinked: { folder: 'cssOptionsDelinked' },
+  day0Organisation: { folder: 'day0Organisation' },
+  day0BusinessAddress: { folder: 'day0BusinessAddressContactV' },
   defraLinksDelinked: { folder: 'defraLinksDelinked' },
   financeDAXDelinked: { folder: 'financeDAXDelinked' },
   organisationDelinked: { folder: 'organisationDelinked' },

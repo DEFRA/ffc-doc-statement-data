@@ -60,7 +60,7 @@ module.exports = {
         buildingName: 'THORNEWILL HOUSE',
         street: 'CABLE STREET',
         city: 'LONDON',
-        county: null,
+        county: 'GREATER LONDON',
         country: 'United Kingdom',
         postalCode: 'E1 0AP',
         uprn: 6024696,
