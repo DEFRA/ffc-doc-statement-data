@@ -1,4 +1,4 @@
-const util = require('util')
+const util = require('node:util')
 
 const validateUpdate = (update, type) => {
   const schema = require(`./${type}/schema`)
