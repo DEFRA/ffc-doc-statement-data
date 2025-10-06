@@ -58,19 +58,20 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(startDate)
     await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(startDate)
     await wrapWithLogging(loadIntermTotalZeroValues, 'loadIntermTotalZeroValues')(startDate)
-    await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
-
-    await firstTransaction.commit()
 
     await wrapWithLogging(loadIntermAppCalcResultsDelinkPayment, 'loadIntermAppCalcResultsDelinkPayment')(startDate)
     await wrapWithLogging(loadIntermTotalClaim, 'loadIntermTotalClaim')(startDate)
     await wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')(startDate)
 
     await wrapWithLogging(loadIntermPaymentrefOrg, 'loadIntermPaymentrefOrg')(startDate)
-    await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
-    await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
 
+    await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
+    await firstTransaction.commit()
+
+    await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
+
+    await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
     await wrapWithLogging(loadDAX, 'loadDAX')(startDate, secondTransaction)
     await wrapWithLogging(loadZeroValueDax, 'loadZeroValueDAX')(startDate, secondTransaction)
     await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
