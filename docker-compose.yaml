@@ -41,7 +41,7 @@ services:
       PROCESS_SFI23_SUBSET_AMOUNT: ${PROCESS_SFI23_SUBSET_AMOUNT:-10}
       LOG_INTERVAL_MS: ${LOG_INTERVAL_MS:-600000}
       POLLING_INTERVAL: ${POLLING_INTERVAL:-3600000}
-      DAY_0_DATE_TIME: ${DAY_0_DATE_TIME-null}
+      DAY_0_DATE_TIME: ${DAY_0_DATE_TIME:-2099-12-31T00:00:00Z}
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine
