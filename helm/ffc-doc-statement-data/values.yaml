@@ -51,7 +51,7 @@ container:
   publishingEnabled: true
   logIntervalMs: 60000
   pollingInterval: 3600000
-  day0DateTime: 2099-12-31
+  day0DateTime: 2099-12-31T00:00:00Z
 
 postgresService:
   postgresDb: ffc_doc_statement_data

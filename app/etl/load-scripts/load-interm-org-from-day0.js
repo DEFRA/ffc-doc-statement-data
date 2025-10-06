@@ -39,7 +39,8 @@ const queryTemplate = `
     O."lastUpdatedOn"::date AS "updated"
     FROM ${dbConfig.schema}."etlStageDay0Organisation" O
     INNER JOIN ${dbConfig.schema}."etlStageDay0BusinessAddressContactV" A ON A.sbi = O.sbi
-    WHERE O."sbi" IS NOT NULL;
+    WHERE O."sbi" IS NOT NULL
+    AND O.sbi != 0;
 `
 
 const loadIntermOrgFromDay0 = async (startDate, transaction) => {
