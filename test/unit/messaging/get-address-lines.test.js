@@ -133,15 +133,15 @@ describe('get correct address lines', () => {
     expect(result.addressLine2).toEqual('Elm Street')
   })
 
-  test('manual address with missing address2 and address3 returns undefined for those lines', () => {
+  test('manual address with missing address2 and address3 returns null for those lines', () => {
     const address = {
       address1: '123 Manual St'
     }
     const result = getAddressLines(address)
     expect(result).toEqual({
       addressLine1: '123 Manual St',
-      addressLine2: undefined,
-      addressLine3: undefined
+      addressLine2: null,
+      addressLine3: null
     })
   })
 })

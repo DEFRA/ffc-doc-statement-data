@@ -3,9 +3,9 @@ const getAddressLines = (address) => {
   // this affects how address is provided.
   if (address?.address1) {
     return {
-      addressLine1: address.address1,
-      addressLine2: address.address2,
-      addressLine3: address.address3
+      addressLine1: address.address1 ?? null,
+      addressLine2: address.address2 ?? null,
+      addressLine3: address.address3 ?? null
     }
   } else if (address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName) {
     const flatName = address.flatName
@@ -13,8 +13,8 @@ const getAddressLines = (address) => {
     const buildingNumber = address.buildingNumberRange
     const street = address.street
     return {
-      addressLine1: flatName && buildingName ? `${flatName} ${buildingName}` : (flatName ?? buildingName),
-      addressLine2: buildingNumber ? `${buildingNumber} ${street}` : street,
+      addressLine1: (flatName && buildingName ? `${flatName} ${buildingName}` : (flatName ?? buildingName)) ?? null,
+      addressLine2: (buildingNumber ? `${buildingNumber} ${street}` : street) ?? null,
       addressLine3: null
     }
   } else {
