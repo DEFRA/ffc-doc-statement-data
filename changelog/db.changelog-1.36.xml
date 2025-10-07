@@ -1,0 +1,74 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet author="Sam Plackett" id="1">
+    <tagDatabase tag="v1.36.0" />
+  </changeSet>
+  <changeSet author="Sam Plackett" id="2">
+    <createTable tableName="etlStageDay0Organisation">
+        <column name="etlId" type="BIGSERIAL">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageDay0Organisation_pkey" />
+        </column>
+        <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        <column name="organisationWid" type="NUMBER(20,0)">
+            <constraints nullable="true" />
+        </column>
+        <column name="partyId" type="NUMBER(20,0)">
+            <constraints nullable="true" />
+        </column>
+        <column name="sbi" type="NUMBER(38,0)">
+            <constraints nullable="true" />
+        </column>
+        <column name="lastUpdatedOn" type="TIMESTAMP">
+            <constraints nullable="true" />
+        </column>
+    </createTable>
+    <createIndex indexName="idx_etlStageDay0OrganisationPartyId" tableName="etlStageDay0Organisation">
+      <column name="partyId"/>
+    </createIndex>
+    <createIndex indexName="idx_etlStageDay0OrganisationSbiIdx" tableName="etlStageDay0Organisation">
+        <column name="SBI"/>
+    </createIndex>
+    <createTable tableName="etlStageDay0BusinessAddressContactV">
+        <column name="etlId" type="BIGSERIAL">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="etlStageDay0BusinessAddressContactV_pkey" />
+        </column>
+        <column name="etlInsertedDt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        <column name="sbi" type="NUMBER">
+            <constraints nullable="true" />
+        </column>
+        <column name="frn" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessName" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessAddress1" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessAddress2" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessAddress3" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessCity" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessCounty" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessPostCode" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+        <column name="businessEmailAddr" type="VARCHAR">
+            <constraints nullable="true" />
+        </column>
+    </createTable>
+    <createIndex indexName="idx_etlStageDay0BusinessAddressContactVSbi" tableName="etlStageDay0BusinessAddressContactV">
+      <column name="SBI"/>
+    </createIndex>
+    <createIndex indexName="idx_etlStageDay0BusinessAddressContactVFrnIdx" tableName="etlStageDay0BusinessAddressContactV">
+        <column name="FRN"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

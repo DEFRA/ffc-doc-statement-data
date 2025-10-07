@@ -36,4 +36,5 @@ data:
   PROCESS_SFI23_SUBSET_AMOUNT: {{ quote .Values.container.processSfi23SubsetAmount }}
   LOG_INTERVAL_MS: {{ quote .Values.container.logIntervalMs }}
   POLLING_INTERVAL: {{ quote .Values.container.pollingInterval }}
+  DAY_0_DATE_TIME: {{ quote .Values.container.day0DateTime }}
 {{- end -}}

@@ -22,7 +22,8 @@ const mqSchema = Joi.object({
   },
   publishEtlProcessErrorTopic: {
     address: Joi.string()
-  }
+  },
+  day0DateTime: Joi.date().allow(null, '')
 })
 
 const mqConfig = {
@@ -47,7 +48,8 @@ const mqConfig = {
   },
   publishEtlProcessErrorTopic: {
     address: process.env.ETL_PROCESS_TOPIC_ERROR_ADDRESS
-  }
+  },
+  day0DateTime: (process.env.DAY_0_DATE_TIME & process.env.DAY_0_DATE_TIME !== '2099-12-31T00:00:00Z') ? process.env.DAY_0_DATE_TIME : null
 }
 
 const mqResult = mqSchema.validate(mqConfig, {
@@ -63,10 +65,12 @@ const dataTopic = { ...mqResult.value.messageQueue, ...mqResult.value.dataTopic 
 const updatesSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.updatesSubscription }
 const alertTopic = { ...mqResult.value.messageQueue, ...mqResult.value.alertTopic }
 const publishEtlProcessError = { ...mqResult.value.messageQueue, ...mqResult.value.publishEtlProcessErrorTopic }
+const day0DateTime = mqResult.value.day0DateTime
 
 module.exports = {
   dataTopic,
   updatesSubscription,
   alertTopic,
-  publishEtlProcessError
+  publishEtlProcessError,
+  day0DateTime
 }
