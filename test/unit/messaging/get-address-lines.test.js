@@ -85,4 +85,63 @@ describe('get correct address lines', () => {
     const result = getAddressLines(address)
     expect(result).toBeNull()
   })
+
+  test('returns empty string addressLine1 if flatName and buildingName are empty strings', () => {
+    const address = {
+      flatName: '',
+      buildingName: '',
+      buildingNumberRange: '12',
+      street: 'Main Street'
+    }
+    const result = getAddressLines(address)
+    expect(result).toEqual({
+      addressLine1: '',
+      addressLine2: '12 Main Street',
+      addressLine3: null
+    })
+  })
+
+  test('returns street as addressLine2 even if street is empty string', () => {
+    const address = {
+      flatName: 'Flat A',
+      buildingName: 'Building B',
+      buildingNumberRange: '15',
+      street: ''
+    }
+    const result = getAddressLines(address)
+    expect(result).toEqual({
+      addressLine1: 'Flat A Building B',
+      addressLine2: '15 ',
+      addressLine3: null
+    })
+  })
+
+  test('returns street as addressLine2 when only buildingNumberRange and street present', () => {
+    const address = {
+      buildingNumberRange: '100',
+      street: 'Broadway'
+    }
+    const result = getAddressLines(address)
+    expect(result.addressLine2).toEqual('100 Broadway')
+  })
+
+  test('returns street as addressLine2 when only street present', () => {
+    const address = {
+      street: 'Elm Street'
+    }
+    const result = getAddressLines(address)
+    expect(result.addressLine2).toEqual('Elm Street')
+  })
+
+  test('manual address with missing address2 and address3 returns undefined for those lines', () => {
+    const address = {
+      address1: '123 Manual St'
+    }
+    const result = getAddressLines(address)
+    expect(result).toEqual({
+      addressLine1: '123 Manual St',
+      addressLine2: undefined,
+      addressLine3: undefined
+    })
+  })
 })

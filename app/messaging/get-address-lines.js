@@ -7,7 +7,7 @@ const getAddressLines = (address) => {
       addressLine2: address.address2,
       addressLine3: address.address3
     }
-  } else if (address?.street) {
+  } else if (address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName) {
     const flatName = address.flatName
     const buildingName = address.buildingName
     const buildingNumber = address.buildingNumberRange
