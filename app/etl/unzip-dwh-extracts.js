@@ -47,10 +47,15 @@ const unzipAndUpload = async (zipStream) => {
 const unzipDWHExtracts = async () => {
   const zipFile = await getZipFile()
   if (zipFile) {
-    const downloadStream = await downloadFileAsStream(zipFile)
-    await unzipAndUpload(downloadStream)
-    await deleteFile(zipFile)
-    console.log(`Processed and deleted zip file: ${zipFile}`)
+    try {
+      const downloadStream = await downloadFileAsStream(zipFile)
+      await unzipAndUpload(downloadStream)
+      await deleteFile(zipFile)
+      console.log(`Processed and deleted zip file: ${zipFile}`)
+    } catch (err) {
+      console.error('Failed to process DWH zip file: ', err)
+      throw err
+    }
   } else {
     console.log('No DWH zip file identified for processing')
   }

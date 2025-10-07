@@ -1,5 +1,6 @@
 const { etlConfig } = require('../config')
-const { getDWHExtracts, moveFile } = require('../storage')
+const { createAlerts } = require('../messaging/create-alerts')
+const { getDWHExtracts, moveFile, quarantineAllFiles } = require('../storage')
 const { unzipDWHExtracts } = require('./unzip-dwh-extracts')
 
 const FILE_PATH_LOOKUP = {
@@ -47,12 +48,23 @@ const getOutputPathFromFileName = (fileName) => {
 }
 
 const prepareDWHExtracts = async () => {
-  await unzipDWHExtracts()
-  const extracts = await getDWHExtracts()
-  for (const extract of extracts) {
-    const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
-    const outputFolder = getOutputPathFromFileName(fileName)
-    await moveFile(etlConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
+  try {
+    await unzipDWHExtracts()
+    const extracts = await getDWHExtracts()
+    for (const extract of extracts) {
+      const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
+      const outputFolder = getOutputPathFromFileName(fileName)
+      const moved = await moveFile(etlConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
+      if (moved === false) {
+        throw new Error(`Failed to move file: ${fileName}`)
+      }
+    }
+  } catch (err) {
+    await quarantineAllFiles()
+    await createAlerts({
+      process: 'prepareDWHExtracts',
+      message: err.message
+    })
   }
 }
 

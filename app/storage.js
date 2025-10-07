@@ -76,6 +76,8 @@ const initialiseFolders = async () => {
   const placeHolderText = 'Placeholder'
   const blobClient = container.getBlockBlobClient(`${config.dwhExtractsFolder}/default.txt`)
   await blobClient.upload(placeHolderText, placeHolderText.length)
+  const quarantineBlobClient = container.getBlockBlobClient(`${config.quarantineFolder}/default.txt`)
+  await quarantineBlobClient.upload(placeHolderText, placeHolderText.length)
   foldersInitialised = true
   console.log('Folders ready')
 }
@@ -95,13 +97,33 @@ const getFileList = async () => {
   return fileList
 }
 
-const getZipFile = async () => {
+const quarantineAllFiles = async () => {
   containersInitialised ?? await initialiseContainers()
   for await (const file of container.listBlobsFlat()) {
-    if (file.name.endsWith('.zip')) {
-      console.log(`Identified file: ${file.name}`)
-      return file.name
+    if (file.name.endsWith('.zip') || file.name.endsWith('.csv')) {
+      const lastSlashIndex = file.name.lastIndexOf('/')
+      const sourceFolder = lastSlashIndex === -1 ? '' : file.name.substring(0, lastSlashIndex)
+      const fileName = file.name.substring(lastSlashIndex + 1)
+
+      await moveFile(sourceFolder, config.quarantineFolder, file.name, fileName)
     }
+  }
+}
+
+const getZipFile = async () => {
+  containersInitialised ?? await initialiseContainers()
+  const files = []
+  for await (const file of container.listBlobsFlat()) {
+    files.push(file.name)
+  }
+
+  const pattern = /^DWH_Extract_\d+\.zip$/
+  const filteredFiles = files.filter(name => pattern.test(name))
+
+  filteredFiles.sort()
+  if (filteredFiles.length > 0) {
+    console.log(`Identified file: ${filteredFiles[0]}`)
+    return filteredFiles[0]
   }
   return null
 }
@@ -146,13 +168,18 @@ const deleteFile = async (filename) => {
 const getDWHExtracts = async () => {
   containersInitialised ?? await initialiseContainers()
   const fileList = []
-  for await (const file of container.listBlobsFlat({ prefix: config.dwhExtractsFolder })) {
-    if (file.name.endsWith('.csv')) {
-      console.log(`Identified DWH extract: ${file.name}`)
-      fileList.push(file.name)
+  try {
+    for await (const file of container.listBlobsFlat({ prefix: config.dwhExtractsFolder })) {
+      if (file.name.endsWith('.csv')) {
+        console.log(`Identified DWH extract: ${file.name}`)
+        fileList.push(file.name)
+      }
     }
+    return fileList
+  } catch (err) {
+    console.log(`An error occurred trying to get DWH extracts: ${err.message}`)
+    throw err
   }
-  return fileList
 }
 
 const getETLExtractFilesFromFolder = async (folder) => {
@@ -214,5 +241,6 @@ module.exports = {
   initialiseContainers,
   initialiseFolders,
   getETLExtractFilesFromFolder,
-  getZipFile
+  getZipFile,
+  quarantineAllFiles
 }

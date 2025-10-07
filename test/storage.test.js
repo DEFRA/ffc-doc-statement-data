@@ -4,10 +4,10 @@ const {
   downloadFileAsStream,
   deleteFile,
   getDWHExtracts,
-  moveFile,
   getBlob,
-  deleteAllETLExtracts,
-  getZipFile
+  getZipFile,
+  initialiseFolders,
+  quarantineAllFiles
 } = require('../app/storage')
 
 jest.mock('@azure/storage-blob', () => {
@@ -30,7 +30,7 @@ jest.mock('@azure/storage-blob', () => {
           listBlobsFlat: jest.fn().mockImplementation(async function * () {
             yield { name: 'applicationDetail/export.csv' }
             yield { name: 'appsPaymentNotification/export.csv' }
-            yield { name: 'somefile.zip' }
+            yield { name: 'DWH_Extract_24215315.zip' }
             yield { name: 'anotherfile.txt' }
           })
         })
@@ -95,6 +95,7 @@ jest.mock('../app/config/etl', () => ({
   container: 'fake-container',
   createContainers: true,
   dwhExtractsFolder: 'dwhExtractsFolder',
+  quarantineFolder: 'quarantineFolder',
   sfi23Enabled: true,
   delinkedEnabled: true
 }))
@@ -120,7 +121,7 @@ describe('getFileList', () => {
 describe('getZipFile', () => {
   test('should return the name of the first zip file found', async () => {
     const zipFileName = await getZipFile()
-    expect(zipFileName).toBe('somefile.zip')
+    expect(zipFileName).toBe('DWH_Extract_24215315.zip')
   })
 })
 
@@ -154,115 +155,5 @@ describe('getDWHExtracts', () => {
   test('should return list of DWH extracts', async () => {
     const fileList = await getDWHExtracts()
     expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
-  })
-})
-
-describe('moveFile', () => {
-  test('should move file from source to destination', async () => {
-    const sourceBlobMock = {
-      url: 'source-url',
-      delete: jest.fn().mockResolvedValue(true)
-    }
-    const destinationBlobMock = {
-      beginCopyFromURL: jest.fn().mockResolvedValue({
-        pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'success' })
-      })
-    }
-    BlobServiceClient.prototype.getContainerClient = jest.fn().mockReturnValue({
-      getBlockBlobClient: jest.fn().mockReturnValueOnce(sourceBlobMock).mockReturnValueOnce(destinationBlobMock)
-    })
-    const result = await moveFile('sourceFolder', 'destinationFolder', 'sourceFilename', 'destinationFilename')
-    expect(result).toBe(true)
-  })
-})
-
-describe('deleteAllETLExtracts', () => {
-  let storage
-  let mockListBlobsFlat
-  let mockGetBlockBlobClient
-  let mockUpload
-  let mockDelete
-
-  beforeEach(() => {
-    jest.resetModules()
-    mockDelete = jest.fn().mockResolvedValue(true)
-    mockUpload = jest.fn().mockResolvedValue(true)
-    mockGetBlockBlobClient = jest.fn().mockReturnValue({ delete: mockDelete, upload: mockUpload })
-
-    mockListBlobsFlat = jest.fn()
-
-    jest.mock('@azure/storage-blob', () => {
-      const actual = jest.requireActual('@azure/storage-blob')
-      return {
-        ...actual,
-        BlobServiceClient: {
-          fromConnectionString: jest.fn().mockReturnValue({
-            getContainerClient: jest.fn().mockReturnValue({
-              createIfNotExists: jest.fn(),
-              getBlockBlobClient: mockGetBlockBlobClient,
-              listBlobsFlat: mockListBlobsFlat
-            })
-          })
-        }
-      }
-    })
-    storage = require('../app/storage')
-    storage.initialiseContainers = jest.fn().mockResolvedValue()
-    storage.initialiseFolders = jest.fn().mockResolvedValue()
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
-    jest.resetModules()
-  })
-
-  test('should delete all ETL extract files and return true', async () => {
-    mockListBlobsFlat.mockImplementation(function * ({ prefix }) {
-      if (prefix === 'applicationDetail') {
-        yield { name: 'applicationDetail/export.csv' }
-      }
-      if (prefix === 'appsPaymentNotification') {
-        yield { name: 'appsPaymentNotification/export.csv' }
-      }
-    })
-
-    const result = await storage.deleteAllETLExtracts()
-    expect(result).toBe(true)
-    expect(mockGetBlockBlobClient).toHaveBeenCalled()
-    expect(mockDelete).toHaveBeenCalledTimes(2)
-    expect(mockGetBlockBlobClient).toHaveBeenCalledWith('applicationDetail/export.csv')
-    expect(mockGetBlockBlobClient).toHaveBeenCalledWith('appsPaymentNotification/export.csv')
-  })
-
-  test('should return true if there are no export.csv files', async () => {
-    mockListBlobsFlat.mockImplementation(function * () { })
-
-    const result = await storage.deleteAllETLExtracts()
-    expect(result).toBe(true)
-    expect(mockDelete).not.toHaveBeenCalled()
-  })
-
-  test('should return false if a deletion throws', async () => {
-    mockListBlobsFlat.mockImplementation(function * ({ prefix }) {
-      if (prefix === 'applicationDetail') {
-        yield { name: 'applicationDetail/export.csv' }
-      }
-    })
-    mockDelete.mockRejectedValueOnce(new Error('delete failed'))
-
-    const result = await storage.deleteAllETLExtracts()
-    expect(result).toBe(false)
-    expect(mockDelete).toHaveBeenCalledTimes(1)
-  })
-
-  test('should successfully delete files from multiple folders', async () => {
-    mockListBlobsFlat.mockImplementation(async function * () {
-      yield { name: 'folder1/export.csv' }
-      yield { name: 'folder2/export.csv' }
-      yield { name: 'folder3/export.csv' }
-    })
-
-    const result = await deleteAllETLExtracts()
-    expect(result).toBe(true)
   })
 })

@@ -124,4 +124,16 @@ describe('unzipDWHExtracts', () => {
     expect(downloadFileAsStream).not.toHaveBeenCalled()
     expect(deleteFile).not.toHaveBeenCalled()
   })
+
+  test('should throw and log error if downloadFileAsStream fails', async () => {
+    getZipFile.mockResolvedValue(mockZipFile)
+    const error = new Error('Download stream error')
+    downloadFileAsStream.mockRejectedValue(error)
+
+    await expect(unzipDWHExtracts()).rejects.toThrow('Download stream error')
+
+    expect(getZipFile).toHaveBeenCalled()
+    expect(downloadFileAsStream).toHaveBeenCalledWith(mockZipFile)
+    expect(deleteFile).not.toHaveBeenCalled()
+  })
 })

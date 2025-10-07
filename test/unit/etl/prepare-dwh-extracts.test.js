@@ -1,6 +1,7 @@
-const { getDWHExtracts, moveFile } = require('../../../app/storage')
+const { getDWHExtracts, moveFile, quarantineAllFiles } = require('../../../app/storage')
 const { prepareDWHExtracts } = require('../../../app/etl/prepare-dwh-extracts')
 const { unzipDWHExtracts } = require('../../../app/etl/unzip-dwh-extracts')
+const { createAlerts } = require('../../../app/messaging/create-alerts')
 
 jest.mock('../../../app/', () => ({
   etlConfig: {
@@ -23,11 +24,16 @@ jest.mock('../../../app/', () => ({
 
 jest.mock('../../../app/storage', () => ({
   getDWHExtracts: jest.fn(),
-  moveFile: jest.fn()
+  moveFile: jest.fn(),
+  quarantineAllFiles: jest.fn()
 }))
 
 jest.mock('../../../app/etl/unzip-dwh-extracts', () => ({
   unzipDWHExtracts: jest.fn()
+}))
+
+jest.mock('../../../app/messaging/create-alerts', () => ({
+  createAlerts: jest.fn()
 }))
 
 test('prepareDWHExtracts calls unzipDWHExtracts, getDWHExtracts, and moveFile with correct arguments', async () => {
@@ -39,6 +45,7 @@ test('prepareDWHExtracts calls unzipDWHExtracts, getDWHExtracts, and moveFile wi
   const mockExtracts = [`${appDetailFolder}/${appDetailFile}`, `${appPaymentFolder}/${appPaymentFile}`]
 
   getDWHExtracts.mockResolvedValue(mockExtracts)
+  moveFile.mockResolvedValue(true)
 
   await prepareDWHExtracts()
 
@@ -48,4 +55,27 @@ test('prepareDWHExtracts calls unzipDWHExtracts, getDWHExtracts, and moveFile wi
 
   expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
   expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
+})
+
+test('prepareDWHExtracts calls quarantineAllFiles and createAlerts on moveFile throwing error', async () => {
+  const dwhExtractsFolder = 'dwh_extracts'
+  const appDetailFolder = 'Application_Detail_SFI23'
+  const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
+  const mockExtracts = [`${appDetailFolder}/${appDetailFile}`]
+
+  unzipDWHExtracts.mockResolvedValue()
+  getDWHExtracts.mockResolvedValue(mockExtracts)
+  const error = new Error('moveFile error')
+  moveFile.mockRejectedValue(error)
+
+  await prepareDWHExtracts()
+
+  expect(unzipDWHExtracts).toHaveBeenCalled()
+  expect(getDWHExtracts).toHaveBeenCalled()
+  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(quarantineAllFiles).toHaveBeenCalled()
+  expect(createAlerts).toHaveBeenCalledWith({
+    process: 'prepareDWHExtracts',
+    message: 'moveFile error'
+  })
 })
