@@ -5,9 +5,7 @@ const {
   deleteFile,
   getDWHExtracts,
   getBlob,
-  getZipFile,
-  initialiseFolders,
-  quarantineAllFiles
+  getZipFile
 } = require('../app/storage')
 
 jest.mock('@azure/storage-blob', () => {
