@@ -97,17 +97,20 @@ const getFileList = async () => {
   return fileList
 }
 
-const quarantineAllFiles = async () => {
+const quarantineAllFiles = async (moveFn = moveFile) => {
   containersInitialised ?? await initialiseContainers()
+  console.log('Quarantining all .zip and .csv files')
   for await (const file of container.listBlobsFlat()) {
     if (file.name.endsWith('.zip') || file.name.endsWith('.csv')) {
+      console.log(`Quarantining file: ${file.name}`)
       const lastSlashIndex = file.name.lastIndexOf('/')
       const sourceFolder = lastSlashIndex === -1 ? '' : file.name.substring(0, lastSlashIndex)
       const fileName = file.name.substring(lastSlashIndex + 1)
 
-      await moveFile(sourceFolder, config.quarantineFolder, file.name, fileName)
+      await moveFn(sourceFolder, config.quarantineFolder, fileName, fileName)
     }
   }
+  console.log('All .zip and .csv files quarantined')
 }
 
 const getZipFile = async () => {

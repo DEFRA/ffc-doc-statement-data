@@ -1,12 +1,6 @@
 const { BlobServiceClient } = require('@azure/storage-blob')
-const {
-  getFileList,
-  downloadFileAsStream,
-  deleteFile,
-  getDWHExtracts,
-  getBlob,
-  getZipFile
-} = require('../app/storage')
+
+const storage = require('../app/storage')
 
 let mockFiles
 
@@ -124,7 +118,7 @@ describe('storage module', () => {
 
   describe('getFileList', () => {
     test('should return list of files including delinked files', async () => {
-      const fileList = await getFileList()
+      const fileList = await storage.getFileList()
       expect(fileList).toEqual([
         'applicationDetail/export.csv',
         'appsPaymentNotification/export.csv'
@@ -134,8 +128,19 @@ describe('storage module', () => {
 
   describe('getZipFile', () => {
     test('should return the name of the first zip file found', async () => {
-      const zipFileName = await getZipFile()
+      const zipFileName = await storage.getZipFile()
       expect(zipFileName).toBe('DWH_Extract_24215315.zip')
+    })
+  })
+
+  describe('quarantineAllFiles', () => {
+    test('should quarantine the correct files', async () => {
+      const mockMoveFile = jest.fn()
+      await storage.quarantineAllFiles(mockMoveFile)
+      expect(mockMoveFile).toHaveBeenCalledTimes(3)
+      expect(mockMoveFile).toHaveBeenCalledWith('', 'quarantineFolder', 'DWH_Extract_24215315.zip', 'DWH_Extract_24215315.zip')
+      expect(mockMoveFile).toHaveBeenCalledWith('applicationDetail', 'quarantineFolder', 'export.csv', 'export.csv')
+      expect(mockMoveFile).toHaveBeenCalledWith('appsPaymentNotification', 'quarantineFolder', 'export.csv', 'export.csv')
     })
   })
 
@@ -144,7 +149,7 @@ describe('storage module', () => {
       BlobServiceClient.prototype.getContainerClient = jest.fn().mockReturnValue({
         getBlockBlobClient: jest.fn().mockReturnValue({})
       })
-      const blobClient = await getBlob('filename')
+      const blobClient = await storage.getBlob('filename')
       expect(blobClient).toBeDefined()
       expect(typeof blobClient).toBe('object')
     })
@@ -153,21 +158,21 @@ describe('storage module', () => {
   describe('downloadFileAsStream', () => {
     test('should download file as stream', async () => {
       const readableStreamBody = {}
-      const stream = await downloadFileAsStream('filename')
+      const stream = await storage.downloadFileAsStream('filename')
       expect(stream).toEqual(readableStreamBody)
     })
   })
 
   describe('deleteFile', () => {
     test('should delete file', async () => {
-      const result = await deleteFile('filename')
+      const result = await storage.deleteFile('filename')
       expect(result).toBe(true)
     })
   })
 
   describe('getDWHExtracts', () => {
     test('should return list of DWH extracts', async () => {
-      const fileList = await getDWHExtracts()
+      const fileList = await storage.getDWHExtracts()
       expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
     })
   })
