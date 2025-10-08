@@ -120,7 +120,7 @@ const getZipFile = async () => {
   const pattern = /^DWH_Extract_\d+\.zip$/
   const filteredFiles = files.filter(name => pattern.test(name))
 
-  filteredFiles.sort()
+  filteredFiles.sort((a, b) => a.localeCompare(b))
   if (filteredFiles.length > 0) {
     console.log(`Identified file: ${filteredFiles[0]}`)
     return filteredFiles[0]

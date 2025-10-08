@@ -8,6 +8,8 @@ const {
   getZipFile
 } = require('../app/storage')
 
+let mockFiles
+
 jest.mock('@azure/storage-blob', () => {
   const actualModule = jest.requireActual('@azure/storage-blob')
   return {
@@ -25,12 +27,7 @@ jest.mock('@azure/storage-blob', () => {
               pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'success' })
             })
           }),
-          listBlobsFlat: jest.fn().mockImplementation(async function * () {
-            yield { name: 'applicationDetail/export.csv' }
-            yield { name: 'appsPaymentNotification/export.csv' }
-            yield { name: 'DWH_Extract_24215315.zip' }
-            yield { name: 'anotherfile.txt' }
-          })
+          listBlobsFlat: jest.fn().mockImplementation(() => mockFiles())
         })
       })),
       prototype: {
@@ -98,60 +95,80 @@ jest.mock('../app/config/etl', () => ({
   delinkedEnabled: true
 }))
 
-describe('BlobServiceClient initialization', () => {
-  test('should use connection string for BlobServiceClient', () => {
-    const spy = jest.spyOn(BlobServiceClient, 'fromConnectionString')
-    require('../app/storage')
-    expect(spy).toHaveBeenCalledWith('fake-connection-string')
+describe('storage module', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockFiles = async function * () {
+      yield { name: 'applicationDetail/export.csv' }
+      yield { name: 'appsPaymentNotification/export.csv' }
+      yield { name: 'DWH_Extract_24215315.zip' }
+      yield { name: 'anotherfile.txt' }
+    }
   })
-})
 
-describe('getFileList', () => {
-  test('should return list of files including delinked files', async () => {
-    const fileList = await getFileList()
-    expect(fileList).toEqual([
-      'applicationDetail/export.csv',
-      'appsPaymentNotification/export.csv'
-    ])
-  })
-})
-
-describe('getZipFile', () => {
-  test('should return the name of the first zip file found', async () => {
-    const zipFileName = await getZipFile()
-    expect(zipFileName).toBe('DWH_Extract_24215315.zip')
-  })
-})
-
-describe('getBlob', () => {
-  test('should return blob client', async () => {
-    BlobServiceClient.prototype.getContainerClient = jest.fn().mockReturnValue({
-      getBlockBlobClient: jest.fn().mockReturnValue({})
+  describe('BlobServiceClient initialization', () => {
+    beforeEach(() => {
+      jest.resetModules()
     })
-    const blobClient = await getBlob('filename')
-    expect(blobClient).toBeDefined()
-    expect(typeof blobClient).toBe('object')
-  })
-})
 
-describe('downloadFileAsStream', () => {
-  test('should download file as stream', async () => {
-    const readableStreamBody = {}
-    const stream = await downloadFileAsStream('filename')
-    expect(stream).toEqual(readableStreamBody)
-  })
-})
+    test('should use connection string for BlobServiceClient', () => {
+      const { BlobServiceClient } = require('@azure/storage-blob')
 
-describe('deleteFile', () => {
-  test('should delete file', async () => {
-    const result = await deleteFile('filename')
-    expect(result).toBe(true)
-  })
-})
+      const spy = jest.spyOn(BlobServiceClient, 'fromConnectionString')
 
-describe('getDWHExtracts', () => {
-  test('should return list of DWH extracts', async () => {
-    const fileList = await getDWHExtracts()
-    expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
+      require('../app/storage')
+
+      expect(spy).toHaveBeenCalledWith('fake-connection-string')
+    })
+  })
+
+  describe('getFileList', () => {
+    test('should return list of files including delinked files', async () => {
+      const fileList = await getFileList()
+      expect(fileList).toEqual([
+        'applicationDetail/export.csv',
+        'appsPaymentNotification/export.csv'
+      ])
+    })
+  })
+
+  describe('getZipFile', () => {
+    test('should return the name of the first zip file found', async () => {
+      const zipFileName = await getZipFile()
+      expect(zipFileName).toBe('DWH_Extract_24215315.zip')
+    })
+  })
+
+  describe('getBlob', () => {
+    test('should return blob client', async () => {
+      BlobServiceClient.prototype.getContainerClient = jest.fn().mockReturnValue({
+        getBlockBlobClient: jest.fn().mockReturnValue({})
+      })
+      const blobClient = await getBlob('filename')
+      expect(blobClient).toBeDefined()
+      expect(typeof blobClient).toBe('object')
+    })
+  })
+
+  describe('downloadFileAsStream', () => {
+    test('should download file as stream', async () => {
+      const readableStreamBody = {}
+      const stream = await downloadFileAsStream('filename')
+      expect(stream).toEqual(readableStreamBody)
+    })
+  })
+
+  describe('deleteFile', () => {
+    test('should delete file', async () => {
+      const result = await deleteFile('filename')
+      expect(result).toBe(true)
+    })
+  })
+
+  describe('getDWHExtracts', () => {
+    test('should return list of DWH extracts', async () => {
+      const fileList = await getDWHExtracts()
+      expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
+    })
   })
 })
