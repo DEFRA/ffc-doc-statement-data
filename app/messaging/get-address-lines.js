@@ -1,3 +1,7 @@
+const hasNonLineBasedProperties = (address) => {
+  return address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName
+}
+
 const getAddressLines = (address) => {
   // address can be either entered manually or provided via lookup
   // this affects how address is provided.
@@ -7,7 +11,7 @@ const getAddressLines = (address) => {
       addressLine2: address.address2 ?? null,
       addressLine3: address.address3 ?? null
     }
-  } else if (address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName) {
+  } else if (hasNonLineBasedProperties(address)) {
     const flatName = address.flatName
     const buildingName = address.buildingName
     const buildingNumber = address.buildingNumberRange
