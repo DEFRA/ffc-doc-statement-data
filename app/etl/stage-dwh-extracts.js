@@ -54,13 +54,13 @@ if (etlConfig.delinkedEnabled) {
   )
 }
 
-const stageExtracts = async () => {
+const stageDWHExtracts = async () => {
   startDate = new Date()
   const etlFiles = await storage.getFileList()
-  const foldersToStage = etlFiles.map(file => file.split('/')[0])
+  const foldersToStage = new Set(etlFiles.map(file => file.split('/')[0]))
 
   if (etlFiles.length) {
-    const functionsToRun = stageFunctions.filter(({ label }) => foldersToStage.includes(label))
+    const functionsToRun = stageFunctions.filter(({ label }) => foldersToStage.has(label))
 
     if (functionsToRun.length === 0) {
       console.info('No matching DWH files identified for processing')
@@ -87,7 +87,9 @@ const stageExtracts = async () => {
     const failedOperations = results.filter(result => !result.success)
     if (failedOperations.length > 0) {
       console.error(`ETL process completed with ${failedOperations.length} failures:`)
-      failedOperations.forEach(op => console.error(`- ${op.label}: ${op.error}`))
+      for (const op of failedOperations) {
+        console.error(`- ${op.label}: ${op.error}`)
+      }
       const errors = failedOperations.map(op => ({
         file: op.label,
         message: op.error
@@ -104,5 +106,5 @@ const stageExtracts = async () => {
 }
 
 module.exports = {
-  stageExtracts
+  stageDWHExtracts
 }

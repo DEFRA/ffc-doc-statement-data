@@ -14,6 +14,7 @@ const schema = Joi.object({
   container: Joi.string().required(),
   dwhExtractsFolder: Joi.string().required(),
   etlLogsFolder: Joi.string().required(),
+  quarantineFolder: Joi.string().default('quarantine'),
   etlBatchSize: Joi.number().default(2000),
   excludeCalculationData: Joi.boolean().default(true),
   applicationDetail: Joi.object({
@@ -151,6 +152,7 @@ const config = {
   container: 'etl',
   dwhExtractsFolder: 'dwh_extracts',
   etlLogsFolder: 'logs',
+  quarantineFolder: 'quarantine',
   etlBatchSize: 4000,
   excludeCalculationData: process.env.EXCLUDE_CALCULATION_DATA,
   applicationDetail: {

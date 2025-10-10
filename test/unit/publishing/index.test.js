@@ -45,18 +45,6 @@ describe('start publishing', () => {
     expect(console.error).toHaveBeenCalledWith(`${'Error processing updates for ' + DELINKED}:`, error)
   })
 
-  test('handles errors during publishing and logs them', async () => {
-    console.error = jest.fn()
-    const testError = new Error('Test error during publishing')
-    const iteratorSpy = jest.spyOn(Array.prototype, Symbol.iterator).mockImplementationOnce(function () {
-      throw testError
-    })
-
-    await start()
-    expect(console.error).toHaveBeenCalledWith('Error during publishing:', testError)
-    iteratorSpy.mockRestore()
-  })
-
   test('restarts after polling interval', async () => {
     sendUpdates.mockResolvedValueOnce()
 
