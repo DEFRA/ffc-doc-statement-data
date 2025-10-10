@@ -1,4 +1,4 @@
-const { getDWHExtracts, moveFile, quarantineAllFiles } = require('../../../app/storage')
+const { getDWHExtracts, moveFile, quarantineAllFiles, deleteFile } = require('../../../app/storage')
 const { prepareDWHExtracts } = require('../../../app/etl/prepare-dwh-extracts')
 const { unzipDWHExtracts } = require('../../../app/etl/unzip-dwh-extracts')
 const { createAlerts } = require('../../../app/messaging/create-alerts')
@@ -25,7 +25,8 @@ jest.mock('../../../app/', () => ({
 jest.mock('../../../app/storage', () => ({
   getDWHExtracts: jest.fn(),
   moveFile: jest.fn(),
-  quarantineAllFiles: jest.fn()
+  quarantineAllFiles: jest.fn(),
+  deleteFile: jest.fn()
 }))
 
 jest.mock('../../../app/etl/unzip-dwh-extracts', () => ({
@@ -78,4 +79,20 @@ test('prepareDWHExtracts calls quarantineAllFiles and createAlerts on moveFile t
     process: 'prepareDWHExtracts',
     message: 'moveFile error'
   })
+})
+
+test('prepareDWHExtracts deletes file if outputFolder is undefined', async () => {
+  const unknownFolder = 'unknownFolder'
+  const unknownFile = 'UNKNOWN_FILE_20240101.csv'
+  const mockExtracts = [`${unknownFolder}/${unknownFile}`]
+
+  unzipDWHExtracts.mockResolvedValue()
+  getDWHExtracts.mockResolvedValue(mockExtracts)
+  deleteFile.mockResolvedValue()
+
+  await prepareDWHExtracts()
+
+  expect(unzipDWHExtracts).toHaveBeenCalled()
+  expect(getDWHExtracts).toHaveBeenCalled()
+  expect(deleteFile).toHaveBeenCalledWith(`${unknownFolder}/${unknownFile}`)
 })
