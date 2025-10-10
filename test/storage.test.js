@@ -95,7 +95,8 @@ describe('storage module', () => {
     mockFiles = async function * () {
       yield { name: 'applicationDetail/export.csv' }
       yield { name: 'appsPaymentNotification/export.csv' }
-      yield { name: 'DWH_Extract_24215315.zip' }
+      yield { name: 'DWH_Extract_20251010_120000.zip' }
+      yield { name: 'DWH_Extract_2025120000.zip' }
       yield { name: 'anotherfile.txt' }
     }
   })
@@ -129,7 +130,7 @@ describe('storage module', () => {
   describe('getZipFile', () => {
     test('should return the name of the first zip file found', async () => {
       const zipFileName = await storage.getZipFile()
-      expect(zipFileName).toBe('DWH_Extract_24215315.zip')
+      expect(zipFileName).toBe('DWH_Extract_20251010_120000.zip')
     })
   })
 
@@ -138,7 +139,7 @@ describe('storage module', () => {
       const mockMoveFile = jest.fn()
       await storage.quarantineAllFiles(mockMoveFile)
       expect(mockMoveFile).toHaveBeenCalledTimes(3)
-      expect(mockMoveFile).toHaveBeenCalledWith('', 'quarantineFolder', 'DWH_Extract_24215315.zip', 'DWH_Extract_24215315.zip')
+      expect(mockMoveFile).toHaveBeenCalledWith('', 'quarantineFolder', 'DWH_Extract_20251010_120000.zip', 'DWH_Extract_20251010_120000.zip')
       expect(mockMoveFile).toHaveBeenCalledWith('applicationDetail', 'quarantineFolder', 'export.csv', 'export.csv')
       expect(mockMoveFile).toHaveBeenCalledWith('appsPaymentNotification', 'quarantineFolder', 'export.csv', 'export.csv')
     })

@@ -61,6 +61,8 @@ if (config.useConnectionStr) {
 
 const container = blobServiceClient.getContainerClient(config.container)
 
+const zipPattern = /^DWH_Extract_\d{8}_\d{6}\.zip$/
+
 const initialiseContainers = async () => {
   if (config.createContainers) {
     console.log('Making sure blob containers exist')
@@ -101,7 +103,7 @@ const quarantineAllFiles = async (moveFn = moveFile) => {
   containersInitialised ?? await initialiseContainers()
   console.log('Quarantining all .zip and .csv files')
   for await (const file of container.listBlobsFlat()) {
-    if (file.name.endsWith('.zip') || file.name.endsWith('.csv')) {
+    if (zipPattern.test(file.name) || file.name.endsWith('.csv')) {
       console.log(`Quarantining file: ${file.name}`)
       const lastSlashIndex = file.name.lastIndexOf('/')
       const sourceFolder = lastSlashIndex === -1 ? '' : file.name.substring(0, lastSlashIndex)
@@ -120,8 +122,7 @@ const getZipFile = async () => {
     files.push(file.name)
   }
 
-  const pattern = /^DWH_Extract_\d+\.zip$/
-  const filteredFiles = files.filter(name => pattern.test(name))
+  const filteredFiles = files.filter(name => zipPattern.test(name))
 
   filteredFiles.sort((a, b) => a.localeCompare(b))
   if (filteredFiles.length > 0) {
