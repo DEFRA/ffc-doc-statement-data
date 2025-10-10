@@ -12,10 +12,6 @@ const processDemographicsMessage = async (message, receiver) => {
     const receivedData = message.body
     const enqueuedTime = message.enqueuedTimeUtc
     console.log('Demographics update received:', util.inspect(receivedData, false, null, true))
-    console.log('Enqueued at:', enqueuedTime)
-    console.log('Enqueued moment:', moment(enqueuedTime))
-    console.log('Day 0 time:', mqConfig.day0DateTime)
-    console.log('Day 0 moment:', moment(mqConfig.day0DateTime))
     if (mqConfig.day0DateTime && moment(enqueuedTime).isBefore(moment(mqConfig.day0DateTime))) {
       console.log(`Message received before day 0 date time ${mqConfig.day0DateTime} - ignoring`)
       await receiver.completeMessage(message)
