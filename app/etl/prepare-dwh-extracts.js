@@ -1,6 +1,6 @@
 const { etlConfig } = require('../config')
 const { createAlerts } = require('../messaging/create-alerts')
-const { getDWHExtracts, moveFile, quarantineAllFiles } = require('../storage')
+const { getDWHExtracts, moveFile, quarantineAllFiles, deleteFile } = require('../storage')
 const { unzipDWHExtracts } = require('./unzip-dwh-extracts')
 
 const FILE_PATH_LOOKUP = {
@@ -54,6 +54,11 @@ const prepareDWHExtracts = async () => {
     for (const extract of extracts) {
       const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
       const outputFolder = getOutputPathFromFileName(fileName)
+      if (outputFolder === undefined) {
+        console.log(`No matching output folder for file: ${fileName}, deleting file`)
+        await deleteFile(extract)
+        continue
+      }
       const moved = await moveFile(etlConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
       if (moved === false) {
         throw new Error(`Failed to move file: ${fileName}`)
