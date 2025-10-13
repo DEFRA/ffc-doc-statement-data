@@ -11,6 +11,12 @@ const isPostcodeLookup = (address) => {
   return address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName || address?.dependentLocality || address?.doubleDependentLocality
 }
 
+const getAddressLine3 = (buildingNumberRange, street) => {
+  return (buildingNumberRange || street)
+    ? [buildingNumberRange, street].filter(Boolean).join(' ')
+    : null
+}
+
 const bumpAddressLines = (addressLines) => {
   let linesAsArray = [addressLines.addressLine1, addressLines.addressLine2, addressLines.addressLine3]
 
@@ -38,7 +44,7 @@ const getAddressLines = (address) => {
     return bumpAddressLines({
       addressLine1: address.flatName ?? null,
       addressLine2: address.buildingName ?? null,
-      addressLine3: address.buildingNumberRange && address.street ? `${address.buildingNumberRange} ${address.street}` : address.street || null
+      addressLine3: getAddressLine3(address.buildingNumberRange, address.street)
     })
   } else {
     return null
