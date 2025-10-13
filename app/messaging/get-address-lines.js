@@ -1,7 +1,7 @@
-const zero = 0
-const one = 1
-const two = 2
-const three = 3
+const firstLineIndex = 0
+const secondLineIndex = 1
+const thirdLineIndex = 2
+const totalAddressLines = 3
 
 const isManualEntry = (address) => {
   return address?.address1 || address?.address2 || address?.address3
@@ -22,14 +22,14 @@ const bumpAddressLines = (addressLines) => {
 
   linesAsArray = linesAsArray.filter((line) => line !== null && line !== undefined && line !== '')
 
-  while (linesAsArray.length < three) {
+  while (linesAsArray.length < totalAddressLines) {
     linesAsArray.push(null)
   }
 
   return {
-    addressLine1: linesAsArray[zero],
-    addressLine2: linesAsArray[one],
-    addressLine3: linesAsArray[two]
+    addressLine1: linesAsArray[firstLineIndex],
+    addressLine2: linesAsArray[secondLineIndex],
+    addressLine3: linesAsArray[thirdLineIndex]
   }
 }
 
