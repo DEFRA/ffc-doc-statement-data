@@ -21,9 +21,9 @@ describe('get correct address lines', () => {
   test('returns address lines from lookup entry if all fields present', () => {
     const result = getAddressLines(lookupAddress)
     expect(result).toEqual({
-      addressLine1: 'FLAT 2, THORNEWILL HOUSE',
-      addressLine2: '10-12 CABLE STREET',
-      addressLine3: 'HOLBORN, EAST LONDON'
+      addressLine1: 'FLAT 2',
+      addressLine2: 'THORNEWILL HOUSE',
+      addressLine3: '10-12 CABLE STREET'
     })
   })
 
@@ -33,7 +33,7 @@ describe('get correct address lines', () => {
     expect(result).toEqual({
       addressLine1: 'FLAT 2',
       addressLine2: '10-12 CABLE STREET',
-      addressLine3: 'HOLBORN, EAST LONDON'
+      addressLine3: null
     })
   })
 
@@ -43,7 +43,7 @@ describe('get correct address lines', () => {
     expect(result).toEqual({
       addressLine1: 'THORNEWILL HOUSE',
       addressLine2: '10-12 CABLE STREET',
-      addressLine3: 'HOLBORN, EAST LONDON'
+      addressLine3: null
     })
   })
 
@@ -53,8 +53,8 @@ describe('get correct address lines', () => {
     const result = getAddressLines(lookupAddress)
     expect(result).toEqual({
       addressLine1: '10-12 CABLE STREET',
-      addressLine2: 'HOLBORN',
-      addressLine3: 'EAST LONDON'
+      addressLine2: null,
+      addressLine3: null
     })
   })
 
@@ -62,77 +62,9 @@ describe('get correct address lines', () => {
     lookupAddress.buildingNumberRange = null
     const result = getAddressLines(lookupAddress)
     expect(result).toEqual({
-      addressLine1: 'FLAT 2, THORNEWILL HOUSE',
-      addressLine2: 'CABLE STREET',
-      addressLine3: 'HOLBORN, EAST LONDON'
-    })
-  })
-
-  test('returns address lines from lookup entry with no dependentLocality', () => {
-    lookupAddress.dependentLocality = null
-    const result = getAddressLines(lookupAddress)
-    expect(result).toEqual({
-      addressLine1: 'FLAT 2, THORNEWILL HOUSE',
-      addressLine2: '10-12 CABLE STREET',
-      addressLine3: 'EAST LONDON'
-    })
-  })
-
-  test('returns address lines from lookup entry with no doubleDependentLocality', () => {
-    lookupAddress.doubleDependentLocality = null
-    const result = getAddressLines(lookupAddress)
-    expect(result).toEqual({
-      addressLine1: 'FLAT 2, THORNEWILL HOUSE',
-      addressLine2: '10-12 CABLE STREET',
-      addressLine3: 'HOLBORN'
-    })
-  })
-
-  test('returns address lines from lookup entry with no dependentLocality & doubleDependentLocality', () => {
-    lookupAddress.dependentLocality = null
-    lookupAddress.doubleDependentLocality = null
-    const result = getAddressLines(lookupAddress)
-    expect(result).toEqual({
       addressLine1: 'FLAT 2',
       addressLine2: 'THORNEWILL HOUSE',
-      addressLine3: '10-12 CABLE STREET'
-    })
-  })
-
-  test('returns address lines from lookup entry with no flatName or buildingName, and no dependentLocality', () => {
-    lookupAddress.flatName = null
-    lookupAddress.buildingName = null
-    lookupAddress.dependentLocality = null
-    const result = getAddressLines(lookupAddress)
-    expect(result).toEqual({
-      addressLine1: '10-12 CABLE STREET',
-      addressLine2: 'EAST LONDON',
-      addressLine3: null
-    })
-  })
-
-  test('returns address lines from lookup entry with no flatName or buildingName, and no doubleDependentLocality', () => {
-    lookupAddress.flatName = null
-    lookupAddress.buildingName = null
-    lookupAddress.doubleDependentLocality = null
-    const result = getAddressLines(lookupAddress)
-    expect(result).toEqual({
-      addressLine1: '10-12 CABLE STREET',
-      addressLine2: 'HOLBORN',
-      addressLine3: null
-    })
-  })
-
-  test('returns address lines from lookup entry with no flatName or buildingName, and no dependentLocality & doubleDependentLocality', () => {
-    lookupAddress.flatName = null
-    lookupAddress.buildingName = null
-    lookupAddress.dependentLocality = null
-    lookupAddress.doubleDependentLocality = null
-    const result = getAddressLines(lookupAddress)
-    expect(result).toEqual({
-      addressLine1: '10-12 CABLE STREET',
-      addressLine2: null,
-      addressLine3: null
+      addressLine3: 'CABLE STREET'
     })
   })
 
@@ -157,6 +89,30 @@ describe('get correct address lines', () => {
   test('manual address with missing address2 and address3 returns null for those lines', () => {
     const address = {
       address1: '123 Manual St'
+    }
+    const result = getAddressLines(address)
+    expect(result).toEqual({
+      addressLine1: '123 Manual St',
+      addressLine2: null,
+      addressLine3: null
+    })
+  })
+
+  test('manual address with missing address1 and address3 returns just address2 into line1', () => {
+    const address = {
+      address2: '123 Manual St'
+    }
+    const result = getAddressLines(address)
+    expect(result).toEqual({
+      addressLine1: '123 Manual St',
+      addressLine2: null,
+      addressLine3: null
+    })
+  })
+
+  test('manual address with missing address1 and address2 returns just address3 into line1', () => {
+    const address = {
+      address3: '123 Manual St'
     }
     const result = getAddressLines(address)
     expect(result).toEqual({

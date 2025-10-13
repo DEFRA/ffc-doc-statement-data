@@ -1,72 +1,47 @@
-const hasNonLineBasedProperties = (address) => {
+const isManualEntry = (address) => {
+  return address?.address1 || address?.address2 || address?.address3
+}
+
+const isPostcodeLookup = (address) => {
   return address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName || address?.dependentLocality || address?.doubleDependentLocality
 }
 
-const countNonNullLines = (lines) => {
-  return Object.values(lines).filter((line) => line && line.trim() !== '').length
-}
+const bumpAddressLines = (addressLines) => {
+  let linesAsArray = [addressLines.addressLine1, addressLines.addressLine2, addressLines.addressLine3]
 
-const getNonNullLines = (lines) => {
-  return Object.values(lines).filter((line) => line && line.trim() !== '')
+  linesAsArray = linesAsArray.filter((line) => line !== null && line !== undefined && line !== '')
+
+  while (linesAsArray.length < 3) {
+    linesAsArray.push(null)
+  }
+
+  return {
+    addressLine1: linesAsArray[0],
+    addressLine2: linesAsArray[1],
+    addressLine3: linesAsArray[2]
+  }
 }
 
 const getAddressLines = (address) => {
-  // address can be either entered manually or provided via lookup
-  // this affects how address is provided.
-  if (address?.address1) {
-    return {
+  if (isManualEntry(address)) {
+    return bumpAddressLines({
       addressLine1: address.address1 ?? null,
       addressLine2: address.address2 ?? null,
       addressLine3: address.address3 ?? null
-    }
-  } else if (hasNonLineBasedProperties(address)) {
+    })
+  } else if (isPostcodeLookup(address)) {
     const {
       flatName = null,
       buildingName = null,
       buildingNumberRange = null,
-      street = null,
-      dependentLocality = null,
-      doubleDependentLocality = null
+      street = null
     } = address
 
-    const addressLines = {
+    return bumpAddressLines({
       addressLine1: flatName,
       addressLine2: buildingName,
-      addressLine3: buildingNumberRange && street ? `${buildingNumberRange} ${street}` : street || null,
-      addressLine4: dependentLocality,
-      addressLine5: doubleDependentLocality
-    }
-
-    if (
-      countNonNullLines(addressLines) > 3 &&
-      dependentLocality &&
-      doubleDependentLocality
-    ) {
-      addressLines.addressLine4 = `${dependentLocality}, ${doubleDependentLocality}`
-      addressLines.addressLine5 = null
-    }
-
-    if (
-      countNonNullLines(addressLines) > 3 &&
-      flatName &&
-      buildingName
-    ) {
-      addressLines.addressLine1 = `${flatName}, ${buildingName}`
-      addressLines.addressLine2 = null
-    }
-
-    const finalLines = getNonNullLines(addressLines)
-
-    const condensedAddressLines = {}
-    for (let i = 0; i < finalLines.length && i < 3; i++) {
-      condensedAddressLines[`addressLine${i + 1}`] = finalLines[i]
-    }
-
-    for (let i = finalLines.length; i < 3; i++) {
-      condensedAddressLines[`addressLine${i + 1}`] = null
-    }
-
-    return condensedAddressLines
+      addressLine3: buildingNumberRange && street ? `${buildingNumberRange} ${street}` : street || null
+    })
   } else {
     return null
   }
