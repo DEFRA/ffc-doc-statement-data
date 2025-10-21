@@ -4,7 +4,7 @@ const mockFindAllD365 = jest.fn()
 const mockUpdateDax = jest.fn()
 const mockUpdateD365 = jest.fn()
 
-jest.mock('../../../app/messaging/processing-alerts', () => ({
+jest.mock('ffc-alerting-utils', () => ({
   dataProcessingAlert: mockDataProcessingAlert
 }))
 

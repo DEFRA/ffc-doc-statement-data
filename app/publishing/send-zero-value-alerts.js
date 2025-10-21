@@ -1,4 +1,4 @@
-const { dataProcessingAlert } = require('../messaging/processing-alerts')
+const { dataProcessingAlert } = require('ffc-alerting-utils')
 const { ZERO_VALUE_STATEMENT } = require('../constants/alerts')
 const db = require('../data')
 
