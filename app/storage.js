@@ -222,8 +222,10 @@ const deleteAllETLExtracts = async () => {
 }
 
 const moveFile = async (sourceFolder, destinationFolder, sourceFilename, destinationFilename) => {
-  const sourceBlob = await getBlob(`${sourceFolder}/${sourceFilename}`)
-  const destinationBlob = await getBlob(`${destinationFolder}/${destinationFilename}`)
+  const sourcePath = sourceFolder ? `${sourceFolder}/${sourceFilename}` : sourceFilename
+  const sourceBlob = await getBlob(sourcePath)
+  const destinationPath = destinationFolder ? `${destinationFolder}/${destinationFilename}` : destinationFilename
+  const destinationBlob = await getBlob(destinationPath)
   const copyResult = await (await destinationBlob.beginCopyFromURL(sourceBlob.url)).pollUntilDone()
 
   if (copyResult.copyStatus === 'success') {
