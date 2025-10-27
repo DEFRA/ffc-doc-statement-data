@@ -56,7 +56,7 @@ module.exports = {
         partyAddressId: 1776841,
         pafOrganisationName: null,
         flatName: 'FLAT 2',
-        buildingNumberRange: null,
+        buildingNumberRange: '10-12',
         buildingName: 'THORNEWILL HOUSE',
         street: 'CABLE STREET',
         city: 'LONDON',
@@ -70,8 +70,8 @@ module.exports = {
         address3: null,
         address4: null,
         address5: null,
-        doubleDependentLocality: null,
-        dependentLocality: null,
+        doubleDependentLocality: 'EAST LONDON',
+        dependentLocality: 'HOLBORN',
         updateType: 'U',
         mdmId: null
       }
