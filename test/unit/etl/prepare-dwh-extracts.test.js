@@ -1,3 +1,5 @@
+// BEGIN GENERATED CODE BY ATOS POLARIS AI FOR DEVELOPMENT ON 10/27/2025, 11:02:32 AM
+
 const { getDWHExtracts, moveFile, quarantineAllFiles, deleteFile } = require('../../../app/storage')
 const { prepareDWHExtracts } = require('../../../app/etl/prepare-dwh-extracts')
 const { unzipDWHExtracts } = require('../../../app/etl/unzip-dwh-extracts')
@@ -95,4 +97,33 @@ test('prepareDWHExtracts deletes file if outputFolder is undefined', async () =>
   expect(unzipDWHExtracts).toHaveBeenCalled()
   expect(getDWHExtracts).toHaveBeenCalled()
   expect(deleteFile).toHaveBeenCalledWith(`${unknownFolder}/${unknownFile}`)
+})
+
+test('prepareDWHExtracts throws error and calls quarantineAllFiles and createAlerts if moveFile resolves false', async () => {
+  const dwhExtractsFolder = 'dwh_extracts'
+  const appDetailFolder = 'Application_Detail_SFI23'
+  const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
+  const mockExtracts = [`${dwhExtractsFolder}/${appDetailFile}`]
+
+  unzipDWHExtracts.mockResolvedValue()
+  getDWHExtracts.mockResolvedValue(mockExtracts)
+
+  const etlConfig = require('../../../app/').etlConfig
+  etlConfig.applicationDetail.fileMask = 'appDetailFile\\.csv'
+  etlConfig.applicationDetail.folder = appDetailFolder
+
+  moveFile.mockResolvedValue(false)
+  quarantineAllFiles.mockResolvedValue()
+  createAlerts.mockResolvedValue()
+
+  await prepareDWHExtracts()
+
+  expect(unzipDWHExtracts).toHaveBeenCalled()
+  expect(getDWHExtracts).toHaveBeenCalled()
+  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, appDetailFile, 'export.csv')
+  expect(quarantineAllFiles).toHaveBeenCalled()
+  expect(createAlerts).toHaveBeenCalledWith({
+    process: 'prepareDWHExtracts',
+    message: `Failed to move file: ${appDetailFile}`
+  })
 })
