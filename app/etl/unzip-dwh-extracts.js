@@ -84,5 +84,6 @@ const unzipDWHExtracts = async () => {
 }
 
 module.exports = {
-  unzipDWHExtracts
+  unzipDWHExtracts,
+  clearAllUploads
 }

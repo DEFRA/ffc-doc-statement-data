@@ -1,5 +1,5 @@
 const unzipper = require('unzipper')
-const { unzipDWHExtracts } = require('../../../app/etl/unzip-dwh-extracts')
+const { unzipDWHExtracts, clearAllUploads } = require('../../../app/etl/unzip-dwh-extracts')
 const { getZipFile, downloadFileAsStream, deleteFile, getBlob } = require('../../../app/storage')
 const config = require('../../../app/config/etl')
 
@@ -135,5 +135,43 @@ describe('unzipDWHExtracts', () => {
     expect(getZipFile).toHaveBeenCalled()
     expect(downloadFileAsStream).toHaveBeenCalledWith(mockZipFile)
     expect(deleteFile).not.toHaveBeenCalled()
+  })
+})
+
+describe('clearAllUploads', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  test('should call deleteFile for each uploaded file with correct path', async () => {
+    const uploadedFiles = ['file1.csv', 'file2.csv', 'file3.csv']
+
+    await clearAllUploads(uploadedFiles)
+
+    expect(deleteFile).toHaveBeenCalledTimes(uploadedFiles.length)
+    uploadedFiles.forEach(fileName => {
+      expect(deleteFile).toHaveBeenCalledWith(`${config.dwhExtractsFolder}/${fileName}`)
+    })
+  })
+
+  test('should handle empty uploadedFiles array without calling deleteFile', async () => {
+    const uploadedFiles = []
+
+    await clearAllUploads(uploadedFiles)
+
+    expect(deleteFile).not.toHaveBeenCalled()
+  })
+
+  test('should log deletion messages for each uploaded file', async () => {
+    const uploadedFiles = ['fileA.txt', 'fileB.txt']
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
+
+    await clearAllUploads(uploadedFiles)
+
+    uploadedFiles.forEach(fileName => {
+      expect(consoleLogSpy).toHaveBeenCalledWith(`Deleted uploaded file due to error: ${fileName}`)
+    })
+
+    consoleLogSpy.mockRestore()
   })
 })
