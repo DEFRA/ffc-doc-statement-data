@@ -36,8 +36,6 @@ const unzipAndUpload = async (zipStream) => {
             console.log(`Uploaded file to blob storage: ${baseFileName}`)
             uploadedFiles.push(baseFileName)
           } catch (err) {
-            console.error(`Error processing entry ${baseFileName}: `, err)
-
             await clearAllUploads(uploadedFiles)
             throw err
           }
@@ -69,15 +67,10 @@ const unzipAndUpload = async (zipStream) => {
 const unzipDWHExtracts = async () => {
   const zipFile = await getZipFile()
   if (zipFile) {
-    try {
-      const downloadStream = await downloadFileAsStream(zipFile)
-      await unzipAndUpload(downloadStream)
-      await deleteFile(zipFile)
-      console.log(`Processed and deleted zip file: ${zipFile}`)
-    } catch (err) {
-      console.error('Failed to process DWH zip file: ', err)
-      throw err
-    }
+    const downloadStream = await downloadFileAsStream(zipFile)
+    await unzipAndUpload(downloadStream)
+    await deleteFile(zipFile)
+    console.log(`Processed and deleted zip file: ${zipFile}`)
   } else {
     console.log('No DWH zip file identified for processing')
   }
