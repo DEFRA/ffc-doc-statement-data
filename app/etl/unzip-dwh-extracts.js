@@ -3,7 +3,7 @@ const { getZipFile, downloadFileAsStream, deleteFile, getBlob } = require('../st
 const config = require('../config/etl')
 
 const clearAllUploads = async (uploadedFiles) => {
-  Promise.all(
+  await Promise.all(
     uploadedFiles.map(async (uploadedFile) => {
       await deleteFile(`${config.dwhExtractsFolder}/${uploadedFile}`)
       console.log(`Deleted uploaded file due to error: ${uploadedFile}`)
@@ -11,7 +11,7 @@ const clearAllUploads = async (uploadedFiles) => {
   )
 }
 
-const unzipAndUpload = async (zipStream) => {
+const unzipAndUpload = (zipStream) => {
   const uploadedFiles = []
   const uploadPromises = []
 
@@ -29,23 +29,18 @@ const unzipAndUpload = async (zipStream) => {
         const baseFileName = fileName.split('/').pop()
         console.log(`Extracting file from zip: ${baseFileName}`)
 
-        const uploadPromise = (async () => {
-          try {
-            const blobClient = await getBlob(`${config.dwhExtractsFolder}/${baseFileName}`)
-            await blobClient.uploadStream(entry)
+        const uploadPromise = getBlob(`${config.dwhExtractsFolder}/${baseFileName}`)
+          .then(blobClient => blobClient.uploadStream(entry))
+          .then(() => {
             console.log(`Uploaded file to blob storage: ${baseFileName}`)
             uploadedFiles.push(baseFileName)
-          } catch (err) {
+          })
+          .catch(async (err) => {
             await clearAllUploads(uploadedFiles)
             throw err
-          }
-        })()
+          })
 
         uploadPromises.push(uploadPromise)
-
-        uploadPromise.catch((err) => {
-          reject(err)
-        })
       })
       .on('close', async () => {
         console.log('DWH zip file parsing finished, waiting for uploads to complete...')
@@ -66,14 +61,15 @@ const unzipAndUpload = async (zipStream) => {
 
 const unzipDWHExtracts = async () => {
   const zipFile = await getZipFile()
-  if (zipFile) {
-    const downloadStream = await downloadFileAsStream(zipFile)
-    await unzipAndUpload(downloadStream)
-    await deleteFile(zipFile)
-    console.log(`Processed and deleted zip file: ${zipFile}`)
-  } else {
+  if (!zipFile) {
     console.log('No DWH zip file identified for processing')
+    return
   }
+
+  const downloadStream = await downloadFileAsStream(zipFile)
+  await unzipAndUpload(downloadStream)
+  await deleteFile(zipFile)
+  console.log(`Processed and deleted zip file: ${zipFile}`)
 }
 
 module.exports = {
