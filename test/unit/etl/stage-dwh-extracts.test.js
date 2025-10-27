@@ -8,6 +8,7 @@ const ora = require('ora')
 const { stageDWHExtracts } = require('../../../app/etl/stage-dwh-extracts')
 const { loadETLData } = require('../../../app/etl/load-etl-data')
 const { createAlerts } = require('../../../app/messaging/create-alerts')
+const staging = require('../../../app/etl/staging')
 
 jest.mock('@fast-csv/format')
 jest.mock('../../../app/storage')
@@ -101,6 +102,61 @@ describe('ETL Process', () => {
       { file: etlConfig.applicationDetail.folder, message: 'Detail error' },
       { file: etlConfig.appsTypes.folder, message: 'Type error' }
     ])
+    expect(storage.deleteAllETLExtracts).toHaveBeenCalled()
+  })
+
+  test('should include delinked stage functions when delinkedEnabled = true', async () => {
+    etlConfig.delinkedEnabled = true
+
+    storage.getFileList.mockResolvedValue([
+      etlConfig.applicationDetailDelinked.folder + '/file1',
+      etlConfig.appsTypesDelinked.folder + '/file2'
+    ])
+
+    staging.stageApplicationDetailsDelinked.mockResolvedValue()
+    staging.stageAppsTypesDelinked.mockResolvedValue()
+
+    await stageDWHExtracts()
+
+    expect(staging.stageApplicationDetailsDelinked).toHaveBeenCalled()
+    expect(staging.stageAppsTypesDelinked).toHaveBeenCalled()
+
+    expect(mockSpinner.succeed).toHaveBeenCalledWith(`${etlConfig.applicationDetailDelinked.folder} - staged`)
+    expect(mockSpinner.succeed).toHaveBeenCalledWith(`${etlConfig.appsTypesDelinked.folder} - staged`)
+
+    expect(loadETLData).toHaveBeenCalled()
+    expect(storage.deleteAllETLExtracts).toHaveBeenCalled()
+  })
+
+  test('should include both sfi23 and delinked stage functions when both flags enabled', async () => {
+    etlConfig.sfi23Enabled = true
+    etlConfig.delinkedEnabled = true
+
+    storage.getFileList.mockResolvedValue([
+      etlConfig.applicationDetail.folder + '/file1',
+      etlConfig.appsTypes.folder + '/file2',
+      etlConfig.applicationDetailDelinked.folder + '/file3',
+      etlConfig.appsTypesDelinked.folder + '/file4'
+    ])
+
+    staging.stageApplicationDetails.mockResolvedValue()
+    staging.stageAppsTypes.mockResolvedValue()
+    staging.stageApplicationDetailsDelinked.mockResolvedValue()
+    staging.stageAppsTypesDelinked.mockResolvedValue()
+
+    await stageDWHExtracts()
+
+    expect(staging.stageApplicationDetails).toHaveBeenCalled()
+    expect(staging.stageAppsTypes).toHaveBeenCalled()
+    expect(staging.stageApplicationDetailsDelinked).toHaveBeenCalled()
+    expect(staging.stageAppsTypesDelinked).toHaveBeenCalled()
+
+    expect(mockSpinner.succeed).toHaveBeenCalledWith(`${etlConfig.applicationDetail.folder} - staged`)
+    expect(mockSpinner.succeed).toHaveBeenCalledWith(`${etlConfig.appsTypes.folder} - staged`)
+    expect(mockSpinner.succeed).toHaveBeenCalledWith(`${etlConfig.applicationDetailDelinked.folder} - staged`)
+    expect(mockSpinner.succeed).toHaveBeenCalledWith(`${etlConfig.appsTypesDelinked.folder} - staged`)
+
+    expect(loadETLData).toHaveBeenCalled()
     expect(storage.deleteAllETLExtracts).toHaveBeenCalled()
   })
 })
