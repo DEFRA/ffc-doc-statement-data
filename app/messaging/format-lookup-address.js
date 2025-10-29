@@ -15,24 +15,27 @@ const formatLookupAddress = address => {
 
   const addressLine3 = getAddressLine3(buildingNumberRange, street) || null
 
-  let addressLine1 = null
-  let addressLine2 = null
-
   if (pafOrganisationName) {
-    addressLine1 = pafOrganisationName
-    addressLine2 = flatName && buildingName
-      ? `${flatName} ${buildingName}`
-      : flatName || buildingName || null
-  } else if (flatName && buildingName) {
-    addressLine1 = flatName
-    addressLine2 = buildingName
-  } else {
-    addressLine1 = flatName || buildingName || null
+    return {
+      addressLine1: pafOrganisationName,
+      addressLine2: [flatName, buildingName].filter(Boolean).join(' ') || null,
+      addressLine3
+    }
+  }
+
+  const lineParts = [flatName, buildingName].filter(Boolean)
+
+  if (lineParts.length === 2) {
+    return {
+      addressLine1: lineParts[0],
+      addressLine2: lineParts[1],
+      addressLine3
+    }
   }
 
   return {
-    addressLine1,
-    addressLine2,
+    addressLine1: lineParts[0] || null,
+    addressLine2: null,
     addressLine3
   }
 }
