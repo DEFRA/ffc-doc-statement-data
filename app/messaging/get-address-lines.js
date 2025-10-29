@@ -1,3 +1,5 @@
+const { formatLookupAddress } = require('./format-lookup-address')
+
 const firstLineIndex = 0
 const secondLineIndex = 1
 const thirdLineIndex = 2
@@ -9,12 +11,6 @@ const isManualEntry = (address) => {
 
 const isPostcodeLookup = (address) => {
   return address?.street || address?.buildingNumberRange || address?.buildingName || address?.flatName || address?.dependentLocality || address?.doubleDependentLocality
-}
-
-const getAddressLine3 = (buildingNumberRange, street) => {
-  return (buildingNumberRange || street)
-    ? [buildingNumberRange, street].filter(Boolean).join(' ')
-    : null
 }
 
 const bumpAddressLines = (addressLines) => {
@@ -41,11 +37,7 @@ const getAddressLines = (address) => {
       addressLine3: address.address3 ?? null
     })
   } else if (isPostcodeLookup(address)) {
-    return bumpAddressLines({
-      addressLine1: address.flatName ?? null,
-      addressLine2: address.buildingName ?? null,
-      addressLine3: getAddressLine3(address.buildingNumberRange, address.street)
-    })
+    return bumpAddressLines(formatLookupAddress(address))
   } else {
     return null
   }
