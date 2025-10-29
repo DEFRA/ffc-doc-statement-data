@@ -28,7 +28,6 @@ const formatLookupAddress = address => {
     addressLine2 = buildingName
   } else {
     addressLine1 = flatName || buildingName || null
-    addressLine2 = null
   }
 
   return {
