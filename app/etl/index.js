@@ -1,9 +1,9 @@
 const { loadETLData } = require('./load-etl-data')
-const { renameExtracts } = require('./rename-extracts')
-const { stageExtracts } = require('./stage-extracts')
+const { prepareDWHExtracts } = require('./prepare-dwh-extracts')
+const { stageDWHExtracts } = require('./stage-dwh-extracts')
 
 module.exports = {
-  renameExtracts,
-  stageExtracts,
+  prepareDWHExtracts,
+  stageDWHExtracts,
   loadETLData
 }
