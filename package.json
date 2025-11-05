@@ -29,7 +29,7 @@
     "@azure/storage-blob": "12.14.0",
     "@fast-csv/format": "5.0.2",
     "applicationinsights": "2.9.6",
-    "ffc-database": "^1.0.1",
+    "ffc-database": "1.0.23",
     "ffc-messaging": "2.10.1",
     "ffc-pay-etl-framework": "1.3.0",
     "ffc-pay-event-publisher": "1.2.0",
