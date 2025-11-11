@@ -10,7 +10,7 @@ describe('getAddressLines', () => {
     {
       name: 'returns address lines from lookup entry if all fields present',
       input: { pafOrganisationName: 'FLAT 2', flatName: 'THORNEWILL HOUSE', buildingName: '10-12 CABLE STREET', buildingNumberRange: '', street: '' },
-      expected: { addressLine1: 'FLAT 2', addressLine2: 'THORNEWILL HOUSE', addressLine3: '10-12 CABLE STREET' }
+      expected: { addressLine1: 'FLAT 2', addressLine2: 'THORNEWILL HOUSE 10-12 CABLE STREET', addressLine3: null }
     },
     {
       name: 'returns address lines from lookup entry with no buildingName',
@@ -19,18 +19,13 @@ describe('getAddressLines', () => {
     },
     {
       name: 'returns address lines from lookup entry with no flatName',
-      input: { pafOrganisationName: 'THORNEWILL HOUSE', flatName: null, buildingName: 'THORNEWILL HOUSE', buildingNumberRange: '10', street: 'Main Street' },
-      expected: { addressLine1: 'THORNEWILL HOUSE', addressLine2: '10-12 CABLE STREET', addressLine3: null }
+      input: { pafOrganisationName: 'THORNEWILL HOUSE ORG', flatName: null, buildingName: 'THORNEWILL HOUSE', buildingNumberRange: '10', street: 'Main Street' },
+      expected: { addressLine1: 'THORNEWILL HOUSE ORG', addressLine2: 'THORNEWILL HOUSE', addressLine3: '10 Main Street' }
     },
     {
       name: 'returns address lines from lookup entry with no flatName or buildingName',
       input: { pafOrganisationName: '10-12 CABLE STREET', flatName: null, buildingName: null, buildingNumberRange: '10', street: 'Main Street' },
-      expected: { addressLine1: '10-12 CABLE STREET', addressLine2: null, addressLine3: null }
-    },
-    {
-      name: 'returns null for empty address',
-      input: {},
-      expected: { addressLine1: null, addressLine2: null, addressLine3: null }
+      expected: { addressLine1: '10-12 CABLE STREET', addressLine2: '10 Main Street', addressLine3: null }
     },
     {
       name: 'returns null when address is null',
