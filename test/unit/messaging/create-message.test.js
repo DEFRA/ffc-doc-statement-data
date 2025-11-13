@@ -1,24 +1,17 @@
 const createMessage = require('../../../app/messaging/create-message')
-const body = {
-  content: 'hello'
-}
-const type = 'message'
-const source = 'ffc-doc-statement-constructor'
 
-describe('create message', () => {
-  test('includes body', () => {
-    const result = createMessage(body, type, source)
-    expect(result.body).toStrictEqual(body)
-  })
+describe('createMessage', () => {
+  const body = { content: 'hello' }
+  const type = 'message'
+  const source = 'ffc-doc-statement-constructor'
 
-  test('includes type', () => {
+  test.each([
+    ['body', body],
+    ['type', type],
+    ['source', source]
+  ])('includes %s property', (prop, expected) => {
     const result = createMessage(body, type, source)
-    expect(result.type).toBe('message')
-  })
-
-  test('includes source', () => {
-    const result = createMessage(body, type, source)
-    expect(result.source).toBe('ffc-doc-statement-constructor')
+    expect(result[prop]).toStrictEqual(expected)
   })
 
   test('includes additional options properties', () => {
@@ -34,11 +27,13 @@ describe('create message', () => {
     expect(result).not.toHaveProperty('priority')
   })
 
-  test('overrides body, type, or source if provided in options', () => {
-    const options = { body: { content: 'override' }, type: 'override-type', source: 'override-source' }
+  test.each([
+    ['body', { content: 'override' }],
+    ['type', 'override-type'],
+    ['source', 'override-source']
+  ])('overrides %s if provided in options', (prop, value) => {
+    const options = { [prop]: value }
     const result = createMessage(body, type, source, options)
-    expect(result.body).toStrictEqual({ content: 'override' })
-    expect(result.type).toBe('override-type')
-    expect(result.source).toBe('override-source')
+    expect(result[prop]).toStrictEqual(value)
   })
 })

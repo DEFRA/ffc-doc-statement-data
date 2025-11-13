@@ -1,94 +1,49 @@
 const { ORGANISATION } = require('../../../app/constants/types')
 const validateUpdate = require('../../../app/publishing/validate-update')
 const { mockOrganisation1 } = require('../../mocks/organisation')
-let organisation
 
-describe('validate update', () => {
+describe('validateUpdate for ORGANISATION', () => {
+  let organisation
+
   beforeEach(() => {
     organisation = JSON.parse(JSON.stringify(mockOrganisation1))
     organisation.type = ORGANISATION
   })
 
-  test('returns true if valid organisation', () => {
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
+  const optionalFields = [
+    'addressLine1',
+    'addressLine2',
+    'addressLine3',
+    'city',
+    'county',
+    'postcode',
+    'emailAddress'
+  ]
+
+  test.each(optionalFields)('returns true if missing optional field %s', (field) => {
+    delete organisation[field]
+    expect(validateUpdate(organisation, ORGANISATION)).toBeTruthy()
   })
 
-  test('returns true if missing organisation address line 1', () => {
-    delete organisation.addressLine1
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
+  const requiredFields = [
+    'name',
+    'sbi',
+    'frn',
+    'type',
+    'updated'
+  ]
+
+  test.each(requiredFields)('returns false if missing required field %s', (field) => {
+    delete organisation[field]
+    expect(validateUpdate(organisation, ORGANISATION)).toBeFalsy()
   })
 
-  test('returns true if missing organisation address line 2', () => {
-    delete organisation.addressLine2
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
-  })
-
-  test('returns true if missing organisation address line 3', () => {
-    delete organisation.addressLine3
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
-  })
-
-  test('returns true if missing organisation city', () => {
-    delete organisation.city
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
-  })
-
-  test('returns true if missing organisation county', () => {
-    delete organisation.county
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
-  })
-
-  test('returns false if missing organisation name', () => {
-    delete organisation.name
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
-  })
-
-  test('returns false if missing organisation sbi', () => {
-    delete organisation.sbi
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
-  })
-
-  test('returns false if missing organisation frn', () => {
-    delete organisation.frn
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
-  })
-
-  test('returns true if missing organisation postcode', () => {
-    delete organisation.postcode
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
-  })
-
-  test('returns true if missing organisation email address', () => {
-    delete organisation.emailAddress
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
-  })
-
-  test('returns true if organisation email address not valid email', () => {
+  test('returns true if emailAddress is invalid format', () => {
     organisation.emailAddress = 'invalid'
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeTruthy()
+    expect(validateUpdate(organisation, ORGANISATION)).toBeTruthy()
   })
 
-  test('returns false if missing organisation type', () => {
-    delete organisation.type
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
-  })
-
-  test('returns false if missing organisation updated', () => {
-    delete organisation.updated
-    const result = validateUpdate(organisation, ORGANISATION)
-    expect(result).toBeFalsy()
+  test('returns true if all fields present', () => {
+    expect(validateUpdate(organisation, ORGANISATION)).toBeTruthy()
   })
 })

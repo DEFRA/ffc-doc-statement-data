@@ -70,20 +70,15 @@ Transaction.ISOLATION_LEVELS = {
   SERIALIZABLE: 'SERIALIZABLE'
 }
 
-describe('loadETLData', () => {
+describe('loadEtlData', () => {
   let transaction1
   let transaction2
 
   beforeEach(() => {
     jest.clearAllMocks()
-    transaction1 = {
-      commit: jest.fn(),
-      rollback: jest.fn()
-    }
-    transaction2 = {
-      commit: jest.fn(),
-      rollback: jest.fn()
-    }
+    transaction1 = { commit: jest.fn(), rollback: jest.fn() }
+    transaction2 = { commit: jest.fn(), rollback: jest.fn() }
+
     require('../../../app/data').sequelize.transaction
       .mockResolvedValueOnce(transaction1)
       .mockResolvedValueOnce(transaction2)
@@ -95,32 +90,41 @@ describe('loadETLData', () => {
     expect(require('../../../app/data').sequelize.transaction).toHaveBeenCalledWith({
       isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
     })
-    expect(loadIntermFinanceDAX).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermFinanceDAXDelinked).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermOrgFromDay0).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermOrg).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermOrgDelinked).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationClaim).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationClaimDelinked).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationContract).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermApplicationPayment).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermCalcOrg).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermCalcOrgDelinked).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermTotal).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermTotalZeroValues).toHaveBeenCalledWith('2023-01-01')
+
+    const expectedScripts = [
+      loadIntermFinanceDAX,
+      loadIntermFinanceDAXDelinked,
+      loadIntermOrgFromDay0,
+      loadIntermOrg,
+      loadIntermOrgDelinked,
+      loadIntermApplicationClaim,
+      loadIntermApplicationClaimDelinked,
+      loadIntermApplicationContract,
+      loadIntermApplicationPayment,
+      loadIntermCalcOrg,
+      loadIntermCalcOrgDelinked,
+      loadIntermTotal,
+      loadIntermTotalZeroValues,
+      loadIntermPaymentrefAgreementDates,
+      loadIntermAppCalcResultsDelinkPayment,
+      loadIntermTotalClaim,
+      loadIntermPaymentrefApplication,
+      loadIntermPaymentrefOrg
+    ]
+
+    expectedScripts.forEach(fn => {
+      expect(fn).toHaveBeenCalledWith('2023-01-01')
+    })
+
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction1)
-    expect(loadIntermPaymentrefAgreementDates).toHaveBeenCalledWith('2023-01-01')
-    expect(transaction1.commit).toHaveBeenCalled()
-    expect(loadIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermTotalClaim).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermPaymentrefApplication).toHaveBeenCalledWith('2023-01-01')
-    expect(loadIntermPaymentrefOrg).toHaveBeenCalledWith('2023-01-01')
     expect(loadTotals).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadDelinkedCalculation).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadZeroValueDax).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadD365).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadZeroValueD365).toHaveBeenCalledWith('2023-01-01', transaction2)
+
+    expect(transaction1.commit).toHaveBeenCalled()
     expect(transaction2.commit).toHaveBeenCalled()
     expect(transaction1.rollback).not.toHaveBeenCalled()
     expect(transaction2.rollback).not.toHaveBeenCalled()
@@ -133,8 +137,6 @@ describe('loadETLData', () => {
     await loadETLData('2023-01-01')
 
     expect(loadOrganisations).toHaveBeenCalledTimes(4)
-    expect(transaction1.commit).not.toHaveBeenCalled()
-    expect(transaction2.commit).not.toHaveBeenCalled()
     expect(transaction1.rollback).toHaveBeenCalled()
     expect(transaction2.rollback).toHaveBeenCalled()
     expect(deleteETLRecords).toHaveBeenCalledWith('2023-01-01')
@@ -145,13 +147,11 @@ describe('loadETLData', () => {
     let callCount = 0
     loadOrganisations.mockImplementation(async () => {
       callCount++
-      if (callCount < 3) {
-        throw new Error('Intermittent error')
-      }
+      if (callCount < 3) throw new Error('Intermittent error')
       return 'success'
     })
 
-    jest.spyOn(global, 'setTimeout').mockImplementation((fn) => fn())
+    jest.spyOn(global, 'setTimeout').mockImplementation(fn => fn())
 
     await loadETLData('2023-01-01')
 
@@ -167,30 +167,29 @@ describe('loadETLData', () => {
       throw new Error('Persistent error')
     })
 
-    jest.spyOn(global, 'setTimeout').mockImplementation((fn) => fn())
+    jest.spyOn(global, 'setTimeout').mockImplementation(fn => fn())
 
     await loadETLData('2023-01-01')
 
     expect(loadOrganisations).toHaveBeenCalledTimes(4)
-    expect(createAlerts).toHaveBeenCalledWith([{
-      file: 'Loading ETL data',
-      message: 'Persistent error'
-    }])
+    expect(createAlerts).toHaveBeenCalledWith([
+      { file: 'Loading ETL data', message: 'Persistent error' }
+    ])
+    expect(publishEtlProcessError).toHaveBeenCalled()
 
     global.setTimeout.mockRestore()
-    expect(publishEtlProcessError).toHaveBeenCalled()
   })
 
-  test('should call createAlerts with error details when a load script fails', async () => {
-    const errorMessage = 'Test error'
+  test.each([
+    ['Test error'],
+    ['Finance DAX error']
+  ])('should call createAlerts with error details "%s" when a load script fails', async (errorMessage) => {
     loadOrganisations.mockRejectedValue(new Error(errorMessage))
-
     await loadETLData('2023-01-01')
 
-    expect(createAlerts).toHaveBeenCalledWith([{
-      file: 'Loading ETL data',
-      message: errorMessage
-    }])
+    expect(createAlerts).toHaveBeenCalledWith([
+      { file: 'Loading ETL data', message: errorMessage }
+    ])
   })
 
   test('should call createAlerts after rollback and deleteETLRecords', async () => {
@@ -207,10 +206,9 @@ describe('loadETLData', () => {
     expect(createAlertsCall).toBeGreaterThan(rollback1Call)
     expect(createAlertsCall).toBeGreaterThan(rollback2Call)
     expect(createAlertsCall).toBeGreaterThan(deleteETLCall)
-    expect(createAlerts).toHaveBeenCalledWith([{
-      file: 'Loading ETL data',
-      message: errorMessage
-    }])
+    expect(createAlerts).toHaveBeenCalledWith([
+      { file: 'Loading ETL data', message: errorMessage }
+    ])
   })
 
   test('should call loadIntermOrgFromDay0 and handle success', async () => {

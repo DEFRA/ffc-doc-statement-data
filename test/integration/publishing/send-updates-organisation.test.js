@@ -1,26 +1,21 @@
 const mockSendMessage = jest.fn()
 const mockCloseConnection = jest.fn()
-jest.mock('ffc-messaging', () => {
-  return {
-    MessageSender: jest.fn().mockImplementation(() => {
-      return {
-        sendMessage: mockSendMessage,
-        closeConnection: mockCloseConnection
-      }
-    })
-  }
-})
+
+jest.mock('ffc-messaging', () => ({
+  MessageSender: jest.fn().mockImplementation(() => ({
+    sendMessage: mockSendMessage,
+    closeConnection: mockCloseConnection
+  }))
+}))
 
 jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
 const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
-
 const publish = require('../../../app/publishing')
-
 const { mockOrganisation1, mockOrganisation2 } = require('../../mocks/organisation')
 
-describe('send organisation updates', () => {
+describe('sendOrganisationUpdates', () => {
   beforeEach(async () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
@@ -38,7 +33,7 @@ describe('send organisation updates', () => {
     await db.sequelize.close()
   })
 
-  describe('When organisation is unpublished', () => {
+  describe('whenOrganisationIsUnpublished', () => {
     beforeEach(async () => {
       await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
     })
@@ -48,64 +43,23 @@ describe('send organisation updates', () => {
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
     })
 
-    test('should publish organisation sbi', async () => {
+    test.each([
+      ['sbi', (body) => body.sbi, mockOrganisation1.sbi],
+      ['frn', (body) => body.frn, mockOrganisation1.frn],
+      ['name', (body) => body.name, mockOrganisation1.name],
+      ['emailAddress', (body) => body.emailAddress, mockOrganisation1.emailAddress],
+      ['addressLine1', (body) => body.addressLine1, mockOrganisation1.addressLine1],
+      ['addressLine2', (body) => body.addressLine2, mockOrganisation1.addressLine2],
+      ['addressLine3', (body) => body.addressLine3, mockOrganisation1.addressLine3],
+      ['city', (body) => body.city, mockOrganisation1.city],
+      ['county', (body) => body.county, mockOrganisation1.county],
+      ['postcode', (body) => body.postcode, mockOrganisation1.postcode],
+      ['updated', (body) => body.updated, mockOrganisation1.updated.toISOString()],
+      ['type', (body) => body.type, 'organisation']
+    ])('should publish organisation %s', async (_, getValue, expected) => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.sbi).toBe(mockOrganisation1.sbi)
-    })
-
-    test('should publish organisation frn', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.frn).toBe(mockOrganisation1.frn)
-    })
-
-    test('should publish organisation name', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.name).toBe(mockOrganisation1.name)
-    })
-
-    test('should publish organisation email address', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.emailAddress).toBe(mockOrganisation1.emailAddress)
-    })
-
-    test('should publish organisation address line 1', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.addressLine1).toBe(mockOrganisation1.addressLine1)
-    })
-
-    test('should publish organisation address line 2', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.addressLine2).toBe(mockOrganisation1.addressLine2)
-    })
-
-    test('should publish organisation address line 3', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.addressLine3).toBe(mockOrganisation1.addressLine3)
-    })
-
-    test('should publish organisation city', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.city).toBe(mockOrganisation1.city)
-    })
-
-    test('should publish organisation county', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.county).toBe(mockOrganisation1.county)
-    })
-
-    test('should publish organisation postcode', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.postcode).toBe(mockOrganisation1.postcode)
-    })
-
-    test('should publish organisation updated date', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockOrganisation1.updated.toISOString())
-    })
-
-    test('should publish type', async () => {
-      await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.type).toBe('organisation')
+      const body = mockSendMessage.mock.calls[0][0].body
+      expect(getValue(body)).toBe(expected)
     })
 
     test('should not publish null published value', async () => {
@@ -132,28 +86,24 @@ describe('send organisation updates', () => {
     })
   })
 
-  describe('When multiple organisations are unpublished', () => {
-    test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+  describe('whenMultipleOrganisationsAreUnpublished', () => {
+    test.each([
+      ['less than max batch size', -1 + 5],
+      ['equal to max batch size', 5]
+    ])('should process all records when there are %s', async (_, recordCount) => {
+      publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
+      await db.organisation.bulkCreate(
+        [...Array(recordCount).keys()].map(x => ({
+          ...mockOrganisation1,
+          sbi: mockOrganisation1.sbi + x
+        }))
+      )
+
       const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
       await publish.start()
-
       const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
-      expect(unpublishedAfter).toHaveLength(0)
-    })
 
-    test('should process all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
-      const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
-
-      await publish.start()
-
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
-      expect(unpublishedBefore).toHaveLength(numberOfRecords)
+      expect(unpublishedBefore).toHaveLength(recordCount)
       expect(unpublishedAfter).toHaveLength(0)
     })
   })

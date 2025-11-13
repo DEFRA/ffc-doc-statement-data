@@ -50,7 +50,7 @@ jest.mock('worker_threads', () => {
   }
 })
 
-describe('load-interm-utils', () => {
+describe('loadIntermUtils', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockWorkers.length = 0
@@ -60,27 +60,17 @@ describe('load-interm-utils', () => {
     const startDate = '2023-01-01'
     const folder = 'test-folder'
 
-    test('should return null when no logs found', async () => {
-      db.etlStageLog.findAll.mockResolvedValue([])
-
+    test.each([
+      ['should return null when no logs found', [], []],
+      ['should return log when found', [{ id: 1, file: 'test-folder/export.csv' }], [{ id: 1, file: 'test-folder/export.csv' }]]
+    ])('%s', async (_, mockReturn, expected) => {
+      db.etlStageLog.findAll.mockResolvedValue(mockReturn)
       const result = await getEtlStageLogs(startDate, folder)
-      expect(result).toEqual([])
-    })
-
-    test('should return log when found', async () => {
-      const mockLog = { id: 1, file: 'test-folder/export.csv' }
-      db.etlStageLog.findAll.mockResolvedValue([mockLog])
-
-      const result = await getEtlStageLogs(startDate, folder)
-      expect(result).toEqual([mockLog])
+      expect(result).toEqual(expected)
     })
 
     test('should throw error when multiple logs found', async () => {
-      db.etlStageLog.findAll.mockResolvedValue([
-        { id: 1 },
-        { id: 2 }
-      ])
-
+      db.etlStageLog.findAll.mockResolvedValue([{ id: 1 }, { id: 2 }])
       await expect(getEtlStageLogs(startDate, folder)).rejects.toThrow('Multiple records found')
     })
 
@@ -117,47 +107,29 @@ describe('load-interm-utils', () => {
   })
 
   describe('limitConcurrency', () => {
-    test('should limit concurrent promises', async () => {
-      const promises = [
-        () => Promise.resolve(1),
-        () => Promise.resolve(2),
-        () => Promise.resolve(3)
-      ]
-      const maxConcurrent = 2
-
-      const results = await limitConcurrency(promises, maxConcurrent)
-      expect(results).toEqual([1, 2, 3])
-    })
-
-    test('should handle errors in promises', async () => {
-      const promises = [
-        () => Promise.resolve(1),
-        () => Promise.reject(new Error('Failed')),
-        () => Promise.resolve(3)
-      ]
-      const maxConcurrent = 2
-
-      await expect(limitConcurrency(promises, maxConcurrent)).rejects.toThrow('Failed')
+    test.each([
+      ['should limit concurrent promises', [() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)], 2, [1, 2, 3]],
+      ['should handle errors in promises', [() => Promise.resolve(1), () => Promise.reject(new Error('Failed')), () => Promise.resolve(3)], 2, 'Failed']
+    ])('%s', async (_, promises, maxConcurrent, expected) => {
+      if (expected === 'Failed') {
+        await expect(limitConcurrency(promises, maxConcurrent)).rejects.toThrow('Failed')
+      } else {
+        const results = await limitConcurrency(promises, maxConcurrent)
+        expect(results).toEqual(expected)
+      }
     })
   })
 
   describe('processWithWorkers', () => {
-    test('should process data with workers', async () => {
-      const query = 'SELECT * FROM test_table'
-      const batchSize = 100
-      const idFrom = 1
-      const idTo = 100
-      const transaction = {}
-      const recordType = 'test'
+    const query = 'SELECT * FROM test_table'
+    const batchSize = 100
+    const idFrom = 1
+    const idTo = 100
+    const transaction = {}
+    const recordType = 'test'
 
-      const processPromise = processWithWorkers({
-        query,
-        batchSize,
-        idFrom,
-        idTo,
-        transaction,
-        recordType
-      })
+    test('should process data with workers', async () => {
+      const processPromise = processWithWorkers({ query, batchSize, idFrom, idTo, transaction, recordType })
 
       await new Promise(resolve => setImmediate(resolve))
 
@@ -179,21 +151,7 @@ describe('load-interm-utils', () => {
     }, 5000)
 
     test('should handle worker errors', async () => {
-      const query = 'SELECT * FROM test_table'
-      const batchSize = 100
-      const idFrom = 1
-      const idTo = 100
-      const transaction = {}
-      const recordType = 'test'
-
-      const processPromise = processWithWorkers({
-        query,
-        batchSize,
-        idFrom,
-        idTo,
-        transaction,
-        recordType
-      })
+      const processPromise = processWithWorkers({ query, batchSize, idFrom, idTo, transaction, recordType })
 
       for (let i = 0; i < 4; i++) {
         await new Promise(resolve => {
@@ -214,14 +172,7 @@ describe('load-interm-utils', () => {
     }, 5000)
 
     test('should handle custom query template', async () => {
-      const query = 'SELECT * FROM test_table'
-      const batchSize = 100
-      const idFrom = 1
-      const idTo = 100
-      const transaction = {}
-      const recordType = 'test'
-      const queryTemplate = (start, end, alias, script) =>
-        `INSERT INTO test_table (id, value) VALUES (${start}, ${end})`
+      const queryTemplate = (start, end, alias, script) => `INSERT INTO test_table (id, value) VALUES (${start}, ${end})`
       const exclusionScript = 'test script'
       const tableAlias = 'test_alias'
 
