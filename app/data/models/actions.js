@@ -15,20 +15,20 @@ module.exports = (sequelize, DataTypes) => {
   const ANNUAL_VALUE_LENGTH = 50
 
   const action = sequelize.define('action', {
-    actionId: { type: DataTypes.INTEGER, primaryKey: true },
-    calculationId: DataTypes.INTEGER,
-    fundingCode: DataTypes.STRING(FUNDING_CODE_LENGTH),
-    groupName: DataTypes.STRING(GROUP_NAME_LENGTH),
-    actionCode: DataTypes.STRING(ACTION_CODE_LENGTH),
-    actionName: DataTypes.STRING(ACTION_NAME_LENGTH),
-    rate: DataTypes.STRING(RATE_LENGTH),
-    landArea: DataTypes.DECIMAL(LAND_AREA_PRECISION, LAND_AREA_SCALE),
-    uom: DataTypes.STRING(UOM_LENGTH),
-    annualValue: DataTypes.STRING(ANNUAL_VALUE_LENGTH),
-    quarterlyValue: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION),
-    overDeclarationPenalty: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION),
-    quarterlyPaymentAmount: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION),
-    datePublished: { type: DataTypes.DATE, allowNull: true }
+    actionId: { type: DataTypes.INTEGER, primaryKey: true, comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    calculationId: { type: DataTypes.INTEGER, comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    fundingCode: { type: DataTypes.STRING(FUNDING_CODE_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    groupName: { type: DataTypes.STRING(GROUP_NAME_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    actionCode: { type: DataTypes.STRING(ACTION_CODE_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    actionName: { type: DataTypes.STRING(ACTION_NAME_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    rate: { type: DataTypes.STRING(RATE_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    landArea: { type: DataTypes.DECIMAL(LAND_AREA_PRECISION, LAND_AREA_SCALE), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    uom: { type: DataTypes.STRING(UOM_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    annualValue: { type: DataTypes.STRING(ANNUAL_VALUE_LENGTH), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    quarterlyValue: { type: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    overDeclarationPenalty: { type: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    quarterlyPaymentAmount: { type: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION), comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' },
+    datePublished: { type: DataTypes.DATE, allowNull: true, comment: 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.' }
   },
   {
     tableName: 'actions',
