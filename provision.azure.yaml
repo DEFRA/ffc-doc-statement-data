@@ -5,6 +5,8 @@ resources:
   topics:
     - name: ffc-doc-statement-data
       role: sender
+    - name: ffc-doc-alerting
+      role: sender
     - name: ffc-pay-demographics-extract
       role: receiver
       subscriptions:
