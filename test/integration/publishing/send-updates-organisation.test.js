@@ -89,7 +89,7 @@ describe('sendOrganisationUpdates', () => {
 
   describe('whenMultipleOrganisationsAreUnpublished', () => {
     test.each([
-      ['less than max batch size', maxBatchSize -1],
+      ['less than max batch size', maxBatchSize - 1],
       ['equal to max batch size', maxBatchSize]
     ])('should process all records when there are %s', async (_, recordCount) => {
       publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
