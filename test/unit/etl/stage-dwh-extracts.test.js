@@ -22,8 +22,10 @@ console.error = jest.fn()
 
 beforeEach(() => jest.clearAllMocks())
 
-// --- Helper ---
-const resetFlags = () => { etlConfig.delinkedEnabled = false; etlConfig.sfi23Enabled = false }
+const resetFlags = () => { 
+  etlConfig.delinkedEnabled = false 
+  etlConfig.sfi23Enabled = false 
+}
 
 describe('stageDWHExtracts', () => {
   test.each([

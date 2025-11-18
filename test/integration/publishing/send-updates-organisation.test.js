@@ -14,6 +14,7 @@ const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
 const publish = require('../../../app/publishing')
 const { mockOrganisation1, mockOrganisation2 } = require('../../mocks/organisation')
+const maxBatchSize = 5
 
 describe('sendOrganisationUpdates', () => {
   beforeEach(async () => {
@@ -88,8 +89,8 @@ describe('sendOrganisationUpdates', () => {
 
   describe('whenMultipleOrganisationsAreUnpublished', () => {
     test.each([
-      ['less than max batch size', -1 + 5],
-      ['equal to max batch size', 5]
+      ['less than max batch size', maxBatchSize -1],
+      ['equal to max batch size', maxBatchSize]
     ])('should process all records when there are %s', async (_, recordCount) => {
       publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
       await db.organisation.bulkCreate(
