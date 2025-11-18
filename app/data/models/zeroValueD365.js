@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   const marketingYearMinYear = 2023
   const marketingYearMaxYear = 2050
   const zeroValueD365 = sequelize.define('zeroValueD365', {
-    d365Id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true, allowNull: false },
+    d365Id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true, allowNull: false, comment: 'Alertying statements with a zero or negative value statement' },
     paymentReference: { type: DataTypes.STRING(PAYMENT_REFERENCE_LENGTH), allowNull: false },
     marketingYear: { type: DataTypes.INTEGER(), allowNull: false, validate: { isInt: true, min: marketingYearMinYear, max: marketingYearMaxYear } },
     calculationId: { type: DataTypes.INTEGER },
