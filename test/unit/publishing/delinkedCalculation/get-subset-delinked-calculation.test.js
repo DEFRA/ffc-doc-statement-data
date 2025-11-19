@@ -34,6 +34,7 @@ describe('getSubsetDelinkedCalculation', () => {
     ])
 
     const result = await getSubsetDelinkedCalculation([456])
+
     expect(mockFindAll).toHaveBeenCalledWith(expect.objectContaining({
       lock: true,
       skipLocked: true,
@@ -46,6 +47,7 @@ describe('getSubsetDelinkedCalculation', () => {
       ]),
       raw: true
     }))
+
     expect(result).toEqual([
       {
         applicationReference: 123,
@@ -62,7 +64,7 @@ describe('getSubsetDelinkedCalculation', () => {
   })
 
   test('logs error and skips item if calculationReference is missing', async () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { })
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
     mockFindAll.mockResolvedValue([
       {
         applicationReference: 123,
@@ -72,16 +74,19 @@ describe('getSubsetDelinkedCalculation', () => {
     ])
 
     const result = await getSubsetDelinkedCalculation([999])
+
     expect(result).toEqual([])
     expect(errorSpy).toHaveBeenCalledWith(
       'Missing calculationReference for item:',
       expect.objectContaining({ calculationReference: null })
     )
+
     errorSpy.mockRestore()
   })
 
   test('returns empty array if no results', async () => {
     mockFindAll.mockResolvedValue([])
+
     const result = await getSubsetDelinkedCalculation([1, 2, 3])
     expect(result).toEqual([])
   })

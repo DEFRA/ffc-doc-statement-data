@@ -47,71 +47,77 @@ describe('sendUpdates', () => {
     logSpy.mockRestore()
   })
 
-  test.each([DELINKED, SFI23])('does not proceed if publishing is disabled for %s', async (scheme) => {
-    publishingConfig.publishingEnabled = false
-    await sendUpdates(scheme)
-    expect(logSpy).toHaveBeenCalledWith('Publishing is disabled via publishingEnabled=false flag')
-    expect(getSubsetCheck).not.toHaveBeenCalled()
-  })
-
-  test.each([DELINKED, SFI23])('logs error and returns if getSubsetCheck returns null for %s', async (scheme) => {
-    publishingConfig[scheme].subsetProcess = true
-    getSubsetCheck.mockResolvedValue(null)
-    await sendUpdates(scheme)
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Error occurred determining'))
-    expect(defaultPublishingPerType).not.toHaveBeenCalled()
-    expect(sendDelinkedSubset).not.toHaveBeenCalled()
-  })
-
-  test.each([DELINKED, SFI23])('logs skip and returns if subsetSent is true for %s', async (scheme) => {
-    publishingConfig[scheme].subsetProcess = true
-    getSubsetCheck.mockResolvedValue({ subsetSent: true })
-    await sendUpdates(scheme)
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Skipping'))
-    expect(defaultPublishingPerType).not.toHaveBeenCalled()
-    expect(sendDelinkedSubset).not.toHaveBeenCalled()
-  })
-
-  test.each([DELINKED])('logs processing and proceeds if subsetSent is false for %s', async (scheme) => {
-    publishingConfig[scheme].subsetProcess = true
-    getSubsetCheck.mockResolvedValue({ subsetSent: false })
-    if (scheme === DELINKED) {
+  test.each([DELINKED, SFI23])(
+    'does not proceed if publishing is disabled for %s',
+    async (scheme) => {
+      publishingConfig.publishingEnabled = false
       await sendUpdates(scheme)
-      expect(sendDelinkedSubset).toHaveBeenCalled()
-    } else {
-      await sendUpdates(scheme)
-      expect(defaultPublishingPerType).not.toHaveBeenCalled()
+      expect(logSpy).toHaveBeenCalledWith('Publishing is disabled via publishingEnabled=false flag')
+      expect(getSubsetCheck).not.toHaveBeenCalled()
     }
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Processing'))
-  })
+  )
 
-  test.each([DELINKED, SFI23])('logs normal processing if subsetProcess is false for %s', async (scheme) => {
-    publishingConfig[scheme].subsetProcess = false
-    await sendUpdates(scheme)
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Processing'))
-    expect(defaultPublishingPerType).toHaveBeenCalled()
-  })
+  test.each([DELINKED, SFI23])(
+    'logs error and returns if getSubsetCheck returns null for %s',
+    async (scheme) => {
+      publishingConfig[scheme].subsetProcess = true
+      getSubsetCheck.mockResolvedValue(null)
+      await sendUpdates(scheme)
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Error occurred determining'))
+      expect(defaultPublishingPerType).not.toHaveBeenCalled()
+      expect(sendDelinkedSubset).not.toHaveBeenCalled()
+    }
+  )
 
-  test('calls sendDelinkedSubset for DELINKED with subsetProcess true', async () => {
+  test.each([DELINKED, SFI23])(
+    'logs skip and returns if subsetSent is true for %s',
+    async (scheme) => {
+      publishingConfig[scheme].subsetProcess = true
+      getSubsetCheck.mockResolvedValue({ subsetSent: true })
+      await sendUpdates(scheme)
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Skipping'))
+      expect(defaultPublishingPerType).not.toHaveBeenCalled()
+      expect(sendDelinkedSubset).not.toHaveBeenCalled()
+    }
+  )
+
+  test('logs processing and calls sendDelinkedSubset for DELINKED with subsetSent false', async () => {
     publishingConfig.delinked.subsetProcess = true
     getSubsetCheck.mockResolvedValue({ subsetSent: false })
+
     await sendUpdates(DELINKED)
+
     expect(sendDelinkedSubset).toHaveBeenCalled()
     expect(defaultPublishingPerType).not.toHaveBeenCalled()
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Processing'))
   })
 
-  test('calls defaultPublishingPerType with correct types for DELINKED', async () => {
+  test.each([DELINKED, SFI23])(
+    'logs normal processing if subsetProcess is false for %s',
+    async (scheme) => {
+      publishingConfig[scheme].subsetProcess = false
+      await sendUpdates(scheme)
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Processing'))
+      expect(defaultPublishingPerType).toHaveBeenCalled()
+    }
+  )
+
+  test('calls defaultPublishingPerType correctly for DELINKED when subsetProcess false', async () => {
     publishingConfig.delinked.subsetProcess = false
     publishingConfig.sfi23.subsetProcess = false
+
     await sendUpdates(DELINKED)
+
     expect(defaultPublishingPerType).toHaveBeenCalledTimes(3)
     expect(defaultPublishingPerType.mock.calls[0][0]).toBeDefined()
   })
 
-  test('calls defaultPublishingPerType with correct types for SFI23', async () => {
+  test('calls defaultPublishingPerType correctly for SFI23 when subsetProcess false', async () => {
     publishingConfig.delinked.subsetProcess = false
     publishingConfig.sfi23.subsetProcess = false
+
     await sendUpdates(SFI23)
+
     expect(defaultPublishingPerType).toHaveBeenCalledTimes(3)
     expect(defaultPublishingPerType.mock.calls[0][0]).toBeDefined()
   })
@@ -119,7 +125,11 @@ describe('sendUpdates', () => {
   test('logs subset process in operation if non-scheme subsetProcess is true', async () => {
     publishingConfig.delinked.subsetProcess = true
     publishingConfig.sfi23.subsetProcess = false
+
     await sendUpdates(SFI23)
-    expect(logSpy).toHaveBeenCalledWith(`A subset process is in operation, normal processing not completed for ${SFI23}`)
+
+    expect(logSpy).toHaveBeenCalledWith(
+      `A subset process is in operation, normal processing not completed for ${SFI23}`
+    )
   })
 })
