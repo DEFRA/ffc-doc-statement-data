@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   const etlStageCalculationDetails = sequelize.define('etlStageCalculationDetails', {
     changeType: { type: DataTypes.STRING, comment },
     changeTime: { type: DataTypes.DATE, comment: commentDate },
-    etlId: { type: { type: DataTypes.INTEGER, comment }, primaryKey: true, allowNull: false },
+    etlId: { type: DataTypes.INTEGER, comment, primaryKey: true, allowNull: false },
     etlInsertedDt: { type: DataTypes.DATE, comment: commentDate },
     applicationId: { type: DataTypes.INTEGER, comment },
     idClcHeader: { type: DataTypes.INTEGER, comment },
