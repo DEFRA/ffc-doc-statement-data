@@ -58,8 +58,7 @@ describe('runEtlProcess', () => {
       on: jest.fn((event, callback) => {
         if (event === 'finish') {
           callback([])
-        }
-        else if (event === 'result') {
+        } else if (event === 'result') {
           callback([])
         }
         return mockEtl
@@ -271,8 +270,7 @@ describe('runEtlProcess', () => {
       on: jest.fn((event, callback) => {
         if (event === 'finish') {
           callback([])
-        }
-        else if (event === 'result') {
+        } else if (event === 'result') {
           callback([])
         }
 
@@ -360,8 +358,7 @@ describe('runEtlProcess', () => {
       on: jest.fn((event, callback) => {
         if (event === 'finish') {
           callback([])
-        }
-        else if (event === 'result') {
+        } else if (event === 'result') {
           callback([])
         }
 

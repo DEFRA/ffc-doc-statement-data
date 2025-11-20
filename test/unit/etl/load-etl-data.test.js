@@ -151,7 +151,7 @@ describe('loadEtlData', () => {
       if (callCount < 3) {
         throw new Error('Intermittent error')
       }
-      
+
       return 'success'
     })
 
