@@ -536,7 +536,6 @@
         <setColumnRemarks tableName="etlStageLog" columnName="idFrom" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
     
         <setColumnRemarks tableName="etlStageLog" columnName="idTo" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
-    <!-- etlStageOrganisation -->
     
         <setColumnRemarks tableName="etlStageOrganisation" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
     
@@ -553,8 +552,6 @@
         <setColumnRemarks tableName="etlStageOrganisation" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
     
         <setColumnRemarks tableName="etlStageOrganisation" columnName="lastUpdatedOn" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
-
-    <!-- etlStageSettlement -->
     
         <setColumnRemarks tableName="etlStageSettlement" columnName="settlementId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
     
