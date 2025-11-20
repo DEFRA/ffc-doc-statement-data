@@ -59,7 +59,7 @@ describe('runEtlProcess', () => {
         if (event === 'finish') {
           callback([])
         }
-        if (event === 'result') {
+        else if (event === 'result') {
           callback([])
         }
         return mockEtl
@@ -221,8 +221,14 @@ describe('runEtlProcess', () => {
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
       on: jest.fn((event, callback) => {
-        if (event === 'finish') callback([])
-        if (event === 'result') callback([])
+        if (event === 'finish') {
+          callback([])
+        }
+
+        if (event === 'result') {
+          callback([])
+        }
+
         return mockEtl
       })
     }
@@ -263,8 +269,13 @@ describe('runEtlProcess', () => {
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
       on: jest.fn((event, callback) => {
-        if (event === 'finish') callback([])
-        if (event === 'result') callback([])
+        if (event === 'finish') {
+          callback([])
+        }
+        else if (event === 'result') {
+          callback([])
+        }
+
         return mockEtl
       })
     }
@@ -307,8 +318,7 @@ describe('runEtlProcess', () => {
       pump: jest.fn().mockReturnThis(),
       on: jest.fn(function (event, callback) {
         if (event === 'error') {
-          // Simulate error event
-          callback(error)
+          callback(error) // Simulate error event
         }
         return this
       })
@@ -348,8 +358,13 @@ describe('runEtlProcess', () => {
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
       on: jest.fn((event, callback) => {
-        if (event === 'finish') callback([])
-        if (event === 'result') callback([])
+        if (event === 'finish') {
+          callback([])
+        }
+        else if (event === 'result') {
+          callback([])
+        }
+
         return mockEtl
       })
     }

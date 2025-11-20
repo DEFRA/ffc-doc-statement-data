@@ -30,10 +30,14 @@ const createMockWorker = () => {
     messageHandler: null,
     exitHandler: null,
     emitMessage: function (message) {
-      if (this.messageHandler) this.messageHandler(message)
+      if (this.messageHandler) {
+        this.messageHandler(message)
+      }
     },
     emitExit: function (code) {
-      if (this.exitHandler) this.exitHandler(code)
+      if (this.exitHandler) {
+        this.exitHandler(code)
+      }
     }
   }
   return mockWorker
