@@ -6,7 +6,7 @@ const commentDate = 'Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri 
 module.exports = (sequelize, DataTypes) => {
   const etlStageCssContractApplications = sequelize.define('etlStageCssContractApplications', {
     changeType: { type: DataTypes.STRING, comment },
-    changeTime: { type: DataTypes.DATE, comment: commentDate }, // TODO FIX!!
+    changeTime: { type: DataTypes.DATE, comment: commentDate },
     etlId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false, comment },
     etlInsertedDt: { type: DataTypes.DATE, comment: commentDate },
     cssContractApplicationWid: { type: DataTypes.INTEGER, comment },
