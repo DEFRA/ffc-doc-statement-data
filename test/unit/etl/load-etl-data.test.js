@@ -147,7 +147,11 @@ describe('loadEtlData', () => {
     let callCount = 0
     loadOrganisations.mockImplementation(async () => {
       callCount++
-      if (callCount < 3) throw new Error('Intermittent error')
+
+      if (callCount < 3) {
+        throw new Error('Intermittent error')
+      }
+      
       return 'success'
     })
 

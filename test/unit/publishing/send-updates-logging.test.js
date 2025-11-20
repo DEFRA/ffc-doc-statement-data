@@ -23,9 +23,13 @@ test('logs progress and completion for a small batch (direct logic)', async () =
       continue
     }
     const wasProcessed = await processRecord(record, 'organisation', () => {})
-    if (wasProcessed) processed++
+    if (wasProcessed) {
+      processed++
+    }
+
     jest.setSystemTime(lastLogTime + publishingConfig.logIntervalMs)
     const now = Date.now()
+    
     if (now - lastLogTime >= publishingConfig.logIntervalMs) {
       console.log(`[${new Date().toISOString()}] Still processing... ${processed} records processed so far (out of ${records.length})`)
       lastLogTime = now
