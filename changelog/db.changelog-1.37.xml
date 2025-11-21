@@ -1,0 +1,704 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet author="John Barnard" id="1">
+    <tagDatabase tag="v1.37.0" />
+  </changeSet>
+  <changeSet author="John Barnard" id="2">   
+    
+        <setColumnRemarks tableName="actions" columnName="actionId" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="calculationId" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="fundingCode" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="groupName" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="actionCode" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="actionName" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="rate" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="landArea" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="uom" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="annualValue" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="quarterlyValue" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="overDeclarationPenalty" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="quarterlyPaymentAmount" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="actions" columnName="datePublished" remarks="To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this."/>
+    
+        <setColumnRemarks tableName="d365" columnName="d365Id" remarks="Example Output: 1 Source: DWH | D365 Used on Statement? No. Used as a primary key to join data"/>
+    
+        <setColumnRemarks tableName="d365" columnName="paymentReference" remarks="Example Output: PY1234567 Source: DWH | D365 Used on Statement? Yes. Displayed in the Payment Summary section, and used on remittance and bank statements"/>
+    
+        <setColumnRemarks tableName="d365" columnName="marketingYear" remarks="Example Output: 2024 Source: DWH | D365 Used on Statement? Yes. Used in the statement heading to show the marketing year of payment"/>
+    
+        <setColumnRemarks tableName="d365" columnName="calculationId" remarks="Example Output: 987654321 Source: DWH | D365 Used on Statement? No. ID of calculation details and used to join data."/>
+    
+        <setColumnRemarks tableName="d365" columnName="paymentPeriod" remarks="Example Output: Q4-24 Source: DWH | D365 Used on Statement? No, but could be used for schedules in the future"/>
+        
+        <setColumnRemarks tableName="d365" columnName="transactionDate" remarks="Example Output: 2024-01-31 Source: DWH | D365 Used on Statement? Yes, in the Payment Summary and opening details. This is the date of the payment."/>
+    
+        <setColumnRemarks tableName="d365" columnName="datePublished" remarks="Example Output: 2024-01-31 Source: Documents Used on Statement? No. Used in logic to determine if a statement has been generated"/>
+    
+        <setColumnRemarks tableName="dax" columnName="daxId" remarks="Example Output: 1 Source: DWH | DAX Used on Statement? No, Required as the primary key"/>
+    
+        <setColumnRemarks tableName="dax" columnName="paymentReference" remarks="Example Output: RC200820242 Source: DWH | DAX Used on Statement? Yes  Payment Summary. Reference used on remittance and user's bank statement"/>
+    
+        <setColumnRemarks tableName="dax" columnName="calculationId" remarks="Example Output: 120240820 Source: DWH | DAX Used on Statement? No, Required to join data. ID of calculation details and used to join data."/>
+    
+        <setColumnRemarks tableName="dax" columnName="paymentPeriod" remarks="Example Output: Q4-24 Source: DWH | DAX Used on Statement? No, Retained as potentially useful for schedules in future"/>
+    
+        <setColumnRemarks tableName="dax" columnName="paymentAmount" remarks="Example Output: -500 Source: DWH | DAX Used on Statement? Yes, Payment Summary. Amount paid to the customer for this payment instalment"/>
+    
+        <setColumnRemarks tableName="dax" columnName="transactionDate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | DAX Used on Statement? Yes, Payment Summary, Opening Details.  Date the payment was made to the customer"/>
+    
+        <setColumnRemarks tableName="dax" columnName="datePublished" remarks="Example Output: 2025-05-12 15:08:08.776 Source: Documents. Used on Statement? No, Used for ETL Logic. Used to determine if a statement has been generated"/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="applicationId" remarks="Example Output: 1234567 Source: DWH | SitiAgri Used on Statement? No, used in logic to join data"/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="calculationId" remarks="Example Output: 987654321 Source: DWH | SitiAgri Used on Statement? No, Primary Key and used in logic to join data"/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="sbi" remarks="Example Output: 123456789 Source: DWH | SitiAgri Used on Statement? Yes, Opening details of the statement. Customer identifier, standard format on all systems."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="frn" remarks="Example Output: 1234567890 Source: DWH | SitiAgri Used on Statement? Yes, filename. Customer identifier, standard format on all systems"/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="paymentBand1" remarks="Example Output: 30000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="paymentBand2" remarks="Example Output: 50000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="paymentBand3" remarks="Example Output: 150000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="paymentBand4" remarks="Example Output: 9999.99 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="percentageReduction1" remarks="Example Output: 50 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="percentageReduction2" remarks="Example Output: 55 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="percentageReduction3" remarks="Example Output: 65 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="percentageReduction4" remarks="Example Output: 70 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="progressiveReductions1" remarks="Example Output: 15000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="progressiveReductions2" remarks="Example Output: 11000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="progressiveReductions3" remarks="Example Output: 65000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="progressiveReductions4" remarks="Example Output: 35000 Source: DWH | SitiAgri Used on Statement? Yes, Progressive reduction calculation table. Used to show how progressive reductions are calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="referenceAmount" remarks="Example Output: 200000 Source: DWH | SitiAgri Used on Statement? Yes, Payment mount calculation table. Used to show how the payment was calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="totalProgressiveReduction" remarks="Example Output: 126000 Source: DWH | SitiAgri Used on Statement? Yes, Payment mount calculation table. Used to show how the payment was calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="totalDelinkedPayment" remarks="Example Output: 75000 Source: DWH | SitiAgri Used on Statement? Yes, Payment mount calculation table. Used to show how the payment was calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="paymentAmountCalculated" remarks="Example Output: 37500 Source: Documents | Calculated Used on Statement? Yes, Payment mount calculation table. Used to show how the payment was calculated."/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="datePublished" remarks="Example Output: 2025-05-12 15:08:08.776 Source: DWH | SitiAgri Used on Statement? No, used in logic to determine if a statement has been generated"/>
+    
+        <setColumnRemarks tableName="delinkedCalculation" columnName="updated" remarks="Example Output: 2025-05-12 15:08:08.776 Source: DWH | SitiAgri Used on Statement? No, used in logic to show when data changes have been made"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationClaim" columnName="contractId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationClaim" columnName="claimId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationClaim" columnName="agreementId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationClaim" columnName="pkid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationClaim" columnName="etlInsertedDt" remarks="Example Output:  2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationContract" columnName="contractId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationContract" columnName="agreementStart" remarks="Example Output:  2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationContract" columnName="agreementEnd" remarks="Example Output:  2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationContract" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationContract" columnName="pkid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationContract" columnName="etlInsertedDt" remarks="Example Output:  2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationPayment" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationPayment" columnName="invoiceNumber" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationPayment" columnName="invoiceId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationPayment" columnName="idClcHeader" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermApplicationPayment" columnName="etlInsertedDt" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="calculationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="calculationDate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="frn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="idClcHeader" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermCalcOrg" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="transdate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="invoiceid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="scheme" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="fund" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="marketingyear" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="month" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="quarter" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="transactionAmount" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="agreementreference" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="sitiInvoiceId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="claimId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="paymentRef" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="recid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermFinanceDax" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="addressLine1" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="addressLine2" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="addressLine3" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="city" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="county" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="postcode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="emailAddress" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="frn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="name" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="partyId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="updated" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermOrg" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefAgreementDates" columnName="paymentRef" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefAgreementDates" columnName="agreementStart" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefAgreementDates" columnName="agreementEnd" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefAgreementDates" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefOrg" columnName="paymentRef" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefOrg" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefOrg" columnName="frn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermPaymentrefOrg" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="paymentRef" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="quarter" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="totalAmount" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="transdate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="calculationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="invoiceid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotal" columnName="marketingyear" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalClaim" columnName="paymentRef" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalClaim" columnName="claimId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalClaim" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="paymentRef" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="quarter" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="totalAmount" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="transdate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="calculationId" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="invoiceid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlIntermTotalZeroValues" columnName="marketingyear" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="calculationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="variableName" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="progLine" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppCalcResultsDelinkPayments" columnName="value" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="pkid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageApplicationDetail" columnName="subjectId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="idClcHeader" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="notificationFlag" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsPaymentNotification" columnName="invoiceNumber" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsTypes" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsTypes" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsTypes" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageAppsTypes" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="frn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessName" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessAddress1" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessAddress2" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessAddress3" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessCity" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessCounty" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessPostCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+       
+        <setColumnRemarks tableName="etlStageBusinessAddressContactV" columnName="businessEmailAddr" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="idClcHeader" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="calculationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="calculationDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCalculationDetails" columnName="ranked" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="cssContractApplicationWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="pkid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="contractId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="dataSourceSCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="startDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContractApplications" columnName="endDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="cssContractWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="pkid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="contractId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="contractStateSCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+       
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="dataSourceSCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="startDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssContracts" columnName="endDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="cssOptionId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="startDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageCssOptions" columnName="endDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="frn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessName" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessAddress1" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessAddress2" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessAddress3" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessCity" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessCounty" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessPostCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+       
+        <setColumnRemarks tableName="etlStageDay0BusinessAddressContactV" columnName="businessEmailAddr" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="organisationWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="partyId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="lastUpdatedOn" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="organisationWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="partyId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDay0Organisation" columnName="lastUpdatedOn" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="defraLinksWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="subjectId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageDefraLinks" columnName="defraId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="financeDaxWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="transdate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="invoiceid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="scheme" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="fund" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="marketingyear" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="accountnum" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="settlementvoucher" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="lineamountmstgbp" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="month" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="amountmstgbp" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="quarter" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="custvendac" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="recid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="agreementreference" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageFinanceDax" columnName="schemetype" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="file" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="startedAt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="endedAt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="rowCount" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="rowsLoadedCount" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="idFrom" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageLog" columnName="idTo" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="organisationWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="partyId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="sbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageOrganisation" columnName="lastUpdatedOn" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="settlementId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="paymentRequestId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="detail" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="invalid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="generated" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="invoiceNumber" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="ledger" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="reference" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="settled" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="settlementDate" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="value" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="sourceSystem" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="frn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageSettlement" columnName="received" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="tclcPiiPayClaimSfimtOptionWid" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="applicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTclcPiiPayClaimSfimtOption" columnName="calculationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="changeType" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="changeTime" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="etlId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="etlInsertedDt" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transferorSbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transferorCuaa" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transferorPkCuaa" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transfereeSbi" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transfereeCuaa" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transfereePkCuaa" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="totalAmountTransferred" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transferAmount" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transferAmountTransIn" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="dtInsert" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="dtDelete" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="dateOfTransfer" remarks="Example Output: 2024-02-09 00:00:00 Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="statusPCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="statusSCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="transferApplicationId" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="userInsert" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="userDelete" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="dtUpdate" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="dataSourcePCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="etlStageTdeLinkingTransferTransactions" columnName="dataSourceSCode" remarks="Example Output: Source: DWH | SitiAgri Used on Statement? No, used our ETL service to transform DWH data into our required format"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="sbi" remarks="Example Output: 200820241 Source: RPS | Demographics. Used to show customer identifier on statement Used on Statement? Yes Customer details at top of statement"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="addressLine1" remarks="Example Output: 8 The Street Source: RPS | Demographics Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="addressLine2" remarks="Example Output: Area Source: RPS | Demographics Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="addressLine3" remarks="Example Output: District Source: RPS | Demographics Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="city" remarks="Example Output: City Source: RPS | Demographics Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="county" remarks="Example Output: County Source: RPS | Demographics Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="postcode" remarks="Example Output: AA1 1BB Source: RPS | Demographics Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="emailAddress" remarks="Example Output: my.name@domain.com Source: RPS | Demographics. Used on Statement? No Sent to Notify to email statement to user. Not shown on statement but used for Notify email"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="frn" remarks="Example Output: 1106550692 Source: RPS | Demographics. Used on Statement? Yes Filename. Used to show customer identifier in filename"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="name" remarks="Example Output: The Farm Source: RPS | Demographics. Used on Statement? Yes Customer details at top of statement. Used to show address, also used for Print &amp; Post"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="updated" remarks="Example Output: 2025-05-13 09:38:02 Source: Documents. Used on Statement? No. Used for ETL Logic. Used to show when data changes"/>
+    
+        <setColumnRemarks tableName="organisations" columnName="published" remarks="Example Output: 2025-05-13 09:38:02 Source: Documents. Used on Statement? No, Used for ETL Logic. Used to determine if a statement has been generated"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="d365Id" remarks="Alertying statements with a zero or negative value statement"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="paymentReference" remarks="Example Output: Payment reference for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="marketingYear" remarks="Marketing year for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="calculationId" remarks="Calculation ID for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="paymentPeriod" remarks="Payment period for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="paymentAmount" remarks="Payment amount for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="transactionDate" remarks="Transaction date for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="dateCreated" remarks="Example Output: 2024-02-09 00:00:00 Source: ETL Logic"/>
+    
+        <setColumnRemarks tableName="zeroValueD365" columnName="alertSent" remarks="Flag indicating if alert was sent"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="daxId" remarks="Primary key for zero value DAX alert"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="paymentReference" remarks="Payment reference for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="calculationId" remarks="Calculation ID for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="paymentPeriod" remarks="Payment period for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="paymentAmount" remarks="Payment amount for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="transactionDate" remarks="Transaction date for zero value alert"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="dateCreated" remarks="Example Output: 2024-02-09 00:00:00 Source: ETL Logic"/>
+    
+        <setColumnRemarks tableName="zeroValueDax" columnName="alertSent" remarks="Flag indicating if alert was sent"/>
+  </changeSet>
+</databaseChangeLog>

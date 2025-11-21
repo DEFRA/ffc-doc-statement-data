@@ -1,5 +1,6 @@
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
+const { commentDateCreated } = require('../../constants/field-comments')
 
 module.exports = (sequelize, DataTypes) => {
   const PAYMENT_REFERENCE_LENGTH = 30
@@ -11,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     paymentPeriod: { type: DataTypes.STRING(PAYMENT_PERIOD_LENGTH), allowNull: true },
     paymentAmount: { type: DataTypes.DECIMAL, allowNull: false },
     transactionDate: { type: DataTypes.DATE, allowNull: false },
-    dateCreated: { type: DataTypes.DATE, allowNull: false },
+    dateCreated: { type: DataTypes.DATE, allowNull: false, comment: commentDateCreated },
     alertSent: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
   },
   {
