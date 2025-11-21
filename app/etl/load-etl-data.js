@@ -1,6 +1,5 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const mqConfig = require('../config/message')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadZeroValueDax, loadZeroValueD365, loadIntermOrgFromDay0 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
@@ -50,10 +49,9 @@ const loadETLData = async (startDate) => {
 
     await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAX')(startDate)
     await wrapWithLogging(loadIntermFinanceDAXDelinked, 'loadIntermFinanceDAXDelinked')(startDate)
-    if (!mqConfig.day0DateTime) {
-      await wrapWithLogging(loadIntermOrg, 'loadIntermOrg')(startDate)
-      await wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')(startDate)
-    }
+
+    await wrapWithLogging(loadIntermOrg, 'loadIntermOrg')(startDate)
+    await wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')(startDate)
     await wrapWithLogging(loadIntermApplicationClaim, 'loadIntermApplicationClaim')(startDate)
     await wrapWithLogging(loadIntermApplicationClaimDelinked, 'loadIntermApplicationClaimDelinked')(startDate)
     await wrapWithLogging(loadIntermApplicationContract, 'loadIntermApplicationContract')(startDate)
@@ -70,7 +68,6 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadIntermPaymentrefApplication, 'loadIntermPaymentrefApplication')(startDate)
 
     await wrapWithLogging(loadIntermPaymentrefOrg, 'loadIntermPaymentrefOrg')(startDate)
-
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await firstTransaction.commit()
 
