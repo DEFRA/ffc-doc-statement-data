@@ -14,21 +14,23 @@ module.exports = (sequelize, DataTypes) => {
   const UOM_LENGTH = 10
   const ANNUAL_VALUE_LENGTH = 50
 
+  const comment = 'To be removed. RPA have just confirmed that SFI-23 and SFI-EO statements will not be issued, which has now introduced some technical debt to remove this.'
+
   const action = sequelize.define('action', {
-    actionId: { type: DataTypes.INTEGER, primaryKey: true },
-    calculationId: DataTypes.INTEGER,
-    fundingCode: DataTypes.STRING(FUNDING_CODE_LENGTH),
-    groupName: DataTypes.STRING(GROUP_NAME_LENGTH),
-    actionCode: DataTypes.STRING(ACTION_CODE_LENGTH),
-    actionName: DataTypes.STRING(ACTION_NAME_LENGTH),
-    rate: DataTypes.STRING(RATE_LENGTH),
-    landArea: DataTypes.DECIMAL(LAND_AREA_PRECISION, LAND_AREA_SCALE),
-    uom: DataTypes.STRING(UOM_LENGTH),
-    annualValue: DataTypes.STRING(ANNUAL_VALUE_LENGTH),
-    quarterlyValue: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION),
-    overDeclarationPenalty: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION),
-    quarterlyPaymentAmount: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION),
-    datePublished: { type: DataTypes.DATE, allowNull: true }
+    actionId: { type: DataTypes.INTEGER, primaryKey: true, comment },
+    calculationId: { type: DataTypes.INTEGER, comment },
+    fundingCode: { type: DataTypes.STRING(FUNDING_CODE_LENGTH), comment },
+    groupName: { type: DataTypes.STRING(GROUP_NAME_LENGTH), comment },
+    actionCode: { type: DataTypes.STRING(ACTION_CODE_LENGTH), comment },
+    actionName: { type: DataTypes.STRING(ACTION_NAME_LENGTH), comment },
+    rate: { type: DataTypes.STRING(RATE_LENGTH), comment },
+    landArea: { type: DataTypes.DECIMAL(LAND_AREA_PRECISION, LAND_AREA_SCALE), comment },
+    uom: { type: DataTypes.STRING(UOM_LENGTH), comment },
+    annualValue: { type: DataTypes.STRING(ANNUAL_VALUE_LENGTH), comment },
+    quarterlyValue: { type: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION), comment },
+    overDeclarationPenalty: { type: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION), comment },
+    quarterlyPaymentAmount: { type: DataTypes.DECIMAL(DECIMAL_SCALE, DECIMAL_PRECISION), comment },
+    datePublished: { type: DataTypes.DATE, allowNull: true, comment }
   },
   {
     tableName: 'actions',
@@ -36,11 +38,13 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     schema: dbConfig.schema
   })
+
   action.associate = function (models) {
     action.belongsTo(models.total, {
       foreignKey: 'calculationId',
       as: 'actions'
     })
   }
+
   return action
 }
