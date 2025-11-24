@@ -34,11 +34,11 @@ channels:
     messages:
       publish.message:
         $ref: '#/components/messages/Organisation'
-  totals:
-    address: totals
+  total:
+    address: total
     messages:
       publish.message:
-        $ref: '#/components/messages/Totals'
+        $ref: '#/components/messages/Total'
 operations:
   delinkedCalculation.publish:
     action: receive
@@ -58,6 +58,12 @@ operations:
       $ref: '#/channels/dax'
     messages:
       - $ref: '#/channels/dax/messages/publish.message'
+  d365.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/d365'
+    messages:
+      - $ref: '#/channels/d365/messages/publish.message'
   demographicsUpdate.subscribe:
     action: receive
     channel:
@@ -70,12 +76,12 @@ operations:
       $ref: '#/channels/organisation'
     messages:
       - $ref: '#/channels/organisation/messages/publish.message'
-  totals.publish:
+  .publish:
     action: receive
     channel:
-      $ref: '#/channels/totals'
+      $ref: '#/channels/total'
     messages:
-      - $ref: '#/channels/totals/messages/publish.message'
+      - $ref: '#/channels/total/messages/publish.message'
 components:
   messages:
     DelinkedCalculation:
@@ -108,21 +114,21 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/D365'
-    Totals:
-      name: Totals
+    Total:
+      name: Total
       contentType: application/json
       payload:
-        $ref: '#/components/schemas/Totals'
+        $ref: '#/components/schemas/Total'
   schemas:
     DelinkedCalculation:
       type: object
       properties:
         calculationReference:
           $ref: '#/components/schemas/CalculationId'
-        applicationId:
+        applicationReference:
           $ref: '#/components/schemas/ApplicationId'
         frn:
-          $ref: '#/components/schemas/FRN'
+          $ref: '#/components/schemas/FRNNumber'
         sbi:
           $ref: '#/components/schemas/SBI'
         paymentBand1:
@@ -157,6 +163,8 @@ components:
           $ref: '#/components/schemas/TotalDelinkedPayment'
         paymentAmountCalculated:
           $ref: '#/components/schemas/PaymentAmountCalculated'
+        type:
+          $ref: '#/components/schemas/TypeDelinkedCalculation'
     Calculation:
       type: object
       properties:
@@ -395,8 +403,6 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/BusinessName'
-        businessName:
-          $ref: '#/components/schemas/BusinessName'
         sbi:
           $ref: '#/components/schemas/SBI'
         frn:
@@ -419,7 +425,7 @@ components:
           $ref: '#/components/schemas/Updated'
         type:
           $ref: '#/components/schemas/TypeOrganisation'
-    Totals:
+    Total:
       type: object
       properties:
         calculationReference:
@@ -442,12 +448,12 @@ components:
           $ref: '#/components/schemas/InvoiceNumber'
         schemeType:
           $ref: '#/components/schemas/Scheme'
-        totalActionPayment:
-          $ref: '#/components/schemas/TotalActionPayment'
-        totalAdditionalPayment:
-          $ref: '#/components/schemas/TotalAdditionalPayment'
-        totalPayment:
-          $ref: '#/components/schemas/TotalPayment'
+        totalActionPayments:
+          $ref: '#/components/schemas/TotalActionPayments'
+        totalAdditionalPayments:
+          $ref: '#/components/schemas/TotalAdditionalPayments'
+        totalPayments:
+          $ref: '#/components/schemas/TotalPayments'
         updated:
           $ref: '#/components/schemas/Updated'
         actions:
@@ -455,7 +461,7 @@ components:
           items:
             $ref: '#/components/schemas/Action'
         type:
-          $ref: '#/components/schemas/TypeTotals'
+          $ref: '#/components/schemas/TypeTotal'
     Action:
       type: object
       properties:
@@ -488,7 +494,7 @@ components:
     ActionCode:
       type: string
       description: Identifier for action code within scheme
-      example: 80001
+      example: "80001"
     ActionId:
       type: number
       description: Unique identifier (pkId) for action
@@ -522,10 +528,9 @@ components:
       description: Type of address
       example: Address
     AnnualValue:
-      type: number
-      format: decimal
+      type: string
       description: The annual value of the action
-      example: 402.00
+      example: "402.00"
     AgreementEnd:
       type: string
       format: date-time
@@ -545,10 +550,9 @@ components:
       description: ApplicationId for calculation Data 
       example: 1234567
     AreaClaimed:
-      type: number
-      format: decimal
+      type: string
       description: The area claimed for the calculation in hectares
-      example: 84.05
+      example: "84.05"
     BuildingName:
       type: string
       description: The business name
@@ -597,7 +601,7 @@ components:
     CustomerReference:
       type: string
       description: Unique reference for an individual customer
-      example: 1106238273
+      example: "1106238273"
     DateOfBirth:
       type: number
       description: Date of birth as a UNIX timestamp
@@ -638,6 +642,12 @@ components:
       type: string
       description: Firm Reference Number in string format
       example: '1234567890'
+    FRNNumber:
+      type: number
+      description: Firm Reference Number
+      minimum: 1000000000
+      maximum: 9999999999
+      example: 1234567890
     FundingCode:
       type: string
       description: Identifier for funding code within scheme
@@ -678,7 +688,7 @@ components:
     MarketingYear:
       type: string
       description: Scheme marketing year
-      example: 2024
+      example: "2024"
     MDMId:
       type: number
       description: MDM ID
@@ -740,7 +750,7 @@ components:
     PaymentAmountCalculated:
       type: string
       description: TotalDelinkedPayment /2 should match paymentAmount
-      example: 25125
+      example: "25125.00"
     PaymentPeriod:
       type: string
       description: The period covered by the payment
@@ -752,19 +762,19 @@ components:
     PercentageReduction1:
       type: string
       description: First percentage bracket for progressive reductions 
-      example: 50
+      example: "50.00"
     PercentageReduction2:
       type: string
       description: Second percentage bracket for progressive reductions 
-      example: 55
+      example: "55.00"
     PercentageReduction3:
       type: string
       description: Third percentage bracket for progressive reductions 
-      example: 60
+      example: "60.00"
     PercentageReduction4:
       type: string
       description: Fourth percentage bracket for progressive reductions 
-      example: 70
+      example: "70.00"
     PersonalIdentifier:
       type: string
       description: Personal identification number
@@ -780,38 +790,35 @@ components:
     ProgressiveReductions1:
       type: string
       description: Value against band1 for progressive reductions 
-      example: 11000
+      example: "11000.00"
     ProgressiveReductions2:
       type: string
       description: Value against band2 for progressive reductions 
-      example: 22000
+      example: "22000.00"
     ProgressiveReductions3:
       type: string
       description: Value against band3 for progressive reductions 
-      example: 33000
+      example: "33000.00"
     ProgressiveReductions4:
       type: string
       description: Value against band4 for progressive reductions 
-      example: 44000
+      example: "44000.00"
     QuarterlyPaymentAmount:
-      type: number
-      format: decimal
+      type: string
       description: The quarterly payment amount
-      example: 100.5
+      example: "100.5"
     QuarterlyValue:
-      type: number
-      format: decimal
+      type: string
       description: The quarterly value
-      example: 100.5
+      example: "100.5"
     Rate:
-      type: number
-      format: decimal
+      type: string
       description: Payment in pounds sterling per hectare
-      example: 22.5
+      example: "22.5"
     ReferenceAmount:
       type: string
       description: Current reference amount of total
-      example: 125000
+      example: "125000.00"
     Rev:
       type: number
       description: Unique identifier for demopgraphics update
@@ -837,17 +844,17 @@ components:
     TaxRegistrationNumber:
       type: string
       description: An organisation's tax registration number
-      example: Mr
+      example: "1234567"
     Title:
       type: string
       description: A person's title
-      example: '1234567'
-    TotalActionPayment:
+      example: Mr
+    TotalActionPayments:
       type: number
       format: decimal
       description: Sum of all Action Payment
       example: 100.5
-    TotalAdditionalPayment:
+    TotalAdditionalPayments:
       type: number
       format: decimal
       description: Sum of all Additional Payment
@@ -855,8 +862,8 @@ components:
     TotalDelinkedPayment:
       type: string
       description: Total annual delinked payment amount
-      example: 50250
-    TotalPayment:
+      example: "50250.00"
+    TotalPayments:
       type: number
       format: decimal
       description: Sum of all Payment
@@ -864,7 +871,7 @@ components:
     TotalProgressiveReduction:
       type: string
       description: Total progressive reduction amount
-      example: 74750
+      example: "74750.00"
     TraderNumber:
       type: string
       description: Trader Number
@@ -874,6 +881,10 @@ components:
       format: date-time
       description: The date the transaction was made
       example: '2022-08-22T16:45:20.891Z'
+    TypeDelinkedCalculation:
+      type: string
+      description: Constant DELINKED_CALCULATION
+      example: delinkedCalculation
     TypeCalculation:
       type: string
       description: Constant CALCULATION
@@ -890,10 +901,10 @@ components:
       type: string
       description: Constant ORGANISATION
       example: organisation
-    TypeTotals:
+    TypeTotal:
       type: string
-      description: Constant TOTALS
-      example: totals
+      description: Constant TOTAL
+      example: total
     UnitOfMeasure:
       type: string
       description: The unit of measure
