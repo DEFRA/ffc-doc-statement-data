@@ -9,11 +9,6 @@ channels:
     messages:
       publish.message:
         $ref: '#/components/messages/DelinkedCalculation'
-  calculation:
-    address: calculation
-    messages:
-      publish.message:
-        $ref: '#/components/messages/Calculation'
   dax:
     address: dax
     messages:
@@ -46,12 +41,6 @@ operations:
       $ref: '#/channels/delinkedCalculation'
     messages:
       - $ref: '#/channels/delinkedCalculation/messages/publish.message'
-  calculation.publish:
-    action: receive
-    channel:
-      $ref: '#/channels/calculation'
-    messages:
-      - $ref: '#/channels/calculation/messages/publish.message'
   dax.publish:
     action: receive
     channel:
@@ -99,11 +88,6 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/Organisation'
-    Calculation:
-      name: Calculation
-      contentType: application/json
-      payload:
-        $ref: '#/components/schemas/Calculation'
     Dax:
       name: Dax
       contentType: application/json
@@ -165,40 +149,6 @@ components:
           $ref: '#/components/schemas/PaymentAmountCalculated'
         type:
           $ref: '#/components/schemas/TypeDelinkedCalculation'
-    Calculation:
-      type: object
-      properties:
-        calculationReference:
-          $ref: '#/components/schemas/CalculationReference'
-        sbi:
-          $ref: '#/components/schemas/SBI'
-        frn:
-          $ref: '#/components/schemas/FRN'
-        calculationDate:
-          $ref: '#/components/schemas/CalculationDate'
-        invoiceNumber:
-          $ref: '#/components/schemas/InvoiceNumber'
-        invoiceNumberSitiAgri:
-          $ref: '#/components/schemas/InvoiceNumberSitiAgri'
-        scheme:
-          $ref: '#/components/schemas/Scheme'
-        updated:
-          $ref: '#/components/schemas/Updated'
-        fundings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Funding'
-        type:
-          $ref: '#/components/schemas/TypeCalculation'
-    Funding:
-      type: object
-      properties:
-        fundingCode:
-          $ref: '#/components/schemas/FundingCode'
-        areaClaimed:
-          $ref: '#/components/schemas/AreaClaimed'
-        rate:
-          $ref: '#/components/schemas/Rate'
     Dax:
       type: object
       properties:
@@ -885,10 +835,6 @@ components:
       type: string
       description: Constant DELINKED_CALCULATION
       example: delinkedCalculation
-    TypeCalculation:
-      type: string
-      description: Constant CALCULATION
-      example: calculation
     TypeDax:
       type: string
       description: Constant Dax
