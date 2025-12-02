@@ -6,7 +6,6 @@ const { stageDWHExtracts } = require('../../../app/etl/stage-dwh-extracts')
 const { loadETLData } = require('../../../app/etl/load-etl-data')
 const { createAlerts } = require('../../../app/messaging/create-alerts')
 
-jest.mock('@fast-csv/format')
 jest.mock('../../../app/storage')
 jest.mock('../../../app/etl/staging')
 jest.mock('../../../app/etl/load-etl-data')
