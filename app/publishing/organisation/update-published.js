@@ -18,13 +18,12 @@ const updatePublished = async (sbi, transaction) => {
       where: { sbi },
       transaction
     })
-    return
+  } else {
+    await db.organisation.update(
+      { published: new Date() },
+      { where: { sbi }, transaction }
+    )
   }
-
-  await db.organisation.update(
-    { published: new Date() },
-    { where: { sbi }, transaction }
-  )
 }
 
 module.exports = updatePublished
