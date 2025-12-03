@@ -1,6 +1,6 @@
 const { MessageReceiver } = require('ffc-messaging')
 const config = require('../config')
-const processDemographicsMessage = require('./process-demographics-message')
+const processDemographicsMessage = require('./demographics/process-demographics-message')
 let updateReceiver
 
 const start = async () => {

@@ -3,7 +3,6 @@ const removeDefunctValues = require('./remove-defunct-values')
 const validateUpdate = require('./validate-update')
 const sendMessage = require('./send-message')
 const getPrimaryKeyValue = require('./get-primary-key-value')
-const { CALCULATION } = require('../constants/types')
 
 const defaultPublishingPerType = async (type) => {
   const getUnpublished = require(`./${type}/get-unpublished`)
@@ -27,10 +26,6 @@ const defaultPublishingPerType = async (type) => {
         await updatePublished(primaryKey)
       })
       await Promise.all(batchPromises)
-    }
-
-    if (type === CALCULATION && outstanding.length > 0) {
-      break
     }
   } while (outstanding.length === batchSize)
 

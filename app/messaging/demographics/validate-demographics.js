@@ -1,5 +1,5 @@
 const schema = require('./demographics-schema')
-const { VALIDATION } = require('../constants/errors')
+const { VALIDATION } = require('../../constants/errors')
 
 const validateDemographics = (event) => {
   const validationResult = schema.validate(event, { abortEarly: false, allowUnknown: true })

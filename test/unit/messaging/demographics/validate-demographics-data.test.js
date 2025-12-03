@@ -1,8 +1,8 @@
-const { validateDemographicsData } = require('../../../app/messaging/validate-demographics-data')
-const schema = require('../../../app/messaging/demographics-schema')
-const { VALIDATION } = require('../../../app/constants/error-categories')
+const { validateDemographicsData } = require('../../../../app/messaging/demographics/validate-demographics-data')
+const schema = require('../../../../app/messaging/demographics/demographics-schema')
+const { VALIDATION } = require('../../../../app/constants/error-categories')
 
-jest.mock('../../../app/messaging/demographics-schema')
+jest.mock('../../../../app/messaging/demographics/demographics-schema')
 
 describe('validateDemographicsData', () => {
   let demographicsData

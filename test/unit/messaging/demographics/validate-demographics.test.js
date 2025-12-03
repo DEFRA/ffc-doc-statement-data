@@ -1,5 +1,5 @@
-const { validateDemographics } = require('../../../app/messaging/validate-demographics')
-const { VALIDATION } = require('../../../app/constants/errors')
+const { validateDemographics } = require('../../../../app/messaging/demographics/validate-demographics')
+const { VALIDATION } = require('../../../../app/constants/errors')
 
 describe('validateDemographics', () => {
   test('should not throw for valid demographics data', () => {

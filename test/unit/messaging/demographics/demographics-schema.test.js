@@ -1,4 +1,4 @@
-const demographicsSchema = require('../../../app/messaging/demographics-schema')
+const demographicsSchema = require('../../../../app/messaging/demographics/demographics-schema')
 
 describe('Demographics Validation', () => {
   const validData = {

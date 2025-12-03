@@ -1,12 +1,12 @@
 const moment = require('moment')
-const { getAddressLines } = require('../../../app/messaging/get-address-lines')
-const { getSBI } = require('../../../app/messaging/get-sbi')
-const db = require('../../../app/data')
-const processDemographicsMessage = require('../../../app/messaging/process-demographics-message')
+const { getAddressLines } = require('../../../../app/messaging/demographics/get-address-lines')
+const { getSBI } = require('../../../../app/messaging/demographics/get-sbi')
+const db = require('../../../../app/data')
+const processDemographicsMessage = require('../../../../app/messaging/demographics/process-demographics-message')
 
-jest.mock('../../../app/messaging/get-address-lines')
-jest.mock('../../../app/messaging/get-sbi')
-jest.mock('../../../app/data')
+jest.mock('../../../../app/messaging/demographics/get-address-lines')
+jest.mock('../../../../app/messaging/demographics/get-sbi')
+jest.mock('../../../../app/data')
 
 let demographicsData
 
@@ -14,7 +14,7 @@ describe('process demographics message', () => {
   let receiver
 
   beforeEach(() => {
-    demographicsData = JSON.parse(JSON.stringify(require('../../mocks/demographics-extracts/organisation-standard-SBI')))
+    demographicsData = JSON.parse(JSON.stringify(require('../../../mocks/demographics-extracts/organisation-standard-SBI')))
     receiver = {
       completeMessage: jest.fn(),
       deadLetterMessage: jest.fn()

@@ -1,12 +1,12 @@
-const { getSBI } = require('../../../app/messaging/get-sbi')
+const { getSBI } = require('../../../../app/messaging/demographics/get-sbi')
 
 describe('get SBI from data', () => {
   let legacySBI
   let standardSBI
 
   beforeEach(() => {
-    legacySBI = JSON.parse(JSON.stringify(require('../../mocks/demographics-extracts/organisation-legacy-SBI'))).body
-    standardSBI = JSON.parse(JSON.stringify(require('../../mocks/demographics-extracts/organisation-standard-SBI'))).body
+    legacySBI = JSON.parse(JSON.stringify(require('../../../mocks/demographics-extracts/organisation-legacy-SBI'))).body
+    standardSBI = JSON.parse(JSON.stringify(require('../../../mocks/demographics-extracts/organisation-standard-SBI'))).body
   })
 
   const testCases = [
