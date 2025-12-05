@@ -79,7 +79,7 @@ function runEtlFlow ({
       try {
         const etl = new Etl.Etl()
         const etlFlow = etl
-          .connection(await new Connections.ProvidedConnection({
+          .connection(await Connections.ProvidedConnection({
             name: 'postgresConnection',
             sequelize: db.sequelize
           }))
