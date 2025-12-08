@@ -14,7 +14,7 @@ jest.mock('ffc-messaging', () => {
   }
 })
 
-jest.mock('../../../app/messaging/process-demographics-message')
+jest.mock('../../../app/messaging/demographics/process-demographics-message')
 
 const config = require('../../../app/config')
 const { start, stop } = require('../../../app/messaging')

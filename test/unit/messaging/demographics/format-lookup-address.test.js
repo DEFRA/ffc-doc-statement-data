@@ -1,4 +1,4 @@
-const { formatLookupAddress } = require('../../../app/messaging/format-lookup-address')
+const { formatLookupAddress } = require('../../../../app/messaging/demographics/format-lookup-address')
 
 describe('formatLookupAddress', () => {
   test.each([
