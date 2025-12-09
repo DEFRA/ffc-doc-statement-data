@@ -6,6 +6,7 @@ const db = require('../data')
 const mqConfig = require('../config/message')
 const { validateDemographicsData } = require('./validate-demographics-data')
 const { VALIDATION } = require('../constants/error-categories')
+const { createAlerts } = require('../messaging/create-alerts')
 
 const processDemographicsMessage = async (message, receiver) => {
   try {
@@ -51,6 +52,9 @@ const processDemographicsMessage = async (message, receiver) => {
     if (err.category === VALIDATION) {
       await receiver.deadLetterMessage(message)
     }
+    await createAlerts([{
+      message: err
+    }])
   }
 }
 
