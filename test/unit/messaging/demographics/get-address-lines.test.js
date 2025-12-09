@@ -1,4 +1,4 @@
-const { getAddressLines } = require('../../../app/messaging/get-address-lines')
+const { getAddressLines } = require('../../../../app/messaging/demographics/get-address-lines')
 
 describe('getAddressLines', () => {
   const testCases = [
