@@ -1,4 +1,3 @@
-/* eslint-disable n/no-callback-literal */
 const { runEtlProcess } = require('../../../app/etl/run-etl-process')
 const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-pay-etl-framework')
 const storage = require('../../../app/storage')
