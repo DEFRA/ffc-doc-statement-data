@@ -8,7 +8,7 @@ const { prepareAddressData } = require('./prepare-address-data')
 const { validateDemographicsData } = require('./validate-demographics-data')
 
 const { VALIDATION } = require('../../constants/error-categories')
-const { createAlerts } = require('../messaging/create-alerts')
+const { createAlerts } = require('../../messaging/create-alerts')
 
 const processDemographicsMessage = async (message, receiver) => {
   try {
