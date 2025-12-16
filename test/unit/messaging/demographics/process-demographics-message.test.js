@@ -7,6 +7,7 @@ const processDemographicsMessage = require('../../../../app/messaging/demographi
 jest.mock('../../../../app/messaging/demographics/get-address-lines')
 jest.mock('../../../../app/messaging/demographics/get-sbi')
 jest.mock('../../../../app/data')
+jest.mock('../../../../app/messaging/create-alerts')
 
 let demographicsData
 
