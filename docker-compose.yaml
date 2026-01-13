@@ -42,6 +42,9 @@ services:
       LOG_INTERVAL_MS: ${LOG_INTERVAL_MS:-600000}
       POLLING_INTERVAL: ${POLLING_INTERVAL:-3600000}
       DAY_0_DATE_TIME: ${DAY_0_DATE_TIME:-2099-12-31T00:00:00Z}
+      POLL_WINDOW_START: ${POLL_WINDOW_START:-"08:00"}
+      POLL_WINDOW_END: ${POLL_WINDOW_END:-"18:00"}
+      POLL_WINDOW_DAYS: ${POLL_WINDOW_DAYS:-"Mon,Tue,Wed,Thu,Fri"}
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine

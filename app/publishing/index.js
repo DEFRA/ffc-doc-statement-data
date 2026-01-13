@@ -4,6 +4,7 @@ const { prepareDWHExtracts, stageDWHExtracts } = require('../etl')
 const sendUpdates = require('./send-updates')
 const updateSubsetCheck = require('./subset/update-subset-check')
 const sendZeroValueAlerts = require('./send-zero-value-alerts')
+const { isWithinWindow, isPollDay } = require('./window-helpers')
 
 const schemes = [DELINKED, SFI23]
 let resetSinceRestart = false
@@ -27,11 +28,17 @@ const start = async () => {
       await updateSubsetCheck(SFI23, false)
       resetSinceRestart = true
     }
-    await prepareDWHExtracts()
-    await stageDWHExtracts()
-    await processUpdates()
-    await sendZeroValueAlerts()
-    console.log('All outstanding valid datasets published')
+    const inWindow = isWithinWindow(publishingConfig.pollWindow)
+    const onDay = isPollDay(publishingConfig.pollWindow.days)
+    if (inWindow && onDay) {
+      await prepareDWHExtracts()
+      await stageDWHExtracts()
+      await processUpdates()
+      await sendZeroValueAlerts()
+      console.log('All outstanding valid datasets published')
+    } else {
+      console.log('Outside publishing window or not a publishing day, skipping publish')
+    }
   } catch (err) {
     console.error('Error during publishing:', err)
   } finally {
