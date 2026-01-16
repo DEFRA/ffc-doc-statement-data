@@ -37,4 +37,7 @@ data:
   LOG_INTERVAL_MS: {{ quote .Values.container.logIntervalMs }}
   POLLING_INTERVAL: {{ quote .Values.container.pollingInterval }}
   DAY_0_DATE_TIME: {{ quote .Values.container.day0DateTime }}
+  POLL_WINDOW_START: {{ quote .Values.container.pollWindowStart }}
+  POLL_WINDOW_END: {{ quote .Values.container.pollWindowEnd }}
+  POLL_WINDOW_DAYS: {{ quote .Values.container.pollWindowDays }}
 {{- end -}}
