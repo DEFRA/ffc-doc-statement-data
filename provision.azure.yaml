@@ -4,10 +4,13 @@ resources:
     name: ffc-doc-statement-data
   topics:
     - name: ffc-doc-statement-data
-      role: sender
+      roles: 
+        - name: sender
     - name: ffc-doc-alerting
-      role: sender
+      roles: 
+        - name: sender
     - name: ffc-pay-demographics-extract
-      role: receiver
+      roles: 
+        - name: receiver
       subscriptions:
         - name: ffc-doc-demographics
