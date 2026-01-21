@@ -1,1 +1,23 @@
 ---
+environment: production
+environmentCode: pre
+container:
+  messageQueueHost: PREFFCINFSB1001.servicebus.windows.net
+  azureStorageAccountName: preffcdocst1001
+  endpointEnabled: true
+ingress:
+  server: azure.defra.cloud
+  endpoint: ffc-doc-statement-data-pre
+secretProviderClass:
+  azure:
+    keyvaultName: PREFFCINFKV1001
+    objects:
+      - objectName: pre-ffcahwr-appinsights-connectionString
+        objectType: secret
+
+  secretObjects:
+    - secretName: ffc-doc-statement-data
+      type: Opaque
+      data:
+        - objectName: pre-ffcahwr-appinsights-connectionString
+          key: APPLICATIONINSIGHTS_CONNECTION_STRING
