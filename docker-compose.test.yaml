@@ -19,7 +19,10 @@ services:
       POLL_WINDOW_START: "08:00"
       POLL_WINDOW_END: "18:00"
       POLL_WINDOW_DAYS: "Mon,Tue,Wed,Thu,Fri"
-
+      MESSAGE_QUEUE_HOST: servicebus-emulator
+      MESSAGE_QUEUE_USER: RootManageSharedAccessKey
+      MESSAGE_QUEUE_PASSWORD: SAS_KEY_VALUE
+      
     labels:
       com.docker.compose.pay.role: test
 
