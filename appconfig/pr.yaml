@@ -4,7 +4,7 @@ environmentCode: snd2
 pr: true
 container:
   azureStorageAccountName: snd2ffcdocst2001
-  messageQueueHost: queue:SNDFFCINFSB2001.servicebus.windows.net
+  messageQueueHost: SNDFFCINFSB2001.servicebus.windows.net
 ingress:
   server: azure.defra.cloud
   endpoint: ffc-doc-statement-data-snd2
