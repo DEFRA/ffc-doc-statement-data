@@ -35,6 +35,7 @@ extends:
     prDeployment: ${{ parameters.prDeployment }}
     branchDeployment: ${{ parameters.branchDeployment }}
     sndDeployment: ${{ parameters.sndDeployment }}
+    variableGroupName: ffc-doc-statement-data-env-var
     pr_params:
       delinkedEnabled: ${{ eq(variables['pr_delinkedEnabled'], 'true') }}
       demographicsActive: ${{ eq(variables['pr_demographicsActive'], 'true') }}
