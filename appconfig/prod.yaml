@@ -4,7 +4,6 @@ environmentCode: prd
 container:
   messageQueueHost: PRDFFCINFSB1001.servicebus.windows.net
   azureStorageAccountName: prdffcdocst1001
-  endpointEnabled: true
 ingress:
   server: azure.defra.cloud
   endpoint: ffc-doc-statement-data-prd
