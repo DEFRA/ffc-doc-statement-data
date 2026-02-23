@@ -53,7 +53,8 @@
     "sqlite3": "5.1.7"
   },
   "overrides": {
-    "tar": "^7.5.7"
+    "tar": "^7.5.7",
+    "minimatch": "^10.2.1"
   },
   "nodemonConfig": {
     "ignore": [
