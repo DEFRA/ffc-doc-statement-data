@@ -36,6 +36,7 @@ extends:
     branchDeployment: ${{ parameters.branchDeployment }}
     sndDeployment: ${{ parameters.sndDeployment }}
     variableGroupName: ffc-doc-statement-data-env-var
+    failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
     pr_params:
       container.delinkedEnabled: ${{ eq(variables['pr_delinkedEnabled'], 'true') }}
       container.demographicsActive: ${{ eq(variables['pr_demographicsActive'], 'true') }}
