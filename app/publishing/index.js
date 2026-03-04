@@ -30,7 +30,8 @@ const start = async () => {
     }
     const inWindow = isWithinWindow(publishingConfig.pollWindow)
     const onDay = isPollDay(publishingConfig.pollWindow.days)
-    if (inWindow && onDay) {
+    
+    if (!publishingConfig.pollWindow.enabled || (inWindow && onDay)) {
       await prepareDWHExtracts()
       await stageDWHExtracts()
       await processUpdates()

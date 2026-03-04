@@ -40,4 +40,5 @@ data:
   POLL_WINDOW_START: {{ quote .Values.container.pollWindowStart }}
   POLL_WINDOW_END: {{ quote .Values.container.pollWindowEnd }}
   POLL_WINDOW_DAYS: {{ quote .Values.container.pollWindowDays }}
+  POLL_WINDOW_ENABLED: {{ quote .Values.container.pollWindowEnabled }}
 {{- end -}}
