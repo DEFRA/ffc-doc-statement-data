@@ -19,6 +19,7 @@ services:
       POLL_WINDOW_START: "08:00"
       POLL_WINDOW_END: "18:00"
       POLL_WINDOW_DAYS: "Mon,Tue,Wed,Thu,Fri"
+      POLL_WINDOW_ENABLED: ${POLL_WINDOW_ENABLED:-false}
 
     labels:
       com.docker.compose.pay.role: test
