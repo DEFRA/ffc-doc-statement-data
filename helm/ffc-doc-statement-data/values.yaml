@@ -55,6 +55,7 @@ container:
   pollWindowStart: "00:00"
   pollWindowEnd: "23:59"
   pollWindowDays: "Sun,Mon,Tue,Wed,Thu,Fri,Sat"
+  pollWindowEnabled: true
 
 postgresService:
   postgresDb: ffc_doc_statement_data

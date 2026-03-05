@@ -19,6 +19,7 @@ describe('start publishing', () => {
     jest.clearAllMocks()
     jest.useFakeTimers()
     jest.spyOn(global, 'setTimeout')
+    publishingConfig.pollWindow.enabled = true
     isWithinWindow.mockReturnValue(true)
     isPollDay.mockReturnValue(true)
   })
