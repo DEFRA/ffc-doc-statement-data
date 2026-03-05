@@ -1,0 +1,13 @@
+---
+environment: production
+environmentCode: snd
+pr: true
+container:
+  azureStorageAccountName: snd2ffcdocst2001
+  messageQueueHost: SNDFFCINFSB2001.servicebus.windows.net
+  demographicsTopicAddress: queue:ffc-pay-demographics-extract
+  alertTopicAddress: queue:ffc-doc-alerting
+  dataTopicAddress: queue:ffc-doc-statement-data
+ingress:
+  server: azure.defra.cloud
+  endpoint: ffc-doc-statement-data-snd2
