@@ -32,44 +32,44 @@ extends:
   template: fcp-common-pipeline.yaml@templates
   parameters:
     appFrameworkType: nodejs
-    prDeployment: ${{ parameters.prDeployment }}
-    branchDeployment: ${{ parameters.branchDeployment }}
-    sndDeployment: ${{ parameters.sndDeployment }}
-    variableGroupName: ffc-doc-statement-data-env-var
     failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
+    prDeployment: $(prDeployment)
+    branchDeployment: $(branchDeployment)
+    sndDeployment: $(sndDeployment)
+    variableGroupName: ffc-doc-statement-data-env-var
     pr_params:
-      container.delinkedEnabled: ${{ eq(variables['pr_delinkedEnabled'], 'true') }}
-      container.demographicsActive: ${{ eq(variables['pr_demographicsActive'], 'true') }}
-      container.excludeCalculationData: ${{ eq(variables['pr_excludeCalculationData'], 'true') }}
-      container.publishingEnabled: ${{ eq(variables['pr_publishingEnabled'], 'true') }}
-      container.sfi23Enabled: ${{ eq(variables['pr_sfi23Enabled'], 'true') }}
+      container.delinkedEnabled: $(pr_delinkedEnabled)
+      container.demographicsActive: $(pr_demographicsActive)
+      container.excludeCalculationData: $(pr_excludeCalculationData)
+      container.publishingEnabled: $(pr_publishingEnabled)
+      container.sfi23Enabled: $(pr_sfi23Enabled)
     snd2_params:
-      container.delinkedEnabled: ${{ eq(variables['snd2_delinkedEnabled'], 'true') }}
-      container.demographicsActive: ${{ eq(variables['snd2_demographicsActive'], 'true') }}
-      container.excludeCalculationData: ${{ eq(variables['snd2_excludeCalculationData'], 'true') }}
-      container.publishingEnabled: ${{ eq(variables['snd2_publishingEnabled'], 'true') }}
-      container.sfi23Enabled: ${{ eq(variables['snd2_sfi23Enabled'], 'true') }}
+      container.delinkedEnabled: $(snd2_delinkedEnabled)
+      container.demographicsActive: $(snd2_demographicsActive)
+      container.excludeCalculationData: $(snd2_excludeCalculationData)
+      container.publishingEnabled: $(snd2_publishingEnabled)
+      container.sfi23Enabled: $(snd2_sfi23Enabled)
     dev_params:
-      container.delinkedEnabled: ${{ eq(variables['dev_delinkedEnabled'], 'true') }}
-      container.demographicsActive: ${{ eq(variables['dev_demographicsActive'], 'true') }}
-      container.excludeCalculationData: ${{ eq(variables['dev_excludeCalculationData'], 'true') }}
-      container.publishingEnabled: ${{ eq(variables['dev_publishingEnabled'], 'true') }}
-      container.sfi23Enabled: ${{ eq(variables['dev_sfi23Enabled'], 'true') }}
+      container.delinkedEnabled: $(dev_delinkedEnabled)
+      container.demographicsActive: $(dev_demographicsActive)
+      container.excludeCalculationData: $(dev_excludeCalculationData)
+      container.publishingEnabled: $(dev_publishingEnabled)
+      container.sfi23Enabled: $(dev_sfi23Enabled)
     test_params:
-      container.delinkedEnabled: ${{ eq(variables['test_delinkedEnabled'], 'true') }}
-      container.demographicsActive: ${{ eq(variables['test_demographicsActive'], 'true') }}
-      container.excludeCalculationData: ${{ eq(variables['test_excludeCalculationData'], 'true') }}
-      container.publishingEnabled: ${{ eq(variables['test_publishingEnabled'], 'true') }}
-      container.sfi23Enabled: ${{ eq(variables['test_sfi23Enabled'], 'true') }}
+      container.delinkedEnabled: $(test_delinkedEnabled)
+      container.demographicsActive: $(test_demographicsActive)
+      container.excludeCalculationData: $(test_excludeCalculationData)
+      container.publishingEnabled: $(test_publishingEnabled)
+      container.sfi23Enabled: $(test_sfi23Enabled)
     pre_params:
-      container.delinkedEnabled: ${{ eq(variables['pre_delinkedEnabled'], 'true') }}
-      container.demographicsActive: ${{ eq(variables['pre_demographicsActive'], 'true') }}
-      container.excludeCalculationData: ${{ eq(variables['pre_excludeCalculationData'], 'true') }}
-      container.publishingEnabled: ${{ eq(variables['pre_publishingEnabled'], 'true') }}
-      container.sfi23Enabled: ${{ eq(variables['pre_sfi23Enabled'], 'true') }}
+      container.delinkedEnabled: $(pre_delinkedEnabled)
+      container.demographicsActive: $(pre_demographicsActive)
+      container.excludeCalculationData: $(pre_excludeCalculationData)
+      container.publishingEnabled: $(pre_publishingEnabled)
+      container.sfi23Enabled: $(pre_sfi23Enabled)
     prd_params:
-      container.delinkedEnabled: ${{ eq(variables['prd_delinkedEnabled'], 'true') }}
-      container.demographicsActive: ${{ eq(variables['prd_demographicsActive'], 'true') }}
-      container.excludeCalculationData: ${{ eq(variables['prd_excludeCalculationData'], 'true') }}
-      container.publishingEnabled: ${{ eq(variables['prd_publishingEnabled'], 'true') }}
-      container.sfi23Enabled: ${{ eq(variables['prd_sfi23Enabled'], 'true') }}
+      container.delinkedEnabled: $(prd_delinkedEnabled)
+      container.demographicsActive: $(prd_demographicsActive)
+      container.excludeCalculationData: $(prd_excludeCalculationData)
+      container.publishingEnabled: $(prd_publishingEnabled)
+      container.sfi23Enabled: $(prd_sfi23Enabled)
