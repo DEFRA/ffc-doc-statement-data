@@ -33,9 +33,9 @@ extends:
   parameters:
     appFrameworkType: nodejs
     failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
-    prDeployment: $(prDeployment)
-    branchDeployment: $(branchDeployment)
-    sndDeployment: $(sndDeployment)
+    prDeployment: ${{ parameters.prDeployment }}
+    branchDeployment: ${{ parameters.branchDeployment }}
+    sndDeployment: ${{ parameters.sndDeployment }}
     variableGroupName: ffc-doc-statement-data-env-var
     pr_params:
       container.delinkedEnabled: $(pr_delinkedEnabled)
