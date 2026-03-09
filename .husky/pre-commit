@@ -24,4 +24,4 @@ curl -sSfL https://raw.githubusercontent.com/DEFRA/ffc-shared-actions/main/.gitl
   -o .gitleaks-shared/.gitleaks.toml
 
 echo "🔍 Running gitleaks scan..."
-"$GITLEAKS_BIN" detect --config .gitleaks.toml --verbose --exit-code=2
+"$GITLEAKS_BIN" protect --staged --config .gitleaks.toml --verbose --exit-code=2
