@@ -13,7 +13,8 @@
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --coverage=false --onlyChanged --watch --runInBand --no-cache",
     "start:watch": "nodemon --inspect=0.0.0.0 --ext js --legacy-watch app/index.js",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js",
-    "stage": "node ./etl/stage_extracts.js"
+    "stage": "node ./etl/stage_extracts.js",
+    "prepare": "husky"
   },
   "author": "Defra",
   "contributors": [
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "eslint": "9.39.1",
+    "husky": "9.1.7",
     "jest": "29.6.4",
     "jest-junit": "14.0.0",
     "neostandard": "0.12.2",

@@ -1,0 +1,19 @@
+# ffc-doc-statement-constructor/.gitleaks.toml
+title = "ffc-doc-statement-constructor"
+
+[extend]
+path = ".gitleaks-shared/.gitleaks.toml"
+
+# Service-specific additions only below this line, use [[ ]] for multiple allowlist instances
+[allowlist]
+description = "Service-specific exclusions"
+paths = [
+  '''test/mock-objects/.*''',
+  '''test/mock-modules/.*''',
+  '''test/unit/.*''',
+  '''etl/totals_from_dwh_sfi23\.sql'''
+]
+
+#enter regex here wrapped in triple ''' to exclude specific keys
+#regexes = [
+#]
