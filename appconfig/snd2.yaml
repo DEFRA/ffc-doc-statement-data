@@ -4,6 +4,11 @@ environmentCode: snd2
 container:
   messageQueueHost: SNDFFCINFSB2001.servicebus.windows.net
   azureStorageAccountName: snd2ffcdocst2001
+  pollingInterval: 3600000
+  pollWindowStart: "08:00"
+  pollWindowEnd: "18:00"
+  pollWindowDays: "Mon,Tue,Wed,Thu,Fri"
+  pollWindowEnabled: true
 ingress:
   server: azure.defra.cloud
   endpoint: ffc-doc-statement-data-snd2

@@ -4,6 +4,11 @@ environmentCode: dev
 container:
   azureStorageAccountName: devffcdocst1001
   messageQueueHost: DEVFFCINFSB1001.servicebus.windows.net
+  pollingInterval: 3600000
+  pollWindowStart: "08:00"
+  pollWindowEnd: "18:00"
+  pollWindowDays: "Mon,Tue,Wed,Thu,Fri"
+  pollWindowEnabled: true
 ingress:
   server: azure.defra.cloud
   endpoint: ffc-doc-statement-data-dev
