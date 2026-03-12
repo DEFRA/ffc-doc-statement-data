@@ -14,7 +14,7 @@
     "start:watch": "nodemon --inspect=0.0.0.0 --ext js --legacy-watch app/index.js",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js",
     "stage": "node ./etl/stage_extracts.js",
-    "prepare": "sh -c 'command -v husky >/dev/null && husky install || true'"
+    "prepare": "husky"
   },
   "author": "Defra",
   "contributors": [
@@ -32,16 +32,16 @@
     "@azure/storage-blob": "12.29.1",
     "applicationinsights": "2.9.6",
     "ffc-alerting-utils": "1.0.6",
-    "ffc-database": "1.0.23",
+    "ffc-database": "1.0.24",
     "ffc-messaging": "2.10.1",
-    "ffc-pay-etl-framework": "1.4.1",
+    "ffc-pay-etl-framework": "1.4.2",
     "ffc-pay-event-publisher": "1.2.0",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
     "moment": "2.30.1",
     "node-stream-zip": "1.15.0",
     "ora": "5.4.1",
-    "sequelize": "6.31.1",
+    "sequelize": "6.37.8",
     "unzipper": "0.12.3",
     "uuid": "10.0.0"
   },

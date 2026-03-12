@@ -1,5 +1,5 @@
-# ffc-doc-statement-constructor/.gitleaks.toml
-title = "ffc-doc-statement-constructor"
+# ffc-doc-statement-data/.gitleaks.toml
+title = "ffc-doc-statement-data"
 
 [extend]
 path = ".gitleaks-shared/.gitleaks.toml"
