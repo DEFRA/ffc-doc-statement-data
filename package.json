@@ -14,7 +14,7 @@
     "start:watch": "nodemon --inspect=0.0.0.0 --ext js --legacy-watch app/index.js",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext js --legacy-watch app/index.js",
     "stage": "node ./etl/stage_extracts.js",
-    "prepare": "node --eval \"process.env.CI || process.env.TF_BUILD ? process.exit(0) : require('child_process').execSync('husky', {stdio:'inherit'})\""  
+    "prepare": "node --eval \"process.env.CI || process.env.TF_BUILD ? process.exit(0) : require('child_process').execSync('husky', {stdio:'inherit'})\""
   },
   "author": "Defra",
   "contributors": [
@@ -52,7 +52,7 @@
     "jest-junit": "14.0.0",
     "neostandard": "0.12.2",
     "nodemon": "3.0.1",
-    "sqlite3": "5.1.7"
+    "sqlite3": "^6.0.1"
   },
   "nodemonConfig": {
     "ignore": [
