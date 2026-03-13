@@ -11,7 +11,8 @@ paths = [
   '''test/mock-objects/.*''',
   '''test/mock-modules/.*''',
   '''test/unit/.*''',
-  '''etl/totals_from_dwh_sfi23\.sql'''
+  '''etl/totals_from_dwh_sfi23\.sql''',
+  '''cypress/utils/temp-repo/dummy\.txt'''
 ]
 
 #enter regex here wrapped in triple ''' to exclude specific keys
