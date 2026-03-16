@@ -2,15 +2,15 @@ const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageApplicationDetails } = require('../../../../app/etl/staging/stage-application-detail')
-const { applicationDetail } = require('../../../../app/constants/tables')
+const { applicationDetailDelinked } = require('../../../../app/constants/tables')
 const { Readable } = require('stream')
 
 jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/etl', () => ({
-  applicationDetail: { folder: 'appDetailFolder' }
+jest.mock('../../../../app/config/dwh', () => ({
+  applicationDetailDelinked: { folder: 'appDetailFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
   applicationDetailTable: 'applicationDetailTable'
@@ -22,7 +22,7 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
     excludeCalculationData: true,
-    applicationDetail: { folder: 'appDetailFolder' }
+    applicationDetailDelinked: { folder: 'appDetailFolder' }
   }
 }))
 
@@ -62,10 +62,10 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'PKID', targetColumn: 'pkid', targetType: 'number' },
-    { column: 'DT_INSERT', targetColumn: 'dtInsert', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'DT_DELETE', targetColumn: 'dtDelete', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_INSERT', targetColumn: 'dtInsert', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
+    { column: 'DT_DELETE', targetColumn: 'dtDelete', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'SUBJECT_ID', targetColumn: 'subjectId', targetType: 'number' },
     { column: 'UTE_ID', targetColumn: 'uteId', targetType: 'number' },
     { column: 'APPLICATION_ID', targetColumn: 'applicationId', targetType: 'number' },
@@ -77,13 +77,13 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
     { column: 'STATUS_S_CODE', targetColumn: 'statusSCode', targetType: 'varchar' },
     { column: 'SOURCE_P_CODE', targetColumn: 'sourcePCode', targetType: 'varchar' },
     { column: 'SOURCE_S_CODE', targetColumn: 'sourceSCode', targetType: 'varchar' },
-    { column: 'DT_START', targetColumn: 'dtStart', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
-    { column: 'DT_END', targetColumn: 'dtEnd', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_START', targetColumn: 'dtStart', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
+    { column: 'DT_END', targetColumn: 'dtEnd', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'VALID_START_FLG', targetColumn: 'validStartFlg', targetType: 'varchar' },
     { column: 'VALID_END_FLG', targetColumn: 'validEndFlg', targetType: 'varchar' },
     { column: 'APP_ID_START', targetColumn: 'appIdStart', targetType: 'number' },
     { column: 'APP_ID_END', targetColumn: 'appIdEnd', targetType: 'number' },
-    { column: 'DT_REC_UPDATE', targetColumn: 'dtRecUpdate', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'DT_REC_UPDATE', targetColumn: 'dtRecUpdate', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'USER_ID', targetColumn: 'userId', targetType: 'varchar' }
   ]
 
@@ -115,7 +115,7 @@ test('stageApplicationDetails downloads file and runs ETL process', async () => 
   expect(runEtlProcess).toHaveBeenCalledWith({
     fileStream: mockReadableStream,
     columns,
-    table: applicationDetail,
+    table: applicationDetailDelinked,
     mapping,
     file: 'appDetailFolder/export.csv',
     excludedFields

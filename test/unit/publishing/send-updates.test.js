@@ -40,7 +40,6 @@ describe('sendUpdates', () => {
     jest.clearAllMocks()
     publishingConfig.publishingEnabled = true
     publishingConfig.delinked.subsetProcess = false
-    publishingConfig.sfi23.subsetProcess = false
   })
 
   afterEach(() => {
@@ -104,7 +103,6 @@ describe('sendUpdates', () => {
 
   test('calls defaultPublishingPerType correctly for DELINKED when subsetProcess false', async () => {
     publishingConfig.delinked.subsetProcess = false
-    publishingConfig.sfi23.subsetProcess = false
 
     await sendUpdates(DELINKED)
 
@@ -114,7 +112,6 @@ describe('sendUpdates', () => {
 
   test('calls defaultPublishingPerType correctly for SFI23 when subsetProcess false', async () => {
     publishingConfig.delinked.subsetProcess = false
-    publishingConfig.sfi23.subsetProcess = false
 
     await sendUpdates(SFI23)
 
@@ -124,7 +121,6 @@ describe('sendUpdates', () => {
 
   test('logs subset process in operation if non-scheme subsetProcess is true', async () => {
     publishingConfig.delinked.subsetProcess = true
-    publishingConfig.sfi23.subsetProcess = false
 
     await sendUpdates(SFI23)
 

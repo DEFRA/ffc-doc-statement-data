@@ -42,22 +42,15 @@ const {
   loadIntermApplicationContract,
   loadIntermApplicationPayment,
   loadIntermTotal,
-  loadDAX,
   loadIntermTotalClaim,
   loadIntermPaymentrefApplication,
   loadIntermPaymentrefOrg,
   loadIntermPaymentrefAgreementDates,
-  loadTotals,
   loadOrganisations,
   loadIntermAppCalcResultsDelinkPayment,
-  loadIntermFinanceDAXDelinked,
   loadDelinkedCalculation,
   loadD365,
-  loadIntermApplicationClaimDelinked,
-  loadIntermOrgDelinked,
-  loadIntermCalcOrgDelinked,
   loadIntermTotalZeroValues,
-  loadZeroValueDax,
   loadZeroValueD365,
   loadIntermOrgFromDay0
 } = require('../../../app/etl/load-scripts')
@@ -89,16 +82,12 @@ describe('loadEtlData', () => {
 
     const expectedScripts = [
       loadIntermFinanceDAX,
-      loadIntermFinanceDAXDelinked,
       loadIntermOrgFromDay0,
       loadIntermOrg,
-      loadIntermOrgDelinked,
       loadIntermApplicationClaim,
-      loadIntermApplicationClaimDelinked,
       loadIntermApplicationContract,
       loadIntermApplicationPayment,
       loadIntermCalcOrg,
-      loadIntermCalcOrgDelinked,
       loadIntermTotal,
       loadIntermTotalZeroValues,
       loadIntermPaymentrefAgreementDates,
@@ -113,10 +102,7 @@ describe('loadEtlData', () => {
     })
 
     expect(loadOrganisations).toHaveBeenCalledWith('2023-01-01', transaction1)
-    expect(loadTotals).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadDelinkedCalculation).toHaveBeenCalledWith('2023-01-01', transaction2)
-    expect(loadDAX).toHaveBeenCalledWith('2023-01-01', transaction2)
-    expect(loadZeroValueDax).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadD365).toHaveBeenCalledWith('2023-01-01', transaction2)
     expect(loadZeroValueD365).toHaveBeenCalledWith('2023-01-01', transaction2)
 

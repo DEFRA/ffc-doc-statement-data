@@ -1,7 +1,7 @@
 const unzipper = require('unzipper')
 const { unzipDWHExtracts, clearAllUploads } = require('../../../app/etl/unzip-dwh-extracts')
 const { getZipFile, downloadFileAsStream, deleteFile, getBlob } = require('../../../app/storage')
-const config = require('../../../app/config/etl')
+const config = require('../../../app/config/dwh')
 
 jest.mock('unzipper')
 jest.mock('../../../app/storage', () => ({
@@ -67,7 +67,7 @@ describe('unzipDWHExtracts', () => {
 
     expect(getZipFile).toHaveBeenCalled()
     expect(downloadFileAsStream).toHaveBeenCalledWith(mockZipFile)
-    expect(getBlob).toHaveBeenCalledWith(`${config.dwhExtractsFolder}/file.csv`)
+    expect(getBlob).toHaveBeenCalledWith(`${config.etlExtractsFolder}/file.csv`)
     expect(mockBlobClient.uploadStream).toHaveBeenCalledWith(expect.anything())
     expect(deleteFile).toHaveBeenCalledWith(mockZipFile)
   })
@@ -150,7 +150,7 @@ describe('clearAllUploads', () => {
 
     expect(deleteFile).toHaveBeenCalledTimes(uploadedFiles.length)
     uploadedFiles.forEach(fileName => {
-      expect(deleteFile).toHaveBeenCalledWith(`${config.dwhExtractsFolder}/${fileName}`)
+      expect(deleteFile).toHaveBeenCalledWith(`${config.etlExtractsFolder}/${fileName}`)
     })
   })
 

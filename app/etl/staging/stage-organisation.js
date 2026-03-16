@@ -1,9 +1,9 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { organisation } = require('../../constants/tables')
+const { organisationDelinked } = require('../../constants/tables')
 const config = require('../../config')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 const { sharedTransformer, sharedNonProdTransformer } = require('../../constants/organisation-etl-shared')
 
 const columns = [
@@ -94,17 +94,11 @@ if (config.etlConfig.excludeCalculationData) {
   ]
 }
 
-const stageOrganisation = async (monthDayFormat = false, folder = 'organisation') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const mapping = getMapping(format)
-  return downloadAndProcessFile(folder, organisation, columns, mapping, excludedFields, transformer, nonProdTransformer)
-}
-
-const stageOrganisationDelinked = async () => {
-  return stageOrganisation(true, 'organisationDelinked')
+const stageOrganisation = async () => {
+  const mapping = getMapping(monthDayYearDateTimeFormat)
+  return downloadAndProcessFile('organisationDelinked', organisationDelinked, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 module.exports = {
-  stageOrganisation,
-  stageOrganisationDelinked
+  stageOrganisation
 }

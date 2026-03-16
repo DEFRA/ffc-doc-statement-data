@@ -23,7 +23,6 @@ describe('sendDaxUpdates', () => {
     jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
     publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
     publishingConfig.delinked.subsetProcess = false
-    publishingConfig.sfi23.subsetProcess = false
     publishingConfig.publishingEnabled = true
   })
 

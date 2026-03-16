@@ -1,11 +1,10 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
-const { cssOptions } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { cssOptionsDelinked } = require('../../constants/tables')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageCSSOptions = async (monthDayFormat = false, folder = 'cssOptions') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
+const stageCSSOptions = async (folder = 'cssOptions') => {
   const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
   const columns = [
@@ -24,15 +23,15 @@ const stageCSSOptions = async (monthDayFormat = false, folder = 'cssOptions') =>
 
   const mapping = [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
-    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: monthDayYearDateTimeFormat },
     { column: sourceColumnNames.OPTION_TYPE_ID, targetColumn: targetColumnNames.optionTypeId, targetType: NUMBER },
     { column: sourceColumnNames.OPTION_DESCRIPTION, targetColumn: targetColumnNames.optionDescription, targetType: VARCHAR },
     { column: sourceColumnNames.OPTION_LONG_DESCRIPTION, targetColumn: targetColumnNames.optionLongDescription, targetType: VARCHAR },
     { column: sourceColumnNames.DURATION, targetColumn: targetColumnNames.duration, targetType: NUMBER },
     { column: sourceColumnNames.OPTION_CODE, targetColumn: targetColumnNames.optionCode, targetType: VARCHAR },
     { column: sourceColumnNames.CONTRACT_TYPE_ID, targetColumn: targetColumnNames.contractTypeId, targetType: NUMBER },
-    { column: sourceColumnNames.START_DT, targetColumn: targetColumnNames.startDt, targetType: DATE, format },
-    { column: sourceColumnNames.END_DT, targetColumn: targetColumnNames.endDt, targetType: DATE, format },
+    { column: sourceColumnNames.START_DT, targetColumn: targetColumnNames.startDt, targetType: DATE, format: monthDayYearDateTimeFormat },
+    { column: sourceColumnNames.END_DT, targetColumn: targetColumnNames.endDt, targetType: DATE, format: monthDayYearDateTimeFormat },
     { column: sourceColumnNames.GROUP_ID, targetColumn: targetColumnNames.groupId, targetType: VARCHAR }
   ]
 
@@ -49,14 +48,9 @@ const stageCSSOptions = async (monthDayFormat = false, folder = 'cssOptions') =>
     ]
   }
 
-  return downloadAndProcessFile(folder, cssOptions, columns, mapping, excludedFields)
-}
-
-const stageCSSOptionsDelinked = async () => {
-  return stageCSSOptions(true, 'cssOptionsDelinked')
+  return downloadAndProcessFile('cssOptionsDelinked', cssOptionsDelinked, columns, mapping, excludedFields)
 }
 
 module.exports = {
-  stageCSSOptions,
-  stageCSSOptionsDelinked
+  stageCSSOptions
 }

@@ -2,8 +2,8 @@ const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const config = require('../../config')
-const { financeDAX } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { financeDAXDelinked } = require('../../constants/tables')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const columns = [
   sourceColumnNames.CHANGE_TYPE,
@@ -254,17 +254,11 @@ if (config.etlConfig.excludeCalculationData) {
   ]
 }
 
-const stageFinanceDAX = async (monthDayFormat = false, folder = 'financeDAX') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const mapping = getMapping(format)
-  return downloadAndProcessFile(folder, financeDAX, columns, mapping, excludedFields, transformer)
-}
-
-const stageFinanceDAXDelinked = async () => {
-  return stageFinanceDAX(true, 'financeDAXDelinked')
+const stageFinanceDAX = async () => {
+  const mapping = getMapping(monthDayYearDateTimeFormat)
+  return downloadAndProcessFile('financeDAXDelinked', financeDAXDelinked, columns, mapping, excludedFields, transformer)
 }
 
 module.exports = {
-  stageFinanceDAX,
-  stageFinanceDAXDelinked
+  stageFinanceDAX
 }

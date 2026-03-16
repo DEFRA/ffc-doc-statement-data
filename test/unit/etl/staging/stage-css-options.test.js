@@ -1,12 +1,12 @@
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { cssOptions } = require('../../../../app/constants/tables')
+const { cssOptionsDelinked } = require('../../../../app/constants/tables')
 const { stageCSSOptions } = require('../../../../app/etl/staging/stage-css-options')
 const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/etl')
+jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -19,7 +19,7 @@ describe('stageCSSOptions', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'CSS_Options_SFI23/export.csv'
+    const mockFile = 'CSS_Options_Delinked/export.csv'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -44,7 +44,7 @@ describe('stageCSSOptions', () => {
         column: 'CHANGE_TIME',
         targetColumn: 'changeTime',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'OPTION_TYPE_ID',
@@ -80,13 +80,13 @@ describe('stageCSSOptions', () => {
         column: 'START_DT',
         targetColumn: 'startDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'END_DT',
         targetColumn: 'endDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'GROUP_ID',
@@ -106,7 +106,7 @@ describe('stageCSSOptions', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       fileStream: mockReadableStream,
       columns: mockColumns,
-      table: cssOptions,
+      table: cssOptionsDelinked,
       mapping: mockMapping,
       file: mockFile,
       excludedFields: [
