@@ -6,3 +6,4 @@ helm/**/*.lock
 .env
 .DS_Store
 result.log
+.gitleaks-shared/

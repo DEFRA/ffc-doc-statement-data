@@ -1,13 +1,13 @@
-const { v4: uuidv4 } = require('uuid')
-const storage = require('../../../../app/storage')
-const { stageFinanceDAX } = require('../../../../app/etl/staging/stage-finance-dax')
-const { Readable } = require('stream')
-
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
 jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
+
+const { v4: uuidv4 } = require('uuid')
+const storage = require('../../../../app/storage')
+const { stageFinanceDAX } = require('../../../../app/etl/staging/stage-finance-dax')
+const { Readable } = require('stream')
 
 describe('stageFinanceDAX', () => {
   let runEtlProcess
