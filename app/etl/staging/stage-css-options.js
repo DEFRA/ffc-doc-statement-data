@@ -3,10 +3,9 @@ const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
 const { cssOptionsDelinked } = require('../../constants/tables')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 
-const stageCSSOptions = async (folder = 'cssOptions') => {
-  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-
+const stageCSSOptions = async () => {
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
     sourceColumnNames.CHANGE_TIME,
