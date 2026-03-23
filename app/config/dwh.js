@@ -6,11 +6,13 @@ const {
   day0BusinessAddress
 } = require('../constants/folders')
 
+const stringToBoolean = (value) => value === 'true' || value === true
+
 const schema = Joi.object({
   checkCompleteTimeoutMs: Joi.number().required(),
   connectionStr: Joi.string().when('useConnectionStr', { is: true, then: Joi.required(), otherwise: Joi.allow('').optional() }),
   storageAccount: Joi.string().required(),
-  useNewDWHContainer: Joi.boolean().default(true),
+  useNewDWHContainer: Joi.boolean().required().default(true),
   dwhContainer: Joi.string().required(),
   etlExtractsFolder: Joi.string().required(),
   etlLogsFolder: Joi.string().required(),
@@ -98,8 +100,8 @@ const config = {
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
   useNewDWHContainer: process.env.USE_NEW_DWH_CONTAINER,
-  dwhContainer: process.env.USE_NEW_DWH_CONTAINER ? 'dwh' : 'etl',
-  etlExtractsFolder: process.env.USE_NEW_DWH_CONTAINER ? 'delinked-payment_statements' : 'dwh_extracts',
+  dwhContainer: stringToBoolean(process.env.USE_NEW_DWH_CONTAINER) ? 'dwh' : 'etl',
+  etlExtractsFolder: stringToBoolean(process.env.USE_NEW_DWH_CONTAINER) ? 'delinked-payment_statements' : 'dwh_extracts',
   etlLogsFolder: 'logs',
   quarantineFolder: 'quarantine',
   dataRetentionFolder: 'data_retention',
