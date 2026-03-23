@@ -6,7 +6,7 @@ const defaultPublishingPerType = require('./default-publishing-per-type')
 const sendDelinkedSubset = require('./subset/send-delinked-subset')
 
 const setupProcessing = async (scheme) => {
-  if (publishingConfig[scheme].subsetProcess) {
+  if (publishingConfig[scheme]?.subsetProcess) {
     const count = await getSubsetCheck(scheme)
 
     if (!count) {

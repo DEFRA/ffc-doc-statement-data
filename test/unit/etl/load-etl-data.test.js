@@ -212,6 +212,6 @@ describe('loadEtlData', () => {
   test('should call publishEtlProcessError for each load function failure', async () => {
     loadIntermFinanceDAX.mockRejectedValue(new Error('Finance DAX error'))
     await loadETLData('2023-01-01')
-    expect(publishEtlProcessError).toHaveBeenCalledWith('loadIntermFinanceDAX', expect.any(Error))
+    expect(publishEtlProcessError).toHaveBeenCalledWith('loadIntermFinanceDAXDelinked', expect.any(Error))
   })
 })
