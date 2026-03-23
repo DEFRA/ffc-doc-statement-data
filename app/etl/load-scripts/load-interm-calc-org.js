@@ -3,22 +3,6 @@ const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
-const defaultTablesToCheck = [
-  etlConfig.appsPaymentNotification.folder,
-  etlConfig.cssContractApplications.folder,
-  etlConfig.financeDAX.folder,
-  etlConfig.businessAddress.folder,
-  etlConfig.calculationsDetails.folder
-]
-
-const defaultFolderToAliasMap = {
-  [etlConfig.appsPaymentNotification.folder]: 'APN',
-  [etlConfig.cssContractApplications.folder]: 'APP',
-  [etlConfig.financeDAX.folder]: 'SD',
-  [etlConfig.businessAddress.folder]: 'BAC',
-  [etlConfig.calculationsDetails.folder]: 'CD'
-}
-
 const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
   WITH "newData" AS (
     SELECT
@@ -84,7 +68,23 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     OR ("changeType" = 'UPDATE' AND ("calculationId", "idClcHeader") NOT IN (SELECT "calculationId", "idClcHeader" FROM updatedrows));
 `
 
-const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+const loadIntermCalcOrg = async (startDate, transaction) => {
+  const tablesToCheck = [
+    etlConfig.appsPaymentNotificationDelinked.folder,
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.financeDAXDelinked.folder,
+    etlConfig.businessAddressDelinked.folder,
+    etlConfig.calculationsDetailsDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.appsPaymentNotificationDelinked.folder]: 'APN',
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'APP',
+    [etlConfig.financeDAXDelinked.folder]: 'SD',
+    [etlConfig.businessAddressDelinked.folder]: 'BAC',
+    [etlConfig.calculationsDetailsDelinked.folder]: 'CD'
+  }
+
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -105,27 +105,6 @@ const loadIntermCalcOrg = async (startDate, transaction, tablesToCheck = default
   }
 }
 
-const loadIntermCalcOrgDelinked = async (startDate, transaction) => {
-  const tablesToCheck = [
-    etlConfig.appsPaymentNotificationDelinked.folder,
-    etlConfig.cssContractApplicationsDelinked.folder,
-    etlConfig.financeDAXDelinked.folder,
-    etlConfig.businessAddressDelinked.folder,
-    etlConfig.calculationsDetailsDelinked.folder
-  ]
-
-  const folderToAliasMap = {
-    [etlConfig.appsPaymentNotificationDelinked.folder]: 'APN',
-    [etlConfig.cssContractApplicationsDelinked.folder]: 'APP',
-    [etlConfig.financeDAXDelinked.folder]: 'SD',
-    [etlConfig.businessAddressDelinked.folder]: 'BAC',
-    [etlConfig.calculationsDetailsDelinked.folder]: 'CD'
-  }
-
-  return loadIntermCalcOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
-}
-
 module.exports = {
-  loadIntermCalcOrg,
-  loadIntermCalcOrgDelinked
+  loadIntermCalcOrg
 }

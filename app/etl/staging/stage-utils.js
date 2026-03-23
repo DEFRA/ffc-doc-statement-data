@@ -1,5 +1,5 @@
 const storage = require('../../storage')
-const etlConfig = require('../../config/etl')
+const etlConfig = require('../../config/dwh')
 const { runEtlProcess } = require('../run-etl-process')
 
 const dateTimeFormat = 'DD-MM-YYYY HH24:MI:SS'

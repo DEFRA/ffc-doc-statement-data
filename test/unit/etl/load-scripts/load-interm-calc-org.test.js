@@ -3,22 +3,21 @@ const db = require('../../../../app/data')
 const { loadIntermCalcOrg } = require('../../../../app/etl/load-scripts/load-interm-calc-org')
 const { processWithWorkers } = require('../../../../app/etl/load-scripts/load-interm-utils')
 
-// Mock the config module
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
-    appsPaymentNotification: {
+    appsPaymentNotificationDelinked: {
       folder: 'Apps_Payment_Notification'
     },
-    cssContractApplications: {
+    cssContractApplicationsDelinked: {
       folder: 'CSS_Contract_Applications'
     },
-    financeDAX: {
+    financeDAXDelinked: {
       folder: 'Finance_DAX'
     },
-    businessAddress: {
+    businessAddressDelinked: {
       folder: 'Business_Address'
     },
-    calculationsDetails: {
+    calculationsDetailsDelinked: {
       folder: 'Calculations_Details'
     },
     etlBatchSize: 1000
@@ -64,14 +63,14 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    const file = `${etlConfig.appsPaymentNotification.folder}/export.csv`
+    const file = `${etlConfig.appsPaymentNotificationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([
       { idFrom: 1, idTo: 2, file, endedAt: new Date() },
       { idFrom: 3, idTo: 4, file, endedAt: new Date() }
     ])
 
     await expect(loadIntermCalcOrg(startDate, transaction)).rejects.toThrow(
-      `Multiple records found for updates to ${etlConfig.appsPaymentNotification.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.appsPaymentNotificationDelinked.folder}, expected only one`
     )
   })
 
@@ -83,7 +82,7 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should process records with worker threads', async () => {
-    const file = `${etlConfig.appsPaymentNotification.folder}/export.csv`
+    const file = `${etlConfig.appsPaymentNotificationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockResolvedValue(undefined)
 
@@ -93,7 +92,7 @@ describe('loadIntermCalcOrg', () => {
   })
 
   test('should handle errors thrown by worker threads', async () => {
-    const file = `${etlConfig.appsPaymentNotification.folder}/export.csv`
+    const file = `${etlConfig.appsPaymentNotificationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockRejectedValue(new Error('Worker processing failed'))
 

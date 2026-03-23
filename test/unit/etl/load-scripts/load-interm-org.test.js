@@ -6,10 +6,10 @@ const { processWithWorkers } = require('../../../../app/etl/load-scripts/load-in
 // Mock the config module
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
-    organisation: {
+    organisationDelinked: {
       folder: 'Organization'
     },
-    businessAddress: {
+    businessAddressDelinked: {
       folder: 'Business_Address'
     },
     etlBatchSize: 1000
@@ -55,14 +55,14 @@ describe('loadIntermOrg', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    const file = `${etlConfig.organisation.folder}/export.csv`
+    const file = `${etlConfig.organisationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([
       { idFrom: 1, idTo: 2, file, endedAt: new Date() },
       { idFrom: 3, idTo: 4, file, endedAt: new Date() }
     ])
 
     await expect(loadIntermOrg(startDate, transaction)).rejects.toThrow(
-      `Multiple records found for updates to ${etlConfig.organisation.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.organisationDelinked.folder}, expected only one`
     )
   })
 
@@ -74,7 +74,7 @@ describe('loadIntermOrg', () => {
   })
 
   test('should process records with worker threads', async () => {
-    const file = `${etlConfig.organisation.folder}/export.csv`
+    const file = `${etlConfig.organisationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockResolvedValue(undefined)
 
@@ -84,7 +84,7 @@ describe('loadIntermOrg', () => {
   })
 
   test('should handle errors thrown by worker threads', async () => {
-    const file = `${etlConfig.organisation.folder}/export.csv`
+    const file = `${etlConfig.organisationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockRejectedValue(new Error('Worker processing failed'))
 
