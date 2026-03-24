@@ -16,5 +16,7 @@ paths = [
 ]
 
 #enter regex here wrapped in triple ''' to exclude specific keys
-#regexes = [
-#]
+regexes = [
+  #Cypress created dummy key
+  '''ghp_R8mK9xL2pQvN5wJ7tYcF3uHaE6sDiB4oGz1'''
+]
