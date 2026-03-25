@@ -4,6 +4,7 @@ environmentCode: dev
 container:
   azureStorageAccountName: devffcdocst1001
   messageQueueHost: DEVFFCINFSB1001.servicebus.windows.net
+  pollingInterval: 60000
 ingress:
   server: azure.defra.cloud
   endpoint: ffc-doc-statement-data-dev
