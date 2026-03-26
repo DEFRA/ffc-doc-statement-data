@@ -5,11 +5,11 @@ describe('Application Insights', () => {
   beforeEach(() => {
     jest.resetModules()
 
-    jest.mock("@azure/monitor-opentelemetry", () => ({
+    jest.mock('@azure/monitor-opentelemetry', () => ({
       useAzureMonitor: jest.fn(),
-    }));
+    }))
 
-    useAzureMonitor = require("@azure/monitor-opentelemetry").useAzureMonitor;
+    useAzureMonitor = require('@azure/monitor-opentelemetry').useAzureMonitor
 
     process.env = { ...DEFAULT_ENV }
   })
@@ -24,7 +24,7 @@ describe('Application Insights', () => {
 
     appInsights.setup()
 
-    expect(useAzureMonitor).not.toHaveBeenCalled();
+    expect(useAzureMonitor).not.toHaveBeenCalled()
   })
 
   test('does setup application insights if connection string present', () => {
@@ -33,6 +33,6 @@ describe('Application Insights', () => {
 
     appInsights.setup()
 
-    expect(useAzureMonitor).toHaveBeenCalledTimes(1);
+    expect(useAzureMonitor).toHaveBeenCalledTimes(1)
   })
 })
