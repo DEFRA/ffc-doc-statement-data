@@ -1,12 +1,12 @@
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { defraLinks } = require('../../../../app/constants/tables')
+const { defraLinksDelinked } = require('../../../../app/constants/tables')
 const { stageDefraLinks } = require('../../../../app/etl/staging/stage-defra-links')
 const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/etl')
+jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -19,7 +19,7 @@ describe('stageDefraLinks', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'Defra_Links_SFI23/export.csv'
+    const mockFile = 'Defra_Links_Delinked/export.csv'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -39,7 +39,7 @@ describe('stageDefraLinks', () => {
         column: 'CHANGE_TIME',
         targetColumn: 'changeTime',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'SUBJECT_ID',
@@ -74,7 +74,7 @@ describe('stageDefraLinks', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       fileStream: mockReadableStream,
       columns: mockColumns,
-      table: defraLinks,
+      table: defraLinksDelinked,
       mapping: mockMapping,
       file: mockFile,
       excludedFields: [

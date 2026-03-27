@@ -36,24 +36,6 @@ const sendZeroValueAlerts = async () => {
     console.log(`[ZeroValueAlerts] Processed batch of ${unsentRecords.length} ${tableName} records.`)
   }
 
-  // DAX
-  let lastDaxId = 0
-  while (true) {
-    const daxUnsent = await db.zeroValueDax.findAll({
-      where: {
-        alertSent: false,
-        daxId: { [db.Sequelize.Op.gt]: lastDaxId }
-      },
-      order: [['daxId', 'ASC']],
-      limit: BATCH_SIZE
-    })
-    if (!daxUnsent.length) {
-      break
-    }
-    await processBatch(daxUnsent, 'zeroValueDax', 'DAX')
-    lastDaxId = daxUnsent[daxUnsent.length - 1].daxId
-  }
-
   // D365
   let lastD365Id = 0
   while (true) {

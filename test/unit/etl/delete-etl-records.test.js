@@ -89,14 +89,14 @@ describe('deleteETLRecords', () => {
     const mockEntries = [
       {
         dataValues: {
-          file: 'Application_Detail_SFI23/file1.csv',
+          file: 'Application_Detail_Delinked/file1.csv',
           idFrom: 1,
           idTo: 10
         }
       },
       {
         dataValues: {
-          file: 'Apps_Payment_Notification_SFI23/file2.csv',
+          file: 'Apps_Payment_Notification_Delinked/file2.csv',
           idFrom: 11,
           idTo: 20
         }
@@ -150,7 +150,7 @@ describe('deleteETLRecords', () => {
     db.etlStageLog.findAll.mockResolvedValue([
       {
         dataValues: {
-          file: 'Application_Detail_SFI23/file1.csv',
+          file: 'Application_Detail_Delinked/file1.csv',
           idFrom: 1,
           idTo: 10
         }
@@ -171,7 +171,7 @@ describe('deleteETLRecords', () => {
     db.etlStageLog.findAll.mockResolvedValue([
       {
         dataValues: {
-          file: 'Application_Detail_SFI23/file1.csv',
+          file: 'Application_Detail_Delinked/file1.csv',
           idFrom: 1,
           idTo: 10
         }

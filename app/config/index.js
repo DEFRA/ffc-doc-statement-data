@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const mqConfig = require('./message')
 const dbConfig = require('./database')
-const etlConfig = require('./etl')
+const etlConfig = require('./dwh')
 const publishingConfig = require('./publishing')
 
 const schema = Joi.object({

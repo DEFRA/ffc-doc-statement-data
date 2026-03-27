@@ -1,6 +1,6 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadDAX, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadTotals, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadIntermFinanceDAXDelinked, loadDelinkedCalculation, loadD365, loadIntermApplicationClaimDelinked, loadIntermOrgDelinked, loadIntermCalcOrgDelinked, loadIntermTotalZeroValues, loadZeroValueDax, loadZeroValueD365, loadIntermOrgFromDay0 } = require('./load-scripts')
+const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadDelinkedCalculation, loadD365, loadIntermTotalZeroValues, loadZeroValueD365, loadIntermOrgFromDay0 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
 const publishEtlProcessError = require('../messaging/publish-etl-process-error')
@@ -47,18 +47,14 @@ const loadETLData = async (startDate) => {
   try {
     await wrapWithLogging(loadIntermOrgFromDay0, 'loadIntermOrgFromDay0')(startDate)
 
-    await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAX')(startDate)
-    await wrapWithLogging(loadIntermFinanceDAXDelinked, 'loadIntermFinanceDAXDelinked')(startDate)
+    await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAXDelinked')(startDate)
 
-    await wrapWithLogging(loadIntermOrg, 'loadIntermOrg')(startDate)
-    await wrapWithLogging(loadIntermOrgDelinked, 'loadIntermOrgDelinked')(startDate)
-    await wrapWithLogging(loadIntermApplicationClaim, 'loadIntermApplicationClaim')(startDate)
-    await wrapWithLogging(loadIntermApplicationClaimDelinked, 'loadIntermApplicationClaimDelinked')(startDate)
+    await wrapWithLogging(loadIntermOrg, 'loadIntermOrgDelinked')(startDate)
+    await wrapWithLogging(loadIntermApplicationClaim, 'loadIntermApplicationClaimDelinked')(startDate)
     await wrapWithLogging(loadIntermApplicationContract, 'loadIntermApplicationContract')(startDate)
     await wrapWithLogging(loadIntermApplicationPayment, 'loadIntermApplicationPayment')(startDate)
 
-    await wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrg')(startDate)
-    await wrapWithLogging(loadIntermCalcOrgDelinked, 'loadIntermCalcOrgDelinked')(startDate)
+    await wrapWithLogging(loadIntermCalcOrg, 'loadIntermCalcOrgDelinked')(startDate)
     await wrapWithLogging(loadIntermTotal, 'loadIntermTotal')(startDate)
     await wrapWithLogging(loadIntermTotalZeroValues, 'loadIntermTotalZeroValues')(startDate)
     await wrapWithLogging(loadIntermPaymentrefAgreementDates, 'loadIntermPaymentrefAgreementDates')(startDate)
@@ -71,11 +67,7 @@ const loadETLData = async (startDate) => {
     await wrapWithLogging(loadOrganisations, 'loadOrganisations')(startDate, firstTransaction)
     await firstTransaction.commit()
 
-    await wrapWithLogging(loadTotals, 'loadTotals')(startDate, secondTransaction)
-
     await wrapWithLogging(loadDelinkedCalculation, 'loadDelinkedCalculation')(startDate, secondTransaction)
-    await wrapWithLogging(loadDAX, 'loadDAX')(startDate, secondTransaction)
-    await wrapWithLogging(loadZeroValueDax, 'loadZeroValueDAX')(startDate, secondTransaction)
     await wrapWithLogging(loadD365, 'loadD365')(startDate, secondTransaction)
     await wrapWithLogging(loadZeroValueD365, 'loadZeroValueD365')(startDate, secondTransaction)
 

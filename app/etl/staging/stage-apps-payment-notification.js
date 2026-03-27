@@ -1,13 +1,11 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
-const { appsPaymentNotification } = require('../../constants/tables')
+const { appsPaymentNotificationDelinked } = require('../../constants/tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'appsPaymentNotification') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-
+const stageAppsPaymentNotifications = async () => {
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
     sourceColumnNames.CHANGE_TIME,
@@ -26,10 +24,10 @@ const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'a
 
   const mapping = [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
-    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: monthDayYearDateTimeFormat },
     { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
     { column: sourceColumnNames.ID_CLC_HEADER, targetColumn: targetColumnNames.idClcHeader, targetType: NUMBER },
-    { column: sourceColumnNames.NOTIFICATION_DT, targetColumn: targetColumnNames.notificationDt, targetType: DATE, format },
+    { column: sourceColumnNames.NOTIFICATION_DT, targetColumn: targetColumnNames.notificationDt, targetType: DATE, format: monthDayYearDateTimeFormat },
     { column: sourceColumnNames.NOTIFICATION_FLAG, targetColumn: targetColumnNames.notificationFlag, targetType: VARCHAR },
     { column: sourceColumnNames.NOTIFIER_KEY, targetColumn: targetColumnNames.notifierKey, targetType: NUMBER },
     { column: sourceColumnNames.NOTIFICATION_TEXT, targetColumn: targetColumnNames.notificationText, targetType: VARCHAR },
@@ -53,14 +51,9 @@ const stageAppsPaymentNotifications = async (monthDayFormat = false, folder = 'a
     ]
   }
 
-  return downloadAndProcessFile(folder, appsPaymentNotification, columns, mapping, excludedFields)
-}
-
-const stageAppsPaymentNotificationsDelinked = async () => {
-  return stageAppsPaymentNotifications(true, 'appsPaymentNotificationDelinked')
+  return downloadAndProcessFile('appsPaymentNotificationDelinked', appsPaymentNotificationDelinked, columns, mapping, excludedFields)
 }
 
 module.exports = {
-  stageAppsPaymentNotifications,
-  stageAppsPaymentNotificationsDelinked
+  stageAppsPaymentNotifications
 }

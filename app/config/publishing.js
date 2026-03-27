@@ -14,10 +14,6 @@ const schema = Joi.object({
     subsetProcess: Joi.boolean().default(false),
     processSubsetAmount: Joi.number().integer().default(defaultSubsetAmount)
   }).required(),
-  sfi23: Joi.object({
-    subsetProcess: Joi.boolean().default(false),
-    processSubsetAmount: Joi.number().integer().default(defaultSubsetAmount)
-  }).required(),
   logIntervalMs: Joi.number().integer().default(logIntervalMs),
   pollWindow: Joi.object({
     enabled: Joi.boolean().default(true),
@@ -36,10 +32,6 @@ const config = {
   delinked: {
     subsetProcess: process.env.SUBSET_PROCESS_DELINKED,
     processSubsetAmount: process.env.PROCESS_DELINKED_SUBSET_AMOUNT
-  },
-  sfi23: {
-    subsetProcess: process.env.SUBSET_PROCESS_SFI23,
-    processSubsetAmount: process.env.PROCESS_SFI23_SUBSET_AMOUNT
   },
   logIntervalMs: process.env.LOG_INTERVAL_MS,
   pollWindow: {

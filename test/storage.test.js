@@ -37,8 +37,8 @@ jest.mock('@azure/storage-blob', () => {
             })
           }),
           listBlobsFlat: jest.fn().mockImplementation(async function * () {
-            yield { name: 'applicationDetail/export.csv' }
-            yield { name: 'appsPaymentNotification/export.csv' }
+            yield { name: 'applicationDetailDelinked/export.csv' }
+            yield { name: 'appsPaymentNotificationDelinked/export.csv' }
           })
         })
       }
@@ -47,19 +47,7 @@ jest.mock('@azure/storage-blob', () => {
 })
 
 jest.mock('@azure/identity')
-jest.mock('../app/config/etl', () => ({
-  applicationDetail: { folder: 'applicationDetail' },
-  appsPaymentNotification: { folder: 'appsPaymentNotification' },
-  appsTypes: { folder: 'appsTypes' },
-  businessAddress: { folder: 'businessAddress' },
-  calculationsDetails: { folder: 'calculationsDetails' },
-  cssContractApplications: { folder: 'cssContractApplications' },
-  cssContract: { folder: 'cssContract' },
-  cssOptions: { folder: 'cssOptions' },
-  defraLinks: { folder: 'defraLinks' },
-  financeDAX: { folder: 'financeDAX' },
-  organisation: { folder: 'organisation' },
-  tclcOption: { folder: 'tclcOption' },
+jest.mock('../app/config/dwh', () => ({
   applicationDetailDelinked: { folder: 'applicationDetailDelinked' },
   appsPaymentNotificationDelinked: { folder: 'appsPaymentNotificationDelinked' },
   appsTypesDelinked: { folder: 'appsTypesDelinked' },
@@ -83,9 +71,8 @@ jest.mock('../app/config/etl', () => ({
   managedIdentityClientId: 'fake-managed-identity-client-id',
   container: 'fake-container',
   createContainers: true,
-  dwhExtractsFolder: 'dwhExtractsFolder',
+  etlExtractsFolder: 'etlExtractsFolder',
   quarantineFolder: 'quarantineFolder',
-  sfi23Enabled: true,
   delinkedEnabled: true
 }))
 
@@ -93,8 +80,8 @@ describe('storage module', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockFiles = async function * () {
-      yield { name: 'applicationDetail/export.csv' }
-      yield { name: 'appsPaymentNotification/export.csv' }
+      yield { name: 'applicationDetailDelinked/export.csv' }
+      yield { name: 'appsPaymentNotificationDelinked/export.csv' }
       yield { name: 'DWH_Extract_20251010_120000.zip' }
       yield { name: 'DWH_Extract_2025120000.zip' }
       yield { name: 'anotherfile.txt' }
@@ -121,8 +108,8 @@ describe('storage module', () => {
     test('should return list of files including delinked files', async () => {
       const fileList = await storage.getFileList()
       expect(fileList).toEqual([
-        'applicationDetail/export.csv',
-        'appsPaymentNotification/export.csv'
+        'applicationDetailDelinked/export.csv',
+        'appsPaymentNotificationDelinked/export.csv'
       ])
     })
   })
@@ -140,8 +127,8 @@ describe('storage module', () => {
       await storage.quarantineAllFiles(mockMoveFile)
       expect(mockMoveFile).toHaveBeenCalledTimes(3)
       expect(mockMoveFile).toHaveBeenCalledWith('', 'quarantineFolder', 'DWH_Extract_20251010_120000.zip', 'DWH_Extract_20251010_120000.zip')
-      expect(mockMoveFile).toHaveBeenCalledWith('applicationDetail', 'quarantineFolder', 'export.csv', 'export.csv')
-      expect(mockMoveFile).toHaveBeenCalledWith('appsPaymentNotification', 'quarantineFolder', 'export.csv', 'export.csv')
+      expect(mockMoveFile).toHaveBeenCalledWith('applicationDetailDelinked', 'quarantineFolder', 'export.csv', 'export.csv')
+      expect(mockMoveFile).toHaveBeenCalledWith('appsPaymentNotificationDelinked', 'quarantineFolder', 'export.csv', 'export.csv')
     })
   })
 
@@ -174,7 +161,7 @@ describe('storage module', () => {
   describe('getDWHExtracts', () => {
     test('should return list of DWH extracts', async () => {
       const fileList = await storage.getDWHExtracts()
-      expect(fileList).toEqual(['applicationDetail/export.csv', 'appsPaymentNotification/export.csv'])
+      expect(fileList).toEqual(['applicationDetailDelinked/export.csv', 'appsPaymentNotificationDelinked/export.csv'])
     })
   })
 })

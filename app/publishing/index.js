@@ -25,7 +25,6 @@ const start = async () => {
     if (!resetSinceRestart) {
       console.log('Resetting subset database to send a new subset, if required')
       await updateSubsetCheck(DELINKED, false)
-      await updateSubsetCheck(SFI23, false)
       resetSinceRestart = true
     }
     const inWindow = isWithinWindow(publishingConfig.pollWindow)

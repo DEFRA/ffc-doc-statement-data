@@ -4,19 +4,6 @@ const { getDWHExtracts, moveFile, quarantineAllFiles, deleteFile } = require('..
 const { unzipDWHExtracts } = require('./unzip-dwh-extracts')
 
 const FILE_PATH_LOOKUP = {
-  [etlConfig.applicationDetail.fileMask]: etlConfig.applicationDetail.folder,
-  [etlConfig.appsPaymentNotification.fileMask]: etlConfig.appsPaymentNotification.folder,
-  [etlConfig.appsTypes.fileMask]: etlConfig.appsTypes.folder,
-  [etlConfig.businessAddress.fileMask]: etlConfig.businessAddress.folder,
-  [etlConfig.calculationsDetails.fileMask]: etlConfig.calculationsDetails.folder,
-  [etlConfig.cssContractApplications.fileMask]: etlConfig.cssContractApplications.folder,
-  [etlConfig.cssContract.fileMask]: etlConfig.cssContract.folder,
-  [etlConfig.cssOptions.fileMask]: etlConfig.cssOptions.folder,
-  [etlConfig.defraLinks.fileMask]: etlConfig.defraLinks.folder,
-  [etlConfig.financeDAX.fileMask]: etlConfig.financeDAX.folder,
-  [etlConfig.organisation.fileMask]: etlConfig.organisation.folder,
-  [etlConfig.tclcOption.fileMask]: etlConfig.tclcOption.folder,
-  [etlConfig.tclc.fileMask]: etlConfig.tclc.folder,
   [etlConfig.applicationDetailDelinked.fileMask]: etlConfig.applicationDetailDelinked.folder,
   [etlConfig.appsPaymentNotificationDelinked.fileMask]: etlConfig.appsPaymentNotificationDelinked.folder,
   [etlConfig.appsTypesDelinked.fileMask]: etlConfig.appsTypesDelinked.folder,
@@ -52,14 +39,14 @@ const prepareDWHExtracts = async () => {
     await unzipDWHExtracts()
     const extracts = await getDWHExtracts()
     for (const extract of extracts) {
-      const fileName = extract.replace(`${etlConfig.dwhExtractsFolder}/`, '')
+      const fileName = extract.replace(`${etlConfig.etlExtractsFolder}/`, '')
       const outputFolder = getOutputPathFromFileName(fileName)
       if (outputFolder === undefined) {
         console.log(`No matching output folder for file: ${fileName}, deleting file`)
         await deleteFile(extract)
         continue
       }
-      const moved = await moveFile(etlConfig.dwhExtractsFolder, outputFolder, fileName, 'export.csv')
+      const moved = await moveFile(etlConfig.etlExtractsFolder, outputFolder, fileName, 'export.csv')
       if (moved === false) {
         throw new Error(`Failed to move file: ${fileName}`)
       }

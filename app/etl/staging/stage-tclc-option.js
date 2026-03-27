@@ -1,13 +1,11 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
-const { tclcOption } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { tclcOptionDelinked } = require('../../constants/tables')
+const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
-const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-
+const stageTCLCOption = async () => {
   const columns = [
     sourceColumnNames.CHANGE_TYPE,
     sourceColumnNames.CHANGE_TIME,
@@ -28,7 +26,7 @@ const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') =>
 
   const mapping = [
     { column: sourceColumnNames.CHANGE_TYPE, targetColumn: targetColumnNames.changeType, targetType: VARCHAR },
-    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format },
+    { column: sourceColumnNames.CHANGE_TIME, targetColumn: targetColumnNames.changeTime, targetType: DATE, format: monthDayYearDateTimeFormat },
     { column: sourceColumnNames.APPLICATION_ID, targetColumn: targetColumnNames.applicationId, targetType: NUMBER },
     { column: sourceColumnNames.CALCULATION_ID, targetColumn: targetColumnNames.calculationId, targetType: NUMBER },
     { column: sourceColumnNames.OP_CODE, targetColumn: targetColumnNames.opCode, targetType: VARCHAR },
@@ -61,14 +59,9 @@ const stageTCLCOption = async (monthDayFormat = false, folder = 'tclcOption') =>
     ]
   }
 
-  return downloadAndProcessFile(folder, tclcOption, columns, mapping, excludedFields)
-}
-
-const stageTCLCOptionDelinked = async () => {
-  return stageTCLCOption(true, 'tclcOptionsDelinked')
+  return downloadAndProcessFile('tclcOptionDelinked', tclcOptionDelinked, columns, mapping, excludedFields)
 }
 
 module.exports = {
-  stageTCLCOption,
-  stageTCLCOptionDelinked
+  stageTCLCOption
 }

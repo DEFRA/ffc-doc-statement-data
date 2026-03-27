@@ -1,11 +1,11 @@
 const unzipper = require('unzipper')
 const { getZipFile, downloadFileAsStream, deleteFile, getBlob } = require('../storage')
-const config = require('../config/etl')
+const config = require('../config/dwh')
 
 const clearAllUploads = async (uploadedFiles) => {
   await Promise.all(
     uploadedFiles.map(async (uploadedFile) => {
-      await deleteFile(`${config.dwhExtractsFolder}/${uploadedFile}`)
+      await deleteFile(`${config.etlExtractsFolder}/${uploadedFile}`)
       console.log(`Deleted uploaded file due to error: ${uploadedFile}`)
     })
   )
@@ -29,7 +29,7 @@ const unzipAndUpload = (zipStream) => {
         const baseFileName = fileName.split('/').pop()
         console.log(`Extracting file from zip: ${baseFileName}`)
 
-        const uploadPromise = getBlob(`${config.dwhExtractsFolder}/${baseFileName}`)
+        const uploadPromise = getBlob(`${config.etlExtractsFolder}/${baseFileName}`)
           .then(blobClient => blobClient.uploadStream(entry))
           .then(() => {
             console.log(`Uploaded file to blob storage: ${baseFileName}`)

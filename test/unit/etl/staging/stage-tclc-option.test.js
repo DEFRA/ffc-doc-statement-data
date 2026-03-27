@@ -2,15 +2,15 @@ const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageTCLCOption } = require('../../../../app/etl/staging/stage-tclc-option')
-const { tclcOption } = require('../../../../app/constants/tables')
+const { tclcOptionDelinked } = require('../../../../app/constants/tables')
 const { Readable } = require('stream')
 
 jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/etl', () => ({
-  tclcOption: { folder: 'tclcOptionFolder' }
+jest.mock('../../../../app/config/dwh', () => ({
+  tclcOptionDelinked: { folder: 'tclcOptionFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
   tclcOptionTable: 'tclcOptionTable'
@@ -46,7 +46,7 @@ test('stageTCLCOption downloads file and runs ETL process', async () => {
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'APPLICATION_ID', targetColumn: 'applicationId', targetType: 'number' },
     { column: 'CALCULATION_ID', targetColumn: 'calculationId', targetType: 'number' },
     { column: 'OP_CODE', targetColumn: 'opCode', targetType: 'varchar' },
@@ -68,7 +68,7 @@ test('stageTCLCOption downloads file and runs ETL process', async () => {
   expect(runEtlProcess).toHaveBeenCalledWith({
     fileStream: mockReadableStream,
     columns,
-    table: tclcOption,
+    table: tclcOptionDelinked,
     mapping,
     file: 'tclcOptionFolder/export.csv',
     excludedFields: []

@@ -6,10 +6,10 @@ const { processWithWorkers } = require('../../../../app/etl/load-scripts/load-in
 // Mock the config module
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
-    appsPaymentNotification: {
+    appsPaymentNotificationDelinked: {
       folder: 'Apps_Payment_Notification'
     },
-    cssContractApplications: {
+    cssContractApplicationsDelinked: {
       folder: 'CSS_Contract_Applications'
     },
     etlBatchSize: 1000
@@ -55,14 +55,14 @@ describe('loadIntermApplicationPayment', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    const file = `${etlConfig.appsPaymentNotification.folder}/export.csv`
+    const file = `${etlConfig.appsPaymentNotificationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([
       { idFrom: 1, idTo: 2, file, endedAt: new Date() },
       { idFrom: 3, idTo: 4, file, endedAt: new Date() }
     ])
 
     await expect(loadIntermApplicationPayment(startDate, transaction)).rejects.toThrow(
-      `Multiple records found for updates to ${etlConfig.appsPaymentNotification.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.appsPaymentNotificationDelinked.folder}, expected only one`
     )
   })
 
@@ -74,7 +74,7 @@ describe('loadIntermApplicationPayment', () => {
   })
 
   test('should process records with worker threads', async () => {
-    const file = `${etlConfig.appsPaymentNotification.folder}/export.csv`
+    const file = `${etlConfig.appsPaymentNotificationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockResolvedValue(undefined)
 
@@ -84,7 +84,7 @@ describe('loadIntermApplicationPayment', () => {
   })
 
   test('should handle errors thrown by worker threads', async () => {
-    const file = `${etlConfig.appsPaymentNotification.folder}/export.csv`
+    const file = `${etlConfig.appsPaymentNotificationDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockRejectedValue(new Error('Worker processing failed'))
 
