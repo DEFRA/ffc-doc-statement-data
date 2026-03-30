@@ -54,7 +54,7 @@ const getSubsetDelinkedCalculation = async (calculationIdArray) => {
         applicationId: item.applicationReference // Map applicationReference to applicationId
       })
     } else {
-      console.error('Missing calculationReference for item:', item)
+      console.error('Missing calculationReference for item: sbi=%s frn=%s applicationReference=%s', item.sbi, item.frn, item.applicationReference)
     }
   }
 
