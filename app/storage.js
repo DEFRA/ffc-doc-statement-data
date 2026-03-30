@@ -1,6 +1,6 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
-const config = require('./config/etl')
+const config = require('./config/dwh')
 
 let blobServiceClient
 let containersInitialised
@@ -10,24 +10,6 @@ const folderList = [
   config.day0Organisation.folder,
   config.day0BusinessAddress.folder
 ]
-
-if (config.sfi23Enabled) {
-  console.log('Include SFI 23 folders')
-  folderList.push(
-    config.applicationDetail.folder,
-    config.appsPaymentNotification.folder,
-    config.appsTypes.folder,
-    config.businessAddress.folder,
-    config.calculationsDetails.folder,
-    config.cssContractApplications.folder,
-    config.cssContract.folder,
-    config.cssOptions.folder,
-    config.defraLinks.folder,
-    config.financeDAX.folder,
-    config.organisation.folder,
-    config.tclcOption.folder
-  )
-}
 
 if (config.delinkedEnabled) {
   console.log('Include Delinked folders')
@@ -59,7 +41,7 @@ if (config.useConnectionStr) {
   blobServiceClient = new BlobServiceClient(uri, new DefaultAzureCredential({ managedIdentityClientId: config.managedIdentityClientId }))
 }
 
-const container = blobServiceClient.getContainerClient(config.container)
+const container = blobServiceClient.getContainerClient(config.dwhContainer)
 
 const zipPattern = /^DWH_Extract_\d{8}_\d{6}\.zip$/
 
@@ -76,10 +58,12 @@ const initialiseContainers = async () => {
 const initialiseFolders = async () => {
   console.log('Making sure folders exist')
   const placeHolderText = 'Placeholder'
-  const blobClient = container.getBlockBlobClient(`${config.dwhExtractsFolder}/default.txt`)
-  await blobClient.upload(placeHolderText, placeHolderText.length)
-  const quarantineBlobClient = container.getBlockBlobClient(`${config.quarantineFolder}/default.txt`)
-  await quarantineBlobClient.upload(placeHolderText, placeHolderText.length)
+  const dwhEtlExtractsBlobClient = container.getBlockBlobClient(`${config.etlExtractsFolder}/default.txt`)
+  await dwhEtlExtractsBlobClient.upload(placeHolderText, placeHolderText.length)
+  const dataRetentionBlobClient = container.getBlockBlobClient(`${config.dataRetentionFolder}/default.txt`)
+  await dataRetentionBlobClient.upload(placeHolderText, placeHolderText.length)
+  const dwhQuarantineBlobClient = container.getBlockBlobClient(`${config.quarantineFolder}/default.txt`)
+  await dwhQuarantineBlobClient.upload(placeHolderText, placeHolderText.length)
   foldersInitialised = true
   console.log('Folders ready')
 }
@@ -121,7 +105,6 @@ const getZipFile = async () => {
   for await (const file of container.listBlobsFlat()) {
     files.push(file.name)
   }
-
   const filteredFiles = files.filter(name => zipPattern.test(name))
 
   filteredFiles.sort((a, b) => a.localeCompare(b))
@@ -173,7 +156,7 @@ const getDWHExtracts = async () => {
   containersInitialised ?? await initialiseContainers()
   const fileList = []
   try {
-    for await (const file of container.listBlobsFlat({ prefix: config.dwhExtractsFolder })) {
+    for await (const file of container.listBlobsFlat({ prefix: config.etlExtractsFolder })) {
       if (file.name.endsWith('.csv')) {
         console.log(`Identified DWH extract: ${file.name}`)
         fileList.push(file.name)

@@ -28,3 +28,14 @@ resources:
         requiresDuplicateDetection: true
         roles: 
         - name: sender
+  storage_accounts:
+    - name: doc
+      containers:
+        - name: etl
+          roles:
+            - name: blobContributor
+        - name: dwh
+          roles:
+            - name: blobContributor
+      roles:
+        - name: storageAccountContributor

@@ -5,13 +5,13 @@ const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const loadIntermApplicationContract = async (startDate, transaction) => {
   const tablesToCheck = [
-    etlConfig.cssContractApplications.folder,
-    etlConfig.cssContract.folder
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.cssContractDelinked.folder
   ]
 
   const folderToAliasMap = {
-    [etlConfig.cssContractApplications.folder]: 'cl',
-    [etlConfig.cssContract.folder]: 'cc'
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'cl',
+    [etlConfig.cssContractDelinked.folder]: 'cc'
   }
 
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)

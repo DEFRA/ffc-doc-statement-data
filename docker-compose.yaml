@@ -46,6 +46,7 @@ services:
       POLL_WINDOW_END: ${POLL_WINDOW_END:-"18:00"}
       POLL_WINDOW_DAYS: ${POLL_WINDOW_DAYS:-Mon,Tue,Wed,Thu,Fri}
       POLL_WINDOW_ENABLED: ${POLL_WINDOW_ENABLED:-false}
+      USE_NEW_DWH_CONTAINER: ${USE_NEW_DWH_CONTAINER:-true}
 
   ffc-doc-statement-data-postgres:
     image: postgres:11.4-alpine

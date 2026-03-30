@@ -1,14 +1,12 @@
+const ora = require('ora')
 const storage = require('../storage')
 const {
   stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption,
-  stageApplicationDetailsDelinked, stageAppsTypesDelinked, stageAppsPaymentNotificationsDelinked, stageBusinessAddressContactsDelinked, stageCalculationDetailsDelinked, stageCSSContractApplicationsDelinked, stageCSSContractDelinked, stageCSSOptionsDelinked, stageDefraLinksDelinked, stageFinanceDAXDelinked, stageOrganisationDelinked, stageTCLCOptionDelinked,
   stageAppCalcResultsDelinkPayments, stageTdeLinkingTransferTransactions,
-  stageDay0BusinessAddressContacts,
-  stageDay0Organisation
+  stageDay0BusinessAddressContacts, stageDay0Organisation
 } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { etlConfig } = require('../config')
-const ora = require('ora')
 const { createAlerts } = require('../messaging/create-alerts')
 
 let startDate
@@ -18,37 +16,20 @@ const stageFunctions = [
   { fn: stageDay0Organisation, label: etlConfig.day0Organisation.folder }
 ]
 
-if (etlConfig.sfi23Enabled) {
-  stageFunctions.push(
-    { fn: stageApplicationDetails, label: etlConfig.applicationDetail.folder },
-    { fn: stageAppsTypes, label: etlConfig.appsTypes.folder },
-    { fn: stageAppsPaymentNotifications, label: etlConfig.appsPaymentNotification.folder },
-    { fn: stageBusinessAddressContacts, label: etlConfig.businessAddress.folder },
-    { fn: stageCalculationDetails, label: etlConfig.calculationsDetails.folder },
-    { fn: stageCSSContractApplications, label: etlConfig.cssContractApplications.folder },
-    { fn: stageCSSContract, label: etlConfig.cssContract.folder },
-    { fn: stageCSSOptions, label: etlConfig.cssOptions.folder },
-    { fn: stageDefraLinks, label: etlConfig.defraLinks.folder },
-    { fn: stageFinanceDAX, label: etlConfig.financeDAX.folder },
-    { fn: stageOrganisation, label: etlConfig.organisation.folder },
-    { fn: stageTCLCOption, label: etlConfig.tclcOption.folder }
-  )
-}
-
 if (etlConfig.delinkedEnabled) {
   stageFunctions.push(
-    { fn: stageApplicationDetailsDelinked, label: etlConfig.applicationDetailDelinked.folder },
-    { fn: stageAppsTypesDelinked, label: etlConfig.appsTypesDelinked.folder },
-    { fn: stageAppsPaymentNotificationsDelinked, label: etlConfig.appsPaymentNotificationDelinked.folder },
-    { fn: stageBusinessAddressContactsDelinked, label: etlConfig.businessAddressDelinked.folder },
-    { fn: stageCalculationDetailsDelinked, label: etlConfig.calculationsDetailsDelinked.folder },
-    { fn: stageCSSContractApplicationsDelinked, label: etlConfig.cssContractApplicationsDelinked.folder },
-    { fn: stageCSSContractDelinked, label: etlConfig.cssContractDelinked.folder },
-    { fn: stageCSSOptionsDelinked, label: etlConfig.cssOptionsDelinked.folder },
-    { fn: stageDefraLinksDelinked, label: etlConfig.defraLinksDelinked.folder },
-    { fn: stageFinanceDAXDelinked, label: etlConfig.financeDAXDelinked.folder },
-    { fn: stageOrganisationDelinked, label: etlConfig.organisationDelinked.folder },
-    { fn: stageTCLCOptionDelinked, label: etlConfig.tclcOptionDelinked.folder },
+    { fn: stageApplicationDetails, label: etlConfig.applicationDetailDelinked.folder },
+    { fn: stageAppsTypes, label: etlConfig.appsTypesDelinked.folder },
+    { fn: stageAppsPaymentNotifications, label: etlConfig.appsPaymentNotificationDelinked.folder },
+    { fn: stageBusinessAddressContacts, label: etlConfig.businessAddressDelinked.folder },
+    { fn: stageCalculationDetails, label: etlConfig.calculationsDetailsDelinked.folder },
+    { fn: stageCSSContractApplications, label: etlConfig.cssContractApplicationsDelinked.folder },
+    { fn: stageCSSContract, label: etlConfig.cssContractDelinked.folder },
+    { fn: stageCSSOptions, label: etlConfig.cssOptionsDelinked.folder },
+    { fn: stageDefraLinks, label: etlConfig.defraLinksDelinked.folder },
+    { fn: stageFinanceDAX, label: etlConfig.financeDAXDelinked.folder },
+    { fn: stageOrganisation, label: etlConfig.organisationDelinked.folder },
+    { fn: stageTCLCOption, label: etlConfig.tclcOptionDelinked.folder },
     { fn: stageAppCalcResultsDelinkPayments, label: etlConfig.appCalculationResultsDelinkPayments.folder },
     { fn: stageTdeLinkingTransferTransactions, label: etlConfig.tdeLinkingTransferTransactions.folder }
   )

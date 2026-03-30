@@ -2,18 +2,18 @@ const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageBusinessAddressContacts } = require('../../../../app/etl/staging/stage-business-address-contact')
-const { businessAddress } = require('../../../../app/constants/tables')
+const { businessAddressDelinked } = require('../../../../app/constants/tables')
 const { Readable } = require('stream')
 
 jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/etl', () => ({
-  businessAddress: { folder: 'businessAddressFolder' }
+jest.mock('../../../../app/config/dwh', () => ({
+  businessAddressDelinked: { folder: 'businessAddressFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
-  businessAddressTable: 'businessAddressTable'
+  businessAddressDelinked: 'businessAddressTable'
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({
   runEtlProcess: jest.fn()
@@ -67,7 +67,7 @@ describe('stageBusinessAddressContacts', () => {
 
     const mapping = [
       { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
-      { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+      { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
       { column: 'SBI', targetColumn: 'sbi', targetType: 'number' },
       { column: 'FRN', targetColumn: 'frn', targetType: 'varchar' },
       { column: 'BUSINESS_NAME', targetColumn: 'businessName', targetType: 'varchar' },
@@ -121,7 +121,7 @@ describe('stageBusinessAddressContacts', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       fileStream: mockReadableStream,
       columns,
-      table: businessAddress,
+      table: businessAddressDelinked,
       mapping,
       transformer,
       nonProdTransformer,
@@ -147,24 +147,12 @@ describe('stageBusinessAddressContacts', () => {
     })
   })
 
-  test('should use monthDayYearDateTimeFormat when monthDayFormat is true', async () => {
-    const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\n'
-    const mockReadableStream = Readable.from(mockStreamData.split('\n'))
-    storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
-    await stageBusinessAddressContacts(true)
-    expect(runEtlProcess).toHaveBeenCalledWith(expect.objectContaining({
-      mapping: expect.arrayContaining([
-        expect.objectContaining({ column: 'CHANGE_TIME', format: 'MM-DD-YYYY HH24:MI:SS' })
-      ])
-    }))
-  })
-
   test('should include nonProdTransformer when fakeData is true', async () => {
     jest.resetModules()
     jest.doMock('../../../../app/config', () => ({
       etlConfig: {
         excludeCalculationData: false,
-        businessAddress: { folder: 'businessAddressFolder' },
+        businessAddressDelinked: { folder: 'businessAddressFolder' },
         fakeData: true
       }
     }))
@@ -185,7 +173,7 @@ describe('stageBusinessAddressContacts', () => {
     jest.doMock('../../../../app/config', () => ({
       etlConfig: {
         excludeCalculationData: true,
-        businessAddress: { folder: 'businessAddressFolder' },
+        businessAddressDelinked: { folder: 'businessAddressFolder' },
         fakeData: false
       }
     }))

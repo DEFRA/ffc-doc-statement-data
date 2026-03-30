@@ -1,6 +1,6 @@
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/etl')
+jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -18,7 +18,7 @@ describe('stageFinanceDAX', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'Finance_Dax_SFI23/export.csv'
+    const mockFile = 'Finance_Dax_Delinked/export.csv'
     const mockUuid = 'mock-uuid'
 
     uuidv4.mockReturnValue(mockUuid)
