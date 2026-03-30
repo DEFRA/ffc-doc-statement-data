@@ -19,7 +19,8 @@ const sendMessage = async (body, type) => {
   if (type === 'd365' || type === 'dax') {
     logMessage = `Sent ${type} data — paymentReference: ${body.paymentReference}`
   } else {
-    logMessage = `Sent ${type} data — sbi: ${body.sbi}, frn: ${body.frn}${body.invoiceNumber ? `, invoiceNumber: ${body.invoiceNumber}` : ''}`
+    const invoiceNumberPart = body.invoiceNumber ? `, invoiceNumber: ${body.invoiceNumber}` : ''
+    logMessage = `Sent ${type} data — sbi: ${body.sbi}, frn: ${body.frn}${invoiceNumberPart}`
   }
 
   console.log(logMessage)
