@@ -3,14 +3,13 @@ const db = require('../../../../app/data')
 const { loadIntermApplicationContract } = require('../../../../app/etl/load-scripts/load-interm-application-contract')
 const { processWithWorkers } = require('../../../../app/etl/load-scripts/load-interm-utils')
 
-// Mock the config module
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
-    cssContractApplications: {
-      folder: 'CSS_Contract_Applications'
+    cssContractApplicationsDelinked: {
+      folder: 'CSS_Contract_Applications_Delinked'
     },
-    cssContract: {
-      folder: 'CSS_Contract'
+    cssContractDelinked: {
+      folder: 'CSS_Contract_Delinked'
     },
     etlBatchSize: 1000
   },
@@ -55,14 +54,14 @@ describe('loadIntermApplicationContract', () => {
   })
 
   test('should throw an error if multiple records are found', async () => {
-    const file = `${etlConfig.cssContractApplications.folder}/export.csv`
+    const file = `${etlConfig.cssContractApplicationsDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([
       { idFrom: 1, idTo: 2, file, endedAt: new Date() },
       { idFrom: 3, idTo: 4, file, endedAt: new Date() }
     ])
 
     await expect(loadIntermApplicationContract(startDate, transaction)).rejects.toThrow(
-      `Multiple records found for updates to ${etlConfig.cssContractApplications.folder}, expected only one`
+      `Multiple records found for updates to ${etlConfig.cssContractApplicationsDelinked.folder}, expected only one`
     )
   })
 
@@ -74,7 +73,7 @@ describe('loadIntermApplicationContract', () => {
   })
 
   test('should process records with worker threads', async () => {
-    const file = `${etlConfig.cssContractApplications.folder}/export.csv`
+    const file = `${etlConfig.cssContractApplicationsDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockResolvedValue(undefined)
 
@@ -84,7 +83,7 @@ describe('loadIntermApplicationContract', () => {
   })
 
   test('should handle errors thrown by worker threads', async () => {
-    const file = `${etlConfig.cssContractApplications.folder}/export.csv`
+    const file = `${etlConfig.cssContractApplicationsDelinked.folder}/export.csv`
     db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockRejectedValue(new Error('Worker processing failed'))
 

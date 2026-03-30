@@ -1,9 +1,9 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
-const { applicationDetail } = require('../../constants/tables')
+const { applicationDetailDelinked } = require('../../constants/tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const columns = [
   sourceColumnNames.CHANGE_TYPE,
@@ -86,17 +86,11 @@ if (config.etlConfig.excludeCalculationData) {
   ]
 }
 
-const stageApplicationDetails = async (monthDayFormat = false, folder = 'applicationDetail') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const mapping = getMapping(format)
-  return downloadAndProcessFile(folder, applicationDetail, columns, mapping, excludedFields)
-}
-
-const stageApplicationDetailsDelinked = async () => {
-  return stageApplicationDetails(true, 'applicationDetailDelinked')
+const stageApplicationDetails = async () => {
+  const mapping = getMapping(monthDayYearDateTimeFormat)
+  return downloadAndProcessFile('applicationDetailDelinked', applicationDetailDelinked, columns, mapping, excludedFields)
 }
 
 module.exports = {
-  stageApplicationDetails,
-  stageApplicationDetailsDelinked
+  stageApplicationDetails
 }

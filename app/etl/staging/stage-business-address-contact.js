@@ -1,7 +1,7 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
-const { businessAddress } = require('../../constants/tables')
-const { downloadAndProcessFile, dateTimeFormat, monthDayYearDateTimeFormat } = require('./stage-utils')
+const { businessAddressDelinked } = require('../../constants/tables')
+const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 const { VARCHAR, DATE } = require('../../constants/target-column-types')
 const { sharedColumns, getSharedMapping, sharedTransformer, sharedNonProdTransformer, sharedExcludedFields } = require('../../constants/business-address-shared/etl-data')
 
@@ -25,17 +25,11 @@ const nonProdTransformer = [...sharedNonProdTransformer]
 
 const excludedFields = [...sharedExcludedFields]
 
-const stageBusinessAddressContacts = async (monthDayFormat = false, folder = 'businessAddress') => {
-  const format = monthDayFormat ? monthDayYearDateTimeFormat : dateTimeFormat
-  const mapping = getMapping(format)
-  return downloadAndProcessFile(folder, businessAddress, columns, mapping, excludedFields, transformer, nonProdTransformer)
-}
-
-const stageBusinessAddressContactsDelinked = async () => {
-  return stageBusinessAddressContacts(true, 'businessAddressDelinked')
+const stageBusinessAddressContacts = async () => {
+  const mapping = getMapping(monthDayYearDateTimeFormat)
+  return downloadAndProcessFile('businessAddressDelinked', businessAddressDelinked, columns, mapping, excludedFields, transformer, nonProdTransformer)
 }
 
 module.exports = {
-  stageBusinessAddressContacts,
-  stageBusinessAddressContactsDelinked
+  stageBusinessAddressContacts
 }

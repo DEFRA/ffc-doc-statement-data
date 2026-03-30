@@ -1,5 +1,3 @@
-// BEGIN GENERATED CODE BY ATOS POLARIS AI FOR DEVELOPMENT ON 10/27/2025, 11:02:32 AM
-
 const { getDWHExtracts, moveFile, quarantineAllFiles, deleteFile } = require('../../../app/storage')
 const { prepareDWHExtracts } = require('../../../app/etl/prepare-dwh-extracts')
 const { unzipDWHExtracts } = require('../../../app/etl/unzip-dwh-extracts')
@@ -7,20 +5,9 @@ const { createAlerts } = require('../../../app/messaging/create-alerts')
 
 jest.mock('../../../app/', () => ({
   etlConfig: {
-    applicationDetail: { fileMask: 'appDetail', folder: 'appDetailFolder' },
-    appsPaymentNotification: { fileMask: 'appPayment', folder: 'appPaymentFolder' },
-    appsTypes: { fileMask: 'appTypes', folder: 'appTypesFolder' },
-    businessAddress: { fileMask: 'businessAddr', folder: 'businessAddrFolder' },
-    calculationsDetails: { fileMask: 'calcDetails', folder: 'calcDetailsFolder' },
-    cssContractApplications: { fileMask: 'cssContractApp', folder: 'cssContractAppFolder' },
-    cssContract: { fileMask: 'cssContract', folder: 'cssContractFolder' },
-    cssOptions: { fileMask: 'cssOptions', folder: 'cssOptionsFolder' },
-    defraLinks: { fileMask: 'defraLinks', folder: 'defraLinksFolder' },
-    financeDAX: { fileMask: 'financeDAX', folder: 'financeDAXFolder' },
-    organisation: { fileMask: 'organisation', folder: 'organisationFolder' },
-    tclcOption: { fileMask: 'tclcOption', folder: 'tclcOptionFolder' },
-    tclc: { fileMask: 'tclc', folder: 'tclcFolder' },
-    dwhExtractsFolder: 'dwhExtractsFolder'
+    applicationDetailDelinked: { fileMask: 'appDetail', folder: 'appDetailFolder' },
+    appsPaymentNotificationDelinked: { fileMask: 'appPayment', folder: 'appPaymentFolder' },
+    etlExtractsFolder: 'delinked-payment_statements'
   }
 }))
 
@@ -40,11 +27,11 @@ jest.mock('../../../app/messaging/create-alerts', () => ({
 }))
 
 test('prepareDWHExtracts calls unzipDWHExtracts, getDWHExtracts, and moveFile with correct arguments', async () => {
-  const dwhExtractsFolder = 'dwh_extracts'
-  const appDetailFolder = 'Application_Detail_SFI23'
-  const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
-  const appPaymentFolder = 'Apps_Payment_Notification_SFI23'
-  const appPaymentFile = 'SFI23_STMT_APPS_PAYMENT_NOTIFICATIONS_V_CHANGE_LOG_20241227_130800.csv'
+  const etlExtractsFolder = 'delinked-payment_statements'
+  const appDetailFolder = 'Application_Detail_Delinked'
+  const appDetailFile = 'DELINKED_STMT_APPLICATION_DETAILS_V_20250804_141551_v1.csv'
+  const appPaymentFolder = 'Apps_Payment_Notification_Delinked'
+  const appPaymentFile = 'DELINKED_STMT_APPS_PAYMENT_NOTIFICATIONS_V_20250804_141551_v1.csv'
   const mockExtracts = [`${appDetailFolder}/${appDetailFile}`, `${appPaymentFolder}/${appPaymentFile}`]
 
   getDWHExtracts.mockResolvedValue(mockExtracts)
@@ -56,14 +43,14 @@ test('prepareDWHExtracts calls unzipDWHExtracts, getDWHExtracts, and moveFile wi
 
   expect(getDWHExtracts).toHaveBeenCalled()
 
-  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
-  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith(etlExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith(etlExtractsFolder, appPaymentFolder, `${appPaymentFolder}/${appPaymentFile}`, 'export.csv')
 })
 
 test('prepareDWHExtracts calls quarantineAllFiles and createAlerts on moveFile throwing error', async () => {
-  const dwhExtractsFolder = 'dwh_extracts'
-  const appDetailFolder = 'Application_Detail_SFI23'
-  const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
+  const etlExtractsFolder = 'delinked-payment_statements'
+  const appDetailFolder = 'Application_Detail_Delinked'
+  const appDetailFile = 'DELINKED_STMT_APPLICATION_DETAILS_V_20250804_141551_v1.csv'
   const mockExtracts = [`${appDetailFolder}/${appDetailFile}`]
 
   unzipDWHExtracts.mockResolvedValue()
@@ -75,7 +62,7 @@ test('prepareDWHExtracts calls quarantineAllFiles and createAlerts on moveFile t
 
   expect(unzipDWHExtracts).toHaveBeenCalled()
   expect(getDWHExtracts).toHaveBeenCalled()
-  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith(etlExtractsFolder, appDetailFolder, `${appDetailFolder}/${appDetailFile}`, 'export.csv')
   expect(quarantineAllFiles).toHaveBeenCalled()
   expect(createAlerts).toHaveBeenCalledWith({
     process: 'prepareDWHExtracts',
@@ -100,17 +87,17 @@ test('prepareDWHExtracts deletes file if outputFolder is undefined', async () =>
 })
 
 test('prepareDWHExtracts throws error and calls quarantineAllFiles and createAlerts if moveFile resolves false', async () => {
-  const dwhExtractsFolder = 'dwh_extracts'
-  const appDetailFolder = 'Application_Detail_SFI23'
-  const appDetailFile = 'SFI23_STMT_APPLICATION_DETAILS_V_CHANGE_LOG_20241227_130409.csv'
-  const mockExtracts = [`${dwhExtractsFolder}/${appDetailFile}`]
+  const etlExtractsFolder = 'delinked-payment_statements'
+  const appDetailFolder = 'Application_Detail_Delinked'
+  const appDetailFile = 'DELINKED_STMT_APPLICATION_DETAILS_V_20250804_141551_v1.csv'
+  const mockExtracts = [`${etlExtractsFolder}/${appDetailFile}`]
 
   unzipDWHExtracts.mockResolvedValue()
   getDWHExtracts.mockResolvedValue(mockExtracts)
 
   const etlConfig = require('../../../app/').etlConfig
-  etlConfig.applicationDetail.fileMask = 'appDetailFile\\.csv'
-  etlConfig.applicationDetail.folder = appDetailFolder
+  etlConfig.applicationDetailDelinked.fileMask = 'appDetailFile\\.csv'
+  etlConfig.applicationDetailDelinked.folder = appDetailFolder
 
   moveFile.mockResolvedValue(false)
   quarantineAllFiles.mockResolvedValue()
@@ -120,7 +107,7 @@ test('prepareDWHExtracts throws error and calls quarantineAllFiles and createAle
 
   expect(unzipDWHExtracts).toHaveBeenCalled()
   expect(getDWHExtracts).toHaveBeenCalled()
-  expect(moveFile).toHaveBeenCalledWith(dwhExtractsFolder, appDetailFolder, appDetailFile, 'export.csv')
+  expect(moveFile).toHaveBeenCalledWith(etlExtractsFolder, appDetailFolder, appDetailFile, 'export.csv')
   expect(quarantineAllFiles).toHaveBeenCalled()
   expect(createAlerts).toHaveBeenCalledWith({
     process: 'prepareDWHExtracts',

@@ -9,8 +9,8 @@ jest.mock('uuid', () => ({ v4: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
-jest.mock('../../../../app/config/etl', () => ({
-  appsPaymentNotification: { folder: 'appsPaymentNotificationFolder' }
+jest.mock('../../../../app/config/dwh', () => ({
+  appsPaymentNotificationDelinked: { folder: 'appsPaymentNotificationFolder' }
 }))
 jest.mock('../../../../app/constants/tables', () => ({
   appsPaymentNotificationTable: 'appsPaymentNotificationTable'
@@ -21,7 +21,7 @@ jest.mock('../../../../app/etl/run-etl-process', () => ({
 jest.mock('../../../../app/config', () => ({
   etlConfig: {
     excludeCalculationData: true,
-    appsPaymentNotification: { folder: 'appsPaymentNotificationFolder' }
+    appsPaymentNotificationDelinked: { folder: 'appsPaymentNotificationFolder' }
   }
 }))
 
@@ -50,10 +50,10 @@ test('stageAppsPaymentNotifications downloads file and runs ETL process', async 
 
   const mapping = [
     { column: 'CHANGE_TYPE', targetColumn: 'changeType', targetType: 'varchar' },
-    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'CHANGE_TIME', targetColumn: 'changeTime', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'APPLICATION_ID', targetColumn: 'applicationId', targetType: 'number' },
     { column: 'ID_CLC_HEADER', targetColumn: 'idClcHeader', targetType: 'number' },
-    { column: 'NOTIFICATION_DT', targetColumn: 'notificationDt', targetType: 'date', format: 'DD-MM-YYYY HH24:MI:SS' },
+    { column: 'NOTIFICATION_DT', targetColumn: 'notificationDt', targetType: 'date', format: 'MM-DD-YYYY HH24:MI:SS' },
     { column: 'NOTIFICATION_FLAG', targetColumn: 'notificationFlag', targetType: 'varchar' },
     { column: 'NOTIFIER_KEY', targetColumn: 'notifierKey', targetType: 'number' },
     { column: 'NOTIFICATION_TEXT', targetColumn: 'notificationText', targetType: 'varchar' },
