@@ -37,6 +37,6 @@ describe('getUnpublished', () => {
       { ...mockDelinkedCalculation3, calculationId: mockDelinkedCalculation3.calculationReference }
     ])
 
-    expect(console.error).toHaveBeenCalledWith('Missing calculationReference for item: sbi=%s frn=%s applicationReference=%s', 123456789, 1234567890, 1810909)
+    expect(console.error).toHaveBeenCalledWith('Missing calculationReference for item: sbi: 123456789, frn: 1234567890, applicationReference: 1810909')
   })
 })
