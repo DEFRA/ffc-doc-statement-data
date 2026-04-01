@@ -1,8 +1,6 @@
-const config = require('../config')
 const { MessageSender } = require('ffc-messaging')
+const config = require('../config')
 const createMessage = require('./create-message')
-const util = require('node:util')
-
 let sender
 
 const getSender = () => {
@@ -16,7 +14,16 @@ const sendMessage = async (body, type) => {
   const message = createMessage(body, type)
   const messageSender = getSender()
   await messageSender.sendMessage(message)
-  console.log(`Sent ${type} data`, util.inspect(body, false, null, true))
+
+  let logMessage
+  if (type === 'd365' || type === 'dax') {
+    logMessage = `Sent ${type} data — paymentReference: ${body.paymentReference}`
+  } else {
+    const invoiceNumberPart = body.invoiceNumber ? `, invoiceNumber: ${body.invoiceNumber}` : ''
+    logMessage = `Sent ${type} data — sbi: ${body.sbi}, frn: ${body.frn}${invoiceNumberPart}`
+  }
+
+  console.log(logMessage)
 }
 
 const closeConnection = async () => {

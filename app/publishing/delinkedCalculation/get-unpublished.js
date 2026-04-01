@@ -13,7 +13,7 @@ const getUnpublished = async (transaction) => {
         applicationId: item.applicationReference // Map applicationReference to applicationId
       })
     } else {
-      console.error('Missing calculationReference for item:', item)
+      console.error(`Missing calculationReference for item: sbi: ${item.sbi}, frn: ${item.frn}, applicationReference: ${item.applicationReference}`)
     }
   }
 
