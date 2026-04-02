@@ -1,0 +1,63 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog 
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd 
+                        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd 
+                        http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="1" author="Sam Plackett">
+      <tagDatabase tag="v1.39.0"/>
+    </changeSet>
+
+    <changeSet id="2" author="Sam Plackett">
+      <sql>
+        WITH DuplicateGroups AS (
+          SELECT
+            "paymentReference",
+            "paymentPeriod",
+            "paymentAmount",
+            "transactionDate",
+            COUNT(*) AS duplicate_count
+          FROM public.d365
+          GROUP BY
+            "paymentReference",
+            "paymentPeriod",
+            "paymentAmount",
+            "transactionDate"
+          HAVING COUNT(*) > 1
+        ),
+
+        MaxDatePublished AS (
+          SELECT
+            d."paymentReference",
+            d."paymentPeriod",
+            d."paymentAmount",
+            d."transactionDate",
+            MAX(d."datePublished") AS max_date_published
+          FROM public.d365 d
+          INNER JOIN DuplicateGroups dg ON
+            d."paymentReference" = dg."paymentReference"
+            AND d."paymentPeriod" = dg."paymentPeriod"
+            AND d."paymentAmount" = dg."paymentAmount"
+            AND d."transactionDate" = dg."transactionDate"
+          GROUP BY
+            d."paymentReference",
+            d."paymentPeriod",
+            d."paymentAmount",
+            d."transactionDate"
+          )
+
+          DELETE FROM public.d365 d
+          USING MaxDatePublished mdp
+          WHERE
+            d."paymentReference" = mdp."paymentReference"
+            AND d."paymentPeriod" = mdp."paymentPeriod"
+            AND d."paymentAmount" = mdp."paymentAmount"
+            AND d."transactionDate" = mdp."transactionDate"
+            AND d."datePublished" = mdp.max_date_published;
+      </sql>
+    </changeSet>
+</databaseChangeLog>
