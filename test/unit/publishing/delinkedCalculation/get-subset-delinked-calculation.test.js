@@ -77,8 +77,7 @@ describe('getSubsetDelinkedCalculation', () => {
 
     expect(result).toEqual([])
     expect(errorSpy).toHaveBeenCalledWith(
-      'Missing calculationReference for item:',
-      expect.objectContaining({ calculationReference: null })
+      'Missing calculationReference for item: sbi: 789, frn: undefined, applicationReference: 123'
     )
 
     errorSpy.mockRestore()

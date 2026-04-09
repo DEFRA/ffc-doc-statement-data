@@ -1,4 +1,3 @@
-const util = require('node:util')
 const { ETL_PROCESS_ERROR } = require('../constants/message-types')
 const sendMessage = require('./send-message')
 const config = require('../config')
@@ -20,7 +19,7 @@ const publishEtlProcessError = async (file, error) => {
   }
 
   await sendMessage(body, ETL_PROCESS_ERROR, DOC_STATEMENT_DATA_SOURCE, config.publishEtlProcessError, options)
-  console.log('Message sent:', util.inspect(body, false, null, true))
+  console.log(`ETL error message sent — id: ${body.id}, file: ${body.data?.file}`)
 }
 
 module.exports = publishEtlProcessError
