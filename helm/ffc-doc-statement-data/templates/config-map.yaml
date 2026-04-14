@@ -43,5 +43,5 @@ data:
   POLL_WINDOW_END: {{ quote .Values.container.pollWindowEnd }}
   POLL_WINDOW_DAYS: {{ quote .Values.container.pollWindowDays }}
   POLL_WINDOW_ENABLED: {{ quote .Values.container.pollWindowEnabled }}
-  USE_NEW_DWH_CONTAINER: {{ .Values.container.useNewDWHContainer }}
+  USE_NEW_DWH_CONTAINER: {{ quote .Values.container.useNewDWHContainer }}
 {{- end -}}
