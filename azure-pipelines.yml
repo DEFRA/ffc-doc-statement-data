@@ -16,7 +16,10 @@ parameters:
   - name: branchDeployment
     type: boolean
     default: true
-  - name: sndDeployment
+  - name: snd2Deployment
+    type: boolean
+    default: true
+  - name: snd1Deployment
     type: boolean
     default: true
 
@@ -35,7 +38,8 @@ extends:
     failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
     prDeployment: ${{ parameters.prDeployment }}
     branchDeployment: ${{ parameters.branchDeployment }}
-    sndDeployment: ${{ parameters.sndDeployment }}
+    sndDeployment: ${{ parameters.snd2Deployment }}
+    snd1Deployment: ${{ parameters.snd1Deployment }}
     variableGroupName: ffc-doc-statement-data-env-var
     pr_params:
       container.delinkedEnabled: $(pr_delinkedEnabled)
@@ -55,6 +59,24 @@ extends:
       container.pollWindowStart: $(pr_pollWindowStart)
       container.pollWindowEnd: $(pr_pollWindowEnd)
       container.pollWindowDays: $(pr_pollWindowDays)
+    snd1_params:
+      container.delinkedEnabled: $(snd1_delinkedEnabled)
+      container.demographicsActive: $(snd1_demographicsActive)
+      container.excludeCalculationData: $(snd1_excludeCalculationData)
+      container.publishingEnabled: $(snd1_publishingEnabled)
+      container.sfi23Enabled: $(snd1_sfi23Enabled)
+      container.useNewDWHContainer: $(snd1_useNewDWHContainer)
+      container.fakeData: $(snd1_fakeData)
+      container.subsetProcessDelinked: $(snd1_subsetProcessDelinked)
+      container.subsetProcessSfi23: $(snd1_subsetProcessSfi23)
+      container.processDelinkedSubsetAmount: $(snd1_processDelinkedSubsetAmount)
+      container.processSfi23SubsetAmount: $(snd1_processSfi23SubsetAmount)
+      container.pollingInterval: $(snd1_pollingInterval)
+      container.day0DateTime: $(snd1_day0DateTime)
+      container.pollWindowEnabled: $(snd1_pollWindowEnabled)
+      container.pollWindowStart: $(snd1_pollWindowStart)
+      container.pollWindowEnd: $(snd1_pollWindowEnd)
+      container.pollWindowDays: $(snd1_pollWindowDays)
     snd2_params:
       container.delinkedEnabled: $(snd2_delinkedEnabled)
       container.demographicsActive: $(snd2_demographicsActive)
