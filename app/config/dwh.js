@@ -99,7 +99,7 @@ const config = {
   checkCompleteTimeoutMs: 5000,
   connectionStr: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
-  useNewDWHContainer: process.env.USE_NEW_DWH_CONTAINER,
+  useNewDWHContainer: stringToBoolean(process.env.USE_NEW_DWH_CONTAINER),
   dwhContainer: stringToBoolean(process.env.USE_NEW_DWH_CONTAINER) ? 'dwh' : 'etl',
   etlExtractsFolder: stringToBoolean(process.env.USE_NEW_DWH_CONTAINER) ? 'delinked-payment_statements' : 'dwh_extracts',
   etlLogsFolder: 'logs',
@@ -175,11 +175,11 @@ const config = {
     folder: day0BusinessAddress,
     fileMask: 'DAY0_BUSINESS_ADDRESS_CONTACT_V_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
-  useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
-  createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,
+  useConnectionStr: stringToBoolean(process.env.AZURE_STORAGE_USE_CONNECTION_STRING),
+  createContainers: stringToBoolean(process.env.AZURE_STORAGE_CREATE_CONTAINERS),
   managedIdentityClientId: process.env.AZURE_CLIENT_ID,
-  delinkedEnabled: process.env.DELINKED_ENABLED,
-  fakeData: process.env.FAKE_DATA
+  delinkedEnabled: stringToBoolean(process.env.DELINKED_ENABLED),
+  fakeData: stringToBoolean(process.env.FAKE_DATA)
 }
 
 const result = schema.validate(config, {
