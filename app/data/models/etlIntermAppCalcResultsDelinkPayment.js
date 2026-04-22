@@ -1,7 +1,7 @@
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
 
-module.exports = (sequelize, DataTypes) => {
+const defineEtlIntermAppCalcResultsDelinkPayment = (sequelize, DataTypes) => {
   const FRN_LENGTH = 16
 
   const etlIntermAppCalcResultsDelinkPayment = sequelize.define('etlIntermAppCalcResultsDelinkPayment', {
@@ -35,3 +35,5 @@ module.exports = (sequelize, DataTypes) => {
   })
   return etlIntermAppCalcResultsDelinkPayment
 }
+
+module.exports = defineEtlIntermAppCalcResultsDelinkPayment
