@@ -1,6 +1,6 @@
 const { Transaction } = require('sequelize')
 const db = require('../data')
-const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadDelinkedCalculation, loadD365, loadIntermTotalZeroValues, loadZeroValueD365, loadIntermOrgFromDay0 } = require('./load-scripts')
+const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadDelinkedCalculation, loadD365, loadIntermTotalZeroValues, loadZeroValueD365 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
 const publishEtlProcessError = require('../messaging/publish-etl-process-error')
@@ -45,8 +45,6 @@ const loadETLData = async (startDate) => {
   }
 
   try {
-    await wrapWithLogging(loadIntermOrgFromDay0, 'loadIntermOrgFromDay0')(startDate)
-
     await wrapWithLogging(loadIntermFinanceDAX, 'loadIntermFinanceDAXDelinked')(startDate)
 
     await wrapWithLogging(loadIntermOrg, 'loadIntermOrgDelinked')(startDate)

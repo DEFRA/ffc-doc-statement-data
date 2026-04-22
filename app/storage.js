@@ -6,10 +6,7 @@ let blobServiceClient
 let containersInitialised
 let foldersInitialised
 
-const folderList = [
-  config.day0Organisation.folder,
-  config.day0BusinessAddress.folder
-]
+const folderList = []
 
 if (config.delinkedEnabled) {
   console.log('Include Delinked folders')

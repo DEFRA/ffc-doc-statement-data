@@ -15,13 +15,11 @@ const { loadDelinkedCalculation } = require('./load-delinked-calculation')
 const { loadD365 } = require('./load-d365')
 const { loadIntermTotalZeroValues } = require('./load-interm-total-zero-values')
 const { loadZeroValueD365 } = require('./load-zero-value-d365')
-const { loadIntermOrgFromDay0 } = require('./load-interm-org-from-day0')
 
 module.exports = {
   loadIntermFinanceDAX,
   loadIntermCalcOrg,
   loadIntermOrg,
-  loadIntermOrgFromDay0,
   loadIntermApplicationClaim,
   loadIntermApplicationContract,
   loadIntermApplicationPayment,
