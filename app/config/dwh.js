@@ -1,9 +1,7 @@
 const Joi = require('joi')
 const {
   applicationDetailDelinked, appsPaymentNotificationDelinked, appsTypesDelinked, businessAddressDelinked, calculationsDetailsDelinked, cssContractApplicationsDelinked, cssContractDelinked, cssOptionsDelinked, defraLinksDelinked, financeDAXDelinked, organisationDelinked, tclcOptionDelinked, tclcDelinked,
-  appCalculationResultsDelinkPayments, tdeLinkingTransferTransactions,
-  day0Organisation,
-  day0BusinessAddress
+  appCalculationResultsDelinkPayments, tdeLinkingTransferTransactions
 } = require('../constants/folders')
 
 const stringToBoolean = (value) => value === 'true' || value === true
@@ -77,14 +75,6 @@ const schema = Joi.object({
     fileMask: Joi.string().required()
   }).required(),
   tdeLinkingTransferTransactions: Joi.object({
-    folder: Joi.string().required(),
-    fileMask: Joi.string().required()
-  }).required(),
-  day0Organisation: Joi.object({
-    folder: Joi.string().required(),
-    fileMask: Joi.string().required()
-  }).required(),
-  day0BusinessAddress: Joi.object({
     folder: Joi.string().required(),
     fileMask: Joi.string().required()
   }).required(),
@@ -166,14 +156,6 @@ const config = {
   tdeLinkingTransferTransactions: {
     folder: tdeLinkingTransferTransactions,
     fileMask: 'DELINKED_STMT_TDELINKING_TRANSFER_TRANSACTIONS_V(_CHANGE_LOG)?_\\d{8}_\\d{6}(_v\\d+)?.csv'
-  },
-  day0Organisation: {
-    folder: day0Organisation,
-    fileMask: 'DAY0_ORGANISATION_\\d{8}_\\d{6}(_v\\d+)?.csv'
-  },
-  day0BusinessAddress: {
-    folder: day0BusinessAddress,
-    fileMask: 'DAY0_BUSINESS_ADDRESS_CONTACT_V_\\d{8}_\\d{6}(_v\\d+)?.csv'
   },
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS,

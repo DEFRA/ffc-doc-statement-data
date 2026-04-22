@@ -23,6 +23,8 @@ services:
       MESSAGE_QUEUE_USER: RootManageSharedAccessKey
       MESSAGE_QUEUE_PASSWORD: SAS_KEY_VALUE
       POLL_WINDOW_ENABLED: ${POLL_WINDOW_ENABLED:-false}
+      RETENTION_TOPIC_ADDRESS: fcp-pds-data-retention
+      RETENTION_SUBSCRIPTION_ADDRESS: ffc-doc-statement-data
       USE_NEW_DWH_CONTAINER: true
     labels:
       com.docker.compose.pay.role: test
