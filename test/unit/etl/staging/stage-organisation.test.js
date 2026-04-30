@@ -151,8 +151,8 @@ describe('stageOrganisation', () => {
     const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
     const { stageOrganisation } = require('../../../../app/etl/staging/stage-organisation')
     const { Readable } = require('stream')
-    const uuid = require('node:crypto')
-    uuid.v4.mockReturnValue('1234-5678-91011')
+    const { randomUUID } = require('node:crypto')
+    randomUUID.mockReturnValue('1234-5678-91011')
     const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\n'
     const mockReadableStream = Readable.from(mockStreamData.split('\n'))
     storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
@@ -179,8 +179,8 @@ describe('stageOrganisation', () => {
     const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
     const { stageOrganisation } = require('../../../../app/etl/staging/stage-organisation')
     const { Readable } = require('stream')
-    const uuid = require('node:crypto')
-    uuid.v4.mockReturnValue('1234-5678-91011')
+    const { randomUUID } = require('node:crypto')
+    randomUUID.mockReturnValue('1234-5678-91011')
     const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\n'
     const mockReadableStream = Readable.from(mockStreamData.split('\n'))
     storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
@@ -207,8 +207,8 @@ describe('stageOrganisation', () => {
     const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
     const { stageOrganisation } = require('../../../../app/etl/staging/stage-organisation')
     const { Readable } = require('stream')
-    const uuid = require('node:crypto')
-    uuid.v4.mockReturnValue('1234-5678-91011')
+    const { randomUUID } = require('node:crypto')
+    randomUUID.mockReturnValue('1234-5678-91011')
     const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\n'
     const mockReadableStream = Readable.from(mockStreamData.split('\n'))
     storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)
