@@ -1,7 +1,9 @@
 const { MessageReceiver } = require('ffc-messaging')
 const config = require('../config')
 const processDemographicsMessage = require('./demographics/process-demographics-message')
+const { processRetentionMessage } = require('./process-retention-message')
 let updateReceiver
+let retentionReceiver
 
 const start = async () => {
   if (config.demographicsActive) {
@@ -12,12 +14,18 @@ const start = async () => {
   } else {
     console.info('Demographics updates not live in this environment')
   }
+
+  const retentionAction = message => processRetentionMessage(message, retentionReceiver)
+  retentionReceiver = new MessageReceiver(config.retentionSubscription, retentionAction)
+  await retentionReceiver.subscribe()
+  console.info('Retention receiver ready')
 }
 
 const stop = async () => {
   if (updateReceiver) {
     await updateReceiver.closeConnection()
   }
+  await retentionReceiver.closeConnection()
 }
 
 module.exports = { start, stop }

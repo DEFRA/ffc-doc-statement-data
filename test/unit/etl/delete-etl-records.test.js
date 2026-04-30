@@ -42,9 +42,6 @@ jest.mock('../../../app/data', () => ({
   etlStageOrganisation: {
     destroy: jest.fn()
   },
-  etlStageSettlement: {
-    destroy: jest.fn()
-  },
   etlStageTclcPiiPayClaimSfimtOption: {
     destroy: jest.fn()
   },
