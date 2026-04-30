@@ -1,7 +1,5 @@
 const mockDataProcessingAlert = jest.fn()
-const mockFindAllDax = jest.fn()
 const mockFindAllD365 = jest.fn()
-const mockUpdateDax = jest.fn()
 const mockUpdateD365 = jest.fn()
 
 jest.mock('ffc-alerting-utils', () => ({
@@ -9,10 +7,6 @@ jest.mock('ffc-alerting-utils', () => ({
 }))
 
 jest.mock('../../../app/data', () => ({
-  zeroValueDax: {
-    findAll: mockFindAllDax,
-    update: mockUpdateDax
-  },
   zeroValueD365: {
     findAll: mockFindAllD365,
     update: mockUpdateD365
@@ -35,9 +29,7 @@ describe('sendZeroValueAlerts', () => {
     jest.clearAllMocks()
 
     // Always return empty array by default
-    mockFindAllDax.mockReset().mockResolvedValue([])
     mockFindAllD365.mockReset().mockResolvedValue([])
-    mockUpdateDax.mockReset().mockResolvedValue()
     mockUpdateD365.mockReset().mockResolvedValue()
     mockDataProcessingAlert.mockReset().mockResolvedValue()
 
@@ -51,7 +43,6 @@ describe('sendZeroValueAlerts', () => {
   })
 
   test.each([
-    ['DAX', mockFindAllDax, mockUpdateDax, 'daxId'],
     ['D365', mockFindAllD365, mockUpdateD365, 'd365Id']
   ])(
     'processes and sends alerts for unsent %s records in single batch',
@@ -94,7 +85,6 @@ describe('sendZeroValueAlerts', () => {
   )
 
   test.each([
-    ['DAX', mockFindAllDax, 'daxId'],
     ['D365', mockFindAllD365, 'd365Id']
   ])(
     'logs when no unsent %s records',
@@ -112,23 +102,7 @@ describe('sendZeroValueAlerts', () => {
     }
   )
 
-  test('handles multiple batches for DAX with exact batch size', async () => {
-    const batch1 = Array(500).fill().map((_, i) => ({ daxId: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
-    const batch2 = Array(500).fill().map((_, i) => ({ daxId: i + 501, paymentReference: `REF${i + 501}`, paymentAmount: 0 }))
-    mockFindAllDax
-      .mockResolvedValueOnce(batch1)
-      .mockResolvedValueOnce(batch2)
-      .mockResolvedValueOnce([])
-    mockFindAllD365.mockResolvedValue([])
-
-    await sendZeroValueAlerts()
-
-    expect(mockFindAllDax).toHaveBeenCalledTimes(3)
-    expect(mockDataProcessingAlert).toHaveBeenCalledTimes(1000)
-  })
-
   test('handles partial batch for D365', async () => {
-    mockFindAllDax.mockResolvedValue([])
     const partialBatch = Array(250).fill().map((_, i) => ({ d365Id: i + 1, paymentReference: `REF${i + 1}`, paymentAmount: 0 }))
     mockFindAllD365
       .mockResolvedValueOnce(partialBatch)
@@ -141,42 +115,39 @@ describe('sendZeroValueAlerts', () => {
   })
 
   test('handles error in processing alert and skips update', async () => {
-    const daxRecords = [{ daxId: 1, paymentReference: 'REF1', paymentAmount: 0 }]
-    mockFindAllDax.mockResolvedValueOnce(daxRecords).mockResolvedValueOnce([])
-    mockFindAllD365.mockResolvedValue([])
+    const d365Records = [{ d365Id: 1, paymentReference: 'REF1', paymentAmount: 0 }]
+    mockFindAllD365.mockResolvedValueOnce(d365Records).mockResolvedValueOnce([])
     mockDataProcessingAlert.mockRejectedValueOnce(new Error('Publish failed'))
 
     await sendZeroValueAlerts()
 
-    expect(mockUpdateDax).not.toHaveBeenCalled()
-    expect(errorSpy).toHaveBeenCalledWith('Failed to send alert for zeroValueDax record 1, skipping update', expect.any(Error))
+    expect(mockUpdateD365).not.toHaveBeenCalled()
+    expect(errorSpy).toHaveBeenCalledWith('Failed to send alert for zeroValueD365 record 1, skipping update', expect.any(Error))
   })
 
   test('handles error in database update and logs error', async () => {
-    const daxRecords = [{ daxId: 1, paymentReference: 'REF1', paymentAmount: 0 }]
-    mockFindAllDax.mockResolvedValueOnce(daxRecords).mockResolvedValueOnce([])
-    mockFindAllD365.mockResolvedValue([])
-    mockUpdateDax.mockRejectedValueOnce(new Error('Database update failed'))
+    const d365Records = [{ d365Id: 1, paymentReference: 'REF1', paymentAmount: 0 }]
+    mockFindAllD365.mockResolvedValueOnce(d365Records).mockResolvedValueOnce([])
+    mockUpdateD365.mockRejectedValueOnce(new Error('Database update failed'))
 
     await sendZeroValueAlerts()
 
-    expect(errorSpy).toHaveBeenCalledWith('Failed to send alert for zeroValueDax record 1, skipping update', expect.any(Error))
+    expect(errorSpy).toHaveBeenCalledWith('Failed to send alert for zeroValueD365 record 1, skipping update', expect.any(Error))
   })
 
   test('handles mixed success and failure in same batch', async () => {
-    const daxRecords = [
-      { daxId: 1, paymentReference: 'REF1', paymentAmount: 0 },
-      { daxId: 2, paymentReference: 'REF2', paymentAmount: 0 }
+    const d365Records = [
+      { d365Id: 1, paymentReference: 'REF1', paymentAmount: 0 },
+      { d365Id: 2, paymentReference: 'REF2', paymentAmount: 0 }
     ]
-    mockFindAllDax.mockResolvedValueOnce(daxRecords).mockResolvedValueOnce([])
-    mockFindAllD365.mockResolvedValue([])
+    mockFindAllD365.mockResolvedValueOnce(d365Records).mockResolvedValueOnce([])
     mockDataProcessingAlert
       .mockResolvedValueOnce()
       .mockRejectedValueOnce(new Error('Second record fails'))
 
     await sendZeroValueAlerts()
 
-    expect(mockUpdateDax).toHaveBeenCalledTimes(1)
+    expect(mockUpdateD365).toHaveBeenCalledTimes(1)
     expect(errorSpy).toHaveBeenCalledTimes(1)
   })
 })

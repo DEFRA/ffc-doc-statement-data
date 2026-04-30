@@ -3,17 +3,17 @@ const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
-const defaultTablesToCheck = [
-  etlConfig.cssContractApplications.folder,
-  etlConfig.cssContract.folder
-]
+const loadIntermApplicationClaim = async (startDate, transaction) => {
+  const tablesToCheck = [
+    etlConfig.cssContractApplicationsDelinked.folder,
+    etlConfig.cssContractDelinked.folder
+  ]
 
-const defaultFolderToAliasMap = {
-  [etlConfig.cssContractApplications.folder]: 'cl',
-  [etlConfig.cssContract.folder]: 'cc'
-}
+  const folderToAliasMap = {
+    [etlConfig.cssContractApplicationsDelinked.folder]: 'cl',
+    [etlConfig.cssContractDelinked.folder]: 'cc'
+  }
 
-const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -71,21 +71,6 @@ const loadIntermApplicationClaim = async (startDate, transaction, tablesToCheck 
   }
 }
 
-const loadIntermApplicationClaimDelinked = async (startDate, transaction) => {
-  const tablesToCheck = [
-    etlConfig.cssContractApplicationsDelinked.folder,
-    etlConfig.cssContractDelinked.folder
-  ]
-
-  const folderToAliasMap = {
-    [etlConfig.cssContractApplicationsDelinked.folder]: 'cl',
-    [etlConfig.cssContractDelinked.folder]: 'cc'
-  }
-
-  return loadIntermApplicationClaim(startDate, transaction, tablesToCheck, folderToAliasMap)
-}
-
 module.exports = {
-  loadIntermApplicationClaim,
-  loadIntermApplicationClaimDelinked
+  loadIntermApplicationClaim
 }

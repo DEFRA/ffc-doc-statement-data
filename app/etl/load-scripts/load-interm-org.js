@@ -3,16 +3,6 @@ const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
-const defaultTablesToCheck = [
-  etlConfig.organisation.folder,
-  etlConfig.businessAddress.folder
-]
-
-const defaultFolderToAliasMap = {
-  [etlConfig.organisation.folder]: 'O',
-  [etlConfig.businessAddress.folder]: 'A'
-}
-
 const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
   WITH "newData" AS (
     SELECT
@@ -86,7 +76,16 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     OR ("changeType" = 'UPDATE' AND "partyId" NOT IN (SELECT "partyId" FROM updatedrows));
 `
 
-const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTablesToCheck, folderToAliasMap = defaultFolderToAliasMap) => {
+const loadIntermOrg = async (startDate, transaction) => {
+  const tablesToCheck = [
+    etlConfig.organisationDelinked.folder
+  ]
+
+  const folderToAliasMap = {
+    [etlConfig.organisationDelinked.folder]: 'O',
+    [etlConfig.businessAddressDelinked.folder]: 'A'
+  }
+
   const etlStageLogs = await getEtlStageLogs(startDate, tablesToCheck)
 
   if (!etlStageLogs.length) {
@@ -107,20 +106,6 @@ const loadIntermOrg = async (startDate, transaction, tablesToCheck = defaultTabl
   }
 }
 
-const loadIntermOrgDelinked = async (startDate, transaction) => {
-  const tablesToCheck = [
-    etlConfig.organisationDelinked.folder
-  ]
-
-  const folderToAliasMap = {
-    [etlConfig.organisationDelinked.folder]: 'O',
-    [etlConfig.businessAddressDelinked.folder]: 'A'
-  }
-
-  return loadIntermOrg(startDate, transaction, tablesToCheck, folderToAliasMap)
-}
-
 module.exports = {
-  loadIntermOrg,
-  loadIntermOrgDelinked
+  loadIntermOrg
 }

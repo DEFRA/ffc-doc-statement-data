@@ -1,12 +1,12 @@
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { cssContractApplications } = require('../../../../app/constants/tables')
+const { cssContractApplicationsDelinked } = require('../../../../app/constants/tables')
 const { stageCSSContractApplications } = require('../../../../app/etl/staging/stage-css-contract-applications')
 const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/etl')
+jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -19,7 +19,7 @@ describe('stageCSSContractApplications', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'CSS_Contract_Applications_SFI23/export.csv'
+    const mockFile = 'CSS_Contract_Applications_Delinked/export.csv'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -52,7 +52,7 @@ describe('stageCSSContractApplications', () => {
         column: 'CHANGE_TIME',
         targetColumn: 'changeTime',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'PKID',
@@ -63,13 +63,13 @@ describe('stageCSSContractApplications', () => {
         column: 'INSERT_DT',
         targetColumn: 'insertDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'DELETE_DT',
         targetColumn: 'deleteDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'CONTRACT_ID',
@@ -105,13 +105,13 @@ describe('stageCSSContractApplications', () => {
         column: 'START_DT',
         targetColumn: 'startDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'END_DT',
         targetColumn: 'endDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'VALID_START_FLAG',
@@ -137,7 +137,7 @@ describe('stageCSSContractApplications', () => {
         column: 'LAST_UPDATE_DT',
         targetColumn: 'lastUpdateDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'USER_FLD',
@@ -157,7 +157,7 @@ describe('stageCSSContractApplications', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       fileStream: mockReadableStream,
       columns: mockColumns,
-      table: cssContractApplications,
+      table: cssContractApplicationsDelinked,
       mapping: mockMapping,
       file: mockFile,
       excludedFields: [

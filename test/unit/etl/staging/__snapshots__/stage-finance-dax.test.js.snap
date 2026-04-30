@@ -148,7 +148,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           "voucher",
           "yearendrunnumber",
         ],
-        "file": "Finance_Dax_SFI23/export.csv",
+        "file": "Finance_Dax_Delinked/export.csv",
         "fileStream": Readable {
           "_destroy": [Function],
           "_events": {
@@ -180,13 +180,13 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "CHANGE_TIME",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "changeTime",
             "targetType": "date",
           },
           {
             "column": "TRANSDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "transdate",
             "targetType": "date",
           },
@@ -202,7 +202,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "INVOICEDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "invoicedate",
             "targetType": "date",
           },
@@ -353,7 +353,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "MODIFIEDDATETIME",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "modifieddatetime",
             "targetType": "date",
           },
@@ -364,7 +364,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "CREATEDDATETIME",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "createddatetime",
             "targetType": "date",
           },
@@ -415,7 +415,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "CLAIMSETTLEMENTDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "claimsettlementdate",
             "targetType": "date",
           },
@@ -436,13 +436,13 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "EUYEARSTARTDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "euyearstartdate",
             "targetType": "date",
           },
           {
             "column": "EUYEARENDDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "euyearenddate",
             "targetType": "date",
           },
@@ -463,7 +463,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "POSTINGDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "postingdate",
             "targetType": "date",
           },
@@ -544,7 +544,7 @@ exports[`stageFinanceDAX should download the file and run the ETL process 1`] = 
           },
           {
             "column": "OEDATE",
-            "format": "DD-MM-YYYY HH24:MI:SS",
+            "format": "MM-DD-YYYY HH24:MI:SS",
             "targetColumn": "oedate",
             "targetType": "date",
           },

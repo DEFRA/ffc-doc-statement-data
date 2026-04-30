@@ -1,12 +1,12 @@
 const { v4: uuidv4 } = require('uuid')
 const storage = require('../../../../app/storage')
-const { calculationsDetails } = require('../../../../app/constants/tables')
+const { calculationsDetailsDelinked } = require('../../../../app/constants/tables')
 const { stageCalculationDetails } = require('../../../../app/etl/staging/stage-calculations-details')
 const { Readable } = require('stream')
 
 jest.mock('uuid')
 jest.mock('../../../../app/storage')
-jest.mock('../../../../app/config/etl')
+jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
@@ -19,7 +19,7 @@ describe('stageCalculationDetails', () => {
   })
 
   test('should download the file and run the ETL process', async () => {
-    const mockFile = 'Calculations_Details_MV_SFI23/export.csv'
+    const mockFile = 'Calculations_Details_MV_Delinked/export.csv'
     const mockUuid = 'mock-uuid'
     const mockColumns = [
       'CHANGE_TYPE',
@@ -40,7 +40,7 @@ describe('stageCalculationDetails', () => {
         column: 'CHANGE_TIME',
         targetColumn: 'changeTime',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'APPLICATION_ID',
@@ -61,7 +61,7 @@ describe('stageCalculationDetails', () => {
         column: 'CALCULATION_DT',
         targetColumn: 'calculationDt',
         targetType: 'date',
-        format: 'DD-MM-YYYY HH24:MI:SS'
+        format: 'MM-DD-YYYY HH24:MI:SS'
       },
       {
         column: 'RANKED',
@@ -81,7 +81,7 @@ describe('stageCalculationDetails', () => {
     expect(runEtlProcess).toHaveBeenCalledWith({
       fileStream: mockReadableStream,
       columns: mockColumns,
-      table: calculationsDetails,
+      table: calculationsDetailsDelinked,
       mapping: mockMapping,
       file: mockFile
     })

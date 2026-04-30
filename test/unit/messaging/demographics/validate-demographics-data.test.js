@@ -39,7 +39,7 @@ describe('validateDemographicsData', () => {
     schema.validate.mockReturnValue(validationError)
 
     expect(() => validateDemographicsData(demographicsData)).toThrow(Error)
-    expect(() => validateDemographicsData(demographicsData)).toThrow(`${demographicsData} dataset is invalid, ${errorMessage}`)
+    expect(() => validateDemographicsData(demographicsData)).toThrow('Demographics dataset is invalid for sbi: 105000000, frn: 1000000000: Validation error')
   })
 
   test('should log error message on validation failure', () => {
@@ -53,7 +53,7 @@ describe('validateDemographicsData', () => {
     console.error = jest.fn()
 
     expect(() => validateDemographicsData(demographicsData)).toThrow()
-    expect(console.error).toHaveBeenCalledWith(`${demographicsData} dataset is invalid, ${errorMessage}`)
+    expect(console.error).toHaveBeenCalledWith('Demographics dataset is invalid for sbi: 105000000, frn: 1000000000: Validation error')
   })
 
   test('should set error category to VALIDATION', () => {
