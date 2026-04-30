@@ -1,13 +1,13 @@
 const { ETL_PROCESS_ERROR } = require('../constants/message-types')
 const sendMessage = require('./send-message')
 const config = require('../config')
-const { v4: uuidv4 } = require('uuid')
+const { randomUUID } = require('node:crypto')
 const { DOC_STATEMENT_DATA_SOURCE } = require('../constants/doc-statement-data-source')
 
 const publishEtlProcessError = async (file, error) => {
   const options = {
     time: new Date(),
-    id: uuidv4()
+    id: randomUUID()
   }
 
   const body = {

@@ -1,18 +1,18 @@
 const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
 const sendMessage = require('../../../app/messaging/send-message')
-const { v4: uuidv4 } = require('uuid')
+const { randomUUID } = require('node:crypto')
 const config = require('../../../app/config')
 const { ETL_PROCESS_ERROR } = require('../../../app/constants/message-types')
 const { DOC_STATEMENT_DATA_SOURCE } = require('../../../app/constants/doc-statement-data-source')
 
-jest.mock('uuid')
+jest.mock('node:crypto')
 jest.mock('../../../app/messaging/send-message')
 jest.mock('../../../app/config')
 
 describe('publishEtlProcessError', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    uuidv4.mockReturnValue('mock-uuid')
+    randomUUID.mockReturnValue('mock-uuid')
     config.publishEtlProcessError = { }
     jest.spyOn(console, 'log').mockImplementation(() => {})
   })
