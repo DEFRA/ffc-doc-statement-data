@@ -35,7 +35,7 @@ extends:
   template: fcp-common-pipeline.yaml@templates
   parameters:
     appFrameworkType: nodejs
-    failOnThreshold: high  # Optional: moderate (default), low, high, critical
+    failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
     prDeployment: ${{ parameters.prDeployment }}
     branchDeployment: ${{ parameters.branchDeployment }}
     sndDeployment: ${{ parameters.snd2Deployment }}
