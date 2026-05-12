@@ -1,10 +1,10 @@
 const db = require('../data')
 
-const findDelinkedCalculations = async (agreementNumber, frn, transaction) => {
+const findDelinkedCalculations = async (applicationId, frn, transaction) => {
   return db.delinkedCalculation.findAll({
     attributes: ['calculationId', 'sbi'],
     where: {
-      agreementNumber,
+      applicationId,
       frn
     },
     transaction

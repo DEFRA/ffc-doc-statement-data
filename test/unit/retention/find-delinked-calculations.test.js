@@ -8,7 +8,7 @@ jest.mock('../../../app/data', () => ({
 }))
 
 describe('findDelinkedCalculations', () => {
-  const agreementNumber = 'AGR-123'
+  const applicationId = 'AGR-123'
   const frn = 456789
   const transaction = {}
 
@@ -23,13 +23,13 @@ describe('findDelinkedCalculations', () => {
     ]
     db.delinkedCalculation.findAll.mockResolvedValue(mockResult)
 
-    const result = await findDelinkedCalculations(agreementNumber, frn, transaction)
+    const result = await findDelinkedCalculations(applicationId, frn, transaction)
 
     expect(db.delinkedCalculation.findAll).toHaveBeenCalledTimes(1)
     expect(db.delinkedCalculation.findAll).toHaveBeenCalledWith({
       attributes: ['calculationId', 'sbi'],
       where: {
-        agreementNumber,
+        applicationId,
         frn
       },
       transaction
@@ -40,7 +40,7 @@ describe('findDelinkedCalculations', () => {
   test('returns empty array when no calculations found', async () => {
     db.delinkedCalculation.findAll.mockResolvedValue([])
 
-    const result = await findDelinkedCalculations(agreementNumber, frn, transaction)
+    const result = await findDelinkedCalculations(applicationId, frn, transaction)
 
     expect(db.delinkedCalculation.findAll).toHaveBeenCalledTimes(1)
     expect(result).toEqual([])
@@ -50,6 +50,6 @@ describe('findDelinkedCalculations', () => {
     const error = new Error('DB error')
     db.delinkedCalculation.findAll.mockRejectedValue(error)
 
-    await expect(findDelinkedCalculations(agreementNumber, frn, transaction)).rejects.toThrow('DB error')
+    await expect(findDelinkedCalculations(applicationId, frn, transaction)).rejects.toThrow('DB error')
   })
 })
