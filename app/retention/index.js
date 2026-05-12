@@ -71,6 +71,7 @@ const removeAgreementData = async (retentionData) => {
 
     await transaction.commit()
   } catch (err) {
+    console.error(`Error occurred deleting data: ${err.message}`)
     await transaction.rollback()
     throw err
   }
