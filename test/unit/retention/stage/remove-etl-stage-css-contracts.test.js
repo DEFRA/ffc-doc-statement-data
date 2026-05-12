@@ -13,7 +13,7 @@ jest.mock('../../../../app/data', () => ({
 }))
 
 describe('removeEtlStageCssContracts', () => {
-  const calculationIds = [401, 402, 403]
+  const contractIds = [401, 402, 403]
   const transaction = {}
 
   beforeEach(() => {
@@ -23,13 +23,13 @@ describe('removeEtlStageCssContracts', () => {
   test('calls db.etlStageCssContracts.destroy with correct parameters using Sequelize.Op.in', async () => {
     db.etlStageCssContracts.destroy.mockResolvedValue()
 
-    await removeEtlStageCssContracts(calculationIds, transaction)
+    await removeEtlStageCssContracts(contractIds, transaction)
 
     expect(db.etlStageCssContracts.destroy).toHaveBeenCalledTimes(1)
     expect(db.etlStageCssContracts.destroy).toHaveBeenCalledWith({
       where: {
-        calculationId: {
-          [db.Sequelize.Op.in]: calculationIds
+        contractId: {
+          [db.Sequelize.Op.in]: contractIds
         }
       },
       transaction
@@ -40,6 +40,6 @@ describe('removeEtlStageCssContracts', () => {
     const error = new Error('DB destroy error')
     db.etlStageCssContracts.destroy.mockRejectedValue(error)
 
-    await expect(removeEtlStageCssContracts(calculationIds, transaction)).rejects.toThrow('DB destroy error')
+    await expect(removeEtlStageCssContracts(contractIds, transaction)).rejects.toThrow('DB destroy error')
   })
 })

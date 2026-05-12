@@ -49,7 +49,7 @@ const removeAgreementData = async (retentionData) => {
 
     // Remove ETL staging data
     const stageCssContractApplications = await findStageCssContractApps(simplifiedAgreementNumber, frn, transaction)
-    const cssContractCalcIds = stageCssContractApplications.map(scca => scca.calculationId)
+    const cssContractIds = stageCssContractApplications.map(scca => scca.contractId)
     const stageApplicationDetails = await findStageAppDetails(simplifiedAgreementNumber, transaction)
     const appDetailSubjectIds = stageApplicationDetails.map(sad => sad.subjectId)
 
@@ -59,7 +59,7 @@ const removeAgreementData = async (retentionData) => {
     await removeEtlStageBusinessAddressContactV(sbisForEtlRemoval, transaction)
     await removeEtlStageCalculationDetails(simplifiedAgreementNumber, transaction)
     await removeEtlStageCssContractApplications(simplifiedAgreementNumber, transaction)
-    await removeEtlStageCssContracts(cssContractCalcIds, transaction)
+    await removeEtlStageCssContracts(cssContractIds, transaction)
     await removeEtlStageDefraLinks(appDetailSubjectIds, transaction)
     await removeEtlStageFinanceDax(intermPaymentRefs, transaction)
     await removeEtlStageOrganisation(sbisForEtlRemoval, transaction)

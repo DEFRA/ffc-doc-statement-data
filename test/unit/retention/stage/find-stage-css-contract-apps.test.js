@@ -17,8 +17,8 @@ describe('findStageCssContractApps', () => {
 
   test('calls db.etlStageCssContractApplications.findAll with correct parameters', async () => {
     const mockResult = [
-      { calculationId: 10 },
-      { calculationId: 20 }
+      { contractId: 10 },
+      { contractId: 20 }
     ]
     db.etlStageCssContractApplications.findAll.mockResolvedValue(mockResult)
 
@@ -26,7 +26,7 @@ describe('findStageCssContractApps', () => {
 
     expect(db.etlStageCssContractApplications.findAll).toHaveBeenCalledTimes(1)
     expect(db.etlStageCssContractApplications.findAll).toHaveBeenCalledWith({
-      attributes: ['calculationId'],
+      attributes: ['contractId'],
       where: { applicationId },
       transaction
     })

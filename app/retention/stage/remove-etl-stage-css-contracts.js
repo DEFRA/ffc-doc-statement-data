@@ -1,10 +1,10 @@
 const db = require('../../data')
 
-const removeEtlStageCssContracts = async (calculationIds, transaction) => {
+const removeEtlStageCssContracts = async (contractIds, transaction) => {
   await db.etlStageCssContracts.destroy({
     where: {
-      calculationId: {
-        [db.Sequelize.Op.in]: calculationIds
+      contractId: {
+        [db.Sequelize.Op.in]: contractIds
       }
     },
     transaction

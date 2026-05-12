@@ -168,8 +168,8 @@ describe('removeAgreementData', () => {
     ]
 
     const stageCssContractApplications = [
-      { calculationId: 301 },
-      { calculationId: 302 }
+      { contractId: 301 },
+      { contractId: 302 }
     ]
 
     const stageApplicationDetails = [
@@ -332,9 +332,9 @@ describe('removeAgreementData', () => {
       retentionDataDelinked.simplifiedAgreementNumber,
       transaction
     )
-    const cssContractCalcIds = stageCssContractApplications.map(scca => scca.calculationId)
+    const cssContractContractIds = stageCssContractApplications.map(scca => scca.contractId)
     expect(removeEtlStageCssContracts).toHaveBeenCalledWith(
-      cssContractCalcIds,
+      cssContractContractIds,
       transaction
     )
     const appDetailSubjectIds = stageApplicationDetails.map(sad => sad.subjectId)
