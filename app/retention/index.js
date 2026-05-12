@@ -48,7 +48,7 @@ const removeAgreementData = async (retentionData) => {
     await removeEtlIntermTotalZeroValues(intermPaymentRefs, transaction)
 
     // Remove ETL staging data
-    const stageCssContractApplications = await findStageCssContractApps(simplifiedAgreementNumber, frn, transaction)
+    const stageCssContractApplications = await findStageCssContractApps(simplifiedAgreementNumber, transaction)
     const cssContractIds = stageCssContractApplications.map(scca => scca.contractId)
     const stageApplicationDetails = await findStageAppDetails(simplifiedAgreementNumber, transaction)
     const appDetailSubjectIds = stageApplicationDetails.map(sad => sad.subjectId)

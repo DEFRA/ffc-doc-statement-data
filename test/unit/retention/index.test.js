@@ -242,7 +242,6 @@ describe('removeAgreementData', () => {
 
     expect(findStageCssContractApps).toHaveBeenCalledWith(
       retentionDataDelinked.simplifiedAgreementNumber,
-      retentionDataDelinked.frn,
       transaction
     )
     expect(findStageAppDetails).toHaveBeenCalledWith(
