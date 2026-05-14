@@ -2,7 +2,7 @@ const db = require('../../data')
 
 const findStageAppDetails = async (applicationId, transaction) => {
   return db.etlStageApplicationDetail.findAll({
-    attributes: ['calculationId'],
+    attributes: ['subjectId'],
     where: {
       applicationId
     },
