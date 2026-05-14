@@ -2,7 +2,7 @@ const db = require('../../../../app/data')
 const { removeEtlStageDefraLinks } = require('../../../../app/retention/stage/remove-etl-stage-defra-links')
 
 jest.mock('../../../../app/data', () => ({
-  etlStageCssContracts: {
+  etlStageDefraLinks: {
     destroy: jest.fn()
   },
   Sequelize: {
@@ -20,13 +20,13 @@ describe('removeEtlStageDefraLinks', () => {
     jest.clearAllMocks()
   })
 
-  test('calls db.etlStageCssContracts.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.etlStageCssContracts.destroy.mockResolvedValue()
+  test('calls db.etlStageDefraLinks.destroy with correct parameters using Sequelize.Op.in', async () => {
+    db.etlStageDefraLinks.destroy.mockResolvedValue()
 
     await removeEtlStageDefraLinks(subjectIds, transaction)
 
-    expect(db.etlStageCssContracts.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageCssContracts.destroy).toHaveBeenCalledWith({
+    expect(db.etlStageDefraLinks.destroy).toHaveBeenCalledTimes(1)
+    expect(db.etlStageDefraLinks.destroy).toHaveBeenCalledWith({
       where: {
         subjectId: {
           [db.Sequelize.Op.in]: subjectIds
@@ -36,9 +36,9 @@ describe('removeEtlStageDefraLinks', () => {
     })
   })
 
-  test('propagates error when db.etlStageCssContracts.destroy rejects', async () => {
+  test('propagates error when db.etlStageDefraLinks.destroy rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageCssContracts.destroy.mockRejectedValue(error)
+    db.etlStageDefraLinks.destroy.mockRejectedValue(error)
 
     await expect(removeEtlStageDefraLinks(subjectIds, transaction)).rejects.toThrow('DB destroy error')
   })
