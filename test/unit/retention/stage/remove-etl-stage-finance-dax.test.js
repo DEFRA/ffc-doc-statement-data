@@ -28,7 +28,7 @@ describe('removeEtlStageFinanceDax', () => {
     expect(db.etlStageFinanceDax.destroy).toHaveBeenCalledTimes(1)
     expect(db.etlStageFinanceDax.destroy).toHaveBeenCalledWith({
       where: {
-        paymentRef: {
+        settlementvoucher: {
           [db.Sequelize.Op.in]: paymentRefs
         }
       },
