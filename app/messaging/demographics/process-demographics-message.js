@@ -1,6 +1,5 @@
 const moment = require('moment')
 const db = require('../../data')
-const mqConfig = require('../../config/message')
 
 const { getSBI } = require('./get-sbi')
 const { prepareAddressData } = require('./prepare-address-data')
@@ -12,15 +11,8 @@ const { createAlerts } = require('../../messaging/create-alerts')
 const processDemographicsMessage = async (message, receiver) => {
   try {
     const receivedData = message.body
-    const enqueuedTime = message.enqueuedTimeUtc
 
     console.log(`Demographics update received for sbi ${getSBI(receivedData)}, frn ${receivedData.organisation?.firmId}`)
-
-    if (mqConfig.day0DateTime && moment(enqueuedTime).isBefore(moment(mqConfig.day0DateTime))) {
-      console.log(`Message received before day 0 date time ${mqConfig.day0DateTime} - ignoring`)
-      await receiver.completeMessage(message)
-      return
-    }
 
     const addressData = prepareAddressData(receivedData.address?.[0])
 

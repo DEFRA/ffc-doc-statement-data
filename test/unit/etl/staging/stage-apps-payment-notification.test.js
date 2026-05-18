@@ -1,11 +1,11 @@
-const { v4: uuidv4 } = require('uuid')
+const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageAppsPaymentNotifications } = require('../../../../app/etl/staging/stage-apps-payment-notification')
 const { appsPaymentNotification } = require('../../../../app/constants/tables')
 const { Readable } = require('stream')
 
-jest.mock('uuid', () => ({ v4: jest.fn() }))
+jest.mock('node:crypto', () => ({ randomUUID: jest.fn() }))
 jest.mock('../../../../app/storage', () => ({
   downloadFileAsStream: jest.fn()
 }))
@@ -27,7 +27,7 @@ jest.mock('../../../../app/config', () => ({
 
 test('stageAppsPaymentNotifications downloads file and runs ETL process', async () => {
   const mockUuid = '1234-5678-91011'
-  uuidv4.mockReturnValue(mockUuid)
+  randomUUID.mockReturnValue(mockUuid)
   const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
   const mockReadableStream = Readable.from(mockStreamData.split('\n'))
   storage.downloadFileAsStream.mockResolvedValue(mockReadableStream)

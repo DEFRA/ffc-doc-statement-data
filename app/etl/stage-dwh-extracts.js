@@ -2,8 +2,7 @@ const ora = require('ora')
 const storage = require('../storage')
 const {
   stageApplicationDetails, stageAppsTypes, stageAppsPaymentNotifications, stageBusinessAddressContacts, stageCalculationDetails, stageCSSContractApplications, stageCSSContract, stageCSSOptions, stageDefraLinks, stageFinanceDAX, stageOrganisation, stageTCLCOption,
-  stageAppCalcResultsDelinkPayments, stageTdeLinkingTransferTransactions,
-  stageDay0BusinessAddressContacts, stageDay0Organisation
+  stageAppCalcResultsDelinkPayments, stageTdeLinkingTransferTransactions
 } = require('./staging')
 const { loadETLData } = require('./load-etl-data')
 const { etlConfig } = require('../config')
@@ -11,10 +10,7 @@ const { createAlerts } = require('../messaging/create-alerts')
 
 let startDate
 
-const stageFunctions = [
-  { fn: stageDay0BusinessAddressContacts, label: etlConfig.day0BusinessAddress.folder },
-  { fn: stageDay0Organisation, label: etlConfig.day0Organisation.folder }
-]
+const stageFunctions = []
 
 if (etlConfig.delinkedEnabled) {
   stageFunctions.push(

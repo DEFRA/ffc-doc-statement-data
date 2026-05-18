@@ -1,10 +1,10 @@
-const { v4: uuidv4 } = require('uuid')
+const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
 const { cssContractApplicationsDelinked } = require('../../../../app/constants/tables')
 const { stageCSSContractApplications } = require('../../../../app/etl/staging/stage-css-contract-applications')
 const { Readable } = require('stream')
 
-jest.mock('uuid')
+jest.mock('node:crypto')
 jest.mock('../../../../app/storage')
 jest.mock('../../../../app/config/dwh')
 jest.mock('../../../../app/constants/tables')
@@ -146,7 +146,7 @@ describe('stageCSSContractApplications', () => {
       }
     ]
 
-    uuidv4.mockReturnValue(mockUuid)
+    randomUUID.mockReturnValue(mockUuid)
     const mockStreamData = 'CHANGE_TYPE,CHANGE_TIME,PKID,DT_INSERT\nINSERT,2021-01-01,1,2021-01-01\nUPDATE,2021-01-02,2,2021-01-02\n'
     const mockReadableStream = Readable.from(mockStreamData.split('\n'))
     storage.downloadFileAsStream = jest.fn().mockResolvedValue(mockReadableStream)

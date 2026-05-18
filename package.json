@@ -1,6 +1,6 @@
 {
   "name": "ffc-doc-statement-data",
-  "version": "3.2.26",
+  "version": "4.0.0",
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-doc-statement-data",
   "main": "app/index.js",
@@ -28,10 +28,10 @@
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@azure/identity": "4.4.1",
-    "@azure/monitor-opentelemetry": "1.16.0",
+    "@azure/identity": "4.13.1",
+    "@azure/monitor-opentelemetry": "1.18.0",
     "@azure/storage-blob": "12.31.0",
-    "ffc-alerting-utils": "1.0.14",
+    "ffc-alerting-utils": "1.0.15",
     "ffc-database": "1.0.25",
     "ffc-messaging": "2.10.6",
     "ffc-pay-etl-framework": "1.4.4",
@@ -42,8 +42,7 @@
     "node-stream-zip": "1.15.0",
     "ora": "5.4.1",
     "sequelize": "6.37.8",
-    "unzipper": "0.12.3",
-    "uuid": "10.0.0"
+    "unzipper": "0.12.3"
   },
   "devDependencies": {
     "eslint": "9.39.1",
@@ -53,6 +52,9 @@
     "neostandard": "0.12.2",
     "nodemon": "3.0.1",
     "sqlite3": "6.0.1"
+  },
+  "overrides": {
+    "protobufjs": "8.0.2"
   },
   "nodemonConfig": {
     "ignore": [

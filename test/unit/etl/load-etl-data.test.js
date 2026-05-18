@@ -51,8 +51,7 @@ const {
   loadDelinkedCalculation,
   loadD365,
   loadIntermTotalZeroValues,
-  loadZeroValueD365,
-  loadIntermOrgFromDay0
+  loadZeroValueD365
 } = require('../../../app/etl/load-scripts')
 
 Transaction.ISOLATION_LEVELS = {
@@ -82,7 +81,6 @@ describe('loadEtlData', () => {
 
     const expectedScripts = [
       loadIntermFinanceDAX,
-      loadIntermOrgFromDay0,
       loadIntermOrg,
       loadIntermApplicationClaim,
       loadIntermApplicationContract,
@@ -195,11 +193,6 @@ describe('loadEtlData', () => {
     expect(createAlerts).toHaveBeenCalledWith([
       { file: 'Loading ETL data', message: errorMessage }
     ])
-  })
-
-  test('should call loadIntermOrgFromDay0 and handle success', async () => {
-    await loadETLData('2023-01-01')
-    expect(loadIntermOrgFromDay0).toHaveBeenCalledWith('2023-01-01')
   })
 
   test('should handle errors thrown by loadIntermFinanceDAX and rollback', async () => {

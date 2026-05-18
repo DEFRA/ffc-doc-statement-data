@@ -1,10 +1,9 @@
 const config = require('../../config')
 const dbConfig = config.dbConfig[config.env]
-const mqConfig = require('../../config/message')
 const { executeQuery } = require('./load-interm-utils')
 
 const loadOrganisations = async (startDate, transaction) => {
-  const baseQuery = `
+  const query = `
     WITH upsert AS (
       SELECT DISTINCT ON (sbi)
         sbi, "addressLine1", "addressLine2",
@@ -27,27 +26,8 @@ const loadOrganisations = async (startDate, transaction) => {
       upsert.postcode, upsert."emailAddress", upsert.frn,
       upsert."name", upsert.updated
     FROM upsert
+    ON CONFLICT (sbi) DO NOTHING
   `
-
-  const onConflictClause = mqConfig.day0DateTime
-    ? `
-      ON CONFLICT (sbi) DO NOTHING
-    `
-    : `
-      ON CONFLICT (sbi) DO UPDATE SET
-        "addressLine1" = EXCLUDED."addressLine1",
-        "addressLine2" = EXCLUDED."addressLine2",
-        "addressLine3" = EXCLUDED."addressLine3",
-        city = EXCLUDED.city,
-        county = EXCLUDED.county,
-        postcode = EXCLUDED.postcode,
-        "emailAddress" = EXCLUDED."emailAddress",
-        frn = EXCLUDED.frn,
-        "name" = EXCLUDED."name",
-        updated = EXCLUDED.updated
-    `
-
-  const query = baseQuery + onConflictClause
 
   await executeQuery(query, { startDate }, transaction)
 }

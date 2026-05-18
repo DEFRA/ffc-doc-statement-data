@@ -25,20 +25,20 @@ beforeEach(async () => {
 })
 
 describe('messaging start', () => {
-  test('creates new message receiver when demographicsActive is true', async () => {
+  test('creates two message receivers when demographicsActive is true', async () => {
     await start()
-    expect(MockMessageReceiver).toHaveBeenCalledTimes(1)
+    expect(MockMessageReceiver).toHaveBeenCalledTimes(2)
   })
 
-  test('subscribes to message receiver when demographicsActive is true', async () => {
+  test('subscribes to message receivers twice when demographicsActive is true', async () => {
     await start()
-    expect(mockSubscribe).toHaveBeenCalledTimes(1)
+    expect(mockSubscribe).toHaveBeenCalledTimes(2)
   })
 
-  test('does not create new message receiver when demographicsActive is false', async () => {
+  test('does not create new message receiver when demographicsActive is false, subscribes to retention only', async () => {
     config.demographicsActive = false
     await start()
-    expect(MockMessageReceiver).not.toHaveBeenCalled()
+    expect(MockMessageReceiver).toHaveBeenCalledTimes(1)
   })
 
   test('logs message when demographicsActive is false', async () => {
@@ -50,9 +50,9 @@ describe('messaging start', () => {
 })
 
 describe('messaging stop', () => {
-  test('closes connection if receiver exists', async () => {
+  test('closes both connections if receiver exists', async () => {
     await start()
     await stop()
-    expect(mockCloseConnection).toHaveBeenCalledTimes(1)
+    expect(mockCloseConnection).toHaveBeenCalledTimes(2)
   })
 })

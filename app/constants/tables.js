@@ -11,11 +11,8 @@ module.exports = {
   defraLinksDelinked: 'etlStageDefraLinks',
   financeDAXDelinked: 'etlStageFinanceDax',
   organisationDelinked: 'etlStageOrganisation',
-  settlement: 'etlStageSettlement',
   tclcOptionDelinked: 'etlStageTclcPiiPayClaimSfimtOption',
   tclcDelinked: 'etlStageTclcPiiPayClaimSfimt',
   appCalcResultsDelinkPayments: 'etlStageAppCalcResultsDelinkPayments',
-  tdeLinkingTransferTransactions: 'etlStageTdeLinkingTransferTransactions',
-  day0Organisation: 'etlStageDay0Organisation',
-  day0BusinessAddress: 'etlStageDay0BusinessAddressContactV'
+  tdeLinkingTransferTransactions: 'etlStageTdeLinkingTransferTransactions'
 }

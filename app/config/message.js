@@ -16,13 +16,17 @@ const mqSchema = Joi.object({
     topic: Joi.string(),
     type: Joi.string().default('subscription')
   },
+  retentionSubscription: {
+    address: Joi.string().required(),
+    topic: Joi.string().required(),
+    type: Joi.string().default('subscription')
+  },
   alertTopic: {
     address: Joi.string()
   },
   publishEtlProcessErrorTopic: {
     address: Joi.string()
-  },
-  day0DateTime: Joi.date().allow(null, '')
+  }
 })
 
 const mqConfig = {
@@ -41,13 +45,16 @@ const mqConfig = {
     topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
     type: 'subscription'
   },
+  retentionSubscription: {
+    address: process.env.RETENTION_SUBSCRIPTION_ADDRESS,
+    topic: process.env.RETENTION_TOPIC_ADDRESS
+  },
   alertTopic: {
     address: process.env.ALERT_TOPIC_ADDRESS
   },
   publishEtlProcessErrorTopic: {
     address: process.env.ETL_PROCESS_TOPIC_ERROR_ADDRESS
-  },
-  day0DateTime: (process.env.DAY_0_DATE_TIME && process.env.DAY_0_DATE_TIME !== '2099-12-31T00:00:00Z') ? process.env.DAY_0_DATE_TIME : null
+  }
 }
 
 const mqResult = mqSchema.validate(mqConfig, {
@@ -61,14 +68,14 @@ if (mqResult.error) {
 
 const dataTopic = { ...mqResult.value.messageQueue, ...mqResult.value.dataTopic }
 const updatesSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.updatesSubscription }
+const retentionSubscription = { ...mqResult.value.messageQueue, ...mqResult.value.retentionSubscription }
 const alertTopic = { ...mqResult.value.messageQueue, ...mqResult.value.alertTopic }
 const publishEtlProcessError = { ...mqResult.value.messageQueue, ...mqResult.value.publishEtlProcessErrorTopic }
-const day0DateTime = mqResult.value.day0DateTime
 
 module.exports = {
   dataTopic,
   updatesSubscription,
+  retentionSubscription,
   alertTopic,
-  publishEtlProcessError,
-  day0DateTime
+  publishEtlProcessError
 }
