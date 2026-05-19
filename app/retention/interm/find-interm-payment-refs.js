@@ -1,10 +1,10 @@
 const db = require('../../data')
 
-const findIntermPaymentRefs = async (agreementreference, transaction) => {
+const findIntermPaymentRefs = async (claimId, transaction) => {
   return db.etlIntermFinanceDax.findAll({
     attributes: ['paymentRef'],
     where: {
-      agreementreference
+      claimId
     },
     transaction
   })
