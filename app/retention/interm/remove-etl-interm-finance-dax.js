@@ -1,9 +1,9 @@
 const db = require('../../data')
 
-const removeEtlIntermFinanceDax = async (agreementreference, transaction) => {
+const removeEtlIntermFinanceDax = async (claimId, transaction) => {
   await db.etlIntermFinanceDax.destroy({
     where: {
-      agreementreference
+      claimId
     },
     transaction
   })

@@ -8,7 +8,7 @@ jest.mock('../../../../app/data', () => ({
 }))
 
 describe('removeEtlIntermFinanceDax', () => {
-  const agreementreference = 'AGR-123'
+  const claimId = 'AGR-123'
   const transaction = {}
 
   beforeEach(() => {
@@ -18,11 +18,11 @@ describe('removeEtlIntermFinanceDax', () => {
   test('calls db.etlIntermFinanceDax.destroy with correct parameters', async () => {
     db.etlIntermFinanceDax.destroy.mockResolvedValue(1)
 
-    await removeEtlIntermFinanceDax(agreementreference, transaction)
+    await removeEtlIntermFinanceDax(claimId, transaction)
 
     expect(db.etlIntermFinanceDax.destroy).toHaveBeenCalledTimes(1)
     expect(db.etlIntermFinanceDax.destroy).toHaveBeenCalledWith({
-      where: { agreementreference },
+      where: { claimId },
       transaction
     })
   })
@@ -31,6 +31,6 @@ describe('removeEtlIntermFinanceDax', () => {
     const error = new Error('DB error')
     db.etlIntermFinanceDax.destroy.mockRejectedValue(error)
 
-    await expect(removeEtlIntermFinanceDax(agreementreference, transaction)).rejects.toThrow('DB error')
+    await expect(removeEtlIntermFinanceDax(claimId, transaction)).rejects.toThrow('DB error')
   })
 })

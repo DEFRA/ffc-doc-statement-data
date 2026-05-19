@@ -8,7 +8,7 @@ jest.mock('../../../../app/data', () => ({
 }))
 
 describe('findIntermPaymentRefs', () => {
-  const agreementreference = 'AGR-123'
+  const claimId = 'AGR-123'
   const transaction = {}
 
   beforeEach(() => {
@@ -22,13 +22,13 @@ describe('findIntermPaymentRefs', () => {
     ]
     db.etlIntermFinanceDax.findAll.mockResolvedValue(mockResult)
 
-    const result = await findIntermPaymentRefs(agreementreference, transaction)
+    const result = await findIntermPaymentRefs(claimId, transaction)
 
     expect(db.etlIntermFinanceDax.findAll).toHaveBeenCalledTimes(1)
     expect(db.etlIntermFinanceDax.findAll).toHaveBeenCalledWith({
       attributes: ['paymentRef'],
       where: {
-        agreementreference
+        claimId
       },
       transaction
     })
@@ -38,7 +38,7 @@ describe('findIntermPaymentRefs', () => {
   test('returns empty array when no records found', async () => {
     db.etlIntermFinanceDax.findAll.mockResolvedValue([])
 
-    const result = await findIntermPaymentRefs(agreementreference, transaction)
+    const result = await findIntermPaymentRefs(claimId, transaction)
 
     expect(db.etlIntermFinanceDax.findAll).toHaveBeenCalledTimes(1)
     expect(result).toEqual([])
@@ -48,6 +48,6 @@ describe('findIntermPaymentRefs', () => {
     const error = new Error('DB error')
     db.etlIntermFinanceDax.findAll.mockRejectedValue(error)
 
-    await expect(findIntermPaymentRefs(agreementreference, transaction)).rejects.toThrow('DB error')
+    await expect(findIntermPaymentRefs(claimId, transaction)).rejects.toThrow('DB error')
   })
 })
