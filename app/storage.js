@@ -103,7 +103,7 @@ const getZipFile = async () => {
     const strippedFileName = file.name.substring(file.name.lastIndexOf('/') + 1)
     files.push(strippedFileName)
   }
-  const filteredFiles = files.filter(name => zipPattern.test(name))
+  const filteredFiles = files.filter(name => zipPattern.test(name.substring(name.lastIndexOf('/') + 1)))
 
   filteredFiles.sort((a, b) => a.localeCompare(b))
   if (filteredFiles.length > 0) {
