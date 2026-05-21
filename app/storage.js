@@ -100,7 +100,8 @@ const getZipFile = async () => {
   containersInitialised ?? await initialiseContainers()
   const files = []
   for await (const file of container.listBlobsFlat()) {
-    files.push(file.name)
+    const strippedFileName = file.name.substring(file.name.lastIndexOf('/') + 1)
+    files.push(strippedFileName)
   }
   const filteredFiles = files.filter(name => zipPattern.test(name.substring(name.lastIndexOf('/') + 1)))
 
