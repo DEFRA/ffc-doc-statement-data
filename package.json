@@ -1,6 +1,6 @@
 {
   "name": "ffc-doc-statement-data",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "description": "FFC Statement data integration service",
   "homepage": "https://github.com/DEFRA/ffc-doc-statement-data",
   "main": "app/index.js",
@@ -24,7 +24,8 @@
     "Amirs Ishmuhametovs amirs.ishmuhametovs@defra.gov.uk",
     "Sam Plackett samuel.plackett@atos.net",
     "John Barnard john.barnard.external@atos.net",
-    "Oliver Lewington oliver.lewington@atos.net"
+    "Oliver Lewington oliver.lewington@atos.net",
+    "Alistair Wishart alistair.wishart@atos.net"
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {
@@ -36,7 +37,7 @@
     "ffc-messaging": "2.10.6",
     "ffc-pay-etl-framework": "1.4.4",
     "ffc-pay-event-publisher": "1.2.5",
-    "joi": "17.6.0",
+    "joi": "18.2.1",
     "log-timestamp": "0.3.0",
     "moment": "2.30.1",
     "node-stream-zip": "1.15.0",
@@ -54,8 +55,11 @@
     "sqlite3": "6.0.1"
   },
   "overrides": {
-    "protobufjs": "8.2.0",
-    "uuid": "11.1.1"
+    "protobufjs": "8.6.3",
+    "uuid": "11.1.1",
+    "joi": "18.2.1",
+    "js-yaml": "4.2.0",
+    "@opentelemetry/core": "2.8.0"
   },
   "nodemonConfig": {
     "ignore": [
