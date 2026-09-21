@@ -1,19 +1,19 @@
-const { MessageSender } = require('ffc-messaging')
+const { getSender, sendMessage: sendServiceBusMessage } = require('../messaging/service-bus')
 const config = require('../config')
 const createMessage = require('./create-message')
 let sender
 
-const getSender = () => {
+const getSenderSb = () => {
   if (!sender) {
-    sender = new MessageSender(config.dataTopic)
+    sender = getSender(config.dataTopic)
   }
   return sender
 }
 
 const sendMessage = async (body, type) => {
   const message = createMessage(body, type)
-  const messageSender = getSender()
-  await messageSender.sendMessage(message)
+  const messageSender = getSenderSb()
+  await sendServiceBusMessage(messageSender, message)
 
   let logMessage
   if (type === 'd365' || type === 'dax') {
@@ -28,7 +28,7 @@ const sendMessage = async (body, type) => {
 
 const closeConnection = async () => {
   if (sender) {
-    await sender.closeConnection()
+    await sender.close()
     sender = null
   }
 }

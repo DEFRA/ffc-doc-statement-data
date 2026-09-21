@@ -1,12 +1,9 @@
-const mockSendMessage = jest.fn()
-const mockCloseConnection = jest.fn()
-
-jest.mock('ffc-messaging', () => ({
-  MessageSender: jest.fn().mockImplementation(() => ({
-    sendMessage: mockSendMessage,
-    closeConnection: mockCloseConnection
-  }))
+jest.mock('../../../app/messaging/service-bus', () => ({
+  getSender: jest.fn(() => ({ close: jest.fn() })),
+  sendMessage: jest.fn()
 }))
+
+const { sendMessage: mockSendMessage } = require('../../../app/messaging/service-bus')
 
 jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
@@ -53,7 +50,7 @@ describe('sendDaxUpdates', () => {
       ['transactionDate', (body) => body.transactionDate, mockDax1.transactionDate.toISOString()]
     ])('should publish dax %s', async (_, getValue, expected) => {
       await publish.start()
-      const body = mockSendMessage.mock.calls[0][0].body
+      const body = mockSendMessage.mock.calls[0][1].body
       expect(getValue(body)).toBe(expected)
     })
 
