@@ -1,14 +1,7 @@
 const db = require('../../data')
 
 const removeEtlIntermTotalClaim = async (paymentRefs, transaction) => {
-  await db.etlIntermTotalClaim.destroy({
-    where: {
-      paymentRef: {
-        [db.Sequelize.Op.in]: paymentRefs
-      }
-    },
-    transaction
-  })
+  await db.etlIntermTotalClaim(transaction ?? undefined).whereIn('paymentRef', paymentRefs).del()
 }
 
 module.exports = {

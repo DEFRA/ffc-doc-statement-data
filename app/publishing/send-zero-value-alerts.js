@@ -26,7 +26,7 @@ const sendZeroValueAlerts = async () => {
           ZERO_VALUE_STATEMENT,
           { throwOnPublishError: true }
         )
-        await db[tableName].update({ alertSent: true }, { where: { [idColumn]: record[idColumn] } })
+        await db[tableName]().where({ [idColumn]: record[idColumn] }).update({ alertSent: true })
       } catch (err) {
         console.error(`Failed to send alert for ${tableName} record ${record[idColumn]}, skipping update`, err)
       }
@@ -39,14 +39,11 @@ const sendZeroValueAlerts = async () => {
   // D365
   let lastD365Id = 0
   while (true) {
-    const d365Unsent = await db.zeroValueD365.findAll({
-      where: {
-        alertSent: false,
-        d365Id: { [db.Sequelize.Op.gt]: lastD365Id }
-      },
-      order: [['d365Id', 'ASC']],
-      limit: BATCH_SIZE
-    })
+    const d365Unsent = await db.zeroValueD365()
+      .where({ alertSent: false })
+      .where('d365Id', '>', lastD365Id)
+      .orderBy('d365Id', 'asc')
+      .limit(BATCH_SIZE)
     if (!d365Unsent.length) {
       break
     }

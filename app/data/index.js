@@ -1,10 +1,9 @@
-const path = require('path')
 const config = require('../config')
-const dbConfig = config.dbConfig[config.env]
-const modelPath = path.join(__dirname, 'models')
 const { Database } = require('ffc-database')
+const TABLES = require('../constants/etl-tables')
 
-const database = new Database({ ...dbConfig, modelPath })
-const db = database.connect()
+const dbConfig = config.dbConfig[config.env]
 
-module.exports = db
+const database = new Database({ ...dbConfig, tables: TABLES })
+
+module.exports = database.connect()

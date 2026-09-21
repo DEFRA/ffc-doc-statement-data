@@ -1,14 +1,7 @@
 const db = require('../../data')
 
 const getSubsetCheck = async (scheme) => {
-  return db.subsetCheck.findOne({
-    lock: true,
-    skipLocked: true,
-    raw: true,
-    where: {
-      scheme
-    }
-  })
+  return (await db.subsetCheck().where({ scheme }).forUpdate().skipLocked().first()) ?? null
 }
 
 module.exports = getSubsetCheck

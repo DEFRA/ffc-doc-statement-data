@@ -1,6 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
+const TABLES = require('../../constants/etl-tables')
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const loadIntermApplicationClaim = async (startDate, transaction) => {
@@ -28,16 +29,16 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
         ca."applicationId" AS "agreementId",
         cl.pkid,
         ${tableAlias}."changeType"
-      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
-      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
-      LEFT JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId"
+      FROM ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" cl
+      INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      LEFT JOIN ${dbConfig.schema}."${TABLES.etlStageCssContracts}" cc ON cl."contractId" = cc."contractId"
       WHERE cl."dataSourceSCode" = 'CAPCLM'
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
       GROUP BY cc."contractId", cc."startDt", cc."endDt", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
     updatedrows AS (
-      UPDATE ${dbConfig.schema}."etlIntermApplicationClaim" interm
+      UPDATE ${dbConfig.schema}."${TABLES.etlIntermApplicationClaim}" interm
       SET
         "contractId" = newdata."contractId",
         "claimId" = newdata."claimId",
@@ -48,7 +49,7 @@ const loadIntermApplicationClaim = async (startDate, transaction) => {
         AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO ${dbConfig.schema}."etlIntermApplicationClaim" (
+    INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermApplicationClaim}" (
       "contractId", "claimId", "agreementId", pkid
     )
     SELECT "contractId", "claimId", "agreementId", pkid

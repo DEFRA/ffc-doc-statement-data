@@ -13,14 +13,9 @@ const getEtlStageLogs = async (startDate, folder) => {
 
   const logsByFolder = await Promise.all(
     folders.map(async (f) => {
-      const logs = await db.etlStageLog.findAll({
-        where: {
-          file: `${f}/export.csv`,
-          endedAt: {
-            [db.Sequelize.Op.gt]: startDate
-          }
-        }
-      })
+      const logs = await db.etlStageLog()
+        .where({ file: `${f}/export.csv` })
+        .where('endedAt', '>', startDate)
 
       if (logs.length > 1) {
         throw new Error(`Multiple records found for updates to ${f}, expected only one`)
@@ -32,12 +27,8 @@ const getEtlStageLogs = async (startDate, folder) => {
   return logsByFolder.filter(log => log !== null)
 }
 
-const executeQuery = async (query, replacements, transaction) => {
-  await db.sequelize.query(query, {
-    replacements,
-    raw: true,
-    transaction
-  })
+const executeQuery = async (query, replacements = {}, transaction) => {
+  await (transaction ?? db.client).raw(query, replacements)
 }
 
 const limitConcurrency = async (promises, maxConcurrent) => {

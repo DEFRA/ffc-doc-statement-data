@@ -53,14 +53,30 @@ const runEtlProcess = async ({
   return true
 }
 
+const countRows = async (accessorName) => {
+  if (!db[accessorName]) {
+    return undefined
+  }
+  const { count } = await db[accessorName]().count({ count: '*' }).first()
+  return Number(count)
+}
+
+const maxEtlId = async (accessorName) => {
+  if (!db[accessorName]) {
+    return 0
+  }
+  const { max } = await db[accessorName]().max({ max: 'etlId' }).first()
+  return max ?? 0
+}
+
 async function prepareEtlContext ({ table, fileStream, file }) {
   console.log('Preparing ETL context for table:', table)
-  const sequelizeModelName = tableMappings[table]
-  const initialRowCount = await db[sequelizeModelName]?.count()
-  const idFrom = (await db[sequelizeModelName]?.max('etlId') ?? 0) + 1
+  const tableAccessorName = tableMappings[table]
+  const initialRowCount = await countRows(tableAccessorName)
+  const idFrom = (await maxEtlId(tableAccessorName)) + 1
   const rowCount = await getFirstLineNumber(fileStream)
-  const fileInProcess = await db.etlStageLog.create({ file, rowCount })
-  return { sequelizeModelName, initialRowCount, idFrom, fileInProcess }
+  const [fileInProcess] = await db.etlStageLog().insert({ file, rowCount }).returning(['etlId'])
+  return { tableAccessorName, initialRowCount, idFrom, fileInProcess }
 }
 
 function runEtlFlow ({
@@ -81,7 +97,10 @@ function runEtlFlow ({
         const etlFlow = etl
           .connection(await Connections.ProvidedConnection({
             name: 'postgresConnection',
-            sequelize: db.sequelize
+            // ffc-pay-etl-framework's PostgresDestination only ever calls `.query(sql)`
+            // on this connection, so a thin adapter over the knex client is enough -
+            // it does not need to be a real Sequelize instance.
+            sequelize: { query: (sql) => db.client.raw(sql) }
           }))
           .loader(new Loaders.CSVLoader({
             stream: freshFileStream,
@@ -134,18 +153,15 @@ function runEtlFlow ({
 }
 
 async function handleEtlResult ({ etlContext, file }) {
-  const { sequelizeModelName, initialRowCount, idFrom, fileInProcess } = etlContext
-  const newRowCount = await db[sequelizeModelName]?.count()
-  const idTo = await db[sequelizeModelName]?.max('etlId') ?? 0
-  await db.etlStageLog.update(
-    {
-      rowsLoadedCount: newRowCount - initialRowCount,
-      idTo,
-      idFrom: idFrom < idTo ? idFrom : idTo,
-      endedAt: new Date()
-    },
-    { where: { etlId: fileInProcess.etlId } }
-  )
+  const { tableAccessorName, initialRowCount, idFrom, fileInProcess } = etlContext
+  const newRowCount = await countRows(tableAccessorName)
+  const idTo = await maxEtlId(tableAccessorName)
+  await db.etlStageLog().where({ etlId: fileInProcess.etlId }).update({
+    rowsLoadedCount: newRowCount - initialRowCount,
+    idTo,
+    idFrom: idFrom < idTo ? idFrom : idTo,
+    endedAt: new Date()
+  })
 }
 
 module.exports = {

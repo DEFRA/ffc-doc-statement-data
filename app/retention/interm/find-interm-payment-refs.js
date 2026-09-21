@@ -1,13 +1,9 @@
 const db = require('../../data')
 
 const findIntermPaymentRefs = async (claimId, transaction) => {
-  return db.etlIntermFinanceDax.findAll({
-    attributes: ['paymentRef'],
-    where: {
-      claimId
-    },
-    transaction
-  })
+  return db.etlIntermFinanceDax(transaction ?? undefined)
+    .where({ claimId })
+    .select('paymentRef')
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 const { etlConfig } = require('../../config')
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 const config = require('../../config')
+const TABLES = require('../../constants/etl-tables')
 const dbConfig = config.dbConfig[config.env]
 
 const tablesToCheck = [
@@ -63,18 +64,18 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       O.sbi,
       CAST(BAC.frn AS INTEGER) AS frn,
       ${tableAlias}."changeType"
-    FROM ${dbConfig.schema}."etlStageAppCalcResultsDelinkPayments" DP
-    JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD ON DP."calculationId" = CD."calculationId"
-    JOIN ${dbConfig.schema}."etlStageApplicationDetail" AD ON AD."applicationId" = CD."applicationId"
-    JOIN ${dbConfig.schema}."etlStageDefraLinks" DL ON DL."subjectId" = AD."subjectId"
-    JOIN ${dbConfig.schema}."etlStageOrganisation" O ON O."partyId" = DL."defraId"
-    JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" BAC ON BAC.sbi = O.sbi
+    FROM ${dbConfig.schema}."${TABLES.etlStageAppCalcResultsDelinkPayment}" DP
+    JOIN ${dbConfig.schema}."${TABLES.etlStageCalculationDetails}" CD ON DP."calculationId" = CD."calculationId"
+    JOIN ${dbConfig.schema}."${TABLES.etlStageApplicationDetail}" AD ON AD."applicationId" = CD."applicationId"
+    JOIN ${dbConfig.schema}."${TABLES.etlStageDefraLinks}" DL ON DL."subjectId" = AD."subjectId"
+    JOIN ${dbConfig.schema}."${TABLES.etlStageOrganisation}" O ON O."partyId" = DL."defraId"
+    JOIN ${dbConfig.schema}."${TABLES.etlStageBusinessAddressContactV}" BAC ON BAC.sbi = O.sbi
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
     GROUP BY DP."calculationId", CD."applicationId", O.sbi, BAC.frn, ${tableAlias}."changeType"
   ),
   "updatedRows" AS (
-    UPDATE ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" interm
+    UPDATE ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayment}" interm
     SET
       "calculationId" = "newData"."calculationId",
       "applicationId" = "newData"."applicationId",
@@ -103,7 +104,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       AND interm."applicationId" = "newData"."applicationId"
     RETURNING interm."calculationId", interm."applicationId"
   )
-  INSERT INTO ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" (
+  INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayment}" (
     ${fields}
   )
   SELECT ${fields}

@@ -2,23 +2,18 @@ const db = require('../../data')
 const { publishingConfig } = require('../../config')
 
 const getUnpublishedD365 = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource, randomise = false) => {
-  const query = {
-    lock: true,
-    skipLocked: true,
-    where: {
-      datePublished: null
-    },
-    attributes: ['d365Id', 'paymentReference', ['calculationId', 'calculationReference'], 'paymentPeriod', 'marketingYear', 'paymentAmount', 'transactionDate'],
-    raw: true,
-    transaction,
-    limit
-  }
+  const query = db.d365(transaction ?? undefined)
+    .whereNull('datePublished')
+    .select('d365Id', 'paymentReference', { calculationReference: 'calculationId' }, 'paymentPeriod', 'marketingYear', 'paymentAmount', 'transactionDate')
+    .limit(limit)
+    .forUpdate()
+    .skipLocked()
 
   if (randomise) {
-    query.order = db.sequelize.literal('random()')
+    query.orderByRaw('random()')
   }
 
-  return db.d365.findAll(query)
+  return query
 }
 
 module.exports = getUnpublishedD365

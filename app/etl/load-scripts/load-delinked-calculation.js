@@ -1,9 +1,10 @@
 const db = require('../../data')
 const config = require('../../config')
+const TABLES = require('../../constants/etl-tables')
 const dbConfig = config.dbConfig[config.env]
 
 const delinkedCalculationQuery = `
-INSERT INTO ${dbConfig.schema}."delinkedCalculation" (
+INSERT INTO ${dbConfig.schema}."${TABLES.delinkedCalculation}" (
     "calculationId",
     "applicationId",
     "sbi",
@@ -46,7 +47,7 @@ SELECT
     SUM(CAST(P."totalProgressiveReduction" AS NUMERIC)) AS "totalProgressiveReduction",
     SUM(CAST(P."totalDelinkedPayment" AS NUMERIC)) AS "totalDelinkedPayment",
     SUM(CAST(P."paymentAmountCalculated" AS NUMERIC)) AS "paymentAmountCalculated"
-FROM ${dbConfig.schema}."etlIntermAppCalcResultsDelinkPayments" P
+FROM ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayment}" P
 WHERE 
     P."etlInsertedDt" > :startDate
 GROUP BY 
@@ -54,13 +55,7 @@ GROUP BY
 `
 
 const loadDelinkedCalculation = async (startDate, transaction) => {
-  await db.sequelize.query(delinkedCalculationQuery, {
-    replacements: {
-      startDate
-    },
-    raw: true,
-    transaction
-  })
+  await (transaction ?? db.client).raw(delinkedCalculationQuery, { startDate })
 }
 
 module.exports = {
