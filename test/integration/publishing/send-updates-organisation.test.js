@@ -13,6 +13,7 @@ jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().
 const { publishingConfig } = require('../../../app/config')
 const db = require('../../../app/data')
 const publish = require('../../../app/publishing')
+const { truncate } = require('../../helpers/truncate')
 const { mockOrganisation1, mockOrganisation2 } = require('../../mocks/organisation')
 const maxBatchSize = 5
 
@@ -26,16 +27,16 @@ describe('sendOrganisationUpdates', () => {
 
   afterEach(async () => {
     jest.clearAllMocks()
-    await db.sequelize.truncate({ cascade: true })
+    await truncate()
   })
 
   afterAll(async () => {
-    await db.sequelize.close()
+    await db.close()
   })
 
   describe('whenOrganisationIsUnpublished', () => {
     beforeEach(async () => {
-      await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
+      await db.organisation().insert([mockOrganisation1, mockOrganisation2])
     })
 
     test('should call sendMessage once', async () => {
@@ -69,7 +70,7 @@ describe('sendOrganisationUpdates', () => {
 
     test('should update published date', async () => {
       await publish.start()
-      const organisation = await db.organisation.findByPk(123456789)
+      const organisation = await db.organisation().where({ sbi: 123456789 }).first()
       expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
     })
 
@@ -92,16 +93,16 @@ describe('sendOrganisationUpdates', () => {
       ['equal to max batch size', maxBatchSize]
     ])('should process all records when there are %s', async (_, recordCount) => {
       publishingConfig.dataPublishingMaxBatchSizePerDataSource = 5
-      await db.organisation.bulkCreate(
+      await db.organisation().insert(
         [...Array(recordCount).keys()].map(x => ({
           ...mockOrganisation1,
           sbi: mockOrganisation1.sbi + x
         }))
       )
 
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+      const unpublishedBefore = await db.organisation().whereNull('published')
       await publish.start()
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      const unpublishedAfter = await db.organisation().whereNull('published')
 
       expect(unpublishedBefore).toHaveLength(recordCount)
       expect(unpublishedAfter).toHaveLength(0)
