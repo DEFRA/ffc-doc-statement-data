@@ -1,44 +1,36 @@
-const db = require('../../../app/data')
-const { removeD365 } = require('../../../app/retention/remove-d365')
+const { createKnexMock } = require('../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['d365'])
 
 jest.mock('../../../app/data', () => ({
-  d365: {
-    destroy: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeD365 } = require('../../../app/retention/remove-d365')
 
 describe('removeD365', () => {
   const calculationIds = [101, 102, 103]
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.d365.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.d365.destroy.mockResolvedValue()
-
+  test('calls the d365 accessor with correct parameters', async () => {
     await removeD365(calculationIds, transaction)
 
-    expect(db.d365.destroy).toHaveBeenCalledTimes(1)
-    expect(db.d365.destroy).toHaveBeenCalledWith({
-      where: {
-        calculationId: {
-          [db.Sequelize.Op.in]: calculationIds
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.d365).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('calculationId', calculationIds)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.d365.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.d365.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeD365(calculationIds, transaction)).rejects.toThrow('DB destroy error')
   })

@@ -1,16 +1,5 @@
 jest.mock('../../../app/data', () => ({
-  sequelize: {
-    transaction: jest.fn(),
-    query: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      gte: jest.fn()
-    }
-  },
-  etlStageLog: {
-    findAll: jest.fn().mockResolvedValue([])
-  }
+  transaction: jest.fn()
 }))
 
 jest.mock('../../../app/messaging/create-alerts', () => ({
@@ -24,13 +13,11 @@ jest.mock('../../../app/etl/delete-etl-records', () => ({
   restoreIntermTablesFromTemp: jest.fn().mockResolvedValue(undefined)
 }))
 
-jest.mock('sequelize')
 jest.mock('../../../app/etl/load-scripts')
 
 jest.mock('../../../app/messaging/publish-etl-process-error', () => jest.fn())
 const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
 
-const { Transaction } = require('sequelize')
 const { createAlerts } = require('../../../app/messaging/create-alerts')
 const { loadETLData } = require('../../../app/etl/load-etl-data')
 const { deleteETLRecords } = require('../../../app/etl/delete-etl-records')
@@ -54,10 +41,6 @@ const {
   loadZeroValueD365
 } = require('../../../app/etl/load-scripts')
 
-Transaction.ISOLATION_LEVELS = {
-  SERIALIZABLE: 'SERIALIZABLE'
-}
-
 describe('loadEtlData', () => {
   let transaction1
   let transaction2
@@ -67,7 +50,7 @@ describe('loadEtlData', () => {
     transaction1 = { commit: jest.fn(), rollback: jest.fn() }
     transaction2 = { commit: jest.fn(), rollback: jest.fn() }
 
-    require('../../../app/data').sequelize.transaction
+    require('../../../app/data').transaction
       .mockResolvedValueOnce(transaction1)
       .mockResolvedValueOnce(transaction2)
   })
@@ -75,8 +58,8 @@ describe('loadEtlData', () => {
   test('should commit transactions if all load scripts succeed', async () => {
     await loadETLData('2023-01-01')
 
-    expect(require('../../../app/data').sequelize.transaction).toHaveBeenCalledWith({
-      isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
+    expect(require('../../../app/data').transaction).toHaveBeenCalledWith(undefined, {
+      isolationLevel: 'serializable'
     })
 
     const expectedScripts = [

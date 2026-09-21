@@ -1,35 +1,36 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermApplicationContract } = require('../../../../app/retention/interm/remove-etl-interm-application-contract')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlIntermApplicationContract'])
 
 jest.mock('../../../../app/data', () => ({
-  etlIntermApplicationContract: {
-    destroy: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermApplicationContract } = require('../../../../app/retention/interm/remove-etl-interm-application-contract')
 
 describe('removeEtlIntermApplicationContract', () => {
   const applicationId = 'APP-789'
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(1)
   })
 
-  test('calls db.etlIntermApplicationContract.destroy with correct parameters', async () => {
-    db.etlIntermApplicationContract.destroy.mockResolvedValue(1)
-
+  test('calls the etlIntermApplicationContract accessor with correct parameters', async () => {
     await removeEtlIntermApplicationContract(applicationId, transaction)
 
-    expect(db.etlIntermApplicationContract.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermApplicationContract.destroy).toHaveBeenCalledWith({
-      where: { applicationId },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermApplicationContract).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermApplicationContract.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermApplicationContract.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermApplicationContract(applicationId, transaction)).rejects.toThrow('DB error')
   })

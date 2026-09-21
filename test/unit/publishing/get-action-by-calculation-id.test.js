@@ -1,10 +1,16 @@
-const db = require('../../../app/data')
+const { createKnexMock } = require('../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['action'])
+
+jest.mock('../../../app/data', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
+
 const getActionsByCalculationId = require('../../../app/publishing/total/get-actions-by-calculation-id')
 const { mockAction1, mockAction2, mockAction3 } = require('../../mocks/actions')
-
-db.action = {
-  findAll: jest.fn()
-}
 
 describe('getActionsByCalculationId', () => {
   const calculationId = 1234567
@@ -14,62 +20,54 @@ describe('getActionsByCalculationId', () => {
   })
 
   test('returns the correct data when actions exist', async () => {
-    db.action.findAll.mockResolvedValue([mockAction1, mockAction2, mockAction3])
-    const transaction = {}
+    mockDb.builder.resolves([mockAction1, mockAction2, mockAction3])
+    const transaction = mockDb.trx
 
     const result = await getActionsByCalculationId(calculationId, transaction)
 
     expect(result).toEqual([mockAction1, mockAction2, mockAction3])
-    expect(db.action.findAll).toHaveBeenCalledWith({
-      where: { calculationId },
-      attributes: [
-        'actionId',
-        ['actionId', 'actionReference'],
-        ['calculationId', 'calculationReference'],
-        'fundingCode',
-        'groupName',
-        'actionCode',
-        'actionName',
-        'rate',
-        'landArea',
-        'uom',
-        'annualValue',
-        'quarterlyValue',
-        'overDeclarationPenalty',
-        'quarterlyPaymentAmount',
-        'datePublished'
-      ],
-      raw: true,
-      transaction
-    })
+    expect(mockDb.tables.action).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ calculationId })
+    expect(mockDb.builder.select).toHaveBeenCalledWith(
+      'actionId',
+      { actionReference: 'actionId' },
+      { calculationReference: 'calculationId' },
+      'fundingCode',
+      'groupName',
+      'actionCode',
+      'actionName',
+      'rate',
+      'landArea',
+      'uom',
+      'annualValue',
+      'quarterlyValue',
+      'overDeclarationPenalty',
+      'quarterlyPaymentAmount',
+      'datePublished'
+    )
   })
 
   test('returns an empty array if no actions exist', async () => {
-    db.action.findAll.mockResolvedValue([])
-    const transaction = {}
+    mockDb.builder.resolves([])
+    const transaction = mockDb.trx
 
     const result = await getActionsByCalculationId(calculationId, transaction)
 
     expect(result).toEqual([])
-    expect(db.action.findAll).toHaveBeenCalledWith(expect.objectContaining({
-      where: { calculationId }
-    }))
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ calculationId })
   })
 
   test('works without passing a transaction', async () => {
-    db.action.findAll.mockResolvedValue([mockAction1])
+    mockDb.builder.resolves([mockAction1])
     const result = await getActionsByCalculationId(calculationId)
 
     expect(result).toEqual([mockAction1])
-    expect(db.action.findAll).toHaveBeenCalledWith(expect.objectContaining({
-      where: { calculationId },
-      transaction: undefined
-    }))
+    expect(mockDb.tables.action).toHaveBeenCalledWith(undefined)
   })
 
-  test('throws error if db.action.findAll rejects', async () => {
+  test('throws error if the query rejects', async () => {
     const error = new Error('DB failure')
-    db.action.findAll.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(getActionsByCalculationId(calculationId)).rejects.toThrow('DB failure')
   })

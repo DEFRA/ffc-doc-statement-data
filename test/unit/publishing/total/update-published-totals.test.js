@@ -1,23 +1,29 @@
-const db = require('../../../../app/data')
-const updatePublished = require('../../../../app/publishing/total/update-published')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-db.total = {
-  update: jest.fn()
-}
+const mockDb = createKnexMock(['total'])
+
+jest.mock('../../../../app/data', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
+
+const updatePublished = require('../../../../app/publishing/total/update-published')
 
 describe('updatePublished', () => {
   beforeEach(() => {
-    db.total.update.mockResolvedValue()
+    jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
   test('updatePublished updates the correct data', async () => {
-    const transaction = {}
+    const transaction = mockDb.trx
     const calculationId = 1234567
     await updatePublished(calculationId, transaction)
 
-    expect(db.total.update).toHaveBeenCalledWith(
-      { datePublished: expect.any(Date) },
-      { where: { calculationId }, transaction }
-    )
+    expect(mockDb.tables.total).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ calculationId })
+    expect(mockDb.builder.update).toHaveBeenCalledWith({ datePublished: expect.any(Date) })
   })
 })

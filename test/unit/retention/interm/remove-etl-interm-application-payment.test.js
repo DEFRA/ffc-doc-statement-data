@@ -1,35 +1,36 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermApplicationPayment } = require('../../../../app/retention/interm/remove-etl-interm-application-payment')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlIntermApplicationPayment'])
 
 jest.mock('../../../../app/data', () => ({
-  etlIntermApplicationPayment: {
-    destroy: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermApplicationPayment } = require('../../../../app/retention/interm/remove-etl-interm-application-payment')
 
 describe('removeEtlIntermApplicationPayment', () => {
   const applicationId = 'APP-123'
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(1)
   })
 
-  test('calls db.etlIntermApplicationPayment.destroy with correct parameters', async () => {
-    db.etlIntermApplicationPayment.destroy.mockResolvedValue(1)
-
+  test('calls the etlIntermApplicationPayment accessor with correct parameters', async () => {
     await removeEtlIntermApplicationPayment(applicationId, transaction)
 
-    expect(db.etlIntermApplicationPayment.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermApplicationPayment.destroy).toHaveBeenCalledWith({
-      where: { applicationId },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermApplicationPayment).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermApplicationPayment.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermApplicationPayment.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermApplicationPayment(applicationId, transaction)).rejects.toThrow('DB error')
   })

@@ -1,35 +1,36 @@
-const db = require('../../../../app/data')
-const { removeEtlStageTclcPiiPayClaimSfimtOption } = require('../../../../app/retention/stage/remove-etl-stage-tclc-pii-pay-claim-sfimt-option')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlStageTclcPiiPayClaimSfimtOption'])
 
 jest.mock('../../../../app/data', () => ({
-  etlStageTclcPiiPayClaimSfimtOption: {
-    destroy: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageTclcPiiPayClaimSfimtOption } = require('../../../../app/retention/stage/remove-etl-stage-tclc-pii-pay-claim-sfimt-option')
 
 describe('removeEtlStageTclcPiiPayClaimSfimtOption', () => {
   const applicationId = 'APP-1010'
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageTclcPiiPayClaimSfimtOption.destroy with correct parameters', async () => {
-    db.etlStageTclcPiiPayClaimSfimtOption.destroy.mockResolvedValue()
-
+  test('calls the etlStageTclcPiiPayClaimSfimtOption accessor with correct parameters', async () => {
     await removeEtlStageTclcPiiPayClaimSfimtOption(applicationId, transaction)
 
-    expect(db.etlStageTclcPiiPayClaimSfimtOption.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageTclcPiiPayClaimSfimtOption.destroy).toHaveBeenCalledWith({
-      where: { applicationId },
-      transaction
-    })
+    expect(mockDb.tables.etlStageTclcPiiPayClaimSfimtOption).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageTclcPiiPayClaimSfimtOption.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageTclcPiiPayClaimSfimtOption.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageTclcPiiPayClaimSfimtOption(applicationId, transaction)).rejects.toThrow('DB destroy error')
   })

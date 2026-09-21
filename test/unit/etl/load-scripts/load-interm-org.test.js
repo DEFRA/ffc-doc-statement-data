@@ -1,5 +1,7 @@
 const { etlConfig } = require('../../../../app/config')
-const db = require('../../../../app/data')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlStageLog'])
 const { loadIntermOrg } = require('../../../../app/etl/load-scripts/load-interm-org')
 const { processWithWorkers } = require('../../../../app/etl/load-scripts/load-interm-utils')
 
@@ -23,17 +25,10 @@ jest.mock('../../../../app/config', () => ({
 }))
 
 jest.mock('../../../../app/data', () => ({
-  sequelize: {
-    query: jest.fn()
-  },
-  etlStageLog: {
-    findAll: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      gt: Symbol('gt')
-    }
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
 
 jest.mock('../../../../app/etl/load-scripts/load-interm-utils', () => {
@@ -49,14 +44,12 @@ describe('loadIntermOrg', () => {
   const transaction = {}
 
   beforeEach(() => {
-    db.etlStageLog.findAll.mockClear()
-    db.sequelize.query.mockClear()
-    processWithWorkers.mockClear()
+    jest.clearAllMocks()
   })
 
   test('should throw an error if multiple records are found', async () => {
     const file = `${etlConfig.organisationDelinked.folder}/export.csv`
-    db.etlStageLog.findAll.mockResolvedValue([
+    mockDb.builder.resolves([
       { idFrom: 1, idTo: 2, file, endedAt: new Date() },
       { idFrom: 3, idTo: 4, file, endedAt: new Date() }
     ])
@@ -67,7 +60,7 @@ describe('loadIntermOrg', () => {
   })
 
   test('should return if no records are found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([])
+    mockDb.builder.resolves([])
 
     await expect(loadIntermOrg(startDate, transaction)).resolves.toBeUndefined()
     expect(processWithWorkers).not.toHaveBeenCalled()
@@ -75,7 +68,7 @@ describe('loadIntermOrg', () => {
 
   test('should process records with worker threads', async () => {
     const file = `${etlConfig.organisationDelinked.folder}/export.csv`
-    db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
+    mockDb.builder.resolves([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockResolvedValue(undefined)
 
     await loadIntermOrg(startDate, transaction)
@@ -85,7 +78,7 @@ describe('loadIntermOrg', () => {
 
   test('should handle errors thrown by worker threads', async () => {
     const file = `${etlConfig.organisationDelinked.folder}/export.csv`
-    db.etlStageLog.findAll.mockResolvedValue([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
+    mockDb.builder.resolves([{ idFrom: 1, idTo: 2, file, endedAt: new Date() }])
     processWithWorkers.mockRejectedValue(new Error('Worker processing failed'))
 
     await expect(loadIntermOrg(startDate, transaction)).rejects.toThrow('Worker processing failed')

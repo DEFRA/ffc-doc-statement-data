@@ -1,54 +1,40 @@
-const db = require('../../../../app/data')
-const { findIntermAppCalcResultsDelinkPayments } = require('../../../../app/retention/interm/find-interm-app-calc-results-delink-payments')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlIntermAppCalcResultsDelinkPayment'])
 
 jest.mock('../../../../app/data', () => ({
-  etlIntermAppCalcResultsDelinkPayment: {
-    findAll: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { findIntermAppCalcResultsDelinkPayments } = require('../../../../app/retention/interm/find-interm-app-calc-results-delink-payments')
 
 describe('findIntermAppCalcResultsDelinkPayments', () => {
   const applicationId = 'APP-2020'
   const frn = 987654
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  test('calls db.etlIntermAppCalcResultsDelinkPayment.findAll with correct parameters', async () => {
-    const mockResult = [
-      { calculationId: 11 },
-      { calculationId: 22 }
-    ]
-    db.etlIntermAppCalcResultsDelinkPayment.findAll.mockResolvedValue(mockResult)
+  test('calls the etlIntermAppCalcResultsDelinkPayment accessor with correct parameters', async () => {
+    const mockResult = [{ calculationId: 1 }, { calculationId: 2 }]
+    mockDb.builder.resolves(mockResult)
 
     const result = await findIntermAppCalcResultsDelinkPayments(applicationId, frn, transaction)
 
-    expect(db.etlIntermAppCalcResultsDelinkPayment.findAll).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermAppCalcResultsDelinkPayment.findAll).toHaveBeenCalledWith({
-      attributes: ['calculationId'],
-      where: {
-        applicationId,
-        frn
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId, frn })
+    expect(mockDb.builder.select).toHaveBeenCalledWith('calculationId')
     expect(result).toBe(mockResult)
   })
 
-  test('returns empty array when no records found', async () => {
-    db.etlIntermAppCalcResultsDelinkPayment.findAll.mockResolvedValue([])
-
-    const result = await findIntermAppCalcResultsDelinkPayments(applicationId, frn, transaction)
-
-    expect(db.etlIntermAppCalcResultsDelinkPayment.findAll).toHaveBeenCalledTimes(1)
-    expect(result).toEqual([])
-  })
-
-  test('propagates error when db.etlIntermAppCalcResultsDelinkPayment.findAll rejects', async () => {
+  test('propagates error when the query rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermAppCalcResultsDelinkPayment.findAll.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(findIntermAppCalcResultsDelinkPayments(applicationId, frn, transaction)).rejects.toThrow('DB error')
   })

@@ -1,39 +1,37 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermCalcOrg } = require('../../../../app/retention/interm/remove-etl-interm-calc-org')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlIntermCalcOrg'])
 
 jest.mock('../../../../app/data', () => ({
-  etlIntermCalcOrg: {
-    destroy: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermCalcOrg } = require('../../../../app/retention/interm/remove-etl-interm-calc-org')
 
 describe('removeEtlIntermCalcOrg', () => {
   const applicationId = 'APP-123'
   const frn = 456789
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(1)
   })
 
-  test('calls db.etlIntermCalcOrg.destroy with correct parameters', async () => {
-    db.etlIntermCalcOrg.destroy.mockResolvedValue(1)
-
+  test('calls the etlIntermCalcOrg accessor with correct parameters', async () => {
     await removeEtlIntermCalcOrg(applicationId, frn, transaction)
 
-    expect(db.etlIntermCalcOrg.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermCalcOrg.destroy).toHaveBeenCalledWith({
-      where: {
-        applicationId,
-        frn
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermCalcOrg).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId, frn })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermCalcOrg.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermCalcOrg.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermCalcOrg(applicationId, frn, transaction)).rejects.toThrow('DB error')
   })

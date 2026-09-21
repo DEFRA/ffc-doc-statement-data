@@ -1,7 +1,12 @@
-const mockFindOne = jest.fn()
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['subsetCheck'])
 
 jest.mock('../../../../app/data', () => ({
-  subsetCheck: { findOne: mockFindOne }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
 
 const getSubsetCheck = require('../../../../app/publishing/subset/get-subset-check')
@@ -13,20 +18,19 @@ describe('getSubsetCheck', () => {
 
   test('returns subset checks for given scheme', async () => {
     const mockResult = { id: 1, scheme: 'A' }
-    mockFindOne.mockResolvedValue(mockResult)
+    mockDb.builder.resolves(mockResult)
     const result = await getSubsetCheck('A')
-    expect(mockFindOne).toHaveBeenCalledWith({
-      lock: true,
-      skipLocked: true,
-      raw: true,
-      where: { scheme: 'A' }
-    })
+
+    expect(mockDb.tables.subsetCheck).toHaveBeenCalledWith()
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ scheme: 'A' })
+    expect(mockDb.builder.forUpdate).toHaveBeenCalled()
+    expect(mockDb.builder.skipLocked).toHaveBeenCalled()
     expect(result).toEqual(mockResult)
   })
 
-  test('returns empty array if no results', async () => {
-    mockFindOne.mockResolvedValue([])
+  test('returns null if no results', async () => {
+    mockDb.builder.resolves(undefined)
     const result = await getSubsetCheck('B')
-    expect(result).toEqual([])
+    expect(result).toBeNull()
   })
 })

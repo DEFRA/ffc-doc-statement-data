@@ -1,44 +1,36 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermTotal } = require('../../../../app/retention/interm/remove-etl-interm-total')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlIntermTotal'])
 
 jest.mock('../../../../app/data', () => ({
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  },
-  etlIntermTotal: {
-    destroy: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermTotal } = require('../../../../app/retention/interm/remove-etl-interm-total')
 
 describe('removeEtlIntermTotal', () => {
   const paymentRefs = ['PAY-001', 'PAY-002', 'PAY-003']
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(3)
   })
 
-  test('calls db.etlIntermTotal.destroy with correct parameters', async () => {
-    db.etlIntermTotal.destroy.mockResolvedValue(3)
-
+  test('calls the etlIntermTotal accessor with correct parameters', async () => {
     await removeEtlIntermTotal(paymentRefs, transaction)
 
-    expect(db.etlIntermTotal.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermTotal.destroy).toHaveBeenCalledWith({
-      where: {
-        paymentRef: {
-          [db.Sequelize.Op.in]: paymentRefs
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermTotal).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('paymentRef', paymentRefs)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermTotal.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermTotal.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermTotal(paymentRefs, transaction)).rejects.toThrow('DB error')
   })

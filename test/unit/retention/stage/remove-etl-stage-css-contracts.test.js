@@ -1,44 +1,36 @@
-const db = require('../../../../app/data')
-const { removeEtlStageCssContracts } = require('../../../../app/retention/stage/remove-etl-stage-css-contracts')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlStageCssContracts'])
 
 jest.mock('../../../../app/data', () => ({
-  etlStageCssContracts: {
-    destroy: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageCssContracts } = require('../../../../app/retention/stage/remove-etl-stage-css-contracts')
 
 describe('removeEtlStageCssContracts', () => {
   const contractIds = [401, 402, 403]
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageCssContracts.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.etlStageCssContracts.destroy.mockResolvedValue()
-
+  test('calls the etlStageCssContracts accessor with correct parameters', async () => {
     await removeEtlStageCssContracts(contractIds, transaction)
 
-    expect(db.etlStageCssContracts.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageCssContracts.destroy).toHaveBeenCalledWith({
-      where: {
-        contractId: {
-          [db.Sequelize.Op.in]: contractIds
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlStageCssContracts).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('contractId', contractIds)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageCssContracts.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageCssContracts.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageCssContracts(contractIds, transaction)).rejects.toThrow('DB destroy error')
   })

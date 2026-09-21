@@ -1,7 +1,12 @@
-const mockUpdate = jest.fn()
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['subsetCheck'])
 
 jest.mock('../../../../app/data', () => ({
-  subsetCheck: { update: mockUpdate }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
 
 const { DELINKED } = require('../../../../app/constants/schemes')
@@ -10,25 +15,22 @@ const updateSubsetCheck = require('../../../../app/publishing/subset/update-subs
 describe('updateSubsetCheck', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves([1])
   })
 
   test('updates subsetSent to true by default', async () => {
-    mockUpdate.mockResolvedValue([1])
     const result = await updateSubsetCheck(DELINKED)
-    expect(mockUpdate).toHaveBeenCalledWith(
-      { subsetSent: true },
-      { where: { scheme: DELINKED } }
-    )
+
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ scheme: DELINKED })
+    expect(mockDb.builder.update).toHaveBeenCalledWith({ subsetSent: true })
     expect(result).toEqual([1])
   })
 
   test('updates subsetSent to false if specified', async () => {
-    mockUpdate.mockResolvedValue([1])
     const result = await updateSubsetCheck(DELINKED, false)
-    expect(mockUpdate).toHaveBeenCalledWith(
-      { subsetSent: false },
-      { where: { scheme: DELINKED } }
-    )
+
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ scheme: DELINKED })
+    expect(mockDb.builder.update).toHaveBeenCalledWith({ subsetSent: false })
     expect(result).toEqual([1])
   })
 })

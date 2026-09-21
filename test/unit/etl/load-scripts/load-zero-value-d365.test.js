@@ -1,34 +1,21 @@
-const db = require('../../../../app/data')
 const { loadZeroValueD365 } = require('../../../../app/etl/load-scripts/load-zero-value-d365')
-
-jest.mock('../../../../app/data', () => ({
-  sequelize: {
-    query: jest.fn()
-  }
-}))
 
 describe('loadZeroValueD365', () => {
   const startDate = '2023-01-01'
-  const transaction = {}
+  let transaction
 
   beforeEach(() => {
-    db.sequelize.query.mockClear()
+    transaction = { raw: jest.fn() }
   })
 
-  test('should call sequelize.query with correct SQL and parameters', async () => {
+  test('calls transaction.raw with the load SQL and startDate replacement', async () => {
     await loadZeroValueD365(startDate, transaction)
 
-    expect(db.sequelize.query).toHaveBeenCalledTimes(1)
-    expect(db.sequelize.query.mock.calls[0][0]).toMatchSnapshot()
-    expect(db.sequelize.query.mock.calls[0][1]).toEqual({
-      replacements: { startDate },
-      raw: true,
-      transaction
-    })
+    expect(transaction.raw).toHaveBeenCalledWith(expect.any(String), { startDate })
   })
 
-  test('should handle errors thrown by sequelize.query', async () => {
-    db.sequelize.query.mockRejectedValue(new Error('Query failed'))
+  test('propagates error when the raw query rejects', async () => {
+    transaction.raw.mockRejectedValue(new Error('Query failed'))
 
     await expect(loadZeroValueD365(startDate, transaction)).rejects.toThrow('Query failed')
   })

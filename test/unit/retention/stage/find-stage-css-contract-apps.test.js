@@ -1,50 +1,50 @@
-const db = require('../../../../app/data')
-const { findStageCssContractApps } = require('../../../../app/retention/stage/find-stage-css-contract-apps')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlStageCssContractApplications'])
 
 jest.mock('../../../../app/data', () => ({
-  etlStageCssContractApplications: {
-    findAll: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { findStageCssContractApps } = require('../../../../app/retention/stage/find-stage-css-contract-apps')
 
 describe('findStageCssContractApps', () => {
   const applicationId = 'APP-456'
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  test('calls db.etlStageCssContractApplications.findAll with correct parameters', async () => {
+  test('calls the etlStageCssContractApplications accessor with correct parameters', async () => {
     const mockResult = [
       { contractId: 10 },
       { contractId: 20 }
     ]
-    db.etlStageCssContractApplications.findAll.mockResolvedValue(mockResult)
+    mockDb.builder.resolves(mockResult)
 
     const result = await findStageCssContractApps(applicationId, transaction)
 
-    expect(db.etlStageCssContractApplications.findAll).toHaveBeenCalledTimes(1)
-    expect(db.etlStageCssContractApplications.findAll).toHaveBeenCalledWith({
-      attributes: ['contractId'],
-      where: { applicationId },
-      transaction
-    })
+    expect(mockDb.tables.etlStageCssContractApplications).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId })
+    expect(mockDb.builder.select).toHaveBeenCalledWith('contractId')
     expect(result).toBe(mockResult)
   })
 
   test('returns empty array when no records found', async () => {
-    db.etlStageCssContractApplications.findAll.mockResolvedValue([])
+    mockDb.builder.resolves([])
 
     const result = await findStageCssContractApps(applicationId, transaction)
 
-    expect(db.etlStageCssContractApplications.findAll).toHaveBeenCalledTimes(1)
     expect(result).toEqual([])
   })
 
-  test('propagates error when db.etlStageCssContractApplications.findAll rejects', async () => {
+  test('propagates error when the query rejects', async () => {
     const error = new Error('DB error')
-    db.etlStageCssContractApplications.findAll.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(findStageCssContractApps(applicationId, transaction)).rejects.toThrow('DB error')
   })

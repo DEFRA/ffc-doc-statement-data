@@ -1,44 +1,36 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermTotalClaim } = require('../../../../app/retention/interm/remove-etl-interm-total-claim')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlIntermTotalClaim'])
 
 jest.mock('../../../../app/data', () => ({
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  },
-  etlIntermTotalClaim: {
-    destroy: jest.fn()
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermTotalClaim } = require('../../../../app/retention/interm/remove-etl-interm-total-claim')
 
 describe('removeEtlIntermTotalClaim', () => {
   const paymentRefs = ['PAY-001', 'PAY-002', 'PAY-003']
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(3)
   })
 
-  test('calls db.etlIntermTotalClaim.destroy with correct parameters', async () => {
-    db.etlIntermTotalClaim.destroy.mockResolvedValue(3)
-
+  test('calls the etlIntermTotalClaim accessor with correct parameters', async () => {
     await removeEtlIntermTotalClaim(paymentRefs, transaction)
 
-    expect(db.etlIntermTotalClaim.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermTotalClaim.destroy).toHaveBeenCalledWith({
-      where: {
-        paymentRef: {
-          [db.Sequelize.Op.in]: paymentRefs
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermTotalClaim).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('paymentRef', paymentRefs)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermTotalClaim.destroy rejects', async () => {
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermTotalClaim.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermTotalClaim(paymentRefs, transaction)).rejects.toThrow('DB error')
   })

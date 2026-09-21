@@ -1,60 +1,28 @@
 const etlIntermTables = require('../../../app/constants/etl-interm-tables')
+const { createKnexMock } = require('../../helpers/mock-knex')
 
-const intermTableMocks = {}
-etlIntermTables.forEach(table => {
-  intermTableMocks[table] = { destroy: jest.fn() }
-})
+const mockDb = createKnexMock([
+  'etlStageLog',
+  'etlStageApplicationDetail',
+  'etlStageAppsPaymentNotification',
+  'etlStageAppsTypes',
+  'etlStageBusinessAddressContactV',
+  'etlStageCalculationDetails',
+  'etlStageCssContractApplications',
+  'etlStageCssContracts',
+  'etlStageCssOptions',
+  'etlStageDefraLinks',
+  'etlStageFinanceDax',
+  'etlStageOrganisation',
+  'etlStageTclcPiiPayClaimSfimtOption',
+  ...etlIntermTables
+])
+
 jest.mock('../../../app/data', () => ({
-  etlStageLog: {
-    findAll: jest.fn(),
-    destroy: jest.fn()
-  },
-  etlStageApplicationDetail: {
-    destroy: jest.fn()
-  },
-  etlStageAppsPaymentNotification: {
-    destroy: jest.fn()
-  },
-  etlStageAppsTypes: {
-    destroy: jest.fn()
-  },
-  etlStageBusinessAddressContactV: {
-    destroy: jest.fn()
-  },
-  etlStageCalculationDetails: {
-    destroy: jest.fn()
-  },
-  etlStageCssContractApplications: {
-    destroy: jest.fn()
-  },
-  etlStageCssContracts: {
-    destroy: jest.fn()
-  },
-  etlStageCssOptions: {
-    destroy: jest.fn()
-  },
-  etlStageDefraLinks: {
-    destroy: jest.fn()
-  },
-  etlStageFinanceDax: {
-    destroy: jest.fn()
-  },
-  etlStageOrganisation: {
-    destroy: jest.fn()
-  },
-  etlStageTclcPiiPayClaimSfimtOption: {
-    destroy: jest.fn()
-  },
-  etlStageTclcPiiPayClaimSfimt: {
-    destroy: jest.fn()
-  },
-  ...intermTableMocks,
-  Sequelize: {
-    Op: {
-      gte: Symbol('gte'),
-      between: Symbol('between')
-    }
-  }
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
 
 const db = require('../../../app/data')
@@ -68,57 +36,37 @@ describe('deleteETLRecords', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    transaction = {}
+    mockDb.builder.resolves(undefined)
+    transaction = mockDb.trx
   })
 
   test('should log and return if no ETL records found', async () => {
-    db.etlStageLog.findAll.mockResolvedValue([])
+    mockDb.builder.resolves([])
 
     await deleteETLRecords(new Date(), transaction)
 
-    expect(db.etlStageLog.findAll).toHaveBeenCalled()
-    expect(db.etlStageLog.destroy).not.toHaveBeenCalled()
+    expect(mockDb.tables.etlStageLog).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.del).not.toHaveBeenCalled()
     expect(logSpy).toHaveBeenCalledWith('No ETL records to roll back')
   })
 
   test('should delete records from the relevant tables', async () => {
     const startDate = new Date()
     const mockEntries = [
-      {
-        dataValues: {
-          file: 'Application_Detail_Delinked/file1.csv',
-          idFrom: 1,
-          idTo: 10
-        }
-      },
-      {
-        dataValues: {
-          file: 'Apps_Payment_Notification_Delinked/file2.csv',
-          idFrom: 11,
-          idTo: 20
-        }
-      }
+      { file: 'Application_Detail_Delinked/file1.csv', idFrom: 1, idTo: 10 },
+      { file: 'Apps_Payment_Notification_Delinked/file2.csv', idFrom: 11, idTo: 20 }
     ]
 
-    db.etlStageLog.findAll.mockResolvedValue(mockEntries)
+    mockDb.builder.resolves(mockEntries)
 
     await deleteETLRecords(startDate, transaction)
 
-    expect(db.etlStageLog.findAll).toHaveBeenCalled()
-    expect(db.etlStageApplicationDetail.destroy).toHaveBeenCalledWith({
-      where: { etlId: { [db.Sequelize.Op.between]: [1, 10] } },
-      transaction
-    })
-    expect(db.etlStageAppsPaymentNotification.destroy).toHaveBeenCalledWith({
-      where: { etlId: { [db.Sequelize.Op.between]: [11, 20] } },
-      transaction
-    })
-    expect(db.etlStageLog.destroy).toHaveBeenCalledWith({
-      where: {
-        startedAt: { [db.Sequelize.Op.gte]: startDate }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlStageLog).toHaveBeenCalledWith(transaction)
+    expect(mockDb.tables.etlStageApplicationDetail).toHaveBeenCalledWith(transaction)
+    expect(mockDb.tables.etlStageAppsPaymentNotification).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereBetween).toHaveBeenCalledWith('etlId', [1, 10])
+    expect(mockDb.builder.whereBetween).toHaveBeenCalledWith('etlId', [11, 20])
+    expect(mockDb.builder.where).toHaveBeenCalledWith('startedAt', '>=', startDate)
     expect(logSpy).toHaveBeenCalledWith('Deleted records from etlStageApplicationDetail for IDs between 1 and 10')
     expect(logSpy).toHaveBeenCalledWith('Deleted records from etlStageAppsPaymentNotification for IDs between 11 and 20')
   })
@@ -126,16 +74,10 @@ describe('deleteETLRecords', () => {
   test('should warn if no mapped table found for folder', async () => {
     const startDate = new Date()
     const mockEntries = [
-      {
-        dataValues: {
-          file: 'Unknown_folder/file1.csv',
-          idFrom: 1,
-          idTo: 10
-        }
-      }
+      { file: 'Unknown_folder/file1.csv', idFrom: 1, idTo: 10 }
     ]
 
-    db.etlStageLog.findAll.mockResolvedValue(mockEntries)
+    mockDb.builder.resolves(mockEntries)
 
     await deleteETLRecords(startDate, transaction)
 
@@ -144,35 +86,21 @@ describe('deleteETLRecords', () => {
 
   test('should delete records from all intermediate tables', async () => {
     const startDate = new Date()
-    db.etlStageLog.findAll.mockResolvedValue([
-      {
-        dataValues: {
-          file: 'Application_Detail_Delinked/file1.csv',
-          idFrom: 1,
-          idTo: 10
-        }
-      }
+    mockDb.builder.resolves([
+      { file: 'Application_Detail_Delinked/file1.csv', idFrom: 1, idTo: 10 }
     ])
     await deleteETLRecords(startDate, transaction)
     for (const table of etlIntermTables) {
-      expect(db[table].destroy).toHaveBeenCalledWith({
-        where: { etlInsertedDt: { [db.Sequelize.Op.gte]: startDate } },
-        transaction
-      })
+      expect(mockDb.tables[table]).toHaveBeenCalledWith(transaction)
       expect(logSpy).toHaveBeenCalledWith(`Deleted records from intermediate table: ${table}`)
     }
+    expect(mockDb.builder.where).toHaveBeenCalledWith('etlInsertedDt', '>=', startDate)
   })
 
   test('should warn if an intermediate table does not exist in db', async () => {
     const startDate = new Date()
-    db.etlStageLog.findAll.mockResolvedValue([
-      {
-        dataValues: {
-          file: 'Application_Detail_Delinked/file1.csv',
-          idFrom: 1,
-          idTo: 10
-        }
-      }
+    mockDb.builder.resolves([
+      { file: 'Application_Detail_Delinked/file1.csv', idFrom: 1, idTo: 10 }
     ])
     // Remove one table from db mock
     const missingTable = etlIntermTables[0]
@@ -185,7 +113,7 @@ describe('deleteETLRecords', () => {
 
   test('should throw an error if an exception occurs', async () => {
     const startDate = new Date()
-    db.etlStageLog.findAll.mockRejectedValue(new Error('Database error'))
+    mockDb.builder.rejects(new Error('Database error'))
 
     await expect(deleteETLRecords(startDate, transaction)).rejects.toThrow('Database error')
     expect(errorSpy).toHaveBeenCalledWith('Error rolling back ETL records', expect.any(Error))
