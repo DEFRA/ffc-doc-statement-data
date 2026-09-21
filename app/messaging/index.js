@@ -21,9 +21,8 @@ const start = async () => {
     console.info('Demographics updates not live in this environment')
   }
 
-  const retentionAction = message => processRetentionMessage(message, retentionReceiver)
   retentionReceiver = createReceiver(sbClient, config.retentionSubscription)
-  subscribeReceiver(retentionReceiver, retentionAction, errorHandler, config.retentionSubscription)
+  subscribeReceiver(retentionReceiver, processRetentionMessage, errorHandler, config.retentionSubscription)
   console.info('Retention receiver ready')
 }
 
