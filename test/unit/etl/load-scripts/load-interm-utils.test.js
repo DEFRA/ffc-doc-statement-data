@@ -3,7 +3,7 @@ const { createKnexMock, createQueryBuilder } = require('../../../helpers/mock-kn
 
 const mockDb = createKnexMock(['etlStageLog'])
 
-jest.mock('../../../../app/data', () => ({
+jest.mock('../../../../app/database', () => ({
   client: mockDb.knex,
   transaction: mockDb.transaction,
   close: mockDb.close,

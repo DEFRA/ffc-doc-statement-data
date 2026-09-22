@@ -32,7 +32,7 @@ jest.mock('../../../../app/config', () => ({
   env: 'test'
 }))
 
-jest.mock('../../../../app/data', () => ({
+jest.mock('../../../../app/database', () => ({
   client: mockDb.knex,
   transaction: mockDb.transaction,
   close: mockDb.close,

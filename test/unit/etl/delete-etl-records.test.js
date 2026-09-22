@@ -18,7 +18,7 @@ const mockDb = createKnexMock([
   ...etlIntermTables
 ])
 
-jest.mock('../../../app/data', () => ({
+jest.mock('../../../app/database', () => ({
   client: mockDb.knex,
   transaction: mockDb.transaction,
   close: mockDb.close,

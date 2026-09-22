@@ -2,7 +2,7 @@ const { removeAgreementData } = require('../../../app/retention')
 const db = require('../../../app/database')
 const { DELINKED } = require('../../../app/constants/scheme-ids')
 
-jest.mock('../../../app/data', () => ({
+jest.mock('../../../app/database', () => ({
   transaction: jest.fn()
 }))
 

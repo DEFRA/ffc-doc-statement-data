@@ -7,7 +7,7 @@ const mockDb = createKnexMock(['organisation'])
 
 jest.mock('../../../../app/messaging/demographics/get-address-lines')
 jest.mock('../../../../app/messaging/demographics/get-sbi')
-jest.mock('../../../../app/data', () => ({
+jest.mock('../../../../app/database', () => ({
   client: mockDb.knex,
   transaction: mockDb.transaction,
   close: mockDb.close,

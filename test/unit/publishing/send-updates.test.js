@@ -22,7 +22,7 @@ jest.mock('../../../app/config', () => ({
   env: 'test'
 }))
 
-jest.mock('../../../app/data', () => ({
+jest.mock('../../../app/database', () => ({
   subsetCheck: {
     findAll: jest.fn()
   }
