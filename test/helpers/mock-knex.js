@@ -39,11 +39,16 @@ const createQueryBuilder = () => {
     builder[method] = jest.fn(() => builder)
   }
 
-  // `modify` runs its callback against the builder itself, like real knex,
-  // so assertions on the methods it calls internally still work.
   builder.modify = jest.fn((fn) => {
     if (typeof fn === 'function') {
       fn(builder)
+    }
+    return builder
+  })
+
+  builder.where = jest.fn((fn) => {
+    if (typeof fn === 'function') {
+      fn.call(builder)
     }
     return builder
   })

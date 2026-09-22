@@ -38,6 +38,8 @@ describe('getSubsetOrganisations', () => {
 
     expect(mockDb.tables.organisation).toHaveBeenCalledWith()
     expect(mockDb.builder.whereIn).toHaveBeenCalledWith('sbi', [123])
+    expect(mockDb.builder.whereNull).toHaveBeenCalledWith('published')
+    expect(mockDb.builder.orWhereRaw).toHaveBeenCalledWith('"published" < "updated"')
     expect(mockDb.builder.select).toHaveBeenCalledWith(
       'sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated'
     )

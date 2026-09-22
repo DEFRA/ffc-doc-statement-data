@@ -33,6 +33,8 @@ describe('getSubsetDelinkedCalculation', () => {
 
     expect(mockDb.tables.delinkedCalculation).toHaveBeenCalledWith()
     expect(mockDb.builder.whereIn).toHaveBeenCalledWith('calculationId', [456])
+    expect(mockDb.builder.whereNull).toHaveBeenCalledWith('datePublished')
+    expect(mockDb.builder.orWhereRaw).toHaveBeenCalledWith('"datePublished" < "updated"')
     expect(mockDb.builder.select).toHaveBeenCalledWith(
       { applicationReference: 'applicationId' },
       { calculationReference: 'calculationId' },

@@ -1,4 +1,4 @@
-const { createKnexMock } = require('../../helpers/mock-knex')
+const { createKnexMock, createQueryBuilder } = require('../../helpers/mock-knex')
 
 const mockDb = createKnexMock(['etlStageLog'])
 
@@ -355,5 +355,60 @@ describe('runEtlProcess', () => {
 
     expect(result).toEqual([])
     expect(mockDb.builder.update).toHaveBeenCalled()
+  })
+
+  test('counts existing rows and finds the max etl id via the table accessor, and runs the adapted sequelize query, when configured', async () => {
+    const mockFileData = 'first line\nsecond line\nthird line\n'
+    const mockFileStream = Readable.from([mockFileData])
+    storage.deleteFile.mockResolvedValue()
+    getFirstLineNumber.mockResolvedValue(10)
+    storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
+
+    const db = require('../../../app/database')
+    const accessorBuilder = createQueryBuilder()
+    accessorBuilder.resolves({ count: '7', max: 42 })
+    db.etlStageApplicationDetail = jest.fn(() => accessorBuilder)
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, listener) => {
+        if (event === 'finish') {
+          listener([])
+        } else if (event === 'result') {
+          listener([])
+        }
+        return mockEtl
+      })
+    }
+
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.ProvidedConnection.mockImplementation(async (cfg) => {
+      cfg.sequelize.query('SELECT 1')
+      return {}
+    })
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
+
+    await runEtlProcess({
+      fileStream: mockFileStream,
+      columns: [],
+      table: 'etlStageApplicationDetail',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
+    })
+
+    expect(accessorBuilder.count).toHaveBeenCalledWith({ count: '*' })
+    expect(accessorBuilder.max).toHaveBeenCalledWith({ max: 'etlId' })
+    expect(mockDb.knex.raw).toHaveBeenCalledWith('SELECT 1')
+
+    delete db.etlStageApplicationDetail
   })
 })
