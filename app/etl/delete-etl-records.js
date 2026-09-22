@@ -1,6 +1,6 @@
 const db = require('../database')
 const folders = require('../constants/folders')
-const tables = require('../constants/tables')
+const tables = require('../constants/etl-tables')
 const tableMappings = require('../constants/table-mappings')
 const etlIntermTables = require('../constants/etl-interm-tables')
 

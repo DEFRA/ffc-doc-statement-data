@@ -2,7 +2,7 @@ const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageBusinessAddressContacts } = require('../../../../app/etl/staging/stage-business-address-contact')
-const { businessAddressDelinked } = require('../../../../app/constants/tables')
+const { businessAddressDelinked } = require('../../../../app/constants/etl-tables')
 const { Readable } = require('stream')
 
 jest.mock('node:crypto', () => ({ randomUUID: jest.fn() }))
@@ -12,7 +12,7 @@ jest.mock('../../../../app/storage', () => ({
 jest.mock('../../../../app/config/dwh', () => ({
   businessAddressDelinked: { folder: 'businessAddressFolder' }
 }))
-jest.mock('../../../../app/constants/tables', () => ({
+jest.mock('../../../../app/constants/etl-tables', () => ({
   businessAddressDelinked: 'businessAddressTable'
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({

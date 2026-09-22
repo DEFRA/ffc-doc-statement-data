@@ -1,8 +1,15 @@
 module.exports = {
-  action: 'actions',
-  d365: 'd365',
-  dax: 'dax',
-  delinkedCalculation: 'delinkedCalculation',
+  appCalcResultsDelinkPayments: 'etlStageAppCalcResultsDelinkPayments',
+  appCalculationResultsDelinkPayments: 'etlStageAppCalcResultsDelinkPayments',
+  applicationDetailDelinked: 'etlStageApplicationDetail',
+  appsPaymentNotificationDelinked: 'etlStageAppsPaymentNotification',
+  appsTypesDelinked: 'etlStageAppsTypes',
+  businessAddressDelinked: 'etlStageBusinessAddressContactV',
+  calculationsDetailsDelinked: 'etlStageCalculationDetails',
+  cssContractApplicationsDelinked: 'etlStageCssContractApplications',
+  cssContractDelinked: 'etlStageCssContracts',
+  cssOptionsDelinked: 'etlStageCssOptions',
+  defraLinksDelinked: 'etlStageDefraLinks',
   etlIntermAppCalcResultsDelinkPayment: 'etlIntermAppCalcResultsDelinkPayments',
   etlIntermApplicationClaim: 'etlIntermApplicationClaim',
   etlIntermApplicationContract: 'etlIntermApplicationContract',
@@ -31,8 +38,9 @@ module.exports = {
   etlStageOrganisation: 'etlStageOrganisation',
   etlStageTclcPiiPayClaimSfimtOption: 'etlStageTclcPiiPayClaimSfimtOption',
   etlStageTdeLinkingTransferTransactions: 'etlStageTdeLinkingTransferTransactions',
-  organisation: 'organisations',
-  subsetCheck: 'subsetCheck',
-  total: 'totals',
-  zeroValueD365: 'zeroValueD365'
+  financeDAXDelinked: 'etlStageFinanceDax',
+  organisationDelinked: 'etlStageOrganisation',
+  tclcDelinked: 'etlStageTclcPiiPayClaimSfimt',
+  tclcOptionDelinked: 'etlStageTclcPiiPayClaimSfimtOption',
+  tdeLinkingTransferTransactions: 'etlStageTdeLinkingTransferTransactions'
 }

@@ -1,6 +1,6 @@
 const db = require('../../database')
 const config = require('../../config')
-const TABLES = require('../../constants/etl-tables')
+const TABLES = { ...require('../../constants/etl-tables'), ...require('../../constants/tables') }
 const dbConfig = config.dbConfig[config.env]
 
 const loadD365 = async (startDate, transaction) => {

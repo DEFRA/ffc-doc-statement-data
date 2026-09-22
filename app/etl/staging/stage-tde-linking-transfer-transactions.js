@@ -1,7 +1,7 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { tdeLinkingTransferTransactions } = require('../../constants/tables')
+const { tdeLinkingTransferTransactions } = require('../../constants/etl-tables')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageTdeLinkingTransferTransactions = async () => {

@@ -2,7 +2,7 @@ const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const config = require('../../config')
-const { financeDAXDelinked } = require('../../constants/tables')
+const { financeDAXDelinked } = require('../../constants/etl-tables')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const columns = [

@@ -1,7 +1,7 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const config = require('../../config')
-const { defraLinksDelinked } = require('../../constants/tables')
+const { defraLinksDelinked } = require('../../constants/etl-tables')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
