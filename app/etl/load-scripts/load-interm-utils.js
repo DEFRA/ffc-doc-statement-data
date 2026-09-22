@@ -27,8 +27,8 @@ const getEtlStageLogs = async (startDate, folder) => {
   return logsByFolder.filter(log => log !== null)
 }
 
-const executeQuery = async (query, replacements = {}, transaction) => {
-  await (transaction ?? db.client).raw(query, replacements)
+const executeQuery = async (query, replacements, transaction) => {
+  await (transaction ?? db.client).raw(query, replacements ?? {})
 }
 
 const limitConcurrency = async (promises, maxConcurrent) => {
