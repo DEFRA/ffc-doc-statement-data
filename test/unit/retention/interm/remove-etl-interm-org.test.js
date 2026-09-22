@@ -28,6 +28,12 @@ describe('removeEtlIntermOrg', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlIntermOrg accessor without a transaction when none is provided', async () => {
+    await removeEtlIntermOrg(sbis)
+
+    expect(mockDb.tables.etlIntermOrg).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
     mockDb.builder.rejects(error)

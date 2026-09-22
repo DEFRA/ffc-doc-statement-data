@@ -35,6 +35,14 @@ describe('findDelinkedCalculations', () => {
     expect(result).toBe(mockResult)
   })
 
+  test('calls the delinkedCalculation accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves([])
+
+    await findDelinkedCalculations(applicationId, frn)
+
+    expect(mockDb.tables.delinkedCalculation).toHaveBeenCalledWith(undefined)
+  })
+
   test('returns empty array when no calculations found', async () => {
     mockDb.builder.resolves([])
 

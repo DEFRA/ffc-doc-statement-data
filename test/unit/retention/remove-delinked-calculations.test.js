@@ -28,6 +28,12 @@ describe('removeDelinkedCalculations', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the delinkedCalculation accessor without a transaction when none is provided', async () => {
+    await removeDelinkedCalculations(calculationIds)
+
+    expect(mockDb.tables.delinkedCalculation).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
     mockDb.builder.rejects(error)

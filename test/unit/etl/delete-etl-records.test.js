@@ -111,6 +111,26 @@ describe('deleteETLRecords', () => {
     )
   })
 
+  test('should call accessors without a transaction when none is provided', async () => {
+    const startDate = new Date()
+    const mockEntries = [
+      { file: 'Application_Detail_Delinked/file1.csv', idFrom: 1, idTo: 10 }
+    ]
+
+    // Restore table removed by the previous test
+    db[etlIntermTables[0]] = mockDb.tables[etlIntermTables[0]]
+
+    mockDb.builder.resolves(mockEntries)
+
+    await deleteETLRecords(startDate)
+
+    expect(mockDb.tables.etlStageLog).toHaveBeenCalledWith(undefined)
+    expect(mockDb.tables.etlStageApplicationDetail).toHaveBeenCalledWith(undefined)
+    for (const table of etlIntermTables) {
+      expect(mockDb.tables[table]).toHaveBeenCalledWith(undefined)
+    }
+  })
+
   test('should throw an error if an exception occurs', async () => {
     const startDate = new Date()
     mockDb.builder.rejects(new Error('Database error'))

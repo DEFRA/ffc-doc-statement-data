@@ -28,6 +28,12 @@ describe('removeEtlIntermTotalZeroValues', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlIntermTotalZeroValues accessor without a transaction when none is provided', async () => {
+    await removeEtlIntermTotalZeroValues(paymentRefs)
+
+    expect(mockDb.tables.etlIntermTotalZeroValues).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
     mockDb.builder.rejects(error)

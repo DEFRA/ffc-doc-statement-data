@@ -28,6 +28,12 @@ describe('removeEtlStageCssContracts', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlStageCssContracts accessor without a transaction when none is provided', async () => {
+    await removeEtlStageCssContracts(contractIds)
+
+    expect(mockDb.tables.etlStageCssContracts).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
     mockDb.builder.rejects(error)

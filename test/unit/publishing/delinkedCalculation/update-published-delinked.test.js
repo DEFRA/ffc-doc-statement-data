@@ -26,4 +26,11 @@ describe('updatePublished', () => {
     expect(mockDb.builder.where).toHaveBeenCalledWith({ calculationId: calculationReference })
     expect(mockDb.builder.update).toHaveBeenCalledWith({ datePublished: expect.any(Date) })
   })
+
+  test('calls the delinkedCalculation accessor without a transaction when none is provided', async () => {
+    const calculationReference = 1234567
+    await updatePublished(calculationReference)
+
+    expect(mockDb.tables.delinkedCalculation).toHaveBeenCalledWith(undefined)
+  })
 })

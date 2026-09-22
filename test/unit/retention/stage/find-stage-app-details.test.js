@@ -34,6 +34,14 @@ describe('findStageAppDetails', () => {
     expect(result).toBe(mockResult)
   })
 
+  test('calls the etlStageApplicationDetail accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves([])
+
+    await findStageAppDetails(applicationId)
+
+    expect(mockDb.tables.etlStageApplicationDetail).toHaveBeenCalledWith(undefined)
+  })
+
   test('returns empty array when no records found', async () => {
     mockDb.builder.resolves([])
 

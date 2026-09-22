@@ -28,6 +28,12 @@ describe('removeD365', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the d365 accessor without a transaction when none is provided', async () => {
+    await removeD365(calculationIds)
+
+    expect(mockDb.tables.d365).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
     mockDb.builder.rejects(error)

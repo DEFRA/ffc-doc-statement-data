@@ -32,6 +32,14 @@ describe('findIntermAppCalcResultsDelinkPayments', () => {
     expect(result).toBe(mockResult)
   })
 
+  test('calls the etlIntermAppCalcResultsDelinkPayment accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves([])
+
+    await findIntermAppCalcResultsDelinkPayments(applicationId, frn)
+
+    expect(mockDb.tables.etlIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the query rejects', async () => {
     const error = new Error('DB error')
     mockDb.builder.rejects(error)

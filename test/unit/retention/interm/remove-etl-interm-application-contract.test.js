@@ -28,6 +28,12 @@ describe('removeEtlIntermApplicationContract', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlIntermApplicationContract accessor without a transaction when none is provided', async () => {
+    await removeEtlIntermApplicationContract(applicationId)
+
+    expect(mockDb.tables.etlIntermApplicationContract).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
     mockDb.builder.rejects(error)

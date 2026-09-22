@@ -28,6 +28,12 @@ describe('removeEtlStageAppCalcResultsDelinkPayments', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlStageAppCalcResultsDelinkPayment accessor without a transaction when none is provided', async () => {
+    await removeEtlStageAppCalcResultsDelinkPayments(calculationIds)
+
+    expect(mockDb.tables.etlStageAppCalcResultsDelinkPayment).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
     mockDb.builder.rejects(error)

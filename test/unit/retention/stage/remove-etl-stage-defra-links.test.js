@@ -28,6 +28,12 @@ describe('removeEtlStageDefraLinks', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlStageDefraLinks accessor without a transaction when none is provided', async () => {
+    await removeEtlStageDefraLinks(subjectIds)
+
+    expect(mockDb.tables.etlStageDefraLinks).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
     mockDb.builder.rejects(error)

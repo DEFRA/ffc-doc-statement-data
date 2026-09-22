@@ -34,6 +34,14 @@ describe('findStageCssContractApps', () => {
     expect(result).toBe(mockResult)
   })
 
+  test('calls the etlStageCssContractApplications accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves([])
+
+    await findStageCssContractApps(applicationId)
+
+    expect(mockDb.tables.etlStageCssContractApplications).toHaveBeenCalledWith(undefined)
+  })
+
   test('returns empty array when no records found', async () => {
     mockDb.builder.resolves([])
 

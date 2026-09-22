@@ -26,4 +26,10 @@ describe('updateD365DatePublished', () => {
     expect(mockDb.builder.where).toHaveBeenCalledWith({ d365Id: mockD365.paymentReference })
     expect(mockDb.builder.update).toHaveBeenCalledWith({ datePublished: expect.any(Date) })
   })
+
+  test('calls the d365 accessor without a transaction when none is provided', async () => {
+    await updateD365DatePublished(mockD365.paymentReference)
+
+    expect(mockDb.tables.d365).toHaveBeenCalledWith(undefined)
+  })
 })

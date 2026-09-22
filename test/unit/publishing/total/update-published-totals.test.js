@@ -26,4 +26,11 @@ describe('updatePublished', () => {
     expect(mockDb.builder.where).toHaveBeenCalledWith({ calculationId })
     expect(mockDb.builder.update).toHaveBeenCalledWith({ datePublished: expect.any(Date) })
   })
+
+  test('calls the total accessor without a transaction when none is provided', async () => {
+    const calculationId = 1234567
+    await updatePublished(calculationId)
+
+    expect(mockDb.tables.total).toHaveBeenCalledWith(undefined)
+  })
 })

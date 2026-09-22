@@ -84,4 +84,13 @@ describe('findSbisWithNoOtherCalculations', () => {
 
     await expect(findSbisWithNoOtherCalculations(sbis, excludeCalculationIds, transaction)).rejects.toThrow('DB error')
   })
+
+  test('calls the delinkedCalculation accessor without a transaction when none is provided', async () => {
+    const sbis = [111, 222]
+    mockDb.builder.resolves([])
+
+    await findSbisWithNoOtherCalculations(sbis, [])
+
+    expect(mockDb.tables.delinkedCalculation).toHaveBeenCalledWith(undefined)
+  })
 })

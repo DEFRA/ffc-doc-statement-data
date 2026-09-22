@@ -28,6 +28,12 @@ describe('removeEtlStageApplicationDetail', () => {
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
+  test('calls the etlStageApplicationDetail accessor without a transaction when none is provided', async () => {
+    await removeEtlStageApplicationDetail(applicationId)
+
+    expect(mockDb.tables.etlStageApplicationDetail).toHaveBeenCalledWith(undefined)
+  })
+
   test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
     mockDb.builder.rejects(error)

@@ -65,4 +65,37 @@ describe('updatePublished', () => {
     expect(mockDb.builder.del).not.toHaveBeenCalled()
     expect(mockDb.builder.update).not.toHaveBeenCalled()
   })
+
+  test('calls the organisation accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves({
+      sbi: 123,
+      addressLine1: 'Farm Lane',
+      addressLine2: null,
+      addressLine3: null,
+      city: 'York',
+      county: null,
+      postcode: 'YO1 1AA'
+    })
+
+    await updatePublished(123)
+
+    expect(mockDb.tables.organisation).toHaveBeenCalledWith(undefined)
+  })
+
+  test('calls the organisation accessor without a transaction when deleting', async () => {
+    mockDb.builder.resolves({
+      sbi: 456,
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      city: null,
+      county: null,
+      postcode: null
+    })
+
+    await updatePublished(456)
+
+    expect(mockDb.tables.organisation).toHaveBeenCalledWith(undefined)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
+  })
 })

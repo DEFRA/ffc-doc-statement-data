@@ -34,6 +34,14 @@ describe('findIntermPaymentRefs', () => {
     expect(result).toBe(mockResult)
   })
 
+  test('calls the etlIntermFinanceDax accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves([])
+
+    await findIntermPaymentRefs(claimId)
+
+    expect(mockDb.tables.etlIntermFinanceDax).toHaveBeenCalledWith(undefined)
+  })
+
   test('returns empty array when no records found', async () => {
     mockDb.builder.resolves([])
 
