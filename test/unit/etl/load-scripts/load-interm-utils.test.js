@@ -113,6 +113,15 @@ describe('loadIntermUtils', () => {
 
       expect(mockDb.knex.raw).toHaveBeenCalledWith(query, replacements)
     })
+
+    test('defaults replacements to an empty object when none are given', async () => {
+      const query = 'SELECT * FROM table'
+      const transaction = { raw: jest.fn() }
+
+      await executeQuery(query, undefined, transaction)
+
+      expect(transaction.raw).toHaveBeenCalledWith(query, {})
+    })
   })
 
   describe('limitConcurrency', () => {

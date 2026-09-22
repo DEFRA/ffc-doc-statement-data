@@ -411,4 +411,65 @@ describe('runEtlProcess', () => {
 
     delete db.etlStageApplicationDetail
   })
+
+  test('defaults idFrom to 1 when no rows exist yet, and keeps the lower id bound when the max grows during the run', async () => {
+    const mockFileData = 'first line\nsecond line\nthird line\n'
+    const mockFileStream = Readable.from([mockFileData])
+    storage.deleteFile.mockResolvedValue()
+    getFirstLineNumber.mockResolvedValue(10)
+    storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
+
+    const db = require('../../../app/database')
+    const beforeBuilder = createQueryBuilder()
+    beforeBuilder.resolves({ count: '0', max: null })
+    const afterBuilder = createQueryBuilder()
+    afterBuilder.resolves({ count: '9', max: 50 })
+
+    db.etlStageApplicationDetail = jest.fn()
+      .mockImplementationOnce(() => beforeBuilder) // countRows, in prepareEtlContext
+      .mockImplementationOnce(() => beforeBuilder) // maxEtlId, in prepareEtlContext -> idFrom = 0 + 1
+      .mockImplementationOnce(() => afterBuilder) // countRows, in handleEtlResult
+      .mockImplementationOnce(() => afterBuilder) // maxEtlId, in handleEtlResult -> idTo = 50
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, listener) => {
+        if (event === 'finish') {
+          listener([])
+        } else if (event === 'result') {
+          listener([])
+        }
+        return mockEtl
+      })
+    }
+
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.ProvidedConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
+
+    await runEtlProcess({
+      fileStream: mockFileStream,
+      columns: [],
+      table: 'etlStageApplicationDetail',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
+    })
+
+    expect(mockDb.builder.update).toHaveBeenCalledWith(expect.objectContaining({
+      idFrom: 1,
+      idTo: 50,
+      rowsLoadedCount: 9
+    }))
+
+    delete db.etlStageApplicationDetail
+  })
 })
