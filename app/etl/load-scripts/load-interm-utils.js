@@ -1,5 +1,5 @@
 const os = require('os')
-const db = require('../../data')
+const db = require('../../database')
 
 const { Worker } = require('worker_threads')
 const path = require('path')

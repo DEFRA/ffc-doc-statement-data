@@ -1,6 +1,6 @@
-const config = require('../config')
+const config = require('./config')
 const { Database } = require('ffc-database')
-const TABLES = require('../constants/etl-tables')
+const TABLES = require('./constants/etl-tables')
 
 const dbConfig = config.dbConfig[config.env]
 

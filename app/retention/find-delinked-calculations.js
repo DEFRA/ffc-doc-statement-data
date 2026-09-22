@@ -1,4 +1,4 @@
-const db = require('../data')
+const db = require('../database')
 
 const findDelinkedCalculations = async (applicationId, frn, transaction) => {
   return db.delinkedCalculation(transaction ?? undefined)

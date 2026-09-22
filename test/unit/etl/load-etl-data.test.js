@@ -50,7 +50,7 @@ describe('loadEtlData', () => {
     transaction1 = { commit: jest.fn(), rollback: jest.fn() }
     transaction2 = { commit: jest.fn(), rollback: jest.fn() }
 
-    require('../../../app/data').transaction
+    require('../../../app/database').transaction
       .mockResolvedValueOnce(transaction1)
       .mockResolvedValueOnce(transaction2)
   })
@@ -58,7 +58,7 @@ describe('loadEtlData', () => {
   test('should commit transactions if all load scripts succeed', async () => {
     await loadETLData('2023-01-01')
 
-    expect(require('../../../app/data').transaction).toHaveBeenCalledWith(undefined, {
+    expect(require('../../../app/database').transaction).toHaveBeenCalledWith(undefined, {
       isolationLevel: 'serializable'
     })
 

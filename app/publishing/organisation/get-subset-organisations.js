@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const getSubsetOrganisations = async (sbiArray) => {
   return db.organisation()

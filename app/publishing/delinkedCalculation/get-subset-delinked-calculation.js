@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const getSubsetDelinkedCalculation = async (calculationIdArray) => {
   const delinkedCalculations = await db.delinkedCalculation()

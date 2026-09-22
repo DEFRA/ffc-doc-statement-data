@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageApplicationDetail = async (applicationId, transaction) => {
   await db.etlStageApplicationDetail(transaction ?? undefined).where({ applicationId }).del()

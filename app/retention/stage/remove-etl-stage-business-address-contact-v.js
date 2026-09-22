@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageBusinessAddressContactV = async (sbis, transaction) => {
   await db.etlStageBusinessAddressContactV(transaction ?? undefined).whereIn('sbi', sbis).del()

@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const getActionsByCalculationId = async (calculationId, transaction) => {
   return db.action(transaction ?? undefined)

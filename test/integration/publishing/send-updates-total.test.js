@@ -14,7 +14,7 @@ jest.mock('ffc-messaging', () => {
 jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
 const { publishingConfig } = require('../../../app/config')
-const db = require('../../../app/data')
+const db = require('../../../app/database')
 
 const publish = require('../../../app/publishing')
 const { truncate } = require('../../helpers/truncate')

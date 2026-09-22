@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const findStageCssContractApps = async (applicationId, transaction) => {
   return db.etlStageCssContractApplications(transaction ?? undefined)

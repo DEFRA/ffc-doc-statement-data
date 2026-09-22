@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageFinanceDax = async (paymentRefs, transaction) => {
   await db.etlStageFinanceDax(transaction ?? undefined).whereIn('settlementvoucher', paymentRefs).del()

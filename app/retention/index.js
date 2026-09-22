@@ -1,4 +1,4 @@
-const db = require('../data')
+const db = require('../database')
 const { DELINKED } = require('../constants/scheme-ids')
 const { findDelinkedCalculations } = require('./find-delinked-calculations')
 const { removeD365 } = require('./remove-d365')

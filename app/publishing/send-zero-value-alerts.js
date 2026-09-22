@@ -1,6 +1,6 @@
 const { dataProcessingAlert } = require('ffc-alerting-utils')
 const { ZERO_VALUE_STATEMENT } = require('../constants/alerts')
-const db = require('../data')
+const db = require('../database')
 
 const sendZeroValueAlerts = async () => {
   const BATCH_SIZE = 500

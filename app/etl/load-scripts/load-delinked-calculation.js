@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 const config = require('../../config')
 const TABLES = require('../../constants/etl-tables')
 const dbConfig = config.dbConfig[config.env]

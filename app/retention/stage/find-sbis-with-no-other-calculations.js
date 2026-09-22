@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const findSbisWithNoOtherCalculations = async (sbis, excludeCalculationIds, transaction) => {
   if (!sbis || sbis.length === 0) {

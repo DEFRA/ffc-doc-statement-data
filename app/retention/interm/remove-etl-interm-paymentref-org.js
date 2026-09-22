@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlIntermPaymentrefOrg = async (paymentRefs, frn, transaction) => {
   await db.etlIntermPaymentrefOrg(transaction ?? undefined).whereIn('paymentRef', paymentRefs).where({ frn }).del()

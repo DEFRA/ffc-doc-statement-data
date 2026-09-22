@@ -25,7 +25,7 @@ jest.mock('../../../app/data', () => ({
   ...mockDb.tables
 }))
 
-const db = require('../../../app/data')
+const db = require('../../../app/database')
 const { deleteETLRecords } = require('../../../app/etl/delete-etl-records')
 
 describe('deleteETLRecords', () => {

@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const findIntermAppCalcResultsDelinkPayments = async (applicationId, frn, transaction) => {
   return db.etlIntermAppCalcResultsDelinkPayment(transaction ?? undefined)

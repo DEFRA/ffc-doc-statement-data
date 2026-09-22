@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const updatePublished = async (sbi, transaction) => {
   const org = (await db.organisation(transaction ?? undefined).where({ sbi }).first()) ?? null

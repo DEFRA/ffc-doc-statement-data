@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageDefraLinks = async (subjectIds, transaction) => {
   await db.etlStageDefraLinks(transaction ?? undefined).whereIn('subjectId', subjectIds).del()

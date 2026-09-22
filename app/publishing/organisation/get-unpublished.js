@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 const { publishingConfig } = require('../../config')
 
 const getUnpublished = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {

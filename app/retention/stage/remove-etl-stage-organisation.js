@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageOrganisation = async (sbis, transaction) => {
   await db.etlStageOrganisation(transaction ?? undefined).whereIn('sbi', sbis).del()

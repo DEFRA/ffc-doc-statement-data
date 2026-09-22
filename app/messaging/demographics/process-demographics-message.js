@@ -1,5 +1,5 @@
 const moment = require('moment')
-const db = require('../../data')
+const db = require('../../database')
 
 const { getSBI } = require('./get-sbi')
 const { prepareAddressData } = require('./prepare-address-data')

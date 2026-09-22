@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const getSubsetCheck = async (scheme) => {
   return (await db.subsetCheck().where({ scheme }).forUpdate().skipLocked().first()) ?? null

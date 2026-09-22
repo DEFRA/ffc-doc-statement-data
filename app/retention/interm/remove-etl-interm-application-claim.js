@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlIntermApplicationClaim = async (agreementId, transaction) => {
   await db.etlIntermApplicationClaim(transaction ?? undefined).where({ agreementId }).del()

@@ -1,4 +1,4 @@
-const db = require('../data')
+const db = require('../database')
 const folders = require('../constants/folders')
 const tables = require('../constants/tables')
 const tableMappings = require('../constants/table-mappings')

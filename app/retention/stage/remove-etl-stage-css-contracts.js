@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageCssContracts = async (contractIds, transaction) => {
   await db.etlStageCssContracts(transaction ?? undefined).whereIn('contractId', contractIds).del()

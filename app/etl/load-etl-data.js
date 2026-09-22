@@ -1,4 +1,4 @@
-const db = require('../data')
+const db = require('../database')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadDelinkedCalculation, loadD365, loadIntermTotalZeroValues, loadZeroValueD365 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')

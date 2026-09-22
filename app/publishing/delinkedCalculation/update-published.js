@@ -1,4 +1,4 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const updatePublished = async (calculationId, transaction) => {
   await db.delinkedCalculation(transaction ?? undefined)
