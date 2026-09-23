@@ -35,7 +35,7 @@
     "ffc-alerting-utils": "1.0.16",
     "ffc-database": "2.0.0",
     "ffc-messaging": "2.10.10",
-    "ffc-pay-etl-framework": "2.0.0",
+    "ffc-pay-etl-framework": "2.0.3",
     "ffc-pay-event-publisher": "1.2.9",
     "joi": "18.2.9",
     "log-timestamp": "0.3.0",
