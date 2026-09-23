@@ -1,20 +1,16 @@
 const { Worker } = require('worker_threads')
-const db = require('../../../../app/data')
-const { getEtlStageLogs, executeQuery, limitConcurrency, processWithWorkers } = require('../../../../app/etl/load-scripts/load-interm-utils')
+const { createKnexMock, createQueryBuilder } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  sequelize: {
-    query: jest.fn()
-  },
-  etlStageLog: {
-    findAll: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      gt: 'gt'
-    }
-  }
+const mockDb = createKnexMock(['etlStageLog'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { getEtlStageLogs, executeQuery, limitConcurrency, processWithWorkers } = require('../../../../app/etl/load-scripts/load-interm-utils')
 
 const createMockWorker = () => {
   const mockWorker = {
@@ -68,13 +64,13 @@ describe('loadIntermUtils', () => {
       ['should return null when no logs found', [], []],
       ['should return log when found', [{ id: 1, file: 'test-folder/export.csv' }], [{ id: 1, file: 'test-folder/export.csv' }]]
     ])('%s', async (_, mockReturn, expected) => {
-      db.etlStageLog.findAll.mockResolvedValue(mockReturn)
+      mockDb.builder.resolves(mockReturn)
       const result = await getEtlStageLogs(startDate, folder)
       expect(result).toEqual(expected)
     })
 
     test('should throw error when multiple logs found', async () => {
-      db.etlStageLog.findAll.mockResolvedValue([{ id: 1 }, { id: 2 }])
+      mockDb.builder.resolves([{ id: 1 }, { id: 2 }])
       await expect(getEtlStageLogs(startDate, folder)).rejects.toThrow('Multiple records found')
     })
 
@@ -85,9 +81,13 @@ describe('loadIntermUtils', () => {
         [{ id: 2, file: 'folder2/export.csv' }]
       ]
 
-      db.etlStageLog.findAll
-        .mockResolvedValueOnce(mockLogs[0])
-        .mockResolvedValueOnce(mockLogs[1])
+      const builder1 = createQueryBuilder()
+      builder1.resolves(mockLogs[0])
+      const builder2 = createQueryBuilder()
+      builder2.resolves(mockLogs[1])
+      mockDb.tables.etlStageLog
+        .mockReturnValueOnce(builder1)
+        .mockReturnValueOnce(builder2)
 
       const result = await getEtlStageLogs(startDate, folders)
       expect(result).toEqual(mockLogs.map(log => log[0]))
@@ -98,15 +98,29 @@ describe('loadIntermUtils', () => {
     test('should execute query with correct parameters', async () => {
       const query = 'SELECT * FROM table'
       const replacements = { param: 'value' }
-      const transaction = {}
+      const transaction = { raw: jest.fn() }
 
       await executeQuery(query, replacements, transaction)
 
-      expect(db.sequelize.query).toHaveBeenCalledWith(query, {
-        replacements,
-        raw: true,
-        transaction
-      })
+      expect(transaction.raw).toHaveBeenCalledWith(query, replacements)
+    })
+
+    test('runs against the client when no transaction is given', async () => {
+      const query = 'SELECT * FROM table'
+      const replacements = { param: 'value' }
+
+      await executeQuery(query, replacements)
+
+      expect(mockDb.knex.raw).toHaveBeenCalledWith(query, replacements)
+    })
+
+    test('defaults replacements to an empty object when none are given', async () => {
+      const query = 'SELECT * FROM table'
+      const transaction = { raw: jest.fn() }
+
+      await executeQuery(query, undefined, transaction)
+
+      expect(transaction.raw).toHaveBeenCalledWith(query, {})
     })
   })
 

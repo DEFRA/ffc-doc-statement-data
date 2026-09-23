@@ -1,4 +1,5 @@
 const config = require('../config')
+const TABLES = require('./etl-tables')
 const dbConfig = config.dbConfig[config.env]
 
 const calculateNewDataQuery = (accountnum, invoicePattern, startOfInvoice) => {
@@ -29,7 +30,7 @@ WITH "newData" AS (
         COALESCE(
           (
             SELECT sv2.settlementvoucher
-            FROM ${dbConfig.schema}."etlStageFinanceDax" sv2
+            FROM ${dbConfig.schema}."${TABLES.etlStageFinanceDax}" sv2
             WHERE
               sv2.settlementvoucher LIKE 'PY%'
               AND sv2.quarter = D.quarter
@@ -42,7 +43,7 @@ WITH "newData" AS (
     END AS "paymentRef",
     D."changeType",
     recid
-FROM ${dbConfig.schema}."etlStageFinanceDax" D
+FROM ${dbConfig.schema}."${TABLES.etlStageFinanceDax}" D
 WHERE LENGTH(accountnum) = ${accountnum}
     AND "etlId" BETWEEN :idFrom AND :idTo
     AND "invoiceid" LIKE '${invoicePattern}'
@@ -52,7 +53,7 @@ WHERE LENGTH(accountnum) = ${accountnum}
 module.exports = (accountnum, invoicePattern, startOfInvoice) => {
   return calculateNewDataQuery(accountnum, invoicePattern, startOfInvoice) + `,
   "updatedRows" AS (
-    UPDATE ${dbConfig.schema}."etlIntermFinanceDax" interm
+    UPDATE ${dbConfig.schema}."${TABLES.etlIntermFinanceDax}" interm
     SET
       transdate = "newData".transdate,
       scheme = "newData".scheme,
@@ -71,7 +72,7 @@ module.exports = (accountnum, invoicePattern, startOfInvoice) => {
       AND interm.recid = "newData".recid
     RETURNING interm.recid
   )
-  INSERT INTO ${dbConfig.schema}."etlIntermFinanceDax" (
+  INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermFinanceDax}" (
     transdate,
     invoiceid,
     scheme,

@@ -1,6 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
+const TABLES = require('../../constants/etl-tables')
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
@@ -19,13 +20,13 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       O."lastUpdatedOn"::date AS "updated",
       O."partyId",
       ${tableAlias}."changeType"
-    FROM ${dbConfig.schema}."etlStageOrganisation" O
-    INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" A ON A.sbi = O.sbi
+    FROM ${dbConfig.schema}."${TABLES.etlStageOrganisation}" O
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlStageBusinessAddressContactV}" A ON A.sbi = O.sbi
     WHERE ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
       ${exclusionCondition}
   ),
   "updatedrows" AS (
-    UPDATE ${dbConfig.schema}."etlIntermOrg" interm
+    UPDATE ${dbConfig.schema}."${TABLES.etlIntermOrg}" interm
     SET
       "addressLine1" = "newData"."addressLine1",
       "addressLine2" = "newData"."addressLine2",
@@ -44,7 +45,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       AND interm."partyId" = "newData"."partyId"
     RETURNING interm."partyId"
   )
-  INSERT INTO ${dbConfig.schema}."etlIntermOrg" (
+  INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermOrg}" (
     "sbi",
     "addressLine1",
     "addressLine2",

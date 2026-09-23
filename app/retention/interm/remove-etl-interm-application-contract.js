@@ -1,12 +1,7 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlIntermApplicationContract = async (applicationId, transaction) => {
-  await db.etlIntermApplicationContract.destroy({
-    where: {
-      applicationId
-    },
-    transaction
-  })
+  await db.etlIntermApplicationContract(transaction ?? undefined).where({ applicationId }).del()
 }
 
 module.exports = {

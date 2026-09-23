@@ -2,7 +2,7 @@ const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageAppsPaymentNotifications } = require('../../../../app/etl/staging/stage-apps-payment-notification')
-const { appsPaymentNotification } = require('../../../../app/constants/tables')
+const { appsPaymentNotification } = require('../../../../app/constants/etl-tables')
 const { Readable } = require('stream')
 
 jest.mock('node:crypto', () => ({ randomUUID: jest.fn() }))
@@ -12,7 +12,7 @@ jest.mock('../../../../app/storage', () => ({
 jest.mock('../../../../app/config/dwh', () => ({
   appsPaymentNotificationDelinked: { folder: 'appsPaymentNotificationFolder' }
 }))
-jest.mock('../../../../app/constants/tables', () => ({
+jest.mock('../../../../app/constants/etl-tables', () => ({
   appsPaymentNotificationTable: 'appsPaymentNotificationTable'
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({

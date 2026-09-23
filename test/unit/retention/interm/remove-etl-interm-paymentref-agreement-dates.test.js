@@ -1,44 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermPaymentrefAgreementDates } = require('../../../../app/retention/interm/remove-etl-interm-paymentref-agreement-dates')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  },
-  etlIntermPaymentrefAgreementDates: {
-    destroy: jest.fn()
-  }
+const mockDb = createKnexMock(['etlIntermPaymentrefAgreementDates'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermPaymentrefAgreementDates } = require('../../../../app/retention/interm/remove-etl-interm-paymentref-agreement-dates')
 
 describe('removeEtlIntermPaymentrefAgreementDates', () => {
   const paymentRefs = ['PAY-001', 'PAY-002', 'PAY-003']
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(3)
   })
 
-  test('calls db.etlIntermPaymentrefAgreementDates.destroy with correct parameters', async () => {
-    db.etlIntermPaymentrefAgreementDates.destroy.mockResolvedValue(3)
-
+  test('calls the etlIntermPaymentrefAgreementDates accessor with correct parameters', async () => {
     await removeEtlIntermPaymentrefAgreementDates(paymentRefs, transaction)
 
-    expect(db.etlIntermPaymentrefAgreementDates.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermPaymentrefAgreementDates.destroy).toHaveBeenCalledWith({
-      where: {
-        paymentRef: {
-          [db.Sequelize.Op.in]: paymentRefs
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermPaymentrefAgreementDates).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('paymentRef', paymentRefs)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermPaymentrefAgreementDates.destroy rejects', async () => {
+  test('calls the etlIntermPaymentrefAgreementDates accessor without a transaction when none is provided', async () => {
+    await removeEtlIntermPaymentrefAgreementDates(paymentRefs)
+
+    expect(mockDb.tables.etlIntermPaymentrefAgreementDates).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermPaymentrefAgreementDates.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermPaymentrefAgreementDates(paymentRefs, transaction)).rejects.toThrow('DB error')
   })

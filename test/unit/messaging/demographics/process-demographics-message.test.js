@@ -1,13 +1,21 @@
 const moment = require('moment')
 const { getAddressLines } = require('../../../../app/messaging/demographics/get-address-lines')
 const { getSBI } = require('../../../../app/messaging/demographics/get-sbi')
-const db = require('../../../../app/data')
-const processDemographicsMessage = require('../../../../app/messaging/demographics/process-demographics-message')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['organisation'])
 
 jest.mock('../../../../app/messaging/demographics/get-address-lines')
 jest.mock('../../../../app/messaging/demographics/get-sbi')
-jest.mock('../../../../app/data')
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
 jest.mock('../../../../app/messaging/create-alerts')
+
+const processDemographicsMessage = require('../../../../app/messaging/demographics/process-demographics-message')
 
 let demographicsData
 
@@ -33,27 +41,26 @@ describe('process demographics message', () => {
   })
 
   test('should create new demographics data if SBI does not exist in db', async () => {
-    db.organisation.findOne.mockResolvedValue(null)
-    db.organisation.create.mockResolvedValue()
+    mockDb.builder.resolves(undefined)
 
     await processDemographicsMessage(demographicsData, receiver)
     expect(getAddressLines).toHaveBeenCalledWith(demographicsData.body.address[0])
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
-    expect(db.organisation.findOne).toHaveBeenCalledWith({ where: { sbi: '123456789' } })
-    expect(db.organisation.create).toHaveBeenCalled()
+    expect(mockDb.tables.organisation).toHaveBeenCalledWith()
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ sbi: '123456789' })
+    expect(mockDb.builder.insert).toHaveBeenCalled()
     expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)
   })
 
   test('should update existing demographics data if SBI exists in db', async () => {
-    db.organisation.findOne.mockResolvedValue({ sbi: '123456789' })
-    db.organisation.update.mockResolvedValue()
+    mockDb.builder.resolves({ sbi: '123456789' })
 
     await processDemographicsMessage(demographicsData, receiver)
 
     expect(getAddressLines).toHaveBeenCalledWith(demographicsData.body.address[0])
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
-    expect(db.organisation.findOne).toHaveBeenCalledWith({ where: { sbi: '123456789' } })
-    expect(db.organisation.update).toHaveBeenCalled()
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ sbi: '123456789' })
+    expect(mockDb.builder.update).toHaveBeenCalled()
     expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)
   })
 
@@ -63,13 +70,13 @@ describe('process demographics message', () => {
 
     expect(getAddressLines).toHaveBeenCalledWith(demographicsData.body.address[0])
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
-    expect(db.organisation.findOne).not.toHaveBeenCalled()
-    expect(db.organisation.update).not.toHaveBeenCalled()
+    expect(mockDb.builder.where).not.toHaveBeenCalled()
+    expect(mockDb.builder.update).not.toHaveBeenCalled()
   })
 
   test('should handle errors gracefully', async () => {
     const error = new Error('Test Error')
-    db.organisation.findOne.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     console.error = jest.fn()
 

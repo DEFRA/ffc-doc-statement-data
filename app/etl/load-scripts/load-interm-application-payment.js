@@ -1,6 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
+const TABLES = require('../../constants/etl-tables')
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const loadIntermApplicationPayment = async (startDate, transaction) => {
@@ -28,10 +29,10 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         substring(APN."invoiceNumber", position('A' in APN."invoiceNumber") + 2, length(APN."invoiceNumber") - (position('A' in APN."invoiceNumber") + 1))::integer AS "invoiceId",
         "idClcHeader",
         ${tableAlias}."changeType"
-      FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
-      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CA 
+      FROM ${dbConfig.schema}."${TABLES.etlStageAppsPaymentNotification}" APN
+      INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" CA
         ON APN."applicationId" = CA."applicationId"
-      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CL 
+      INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" CL
         ON CA."contractId" = CL."contractId"
       WHERE CA."dataSourceSCode" = 'CAPCLM'
         AND CL."dataSourceSCode" = '000001'
@@ -40,7 +41,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         ${exclusionCondition}
     ),
     "updatedrows" AS (
-      UPDATE ${dbConfig.schema}."etlIntermApplicationPayment" interm
+      UPDATE ${dbConfig.schema}."${TABLES.etlIntermApplicationPayment}" interm
       SET
         "invoiceNumber" = newdata."invoiceNumber",
         "invoiceId" = newdata."invoiceId",
@@ -51,7 +52,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
         AND interm."idClcHeader" = newdata."idClcHeader"
       RETURNING interm."applicationId", interm."idClcHeader"
     )
-    INSERT INTO ${dbConfig.schema}."etlIntermApplicationPayment" (
+    INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermApplicationPayment}" (
       "applicationId",
       "invoiceNumber",
       "invoiceId",

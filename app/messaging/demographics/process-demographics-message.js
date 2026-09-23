@@ -1,5 +1,5 @@
 const moment = require('moment')
-const db = require('../../data')
+const db = require('../../database')
 
 const { getSBI } = require('./get-sbi')
 const { prepareAddressData } = require('./prepare-address-data')
@@ -27,14 +27,12 @@ const processDemographicsMessage = async (message, receiver) => {
 
     validateDemographicsData(demographicsData)
 
-    const existingSBI = await db.organisation.findOne({ where: { sbi: demographicsData.sbi } })
+    const existingSBI = (await db.organisation().where({ sbi: demographicsData.sbi }).first()) ?? null
 
     if (existingSBI) {
-      await db.organisation.update(demographicsData, {
-        where: { sbi: existingSBI.sbi }
-      })
+      await db.organisation().where({ sbi: existingSBI.sbi }).update(demographicsData)
     } else {
-      await db.organisation.create(demographicsData)
+      await db.organisation().insert(demographicsData)
     }
 
     console.log('Demographics update processed')

@@ -14,9 +14,10 @@ jest.mock('ffc-messaging', () => {
 jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
 const { publishingConfig } = require('../../../app/config')
-const db = require('../../../app/data')
+const db = require('../../../app/database')
 
 const publish = require('../../../app/publishing')
+const { truncate } = require('../../helpers/truncate')
 
 const { mockOrganisation1, mockOrganisation2 } = require('../../mocks/organisation')
 
@@ -30,16 +31,16 @@ describe('sendOrganisationUpdates', () => {
 
   afterEach(async () => {
     jest.clearAllMocks()
-    await db.sequelize.truncate({ cascade: true })
+    await truncate()
   })
 
   afterAll(async () => {
-    await db.sequelize.close()
+    await db.close()
   })
 
   describe('whenOrganisationIsUnpublished', () => {
     beforeEach(async () => {
-      await db.organisation.bulkCreate([mockOrganisation1, mockOrganisation2])
+      await db.organisation().insert([mockOrganisation1, mockOrganisation2])
     })
 
     test('should call sendMessage once', async () => {
@@ -80,7 +81,7 @@ describe('sendOrganisationUpdates', () => {
 
     test('should update published date', async () => {
       await publish.start()
-      const organisation = await db.organisation.findByPk(123456789)
+      const organisation = await db.organisation().where({ sbi: 123456789 }).first()
       expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
     })
 
@@ -100,24 +101,24 @@ describe('sendOrganisationUpdates', () => {
   describe('whenMultipleOrganisationsAreUnpublished', () => {
     test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+      await db.organisation().insert([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisation().whereNull('published')
 
       await publish.start()
 
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      const unpublishedAfter = await db.organisation().whereNull('published')
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })
 
     test('should process all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation.bulkCreate([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation.findAll({ where: { published: null } })
+      await db.organisation().insert([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisation().whereNull('published')
 
       await publish.start()
 
-      const unpublishedAfter = await db.organisation.findAll({ where: { published: null } })
+      const unpublishedAfter = await db.organisation().whereNull('published')
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })

@@ -1,11 +1,9 @@
 const { removeAgreementData } = require('../../../app/retention')
-const db = require('../../../app/data')
+const db = require('../../../app/database')
 const { DELINKED } = require('../../../app/constants/scheme-ids')
 
-jest.mock('../../../app/data', () => ({
-  sequelize: {
-    transaction: jest.fn()
-  }
+jest.mock('../../../app/database', () => ({
+  transaction: jest.fn()
 }))
 
 jest.mock('../../../app/retention/find-delinked-calculations', () => ({
@@ -122,13 +120,13 @@ describe('removeAgreementData', () => {
       commit: jest.fn().mockResolvedValue(),
       rollback: jest.fn().mockResolvedValue()
     }
-    db.sequelize.transaction.mockResolvedValue(transaction)
+    db.transaction.mockResolvedValue(transaction)
   })
 
   test('commits transaction and returns early if schemeId is not DELINKED', async () => {
     await removeAgreementData(retentionDataNotDelinked)
 
-    expect(db.sequelize.transaction).toHaveBeenCalledTimes(1)
+    expect(db.transaction).toHaveBeenCalledTimes(1)
     expect(transaction.commit).toHaveBeenCalledTimes(1)
     expect(transaction.rollback).not.toHaveBeenCalled()
 
@@ -140,7 +138,7 @@ describe('removeAgreementData', () => {
 
     await removeAgreementData(retentionDataDelinked)
 
-    expect(db.sequelize.transaction).toHaveBeenCalledTimes(1)
+    expect(db.transaction).toHaveBeenCalledTimes(1)
     expect(findDelinkedCalculations).toHaveBeenCalledWith(
       retentionDataDelinked.simplifiedAgreementNumber,
       retentionDataDelinked.frn,
@@ -215,7 +213,7 @@ describe('removeAgreementData', () => {
 
     await removeAgreementData(retentionDataDelinked)
 
-    expect(db.sequelize.transaction).toHaveBeenCalledTimes(1)
+    expect(db.transaction).toHaveBeenCalledTimes(1)
 
     expect(findDelinkedCalculations).toHaveBeenCalledWith(
       retentionDataDelinked.simplifiedAgreementNumber,

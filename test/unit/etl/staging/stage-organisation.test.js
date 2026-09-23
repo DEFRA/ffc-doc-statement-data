@@ -2,7 +2,7 @@ const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
 const { runEtlProcess } = require('../../../../app/etl/run-etl-process')
 const { stageOrganisation } = require('../../../../app/etl/staging/stage-organisation')
-const { organisationDelinked } = require('../../../../app/constants/tables')
+const { organisationDelinked } = require('../../../../app/constants/etl-tables')
 const { Readable } = require('stream')
 
 jest.mock('node:crypto', () => ({ randomUUID: jest.fn() }))
@@ -12,7 +12,7 @@ jest.mock('../../../../app/storage', () => ({
 jest.mock('../../../../app/config/dwh', () => ({
   organisationDelinked: { folder: 'organisationFolder' }
 }))
-jest.mock('../../../../app/constants/tables', () => ({
+jest.mock('../../../../app/constants/etl-tables', () => ({
   organisationDelinked: 'organisationTable'
 }))
 jest.mock('../../../../app/etl/run-etl-process', () => ({

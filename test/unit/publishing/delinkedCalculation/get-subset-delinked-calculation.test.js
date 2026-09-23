@@ -1,16 +1,12 @@
-const mockFindAll = jest.fn()
-const mockCol = jest.fn((col) => `col:${col}`)
-const mockOp = {
-  and: 'AND',
-  or: 'OR',
-  in: 'IN',
-  lt: 'LT'
-}
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  delinkedCalculation: { findAll: mockFindAll },
-  Sequelize: { Op: mockOp },
-  sequelize: { col: mockCol }
+const mockDb = createKnexMock(['delinkedCalculation'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
 
 const getSubsetDelinkedCalculation = require('../../../../app/publishing/delinkedCalculation/get-subset-delinked-calculation')
@@ -21,7 +17,7 @@ describe('getSubsetDelinkedCalculation', () => {
   })
 
   test('returns mapped unpublished delinked calculations', async () => {
-    mockFindAll.mockResolvedValue([
+    mockDb.builder.resolves([
       {
         applicationReference: 123,
         calculationReference: 456,
@@ -35,18 +31,36 @@ describe('getSubsetDelinkedCalculation', () => {
 
     const result = await getSubsetDelinkedCalculation([456])
 
-    expect(mockFindAll).toHaveBeenCalledWith(expect.objectContaining({
-      lock: true,
-      skipLocked: true,
-      where: expect.any(Object),
-      attributes: expect.arrayContaining([
-        ['applicationId', 'applicationReference'],
-        ['calculationId', 'calculationReference'],
-        'sbi',
-        'frn'
-      ]),
-      raw: true
-    }))
+    expect(mockDb.tables.delinkedCalculation).toHaveBeenCalledWith()
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('calculationId', [456])
+    expect(mockDb.builder.whereNull).toHaveBeenCalledWith('datePublished')
+    expect(mockDb.builder.orWhereRaw).toHaveBeenCalledWith('"datePublished" < "updated"')
+    expect(mockDb.builder.select).toHaveBeenCalledWith(
+      { applicationReference: 'applicationId' },
+      { calculationReference: 'calculationId' },
+      'sbi',
+      'frn',
+      'paymentBand1',
+      'paymentBand2',
+      'paymentBand3',
+      'paymentBand4',
+      'percentageReduction1',
+      'percentageReduction2',
+      'percentageReduction3',
+      'percentageReduction4',
+      'progressiveReductions1',
+      'progressiveReductions2',
+      'progressiveReductions3',
+      'progressiveReductions4',
+      'referenceAmount',
+      'totalProgressiveReduction',
+      'totalDelinkedPayment',
+      'paymentAmountCalculated',
+      'datePublished',
+      'updated'
+    )
+    expect(mockDb.builder.forUpdate).toHaveBeenCalled()
+    expect(mockDb.builder.skipLocked).toHaveBeenCalled()
 
     expect(result).toEqual([
       {
@@ -65,7 +79,7 @@ describe('getSubsetDelinkedCalculation', () => {
 
   test('logs error and skips item if calculationReference is missing', async () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockFindAll.mockResolvedValue([
+    mockDb.builder.resolves([
       {
         applicationReference: 123,
         calculationReference: null,
@@ -84,7 +98,7 @@ describe('getSubsetDelinkedCalculation', () => {
   })
 
   test('returns empty array if no results', async () => {
-    mockFindAll.mockResolvedValue([])
+    mockDb.builder.resolves([])
 
     const result = await getSubsetDelinkedCalculation([1, 2, 3])
     expect(result).toEqual([])

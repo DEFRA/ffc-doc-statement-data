@@ -1,7 +1,7 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { appCalcResultsDelinkPayments } = require('../../constants/tables')
+const { appCalcResultsDelinkPayments } = require('../../constants/etl-tables')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 
 const stageAppCalcResultsDelinkPayments = async () => {
