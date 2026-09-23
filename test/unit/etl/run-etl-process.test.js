@@ -357,7 +357,7 @@ describe('runEtlProcess', () => {
     expect(mockDb.builder.update).toHaveBeenCalled()
   })
 
-  test('counts existing rows and finds the max etl id via the table accessor, and runs the adapted sequelize query, when configured', async () => {
+  test('counts existing rows and finds the max etl id via the table accessor, and passes the db connection to the framework, when configured', async () => {
     const mockFileData = 'first line\nsecond line\nthird line\n'
     const mockFileStream = Readable.from([mockFileData])
     storage.deleteFile.mockResolvedValue()
@@ -386,10 +386,7 @@ describe('runEtlProcess', () => {
     }
 
     Etl.Etl.mockImplementation(() => mockEtl)
-    Connections.ProvidedConnection.mockImplementation(async (cfg) => {
-      cfg.sequelize.query('SELECT 1')
-      return {}
-    })
+    Connections.ProvidedConnection.mockResolvedValue({})
     Loaders.CSVLoader.mockImplementation(() => {})
     Transformers.FakerTransformer.mockImplementation(() => {})
     Transformers.StringReplaceTransformer.mockImplementation(() => {})
@@ -407,7 +404,8 @@ describe('runEtlProcess', () => {
 
     expect(accessorBuilder.count).toHaveBeenCalledWith({ count: '*' })
     expect(accessorBuilder.max).toHaveBeenCalledWith({ max: 'etlId' })
-    expect(mockDb.knex.raw).toHaveBeenCalledWith('SELECT 1')
+    expect(Connections.ProvidedConnection).toHaveBeenCalledWith({ connectionname: 'postgresConnection', connection: db })
+    expect(Destinations.PostgresDestination).toHaveBeenCalledWith(expect.objectContaining({ connectionname: 'postgresConnection' }))
 
     delete db.etlStageApplicationDetail
   })

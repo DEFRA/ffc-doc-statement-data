@@ -96,11 +96,8 @@ function runEtlFlow ({
         const etl = new Etl.Etl()
         const etlFlow = etl
           .connection(await Connections.ProvidedConnection({
-            name: 'postgresConnection',
-            // ffc-pay-etl-framework's PostgresDestination only ever calls `.query(sql)`
-            // on this connection, so a thin adapter over the knex client is enough -
-            // it does not need to be a real Sequelize instance.
-            sequelize: { query: (sql) => db.client.raw(sql) }
+            connectionname: 'postgresConnection',
+            connection: db
           }))
           .loader(new Loaders.CSVLoader({
             stream: freshFileStream,
@@ -123,7 +120,7 @@ function runEtlFlow ({
         etlFlow
           .destination(new Destinations.PostgresDestination({
             table,
-            connection: 'postgresConnection',
+            connectionname: 'postgresConnection',
             mapping,
             includeErrors: false,
             schema: dbConfig.schema,
