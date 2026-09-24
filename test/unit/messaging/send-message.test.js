@@ -1,18 +1,11 @@
-const mockSendMessage = jest.fn()
-const mockCloseConnection = jest.fn()
-jest.mock('ffc-messaging', () => {
-  return {
-    MessageSender: jest.fn().mockImplementation(() => {
-      return {
-        sendMessage: mockSendMessage,
-        closeConnection: mockCloseConnection
-      }
-    })
-  }
-})
+jest.mock('../../../app/messaging/service-bus', () => ({
+  getSender: jest.fn(),
+  sendMessage: jest.fn()
+}))
 
 jest.mock('../../../app/messaging/create-message')
 const createMessage = require('../../../app/messaging/create-message')
+const { getSender, sendMessage: sendServiceBusMessage } = require('../../../app/messaging/service-bus')
 
 const sendMessage = require('../../../app/messaging/send-message')
 
@@ -29,6 +22,8 @@ describe('send message', () => {
     }
     options = {}
 
+    getSender.mockReturnValue({ close: jest.fn() })
+    sendServiceBusMessage.mockResolvedValue()
     createMessage.mockReturnValue({
       body,
       type,
@@ -51,53 +46,46 @@ describe('send message', () => {
     expect(createMessage).toHaveBeenCalledTimes(1)
   })
 
-  test('should call createMessage with statement, config.source and options', async () => {
+  test('should call createMessage with statement, type, config.source and options', async () => {
     await sendMessage(statement, type, config.source, config, options)
     expect(createMessage).toHaveBeenCalledWith(statement, type, config.source, options)
   })
 
-  test('should call mockSendMessage', async () => {
+  test('should call getSender', async () => {
     await sendMessage(statement, type, config.source, config, options)
-    expect(mockSendMessage).toHaveBeenCalled()
+    expect(getSender).toHaveBeenCalledWith(config)
   })
 
-  test('should call mockSendMessage once', async () => {
+  test('should call getSender once', async () => {
     await sendMessage(statement, type, config.source, config, options)
-    expect(mockSendMessage).toHaveBeenCalledTimes(1)
+    expect(getSender).toHaveBeenCalledTimes(1)
   })
 
-  test('should call mockSendMessage with message', async () => {
+  test('should call sendServiceBusMessage', async () => {
+    await sendMessage(statement, type, config.source, config, options)
+    expect(sendServiceBusMessage).toHaveBeenCalled()
+  })
+
+  test('should call sendServiceBusMessage once', async () => {
+    await sendMessage(statement, type, config.source, config, options)
+    expect(sendServiceBusMessage).toHaveBeenCalledTimes(1)
+  })
+
+  test('should call sendServiceBusMessage with sender and message', async () => {
+    const sender = getSender()
     const message = createMessage()
     await sendMessage(statement, type, config.source, config, options)
-    expect(mockSendMessage).toHaveBeenCalledWith(message)
+    expect(sendServiceBusMessage).toHaveBeenCalledWith(sender, message)
   })
 
-  test('should call mockCloseConnection', async () => {
-    await sendMessage(statement, type, config.source, config, options)
-    expect(mockCloseConnection).toHaveBeenCalled()
-  })
-
-  test('should call mockCloseConnection once', async () => {
-    await sendMessage(statement, type, config.source, config, options)
-    expect(mockCloseConnection).toHaveBeenCalledTimes(1)
-  })
-
-  test('should throw if sendMessage rejects', async () => {
-    mockSendMessage.mockRejectedValueOnce(new Error('send error'))
+  test('should throw if sendServiceBusMessage rejects', async () => {
+    sendServiceBusMessage.mockRejectedValueOnce(new Error('send error'))
     await expect(sendMessage(statement, type, config.source, config, options)).rejects.toThrow('send error')
-    expect(mockCloseConnection).not.toHaveBeenCalled()
-  })
-
-  test('should throw if closeConnection rejects', async () => {
-    mockCloseConnection.mockRejectedValueOnce(new Error('close error'))
-    await expect(sendMessage(statement, type, config.source, config, options)).rejects.toThrow('close error')
-    expect(mockSendMessage).toHaveBeenCalled()
   })
 
   test('should propagate error if createMessage throws', async () => {
     createMessage.mockImplementationOnce(() => { throw new Error('create error') })
     await expect(sendMessage(statement, type, config.source, config, options)).rejects.toThrow('create error')
-    expect(mockSendMessage).not.toHaveBeenCalled()
-    expect(mockCloseConnection).not.toHaveBeenCalled()
+    expect(sendServiceBusMessage).not.toHaveBeenCalled()
   })
 })

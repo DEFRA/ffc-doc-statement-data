@@ -1,31 +1,56 @@
-const { MessageReceiver } = require('ffc-messaging')
 const config = require('../config')
+const { createServiceBusClient, createReceiver, subscribeReceiver, closeSenders } = require('./service-bus')
 const processDemographicsMessage = require('./demographics/process-demographics-message')
 const { processRetentionMessage } = require('./process-retention-message')
+const errorHandler = (error) => {
+  console.error('Error occurred:', error)
+}
+
+let sbClient
 let updateReceiver
 let retentionReceiver
 
 const start = async () => {
+  sbClient = createServiceBusClient(config.messageQueue)
+
   if (config.demographicsActive) {
-    const updateAction = message => processDemographicsMessage(message, updateReceiver)
-    updateReceiver = new MessageReceiver(config.updatesSubscription, updateAction)
-    await updateReceiver.subscribe()
+    updateReceiver = createReceiver(sbClient, config.updatesSubscription)
+    subscribeReceiver(updateReceiver, processDemographicsMessage, errorHandler, config.updatesSubscription)
     console.info('Receiver ready to receive demographics updates')
   } else {
     console.info('Demographics updates not live in this environment')
   }
 
-  const retentionAction = message => processRetentionMessage(message, retentionReceiver)
-  retentionReceiver = new MessageReceiver(config.retentionSubscription, retentionAction)
-  await retentionReceiver.subscribe()
+  retentionReceiver = createReceiver(sbClient, config.retentionSubscription)
+  subscribeReceiver(retentionReceiver, processRetentionMessage, errorHandler, config.retentionSubscription)
   console.info('Retention receiver ready')
 }
 
 const stop = async () => {
+  await closeSenders()
+
   if (updateReceiver) {
-    await updateReceiver.closeConnection()
+    try {
+      await updateReceiver.close()
+    } catch (error) {
+      console.error('Error occurred while closing update receiver:', error)
+    }
   }
-  await retentionReceiver.closeConnection()
+  if (retentionReceiver) {
+    try {
+      await retentionReceiver.close()
+    } catch (error) {
+      console.error('Error occurred while closing retention receiver:', error)
+    }
+  }
+
+  if (sbClient) {
+    try {
+      await sbClient.close()
+    } catch (error) {
+      console.error('Error occurred while closing Service Bus client:', error)
+    }
+  }
 }
 
 module.exports = { start, stop }

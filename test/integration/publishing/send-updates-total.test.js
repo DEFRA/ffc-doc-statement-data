@@ -1,15 +1,9 @@
-const mockSendMessage = jest.fn()
-const mockCloseConnection = jest.fn()
-jest.mock('ffc-messaging', () => {
-  return {
-    MessageSender: jest.fn().mockImplementation(() => {
-      return {
-        sendMessage: mockSendMessage,
-        closeConnection: mockCloseConnection
-      }
-    })
-  }
-})
+jest.mock('../../../app/messaging/service-bus', () => ({
+  getSender: jest.fn(() => ({ close: jest.fn() })),
+  sendMessage: jest.fn()
+}))
+
+const { sendMessage: mockSendMessage } = require('../../../app/messaging/service-bus')
 
 jest.mock('../../../app/publishing/subset/update-subset-check', () => jest.fn().mockResolvedValue(true))
 
@@ -60,22 +54,22 @@ describe('sendOrganisationUpdates', () => {
       ['postcode', 'postcode']
     ])('should publish organisation %s', async (_, field) => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body[field]).toBe(mockOrganisation1[field])
+      expect(mockSendMessage.mock.calls[0][1].body[field]).toBe(mockOrganisation1[field])
     })
 
     test('should publish organisation updated date', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.updated).toBe(mockOrganisation1.updated.toISOString())
+      expect(mockSendMessage.mock.calls[0][1].body.updated).toBe(mockOrganisation1.updated.toISOString())
     })
 
     test('should publish type', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.type).toBe('organisation')
+      expect(mockSendMessage.mock.calls[0][1].body.type).toBe('organisation')
     })
 
     test('should not publish null published value', async () => {
       await publish.start()
-      expect(mockSendMessage.mock.calls[0][0].body.published).toBeUndefined()
+      expect(mockSendMessage.mock.calls[0][1].body.published).toBeUndefined()
     })
 
     test('should update published date', async () => {
