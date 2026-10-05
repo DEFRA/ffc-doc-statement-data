@@ -1,44 +1,55 @@
-const mockSubscribe = jest.fn()
-const mockCloseConnection = jest.fn()
-
-const MockMessageReceiver = jest.fn().mockImplementation(() => {
-  return {
-    subscribe: mockSubscribe,
-    closeConnection: mockCloseConnection
-  }
-})
-
-jest.mock('ffc-messaging', () => {
-  return {
-    MessageReceiver: MockMessageReceiver
-  }
-})
+jest.mock('../../../app/messaging/service-bus', () => ({
+  createServiceBusClient: jest.fn(),
+  createReceiver: jest.fn(),
+  subscribeReceiver: jest.fn(),
+  closeSenders: jest.fn()
+}))
 
 jest.mock('../../../app/messaging/demographics/process-demographics-message')
 
 const config = require('../../../app/config')
+const { createServiceBusClient, createReceiver, subscribeReceiver, closeSenders } = require('../../../app/messaging/service-bus')
 const { start, stop } = require('../../../app/messaging')
+
+let mockSbClient
+let mockUpdateReceiver
+let mockRetentionReceiver
 
 beforeEach(async () => {
   config.demographicsActive = true
-  jest.clearAllMocks()
+  jest.resetAllMocks()
+
+  mockSbClient = { close: jest.fn() }
+  mockUpdateReceiver = { close: jest.fn() }
+  mockRetentionReceiver = { close: jest.fn() }
+
+  createServiceBusClient.mockReturnValue(mockSbClient)
+  createReceiver.mockImplementation((sbClient, subscriptionConfig) => {
+    return subscriptionConfig === config.updatesSubscription ? mockUpdateReceiver : mockRetentionReceiver
+  })
 })
 
 describe('messaging start', () => {
+  test('creates service bus client', async () => {
+    await start()
+    expect(createServiceBusClient).toHaveBeenCalledWith(config.messageQueue)
+  })
+
   test('creates two message receivers when demographicsActive is true', async () => {
     await start()
-    expect(MockMessageReceiver).toHaveBeenCalledTimes(2)
+    expect(createReceiver).toHaveBeenCalledTimes(2)
   })
 
-  test('subscribes to message receivers twice when demographicsActive is true', async () => {
+  test('subscribes to message receivers when demographicsActive is true', async () => {
     await start()
-    expect(mockSubscribe).toHaveBeenCalledTimes(2)
+    expect(subscribeReceiver).toHaveBeenCalledTimes(2)
   })
 
-  test('does not create new message receiver when demographicsActive is false, subscribes to retention only', async () => {
+  test('does not create demographics receiver when demographicsActive is false, subscribes to retention only', async () => {
     config.demographicsActive = false
     await start()
-    expect(MockMessageReceiver).toHaveBeenCalledTimes(1)
+    expect(createReceiver).toHaveBeenCalledTimes(1)
+    expect(subscribeReceiver).toHaveBeenCalledTimes(1)
   })
 
   test('logs message when demographicsActive is false', async () => {
@@ -50,9 +61,12 @@ describe('messaging start', () => {
 })
 
 describe('messaging stop', () => {
-  test('closes both connections if receiver exists', async () => {
+  test('closes senders, both receivers and client if they exist', async () => {
     await start()
     await stop()
-    expect(mockCloseConnection).toHaveBeenCalledTimes(2)
+    expect(closeSenders).toHaveBeenCalled()
+    expect(mockUpdateReceiver.close).toHaveBeenCalled()
+    expect(mockRetentionReceiver.close).toHaveBeenCalled()
+    expect(mockSbClient.close).toHaveBeenCalled()
   })
 })

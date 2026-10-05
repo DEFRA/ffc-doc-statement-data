@@ -27,6 +27,7 @@ const value = result.value
 value.isDev = value.env === 'development'
 value.isTest = value.env === 'test'
 value.isProd = value.env === 'production'
+value.messageQueue = mqConfig.messageQueue
 value.dataTopic = mqConfig.dataTopic
 value.updatesSubscription = mqConfig.updatesSubscription
 value.retentionSubscription = mqConfig.retentionSubscription

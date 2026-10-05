@@ -72,7 +72,10 @@ const retentionSubscription = { ...mqResult.value.messageQueue, ...mqResult.valu
 const alertTopic = { ...mqResult.value.messageQueue, ...mqResult.value.alertTopic }
 const publishEtlProcessError = { ...mqResult.value.messageQueue, ...mqResult.value.publishEtlProcessErrorTopic }
 
+const messageQueue = mqResult.value.messageQueue
+
 module.exports = {
+  messageQueue,
   dataTopic,
   updatesSubscription,
   retentionSubscription,

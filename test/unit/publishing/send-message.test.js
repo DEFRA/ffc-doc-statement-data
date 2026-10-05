@@ -1,36 +1,38 @@
 const config = require('../../../app/config')
 const createMessage = require('../../../app/publishing/create-message')
-const { MessageSender } = require('ffc-messaging')
 
-jest.mock('ffc-messaging', () => {
-  return {
-    MessageSender: jest.fn().mockImplementation(() => {
-      return {
-        sendMessage: jest.fn().mockResolvedValue(),
-        closeConnection: jest.fn().mockResolvedValue()
-      }
-    })
-  }
-})
+jest.mock('../../../app/messaging/service-bus', () => ({
+  getSender: jest.fn(),
+  sendMessage: jest.fn()
+}))
 
 jest.mock('../../../app/config', () => ({
-  dataTopic: 'test-topic'
+  dataTopic: {
+    host: 'test-host',
+    address: 'test-topic'
+  }
 }))
 
 jest.mock('../../../app/publishing/create-message', () =>
   jest.fn((body, type) => ({ body, type }))
 )
 
+const { getSender, sendMessage: sendServiceBusMessage } = require('../../../app/messaging/service-bus')
 const sendMessage = require('../../../app/publishing/send-message')
 const { closeConnection } = sendMessage
 
 describe('send-message.js', () => {
   let consoleLogSpy
+  let mockSender
 
   beforeEach(async () => {
+    jest.clearAllMocks()
+    mockSender = {
+      close: jest.fn().mockResolvedValue()
+    }
+    getSender.mockReturnValue(mockSender)
+    sendServiceBusMessage.mockResolvedValue()
     await closeConnection()
-    MessageSender.mockClear()
-    createMessage.mockClear()
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
   })
 
@@ -45,11 +47,8 @@ describe('send-message.js', () => {
     await sendMessage(body, type)
 
     expect(createMessage).toHaveBeenCalledWith(body, type)
-    expect(MessageSender).toHaveBeenCalledWith(config.dataTopic)
-
-    const messageSenderInstance = MessageSender.mock.results[0].value
-    const message = { body, type }
-    expect(messageSenderInstance.sendMessage).toHaveBeenCalledWith(message)
+    expect(getSender).toHaveBeenCalledWith(config.dataTopic)
+    expect(sendServiceBusMessage).toHaveBeenCalledWith(mockSender, { body, type })
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
       'Sent total data — sbi: 123, frn: 456, invoiceNumber: INV001'
@@ -89,13 +88,12 @@ describe('send-message.js', () => {
     )
   })
 
-  test('closeConnection calls sender.closeConnection and resets sender', async () => {
+  test('closeConnection calls sender.close and resets sender', async () => {
     await sendMessage({ sbi: 123, frn: 456 }, 'total')
-    const messageSenderInstance = MessageSender.mock.results[0].value
     await closeConnection()
-    expect(messageSenderInstance.closeConnection).toHaveBeenCalled()
+    expect(mockSender.close).toHaveBeenCalled()
 
     await sendMessage({ sbi: 789, frn: 321 }, 'total')
-    expect(MessageSender.mock.results[0].value).not.toBe(MessageSender.mock.results[1].value)
+    expect(getSender).toHaveBeenCalledTimes(2)
   })
 })
