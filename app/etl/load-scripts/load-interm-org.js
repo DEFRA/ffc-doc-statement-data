@@ -100,7 +100,7 @@ const loadIntermOrg = async (startDate, transaction) => {
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    await processWithWorkers({ query: null, batchSize, idFrom: log.idFrom, idTo: log.idTo, transaction, recordType: `org records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias })
+    await processWithWorkers({ query: null, batchSize, idFrom: log.idFrom, idTo: log.idTo, transaction, recordType: `org records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias }) // NOSONAR - must run sequentially
 
     console.log(`Processed org records for folder ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`

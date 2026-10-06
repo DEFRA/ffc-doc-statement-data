@@ -46,7 +46,7 @@ const runEtlProcess = async ({
 
       const delay = baseDelay * 2 ** (attempt - 1)
       console.warn(`Retrying ETL process (attempt ${attempt} of ${maxRetries}) after ${delay}ms due to error: ${error.message}`)
-      await new Promise(resolve => setTimeout(resolve, delay))
+      await new Promise(resolve => setTimeout(resolve, delay)) // NOSONAR - must run sequentially
     }
   }
 
@@ -145,7 +145,7 @@ function runEtlFlow ({
         await publishEtlProcessError(file, e)
         reject(e)
       }
-    })()
+    })().catch(reject)
   })
 }
 
