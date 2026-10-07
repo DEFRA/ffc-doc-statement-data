@@ -39,7 +39,7 @@ const sendZeroValueAlerts = async () => {
   // D365
   let lastD365Id = 0
   while (true) {
-    const d365Unsent = await db.zeroValueD365() // NOSONAR - must run sequentially
+    const d365Unsent = await db.zeroValueD365()
       .where({ alertSent: false })
       .where('d365Id', '>', lastD365Id)
       .orderBy('d365Id', 'asc')
@@ -47,7 +47,7 @@ const sendZeroValueAlerts = async () => {
     if (!d365Unsent.length) {
       break
     }
-    await processBatch(d365Unsent, 'zeroValueD365', 'D365') // NOSONAR - must run sequentially
+    await processBatch(d365Unsent, 'zeroValueD365', 'D365')
     lastD365Id = d365Unsent[d365Unsent.length - 1].d365Id
   }
 }

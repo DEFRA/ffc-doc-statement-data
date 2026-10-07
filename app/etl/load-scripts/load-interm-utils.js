@@ -44,7 +44,7 @@ const limitConcurrency = async (promises, maxConcurrent) => {
     executing.push(p)
 
     if (executing.length >= maxConcurrent) {
-      await Promise.race(executing) // NOSONAR
+      await Promise.race(executing)
     }
   }
 
@@ -108,7 +108,7 @@ const processBatchWithRetries = async (options, i, batchTo, semaphore, maxRetrie
         workerData.params = {}
       }
 
-      await runWorker(workerData, i, batchTo, semaphore) // NOSONAR - must run sequentially
+      await runWorker(workerData, i, batchTo, semaphore)
       success = true
     } catch (error) {
       attempt++
@@ -118,7 +118,7 @@ const processBatchWithRetries = async (options, i, batchTo, semaphore, maxRetrie
       }
       const delay = baseDelay * 2 ** (attempt - 1)
       console.warn(`Retrying batch ${i}-${batchTo} (attempt ${attempt} of ${maxRetries}) after ${delay}ms due to error: ${error.message}`)
-      await new Promise(resolve => setTimeout(resolve, delay)) // NOSONAR - must run sequentially
+      await new Promise(resolve => setTimeout(resolve, delay))
     }
   }
 }
@@ -148,9 +148,9 @@ const processWithWorkers = async (options, maxRetries = 3, baseDelay = 500) => {
 
   for (let i = idFrom; i <= idTo; i += batchSize) {
     const batchTo = Math.min(i + batchSize - 1, idTo)
-    await acquireSemaphore(semaphore) // NOSONAR - must run sequentially
+    await acquireSemaphore(semaphore)
     console.log(`Processing ${recordType} records ${i} to ${batchTo}`)
-    await processBatchWithRetries(options, i, batchTo, semaphore, maxRetries, baseDelay) // NOSONAR - must run sequentially
+    await processBatchWithRetries(options, i, batchTo, semaphore, maxRetries, baseDelay)
   }
 }
 

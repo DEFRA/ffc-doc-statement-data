@@ -75,7 +75,7 @@ const loadIntermApplicationPayment = async (startDate, transaction) => {
     const folder = folderMatch ? folderMatch[1] : ''
     const tableAlias = folderToAliasMap[folder]
 
-    await processWithWorkers({ query: null, batchSize, idFrom: log.idFrom, idTo: log.idTo, transaction, recordType: `application payment records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias }) // NOSONAR - must run sequentially
+    await processWithWorkers({ query: null, batchSize, idFrom: log.idFrom, idTo: log.idTo, transaction, recordType: `application payment records for folder ${folder}`, queryTemplate, exclusionScript, tableAlias })
 
     console.log(`Processed application payment records for ${folder}`)
     exclusionScript += ` AND ${tableAlias}."etlId" NOT BETWEEN ${log.idFrom} AND ${log.idTo}`

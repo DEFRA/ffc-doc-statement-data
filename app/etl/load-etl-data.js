@@ -27,13 +27,13 @@ const loadETLData = async (startDate) => {
         attempt++
         if (attempt > maxRetries) {
           console.error(`Error in ${name} after ${maxRetries} retries: ${error.message}`)
-          await publishEtlProcessError(name, error) // NOSONAR - must run sequentially
+          await publishEtlProcessError(name, error)
           throw error
         }
 
         const delay = baseDelay * 2 ** (attempt - 1)
         console.warn(`Retrying ${name} (attempt ${attempt} of ${maxRetries}) after ${delay}ms due to error: ${error.message}`)
-        await new Promise(resolve => setTimeout(resolve, delay)) // NOSONAR - must run sequentially
+        await new Promise(resolve => setTimeout(resolve, delay))
       }
     }
     return null

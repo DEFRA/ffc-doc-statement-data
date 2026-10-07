@@ -22,7 +22,7 @@ const deleteEntryRecords = async (entry, transaction) => {
 const deleteIntermRecords = async (startDate, transaction) => {
   for (const table of etlIntermTables) {
     if (db[table]) {
-      await db[table](transaction ?? undefined).where('etlInsertedDt', '>=', startDate).del() // NOSONAR - must run sequentially
+      await db[table](transaction ?? undefined).where('etlInsertedDt', '>=', startDate).del()
       console.log(`Deleted records from intermediate table: ${table}`)
     } else {
       console.warn(`No mapped table found for intermediate table: ${table}, skipping...`)
@@ -42,7 +42,7 @@ const deleteETLRecords = async (startDate, transaction) => {
     }
 
     for (const entry of stageEntries) {
-      await deleteEntryRecords(entry, transaction) // NOSONAR - must run sequentially
+      await deleteEntryRecords(entry, transaction)
     }
 
     await deleteIntermRecords(startDate, transaction)
