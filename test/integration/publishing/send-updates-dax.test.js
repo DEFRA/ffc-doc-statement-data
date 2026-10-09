@@ -14,9 +14,6 @@ const { truncate } = require('../../helpers/truncate')
 const { mockDax1, mockDax2 } = require('../../mocks/dax')
 const maxBatchSize = 5
 
-// The dax mocks carry message-only fields (type, calculationReference) that
-// are not columns on the dax table - the deleted Sequelize model silently
-// dropped them on insert; whitelist the same way for Knex.
 const daxRow = (dax) => {
   const { paymentReference, calculationId, paymentPeriod, paymentAmount, transactionDate, datePublished } = dax
   return { paymentReference, calculationId, paymentPeriod, paymentAmount, transactionDate, datePublished }
