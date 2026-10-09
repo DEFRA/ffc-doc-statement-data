@@ -1,44 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlStageOrganisation } = require('../../../../app/retention/stage/remove-etl-stage-organisation')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  etlStageOrganisation: {
-    destroy: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  }
+const mockDb = createKnexMock(['etlStageOrganisation'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageOrganisation } = require('../../../../app/retention/stage/remove-etl-stage-organisation')
 
 describe('removeEtlStageOrganisation', () => {
   const sbis = [5001, 5002, 5003]
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageOrganisation.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.etlStageOrganisation.destroy.mockResolvedValue()
-
+  test('calls the etlStageOrganisation accessor with correct parameters', async () => {
     await removeEtlStageOrganisation(sbis, transaction)
 
-    expect(db.etlStageOrganisation.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageOrganisation.destroy).toHaveBeenCalledWith({
-      where: {
-        sbi: {
-          [db.Sequelize.Op.in]: sbis
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlStageOrganisation).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('sbi', sbis)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageOrganisation.destroy rejects', async () => {
+  test('calls the etlStageOrganisation accessor without a transaction when none is provided', async () => {
+    await removeEtlStageOrganisation(sbis)
+
+    expect(mockDb.tables.etlStageOrganisation).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageOrganisation.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageOrganisation(sbis, transaction)).rejects.toThrow('DB destroy error')
   })

@@ -1,44 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlStageBusinessAddressContactV } = require('../../../../app/retention/stage/remove-etl-stage-business-address-contact-v')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  etlStageBusinessAddressContactV: {
-    destroy: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  }
+const mockDb = createKnexMock(['etlStageBusinessAddressContactV'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageBusinessAddressContactV } = require('../../../../app/retention/stage/remove-etl-stage-business-address-contact-v')
 
 describe('removeEtlStageBusinessAddressContactV', () => {
   const sbis = [1001, 1002, 1003]
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageBusinessAddressContactV.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.etlStageBusinessAddressContactV.destroy.mockResolvedValue()
-
+  test('calls the etlStageBusinessAddressContactV accessor with correct parameters', async () => {
     await removeEtlStageBusinessAddressContactV(sbis, transaction)
 
-    expect(db.etlStageBusinessAddressContactV.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageBusinessAddressContactV.destroy).toHaveBeenCalledWith({
-      where: {
-        sbi: {
-          [db.Sequelize.Op.in]: sbis
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlStageBusinessAddressContactV).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('sbi', sbis)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageBusinessAddressContactV.destroy rejects', async () => {
+  test('calls the etlStageBusinessAddressContactV accessor without a transaction when none is provided', async () => {
+    await removeEtlStageBusinessAddressContactV(sbis)
+
+    expect(mockDb.tables.etlStageBusinessAddressContactV).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageBusinessAddressContactV.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageBusinessAddressContactV(sbis, transaction)).rejects.toThrow('DB destroy error')
   })

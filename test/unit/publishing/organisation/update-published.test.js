@@ -1,18 +1,26 @@
-const db = require('../../../../app/data')
-const updatePublished = require('../../../../app/publishing/organisation/update-published')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data')
+const mockDb = createKnexMock(['organisation'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
+
+const updatePublished = require('../../../../app/publishing/organisation/update-published')
 
 describe('updatePublished', () => {
   let transaction
 
   beforeEach(() => {
-    transaction = {}
     jest.clearAllMocks()
+    transaction = mockDb.trx
   })
 
   test('updates published when address exists', async () => {
-    db.organisation.findOne.mockResolvedValue({
+    mockDb.builder.resolves({
       sbi: 123,
       addressLine1: 'Farm Lane',
       addressLine2: null,
@@ -22,20 +30,15 @@ describe('updatePublished', () => {
       postcode: 'YO1 1AA'
     })
 
-    db.organisation.update.mockResolvedValue([1])
-
     await updatePublished(123, transaction)
 
-    expect(db.organisation.update).toHaveBeenCalledWith(
-      { published: expect.any(Date) },
-      { where: { sbi: 123 }, transaction }
-    )
-
-    expect(db.organisation.destroy).not.toHaveBeenCalled()
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ sbi: 123 })
+    expect(mockDb.builder.update).toHaveBeenCalledWith({ published: expect.any(Date) })
+    expect(mockDb.builder.del).not.toHaveBeenCalled()
   })
 
   test('deletes organisation when no address exists', async () => {
-    db.organisation.findOne.mockResolvedValue({
+    mockDb.builder.resolves({
       sbi: 456,
       addressLine1: null,
       addressLine2: null,
@@ -45,26 +48,54 @@ describe('updatePublished', () => {
       postcode: null
     })
 
-    db.organisation.destroy.mockResolvedValue(1)
-
     await updatePublished(456, transaction)
 
-    expect(db.organisation.destroy).toHaveBeenCalledWith({
-      where: { sbi: 456 },
-      transaction
-    })
-
-    expect(db.organisation.update).not.toHaveBeenCalled()
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ sbi: 456 })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
+    expect(mockDb.builder.update).not.toHaveBeenCalled()
   })
 
   test('throws error when organisation not found', async () => {
-    db.organisation.findOne.mockResolvedValue(null)
+    mockDb.builder.resolves(undefined)
 
     await expect(updatePublished(999, transaction))
       .rejects
       .toThrow('Organisation with SBI 999 not found')
 
-    expect(db.organisation.destroy).not.toHaveBeenCalled()
-    expect(db.organisation.update).not.toHaveBeenCalled()
+    expect(mockDb.builder.del).not.toHaveBeenCalled()
+    expect(mockDb.builder.update).not.toHaveBeenCalled()
+  })
+
+  test('calls the organisation accessor without a transaction when none is provided', async () => {
+    mockDb.builder.resolves({
+      sbi: 123,
+      addressLine1: 'Farm Lane',
+      addressLine2: null,
+      addressLine3: null,
+      city: 'York',
+      county: null,
+      postcode: 'YO1 1AA'
+    })
+
+    await updatePublished(123)
+
+    expect(mockDb.tables.organisation).toHaveBeenCalledWith(undefined)
+  })
+
+  test('calls the organisation accessor without a transaction when deleting', async () => {
+    mockDb.builder.resolves({
+      sbi: 456,
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      city: null,
+      county: null,
+      postcode: null
+    })
+
+    await updatePublished(456)
+
+    expect(mockDb.tables.organisation).toHaveBeenCalledWith(undefined)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 })

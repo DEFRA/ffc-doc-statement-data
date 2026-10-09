@@ -1,5 +1,4 @@
-const { Transaction } = require('sequelize')
-const db = require('../data')
+const db = require('../database')
 const { loadIntermFinanceDAX, loadIntermCalcOrg, loadIntermOrg, loadIntermApplicationClaim, loadIntermApplicationContract, loadIntermApplicationPayment, loadIntermTotal, loadIntermTotalClaim, loadIntermPaymentrefApplication, loadIntermPaymentrefOrg, loadIntermPaymentrefAgreementDates, loadOrganisations, loadIntermAppCalcResultsDelinkPayment, loadDelinkedCalculation, loadD365, loadIntermTotalZeroValues, loadZeroValueD365 } = require('./load-scripts')
 const { deleteETLRecords } = require('./delete-etl-records')
 const { createAlerts } = require('../messaging/create-alerts')
@@ -11,12 +10,8 @@ const loadETLData = async (startDate) => {
   // Split transactions into two because when the first one accesses data
   // a snapshot of the database is created. But data is added outside of the
   // transaction after this which queries now in the second transaction require.
-  const firstTransaction = await db.sequelize.transaction({
-    isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
-  })
-  const secondTransaction = await db.sequelize.transaction({
-    isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE
-  })
+  const firstTransaction = await db.transaction(undefined, { isolationLevel: 'serializable' })
+  const secondTransaction = await db.transaction(undefined, { isolationLevel: 'serializable' })
 
   // Wrap each load function with logging
   const wrapWithLogging = (fn, name, maxRetries = 3, baseDelay = 500) => async (_startDate = null, transaction = null) => {

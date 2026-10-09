@@ -1,25 +1,14 @@
-const db = require('../../data')
+const db = require('../../database')
 const { publishingConfig } = require('../../config')
 
 const getUnpublished = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
-  return db.organisation.findAll({
-    lock: true,
-    skipLocked: true,
-    where: {
-      [db.Sequelize.Op.or]: [
-        {
-          published: null
-        },
-        {
-          published: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') }
-        }
-      ]
-    },
-    attributes: ['sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated'],
-    raw: true,
-    transaction,
-    limit
-  })
+  return db.organisation(transaction ?? undefined)
+    .whereNull('published')
+    .orWhereRaw('"published" < "updated"')
+    .select('sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated')
+    .limit(limit)
+    .forUpdate()
+    .skipLocked()
 }
 
 module.exports = getUnpublished

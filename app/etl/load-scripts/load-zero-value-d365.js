@@ -1,9 +1,10 @@
-const db = require('../../data')
+const db = require('../../database')
 const config = require('../../config')
+const TABLES = { ...require('../../constants/etl-tables'), ...require('../../constants/tables') }
 const dbConfig = config.dbConfig[config.env]
 
 const loadZeroValueD365 = async (startDate, transaction) => {
-  await db.sequelize.query(`
+  await (transaction ?? db.client).raw(`
     WITH unique_rows AS (
       SELECT DISTINCT ON (T."paymentRef", T."calculationId")
         T."paymentRef" AS "paymentReference",
@@ -12,12 +13,12 @@ const loadZeroValueD365 = async (startDate, transaction) => {
         T."totalAmount" AS "paymentAmount",
         T.transdate AS "transactionDate",
         T.marketingyear AS "marketingYear"
-      FROM ${dbConfig.schema}."etlIntermTotalZeroValues" T
-      JOIN ${dbConfig.schema}."delinkedCalculation" D ON T."calculationId" = D."calculationId"
+      FROM ${dbConfig.schema}."${TABLES.etlIntermTotalZeroValues}" T
+      JOIN ${dbConfig.schema}."${TABLES.delinkedCalculation}" D ON T."calculationId" = D."calculationId"
       WHERE T."etlInsertedDt" > :startDate
       ORDER BY T."paymentRef", T."calculationId", T."etlInsertedDt" DESC
     )
-    INSERT INTO ${dbConfig.schema}."zeroValueD365" (
+    INSERT INTO ${dbConfig.schema}."${TABLES.zeroValueD365}" (
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate", "marketingYear"
     )
@@ -25,13 +26,7 @@ const loadZeroValueD365 = async (startDate, transaction) => {
       "paymentReference", "calculationId", "paymentPeriod",
       "paymentAmount", "transactionDate", "marketingYear"
     FROM unique_rows
-  `, {
-    replacements: {
-      startDate
-    },
-    raw: true,
-    transaction
-  })
+  `, { startDate })
 }
 
 module.exports = {

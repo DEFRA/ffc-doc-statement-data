@@ -1,9 +1,3 @@
-jest.mock('../../../../app/data', () => ({
-  sequelize: {
-    query: jest.fn()
-  }
-}))
-
 jest.mock('../../../../app/etl/load-scripts/load-interm-utils')
 jest.mock('../../../../app/config/message', () => ({
 }))

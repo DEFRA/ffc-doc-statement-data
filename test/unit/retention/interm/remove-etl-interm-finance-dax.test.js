@@ -1,35 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlIntermFinanceDax } = require('../../../../app/retention/interm/remove-etl-interm-finance-dax')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  etlIntermFinanceDax: {
-    destroy: jest.fn()
-  }
+const mockDb = createKnexMock(['etlIntermFinanceDax'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlIntermFinanceDax } = require('../../../../app/retention/interm/remove-etl-interm-finance-dax')
 
 describe('removeEtlIntermFinanceDax', () => {
   const claimId = 'AGR-123'
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves(1)
   })
 
-  test('calls db.etlIntermFinanceDax.destroy with correct parameters', async () => {
-    db.etlIntermFinanceDax.destroy.mockResolvedValue(1)
-
+  test('calls the etlIntermFinanceDax accessor with correct parameters', async () => {
     await removeEtlIntermFinanceDax(claimId, transaction)
 
-    expect(db.etlIntermFinanceDax.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlIntermFinanceDax.destroy).toHaveBeenCalledWith({
-      where: { claimId },
-      transaction
-    })
+    expect(mockDb.tables.etlIntermFinanceDax).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ claimId })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlIntermFinanceDax.destroy rejects', async () => {
+  test('calls the etlIntermFinanceDax accessor without a transaction when none is provided', async () => {
+    await removeEtlIntermFinanceDax(claimId)
+
+    expect(mockDb.tables.etlIntermFinanceDax).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB error')
-    db.etlIntermFinanceDax.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlIntermFinanceDax(claimId, transaction)).rejects.toThrow('DB error')
   })

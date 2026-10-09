@@ -1,25 +1,14 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const getSubsetDelinkedCalculation = async (calculationIdArray) => {
-  const delinkedCalculations = await db.delinkedCalculation.findAll({
-    lock: true,
-    skipLocked: true,
-    where: {
-      [db.Sequelize.Op.and]: [
-        {
-          calculationId: { [db.Sequelize.Op.in]: calculationIdArray }
-        },
-        {
-          [db.Sequelize.Op.or]: [
-            { datePublished: null },
-            { datePublished: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') } }
-          ]
-        }
-      ]
-    },
-    attributes: [
-      ['applicationId', 'applicationReference'],
-      ['calculationId', 'calculationReference'],
+  const delinkedCalculations = await db.delinkedCalculation()
+    .whereIn('calculationId', calculationIdArray)
+    .where(function () {
+      this.whereNull('datePublished').orWhereRaw('"datePublished" < "updated"')
+    })
+    .select(
+      { applicationReference: 'applicationId' },
+      { calculationReference: 'calculationId' },
       'sbi',
       'frn',
       'paymentBand1',
@@ -40,9 +29,9 @@ const getSubsetDelinkedCalculation = async (calculationIdArray) => {
       'paymentAmountCalculated',
       'datePublished',
       'updated'
-    ],
-    raw: true
-  })
+    )
+    .forUpdate()
+    .skipLocked()
 
   const unpublished = []
 

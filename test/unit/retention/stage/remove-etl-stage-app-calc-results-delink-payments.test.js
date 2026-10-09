@@ -1,44 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlStageAppCalcResultsDelinkPayments } = require('../../../../app/retention/stage/remove-etl-stage-app-calc-results-delink-payments')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  etlStageAppCalcResultsDelinkPayment: {
-    destroy: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  }
+const mockDb = createKnexMock(['etlStageAppCalcResultsDelinkPayment'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageAppCalcResultsDelinkPayments } = require('../../../../app/retention/stage/remove-etl-stage-app-calc-results-delink-payments')
 
 describe('removeEtlStageAppCalcResultsDelinkPayments', () => {
   const calculationIds = [301, 302, 303]
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageAppCalcResultsDelinkPayment.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.etlStageAppCalcResultsDelinkPayment.destroy.mockResolvedValue()
-
+  test('calls the etlStageAppCalcResultsDelinkPayment accessor with correct parameters', async () => {
     await removeEtlStageAppCalcResultsDelinkPayments(calculationIds, transaction)
 
-    expect(db.etlStageAppCalcResultsDelinkPayment.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageAppCalcResultsDelinkPayment.destroy).toHaveBeenCalledWith({
-      where: {
-        calculationId: {
-          [db.Sequelize.Op.in]: calculationIds
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlStageAppCalcResultsDelinkPayment).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('calculationId', calculationIds)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageAppCalcResultsDelinkPayment.destroy rejects', async () => {
+  test('calls the etlStageAppCalcResultsDelinkPayment accessor without a transaction when none is provided', async () => {
+    await removeEtlStageAppCalcResultsDelinkPayments(calculationIds)
+
+    expect(mockDb.tables.etlStageAppCalcResultsDelinkPayment).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageAppCalcResultsDelinkPayment.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageAppCalcResultsDelinkPayments(calculationIds, transaction)).rejects.toThrow('DB destroy error')
   })

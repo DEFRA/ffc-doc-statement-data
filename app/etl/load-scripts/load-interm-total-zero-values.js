@@ -1,4 +1,5 @@
 const config = require('../../config')
+const TABLES = require('../../constants/etl-tables')
 const dbConfig = config.dbConfig[config.env]
 const { executeQuery } = require('./load-interm-utils')
 
@@ -17,7 +18,7 @@ WITH latest AS (
       PARTITION BY D."transdate", D."quarter", D."claimId", D.marketingyear, D."paymentRef", D."invoiceid"
       ORDER BY D."etlInsertedDt" DESC
     ) AS rn
-  FROM ${dbConfig.schema}."etlIntermFinanceDax" D
+  FROM ${dbConfig.schema}."${TABLES.etlIntermFinanceDax}" D
 ),
 grouped AS (
   SELECT
@@ -55,11 +56,11 @@ ranked AS (
     AND L."claimId" = g."claimId"
     AND L.marketingyear = g.marketingyear
     AND L.rn = 1
-  INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD
+  INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCalculationDetails}" CD
     ON L."claimId" = CD."applicationId"
   WHERE g."updatedDt" > :startDate
 )
-INSERT INTO ${dbConfig.schema}."etlIntermTotalZeroValues" (
+INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermTotalZeroValues}" (
   "paymentRef", "quarter", "totalAmount",
   "transdate", "invoiceid", "calculationId", marketingyear
 )

@@ -1,44 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlStageFinanceDax } = require('../../../../app/retention/stage/remove-etl-stage-finance-dax')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  etlStageFinanceDax: {
-    destroy: jest.fn()
-  },
-  Sequelize: {
-    Op: {
-      in: 'in'
-    }
-  }
+const mockDb = createKnexMock(['etlStageFinanceDax'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageFinanceDax } = require('../../../../app/retention/stage/remove-etl-stage-finance-dax')
 
 describe('removeEtlStageFinanceDax', () => {
   const paymentRefs = ['PR-100', 'PR-101', 'PR-102']
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageFinanceDax.destroy with correct parameters using Sequelize.Op.in', async () => {
-    db.etlStageFinanceDax.destroy.mockResolvedValue()
-
+  test('calls the etlStageFinanceDax accessor with correct parameters', async () => {
     await removeEtlStageFinanceDax(paymentRefs, transaction)
 
-    expect(db.etlStageFinanceDax.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageFinanceDax.destroy).toHaveBeenCalledWith({
-      where: {
-        settlementvoucher: {
-          [db.Sequelize.Op.in]: paymentRefs
-        }
-      },
-      transaction
-    })
+    expect(mockDb.tables.etlStageFinanceDax).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereIn).toHaveBeenCalledWith('settlementvoucher', paymentRefs)
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageFinanceDax.destroy rejects', async () => {
+  test('calls the etlStageFinanceDax accessor without a transaction when none is provided', async () => {
+    await removeEtlStageFinanceDax(paymentRefs)
+
+    expect(mockDb.tables.etlStageFinanceDax).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageFinanceDax.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageFinanceDax(paymentRefs, transaction)).rejects.toThrow('DB destroy error')
   })
