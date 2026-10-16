@@ -1,23 +1,13 @@
-const db = require('../../data')
+const db = require('../../database')
 const { publishingConfig } = require('../../config')
 
 const getUnpublishedDelinked = async (transaction, limit = publishingConfig.dataPublishingMaxBatchSizePerDataSource) => {
-  return db.delinkedCalculation.findAll({
-    lock: true,
-    skipLocked: true,
-    where: {
-      [db.Sequelize.Op.or]: [
-        {
-          datePublished: null
-        },
-        {
-          datePublished: { [db.Sequelize.Op.lt]: db.sequelize.col('updated') }
-        }
-      ]
-    },
-    attributes: [
-      ['applicationId', 'applicationReference'],
-      ['calculationId', 'calculationReference'],
+  return db.delinkedCalculation(transaction ?? undefined)
+    .whereNull('datePublished')
+    .orWhereRaw('"datePublished" < "updated"')
+    .select(
+      { applicationReference: 'applicationId' },
+      { calculationReference: 'calculationId' },
       'sbi',
       'frn',
       'paymentBand1',
@@ -38,11 +28,10 @@ const getUnpublishedDelinked = async (transaction, limit = publishingConfig.data
       'paymentAmountCalculated',
       'datePublished',
       'updated'
-    ],
-    raw: true,
-    transaction,
-    limit
-  })
+    )
+    .limit(limit)
+    .forUpdate()
+    .skipLocked()
 }
 
 module.exports = getUnpublishedDelinked

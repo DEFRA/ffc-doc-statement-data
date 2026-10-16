@@ -1,6 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
+const TABLES = require('../../constants/etl-tables')
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const loadIntermApplicationContract = async (startDate, transaction) => {
@@ -29,16 +30,16 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
         ca."applicationId",
         cl.pkid,
         ${tableAlias}."changeType"
-      FROM ${dbConfig.schema}."etlStageCssContractApplications" cl
-      INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
-      INNER JOIN ${dbConfig.schema}."etlStageCssContracts" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
+      FROM ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" cl
+      INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" ca ON cl."contractId" = ca."contractId" AND ca."dataSourceSCode" = '000001'
+      INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContracts}" cc ON cl."contractId" = cc."contractId" AND cc."contractStateSCode" = '000020'
       WHERE cl."dataSourceSCode" = 'CAPCLM'
         AND ${tableAlias}."etlId" BETWEEN ${idFrom} AND ${idTo}
         ${exclusionCondition}
       GROUP BY cc."contractId", ca."applicationId", ${tableAlias}."changeType", cl.pkid
     ),
     updatedrows AS (
-      UPDATE ${dbConfig.schema}."etlIntermApplicationContract" interm
+      UPDATE ${dbConfig.schema}."${TABLES.etlIntermApplicationContract}" interm
       SET
         "contractId" = newdata."contractId",
         "agreementStart" = newdata."agreementStart",
@@ -50,7 +51,7 @@ const loadIntermApplicationContract = async (startDate, transaction) => {
         AND interm.pkid = newdata.pkid
       RETURNING interm.pkid
     )
-    INSERT INTO ${dbConfig.schema}."etlIntermApplicationContract" (
+    INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermApplicationContract}" (
       "contractId", "agreementStart", "agreementEnd", "applicationId", pkid
     )
     SELECT "contractId", "agreementStart", "agreementEnd", "applicationId", pkid

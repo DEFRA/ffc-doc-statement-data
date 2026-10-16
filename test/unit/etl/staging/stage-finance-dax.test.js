@@ -1,7 +1,7 @@
 jest.mock('node:crypto')
 jest.mock('../../../../app/storage')
 jest.mock('../../../../app/config/dwh')
-jest.mock('../../../../app/constants/tables')
+jest.mock('../../../../app/constants/etl-tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
 const { randomUUID } = require('node:crypto')

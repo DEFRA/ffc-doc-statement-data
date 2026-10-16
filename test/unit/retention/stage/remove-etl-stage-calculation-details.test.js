@@ -1,35 +1,42 @@
-const db = require('../../../../app/data')
-const { removeEtlStageCalculationDetails } = require('../../../../app/retention/stage/remove-etl-stage-calculation-details')
+const { createKnexMock } = require('../../../helpers/mock-knex')
 
-jest.mock('../../../../app/data', () => ({
-  etlStageCalculationDetails: {
-    destroy: jest.fn()
-  }
+const mockDb = createKnexMock(['etlStageCalculationDetails'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
 }))
+
+const { removeEtlStageCalculationDetails } = require('../../../../app/retention/stage/remove-etl-stage-calculation-details')
 
 describe('removeEtlStageCalculationDetails', () => {
   const applicationId = 'APP-999'
-  const transaction = {}
+  const transaction = mockDb.trx
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDb.builder.resolves()
   })
 
-  test('calls db.etlStageCalculationDetails.destroy with correct parameters', async () => {
-    db.etlStageCalculationDetails.destroy.mockResolvedValue()
-
+  test('calls the etlStageCalculationDetails accessor with correct parameters', async () => {
     await removeEtlStageCalculationDetails(applicationId, transaction)
 
-    expect(db.etlStageCalculationDetails.destroy).toHaveBeenCalledTimes(1)
-    expect(db.etlStageCalculationDetails.destroy).toHaveBeenCalledWith({
-      where: { applicationId },
-      transaction
-    })
+    expect(mockDb.tables.etlStageCalculationDetails).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId })
+    expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('propagates error when db.etlStageCalculationDetails.destroy rejects', async () => {
+  test('calls the etlStageCalculationDetails accessor without a transaction when none is provided', async () => {
+    await removeEtlStageCalculationDetails(applicationId)
+
+    expect(mockDb.tables.etlStageCalculationDetails).toHaveBeenCalledWith(undefined)
+  })
+
+  test('propagates error when the delete rejects', async () => {
     const error = new Error('DB destroy error')
-    db.etlStageCalculationDetails.destroy.mockRejectedValue(error)
+    mockDb.builder.rejects(error)
 
     await expect(removeEtlStageCalculationDetails(applicationId, transaction)).rejects.toThrow('DB destroy error')
   })

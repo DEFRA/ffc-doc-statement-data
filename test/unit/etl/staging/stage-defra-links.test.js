@@ -1,13 +1,13 @@
 const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
-const { defraLinksDelinked } = require('../../../../app/constants/tables')
+const { defraLinksDelinked } = require('../../../../app/constants/etl-tables')
 const { stageDefraLinks } = require('../../../../app/etl/staging/stage-defra-links')
 const { Readable } = require('stream')
 
 jest.mock('node:crypto')
 jest.mock('../../../../app/storage')
 jest.mock('../../../../app/config/dwh')
-jest.mock('../../../../app/constants/tables')
+jest.mock('../../../../app/constants/etl-tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
 describe('stageDefraLinks', () => {
