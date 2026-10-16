@@ -7,6 +7,8 @@ const getSubsetOrganisations = async (sbiArray) => {
       this.whereNull('published').orWhereRaw('"published" < "updated"')
     })
     .select('sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated')
+    .forUpdate()
+    .skipLocked()
 }
 
 module.exports = getSubsetOrganisations

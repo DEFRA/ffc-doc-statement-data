@@ -43,6 +43,8 @@ describe('getSubsetOrganisations', () => {
     expect(mockDb.builder.select).toHaveBeenCalledWith(
       'sbi', 'addressLine1', 'addressLine2', 'addressLine3', 'city', 'county', 'postcode', 'emailAddress', 'frn', 'name', 'updated'
     )
+    expect(mockDb.builder.forUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDb.builder.skipLocked).toHaveBeenCalledTimes(1)
     expect(result).toEqual(mockResult)
   })
 
