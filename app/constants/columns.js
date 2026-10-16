@@ -66,7 +66,7 @@ const COLUMNS = {
     'datePublished',
     'updated'
   ],
-  [TABLES.organisation]: [
+  [TABLES.organisations]: [
     'sbi',
     'addressLine1',
     'addressLine2',
@@ -219,7 +219,7 @@ const COLUMNS = {
     'subjectId',
     'defraId'
   ],
-  [ETL_TABLES.etlIntermAppCalcResultsDelinkPayment]: [
+  [ETL_TABLES.etlIntermAppCalcResultsDelinkPayments]: [
     'calculationId',
     'applicationId',
     'frn',

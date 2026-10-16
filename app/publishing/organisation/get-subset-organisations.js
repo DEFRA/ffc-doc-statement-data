@@ -1,7 +1,7 @@
 const db = require('../../database')
 
 const getSubsetOrganisations = async (sbiArray) => {
-  return db.organisation()
+  return db.organisations()
     .whereIn('sbi', sbiArray)
     .where(function () {
       this.whereNull('published').orWhereRaw('"published" < "updated"')

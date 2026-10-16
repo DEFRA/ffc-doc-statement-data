@@ -15,7 +15,7 @@ const loadOrganisations = async (startDate, transaction) => {
       WHERE O."etlInsertedDt" > :startDate
       ORDER BY sbi, "etlInsertedDt" DESC
     )
-    INSERT INTO ${dbConfig.schema}.${TABLES.organisation} (
+    INSERT INTO ${dbConfig.schema}.${TABLES.organisations} (
       sbi, "addressLine1", "addressLine2",
       "addressLine3", city, county,
       postcode, "emailAddress", frn,

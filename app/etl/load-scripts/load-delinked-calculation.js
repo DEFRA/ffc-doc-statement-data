@@ -47,7 +47,7 @@ SELECT
     SUM(CAST(P."totalProgressiveReduction" AS NUMERIC)) AS "totalProgressiveReduction",
     SUM(CAST(P."totalDelinkedPayment" AS NUMERIC)) AS "totalDelinkedPayment",
     SUM(CAST(P."paymentAmountCalculated" AS NUMERIC)) AS "paymentAmountCalculated"
-FROM ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayment}" P
+FROM ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayments}" P
 WHERE 
     P."etlInsertedDt" > :startDate
 GROUP BY 

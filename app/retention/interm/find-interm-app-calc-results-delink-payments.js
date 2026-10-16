@@ -1,7 +1,7 @@
 const db = require('../../database')
 
 const findIntermAppCalcResultsDelinkPayments = async (applicationId, frn, transaction) => {
-  return db.etlIntermAppCalcResultsDelinkPayment(transaction ?? undefined)
+  return db.etlIntermAppCalcResultsDelinkPayments(transaction ?? undefined)
     .where({ applicationId, frn })
     .select('calculationId')
 }

@@ -3,7 +3,7 @@ const { getAddressLines } = require('../../../../app/messaging/demographics/get-
 const { getSBI } = require('../../../../app/messaging/demographics/get-sbi')
 const { createKnexMock } = require('../../../helpers/mock-knex')
 
-const mockDb = createKnexMock(['organisation'])
+const mockDb = createKnexMock(['organisations'])
 
 jest.mock('../../../../app/messaging/demographics/get-address-lines')
 jest.mock('../../../../app/messaging/demographics/get-sbi')
@@ -46,7 +46,7 @@ describe('process demographics message', () => {
     await processDemographicsMessage(demographicsData, receiver)
     expect(getAddressLines).toHaveBeenCalledWith(demographicsData.body.address[0])
     expect(getSBI).toHaveBeenCalledWith(demographicsData.body)
-    expect(mockDb.tables.organisation).toHaveBeenCalledWith()
+    expect(mockDb.tables.organisations).toHaveBeenCalledWith()
     expect(mockDb.builder.where).toHaveBeenCalledWith({ sbi: '123456789' })
     expect(mockDb.builder.insert).toHaveBeenCalled()
     expect(receiver.completeMessage).toHaveBeenCalledWith(demographicsData)

@@ -27,12 +27,12 @@ const processDemographicsMessage = async (message, receiver) => {
 
     validateDemographicsData(demographicsData)
 
-    const existingSBI = (await db.organisation().where({ sbi: demographicsData.sbi }).first()) ?? null
+    const existingSBI = (await db.organisations().where({ sbi: demographicsData.sbi }).first()) ?? null
 
     if (existingSBI) {
-      await db.organisation().where({ sbi: existingSBI.sbi }).update(demographicsData)
+      await db.organisations().where({ sbi: existingSBI.sbi }).update(demographicsData)
     } else {
-      await db.organisation().insert(demographicsData)
+      await db.organisations().insert(demographicsData)
     }
 
     console.log('Demographics update processed')

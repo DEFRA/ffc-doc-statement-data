@@ -1,6 +1,6 @@
 const { createKnexMock } = require('../../../helpers/mock-knex')
 
-const mockDb = createKnexMock(['organisation'])
+const mockDb = createKnexMock(['organisations'])
 
 jest.mock('../../../../app/database', () => ({
   client: mockDb.knex,
@@ -79,7 +79,7 @@ describe('updatePublished', () => {
 
     await updatePublished(123)
 
-    expect(mockDb.tables.organisation).toHaveBeenCalledWith(undefined)
+    expect(mockDb.tables.organisations).toHaveBeenCalledWith(undefined)
   })
 
   test('calls the organisation accessor without a transaction when deleting', async () => {
@@ -95,7 +95,7 @@ describe('updatePublished', () => {
 
     await updatePublished(456)
 
-    expect(mockDb.tables.organisation).toHaveBeenCalledWith(undefined)
+    expect(mockDb.tables.organisations).toHaveBeenCalledWith(undefined)
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 })

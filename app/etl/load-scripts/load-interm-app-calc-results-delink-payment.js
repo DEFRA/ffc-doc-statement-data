@@ -64,7 +64,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       O.sbi,
       CAST(BAC.frn AS INTEGER) AS frn,
       ${tableAlias}."changeType"
-    FROM ${dbConfig.schema}."${TABLES.etlStageAppCalcResultsDelinkPayment}" DP
+    FROM ${dbConfig.schema}."${TABLES.etlStageAppCalcResultsDelinkPayments}" DP
     JOIN ${dbConfig.schema}."${TABLES.etlStageCalculationDetails}" CD ON DP."calculationId" = CD."calculationId"
     JOIN ${dbConfig.schema}."${TABLES.etlStageApplicationDetail}" AD ON AD."applicationId" = CD."applicationId"
     JOIN ${dbConfig.schema}."${TABLES.etlStageDefraLinks}" DL ON DL."subjectId" = AD."subjectId"
@@ -75,7 +75,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     GROUP BY DP."calculationId", CD."applicationId", O.sbi, BAC.frn, ${tableAlias}."changeType"
   ),
   "updatedRows" AS (
-    UPDATE ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayment}" interm
+    UPDATE ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayments}" interm
     SET
       "calculationId" = "newData"."calculationId",
       "applicationId" = "newData"."applicationId",
@@ -104,7 +104,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       AND interm."applicationId" = "newData"."applicationId"
     RETURNING interm."calculationId", interm."applicationId"
   )
-  INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayment}" (
+  INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermAppCalcResultsDelinkPayments}" (
     ${fields}
   )
   SELECT ${fields}

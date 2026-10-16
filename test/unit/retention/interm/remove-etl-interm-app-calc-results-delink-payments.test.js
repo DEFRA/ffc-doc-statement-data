@@ -1,6 +1,6 @@
 const { createKnexMock } = require('../../../helpers/mock-knex')
 
-const mockDb = createKnexMock(['etlIntermAppCalcResultsDelinkPayment'])
+const mockDb = createKnexMock(['etlIntermAppCalcResultsDelinkPayments'])
 
 jest.mock('../../../../app/database', () => ({
   client: mockDb.knex,
@@ -21,18 +21,18 @@ describe('removeEtlIntermAppCalcResultsDelinkPayments', () => {
     mockDb.builder.resolves(1)
   })
 
-  test('calls the etlIntermAppCalcResultsDelinkPayment accessor with correct parameters', async () => {
+  test('calls the etlIntermAppCalcResultsDelinkPayments accessor with correct parameters', async () => {
     await removeEtlIntermAppCalcResultsDelinkPayments(applicationId, frn, transaction)
 
-    expect(mockDb.tables.etlIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith(transaction)
+    expect(mockDb.tables.etlIntermAppCalcResultsDelinkPayments).toHaveBeenCalledWith(transaction)
     expect(mockDb.builder.where).toHaveBeenCalledWith({ applicationId, frn })
     expect(mockDb.builder.del).toHaveBeenCalledTimes(1)
   })
 
-  test('calls the etlIntermAppCalcResultsDelinkPayment accessor without a transaction when none is provided', async () => {
+  test('calls the etlIntermAppCalcResultsDelinkPayments accessor without a transaction when none is provided', async () => {
     await removeEtlIntermAppCalcResultsDelinkPayments(applicationId, frn)
 
-    expect(mockDb.tables.etlIntermAppCalcResultsDelinkPayment).toHaveBeenCalledWith(undefined)
+    expect(mockDb.tables.etlIntermAppCalcResultsDelinkPayments).toHaveBeenCalledWith(undefined)
   })
 
   test('propagates error when the delete rejects', async () => {

@@ -1,6 +1,6 @@
 const { createKnexMock } = require('../../../helpers/mock-knex')
 
-const mockDb = createKnexMock(['organisation'])
+const mockDb = createKnexMock(['organisations'])
 
 jest.mock('../../../../app/database', () => ({
   client: mockDb.knex,
@@ -36,7 +36,7 @@ describe('getSubsetOrganisations', () => {
 
     const result = await getSubsetOrganisations([123])
 
-    expect(mockDb.tables.organisation).toHaveBeenCalledWith()
+    expect(mockDb.tables.organisations).toHaveBeenCalledWith()
     expect(mockDb.builder.whereIn).toHaveBeenCalledWith('sbi', [123])
     expect(mockDb.builder.whereNull).toHaveBeenCalledWith('published')
     expect(mockDb.builder.orWhereRaw).toHaveBeenCalledWith('"published" < "updated"')

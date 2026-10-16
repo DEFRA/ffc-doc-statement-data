@@ -34,7 +34,7 @@ describe('sendOrganisationUpdates', () => {
 
   describe('whenOrganisationIsUnpublished', () => {
     beforeEach(async () => {
-      await db.organisation().insert([mockOrganisation1, mockOrganisation2])
+      await db.organisations().insert([mockOrganisation1, mockOrganisation2])
     })
 
     test('should call sendMessage once', async () => {
@@ -75,7 +75,7 @@ describe('sendOrganisationUpdates', () => {
 
     test('should update published date', async () => {
       await publish.start()
-      const organisation = await db.organisation().where({ sbi: 123456789 }).first()
+      const organisation = await db.organisations().where({ sbi: 123456789 }).first()
       expect(organisation.published).toStrictEqual(new Date(2022, 7, 5, 15, 30, 10, 120))
     })
 
@@ -95,24 +95,24 @@ describe('sendOrganisationUpdates', () => {
   describe('whenMultipleOrganisationsAreUnpublished', () => {
     test('should process all records when there are less records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = -1 + publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation().insert([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation().whereNull('published')
+      await db.organisations().insert([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisations().whereNull('published')
 
       await publish.start()
 
-      const unpublishedAfter = await db.organisation().whereNull('published')
+      const unpublishedAfter = await db.organisations().whereNull('published')
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })
 
     test('should process all records when there are equal number of records than publishingConfig.dataPublishingMaxBatchSizePerDataSource', async () => {
       const numberOfRecords = publishingConfig.dataPublishingMaxBatchSizePerDataSource
-      await db.organisation().insert([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
-      const unpublishedBefore = await db.organisation().whereNull('published')
+      await db.organisations().insert([...Array(numberOfRecords).keys()].map(x => { return { ...mockOrganisation1, sbi: mockOrganisation1.sbi + x } }))
+      const unpublishedBefore = await db.organisations().whereNull('published')
 
       await publish.start()
 
-      const unpublishedAfter = await db.organisation().whereNull('published')
+      const unpublishedAfter = await db.organisations().whereNull('published')
       expect(unpublishedBefore).toHaveLength(numberOfRecords)
       expect(unpublishedAfter).toHaveLength(0)
     })

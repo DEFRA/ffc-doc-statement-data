@@ -3,7 +3,7 @@ module.exports = {
   d365: 'd365',
   dax: 'dax',
   delinkedCalculation: 'delinkedCalculation',
-  organisation: 'organisations',
+  organisations: 'organisations',
   subsetCheck: 'subsetCheck',
   total: 'totals',
   zeroValueD365: 'zeroValueD365'
