@@ -1,14 +1,7 @@
-const db = require('../../data')
+const db = require('../../database')
 
 const removeEtlStageFinanceDax = async (paymentRefs, transaction) => {
-  await db.etlStageFinanceDax.destroy({
-    where: {
-      settlementvoucher: {
-        [db.Sequelize.Op.in]: paymentRefs
-      }
-    },
-    transaction
-  })
+  await db.etlStageFinanceDax(transaction ?? undefined).whereIn('settlementvoucher', paymentRefs).del()
 }
 
 module.exports = {

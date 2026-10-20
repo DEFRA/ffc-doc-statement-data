@@ -1,6 +1,6 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
-const { businessAddressDelinked } = require('../../constants/tables')
+const { businessAddressDelinked } = require('../../constants/etl-tables')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 const { VARCHAR, DATE } = require('../../constants/target-column-types')
 const { sharedColumns, getSharedMapping, sharedTransformer, sharedNonProdTransformer, sharedExcludedFields } = require('../../constants/business-address-shared/etl-data')

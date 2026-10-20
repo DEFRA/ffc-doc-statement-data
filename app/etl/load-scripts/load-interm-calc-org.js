@@ -1,6 +1,7 @@
 const config = require('../../config')
 const etlConfig = config.etlConfig
 const dbConfig = config.dbConfig[config.env]
+const TABLES = require('../../constants/etl-tables')
 const { getEtlStageLogs, processWithWorkers } = require('./load-interm-utils')
 
 const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
@@ -13,20 +14,20 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       CD."calculationDt",
       CD."idClcHeader",
       ${tableAlias}."changeType"
-    FROM ${dbConfig.schema}."etlStageAppsPaymentNotification" APN
-    INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" CLAIM 
-      ON CLAIM."applicationId" = APN."applicationId" 
+    FROM ${dbConfig.schema}."${TABLES.etlStageAppsPaymentNotification}" APN
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" CLAIM
+      ON CLAIM."applicationId" = APN."applicationId"
       AND CLAIM."dataSourceSCode" = 'CAPCLM'
-    INNER JOIN ${dbConfig.schema}."etlStageCssContractApplications" APP 
-      ON APP."contractId" = CLAIM."contractId" 
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCssContractApplications}" APP
+      ON APP."contractId" = CLAIM."contractId"
       AND APP."dataSourceSCode" = '000001'
-    INNER JOIN ${dbConfig.schema}."etlIntermFinanceDax" D 
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlIntermFinanceDax}" D
       ON D."claimId" = CLAIM."applicationId"
-    INNER JOIN ${dbConfig.schema}."etlStageFinanceDax" SD 
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlStageFinanceDax}" SD
       ON SD.invoiceid = D.invoiceid
-    INNER JOIN ${dbConfig.schema}."etlStageBusinessAddressContactV" BAC 
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlStageBusinessAddressContactV}" BAC
       ON BAC.frn = SD.custvendac
-    INNER JOIN ${dbConfig.schema}."etlStageCalculationDetails" CD 
+    INNER JOIN ${dbConfig.schema}."${TABLES.etlStageCalculationDetails}" CD
       ON CD."applicationId" = APN."applicationId" 
       AND CD."idClcHeader" = APN."idClcHeader"
       AND CD.ranked = 1
@@ -36,7 +37,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
     GROUP BY CD."calculationId", BAC.sbi, BAC.frn, CD."applicationId", CD."calculationDt", CD."idClcHeader", ${tableAlias}."changeType"
   ),
   updatedrows AS (
-    UPDATE ${dbConfig.schema}."etlIntermCalcOrg" interm
+    UPDATE ${dbConfig.schema}."${TABLES.etlIntermCalcOrg}" interm
     SET
       sbi = "newData".sbi,
       frn = "newData".frn,
@@ -48,7 +49,7 @@ const queryTemplate = (idFrom, idTo, tableAlias, exclusionCondition) => `
       AND interm."idClcHeader" = "newData"."idClcHeader"
     RETURNING interm."calculationId", interm."idClcHeader"
   )
-  INSERT INTO ${dbConfig.schema}."etlIntermCalcOrg" (
+  INSERT INTO ${dbConfig.schema}."${TABLES.etlIntermCalcOrg}" (
     "calculationId",
     sbi,
     frn,

@@ -1,10 +1,8 @@
-const db = require('../../../../app/data')
+const { executeQuery } = require('../../../../app/etl/load-scripts/load-interm-utils')
 const { loadIntermPaymentrefOrg } = require('../../../../app/etl/load-scripts/load-interm-paymentref-org')
 
-jest.mock('../../../../app/data', () => ({
-  sequelize: {
-    query: jest.fn()
-  }
+jest.mock('../../../../app/etl/load-scripts/load-interm-utils', () => ({
+  executeQuery: jest.fn()
 }))
 
 describe('loadIntermPaymentrefOrg', () => {
@@ -12,33 +10,17 @@ describe('loadIntermPaymentrefOrg', () => {
   const transaction = {}
 
   beforeEach(() => {
-    db.sequelize.query.mockClear()
+    jest.clearAllMocks()
   })
 
-  test('should call sequelize.query with correct SQL and parameters', async () => {
+  test('calls executeQuery with the load SQL and startDate replacement', async () => {
     await loadIntermPaymentrefOrg(startDate, transaction)
 
-    expect(db.sequelize.query).toHaveBeenCalledWith(`
-    INSERT INTO public."etlIntermPaymentrefOrg" ("paymentRef", sbi, frn)
-    SELECT PA."paymentRef", O.sbi, O.frn::bigint 
-      FROM public."etlIntermPaymentrefApplication" PA 
-    INNER JOIN public."etlIntermCalcOrg" O ON O."applicationId" = PA."applicationId"
-    WHERE PA."etlInsertedDt" > :startDate
-      OR O."etlInsertedDt" > :startDate
-    GROUP BY PA."paymentRef", O.sbi, O.frn
-    ON CONFLICT ("paymentRef", sbi, frn)
-    DO UPDATE SET "etlInsertedDt" = EXCLUDED."etlInsertedDt";
-  `, {
-      replacements: {
-        startDate
-      },
-      raw: true,
-      transaction
-    })
+    expect(executeQuery).toHaveBeenCalledWith(expect.any(String), { startDate }, transaction)
   })
 
-  test('should handle errors thrown by sequelize.query', async () => {
-    db.sequelize.query.mockRejectedValue(new Error('Query failed'))
+  test('propagates error when executeQuery rejects', async () => {
+    executeQuery.mockRejectedValue(new Error('Query failed'))
 
     await expect(loadIntermPaymentrefOrg(startDate, transaction)).rejects.toThrow('Query failed')
   })

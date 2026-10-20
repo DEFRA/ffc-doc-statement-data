@@ -1,7 +1,7 @@
 const sourceColumnNames = require('../../constants/source-column-names')
 const targetColumnNames = require('../../constants/target-column-names')
 const { VARCHAR, DATE, NUMBER } = require('../../constants/target-column-types')
-const { organisationDelinked } = require('../../constants/tables')
+const { organisationDelinked } = require('../../constants/etl-tables')
 const config = require('../../config')
 const { downloadAndProcessFile, monthDayYearDateTimeFormat } = require('./stage-utils')
 const { sharedTransformer, sharedNonProdTransformer } = require('../../constants/organisation-etl-shared')

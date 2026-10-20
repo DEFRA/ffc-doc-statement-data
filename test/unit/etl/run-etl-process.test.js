@@ -1,7 +1,17 @@
+const { createKnexMock, createQueryBuilder } = require('../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['etlStageLog'])
+
+jest.mock('../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
+
 const { runEtlProcess } = require('../../../app/etl/run-etl-process')
 const { Etl, Loaders, Destinations, Transformers, Connections } = require('ffc-pay-etl-framework')
 const storage = require('../../../app/storage')
-const db = require('../../../app/data')
 const { getFirstLineNumber } = require('../../../app/etl/file-utils')
 const publishEtlProcessError = require('../../../app/messaging/publish-etl-process-error')
 const { Readable } = require('stream')
@@ -9,21 +19,6 @@ const { Readable } = require('stream')
 jest.mock('ffc-pay-etl-framework')
 jest.mock('../../../app/config')
 jest.mock('../../../app/storage')
-jest.mock('../../../app/data', () => ({
-  sequelize: {
-    authenticate: jest.fn(),
-    close: jest.fn(),
-    query: jest.fn()
-  },
-  Sequelize: jest.fn(),
-  etlStageLog: {
-    create: jest.fn(),
-    update: jest.fn()
-  },
-  etlStageApplicationDetail: {
-    create: jest.fn()
-  }
-}))
 jest.mock('../../../app/constants/table-mappings')
 jest.mock('../../../app/etl/file-utils')
 jest.mock('../../../app/messaging/publish-etl-process-error')
@@ -32,6 +27,7 @@ describe('runEtlProcess', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     global.results = []
+    mockDb.builder.resolves([{ etlId: 1 }])
   })
 
   test('should handle ETL process correctly', async () => {
@@ -39,10 +35,6 @@ describe('runEtlProcess', () => {
     const mockFileStream = Readable.from([mockFileData])
 
     storage.deleteFile.mockResolvedValue()
-    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.etlStageApplicationDetail.create.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 
     const mockStreamAfterRemovingFirstLine = Readable.from(['second line\nthird line\n'])
@@ -54,11 +46,11 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event, listener) => {
         if (event === 'finish') {
-          callback([])
+          listener([])
         } else if (event === 'result') {
-          callback([])
+          listener([])
         }
         return mockEtl
       })
@@ -82,7 +74,7 @@ describe('runEtlProcess', () => {
     })
 
     expect(result).toEqual([])
-    expect(db.etlStageLog.update).toHaveBeenCalled()
+    expect(mockDb.builder.update).toHaveBeenCalled()
     expect(publishEtlProcessError).not.toHaveBeenCalled()
   })
 
@@ -91,10 +83,6 @@ describe('runEtlProcess', () => {
     const mockFileStream = Readable.from([mockFileData])
 
     storage.deleteFile.mockResolvedValue()
-    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.etlStageApplicationDetail.create.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 
     const mockStreamAfterRemovingFirstLine = Readable.from(['second line\nthird line\n'])
@@ -108,15 +96,15 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event, listener) => {
         if (event === 'error') {
-          callback(error)
+          listener(error)
         }
         if (event === 'finish') {
-          callback([])
+          listener([])
         }
         if (event === 'result') {
-          callback([])
+          listener([])
         }
         return mockEtl
       })
@@ -150,10 +138,6 @@ describe('runEtlProcess', () => {
     const mockFileStream = Readable.from([mockFileData])
 
     storage.deleteFile.mockResolvedValue()
-    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.etlStageApplicationDetail.create.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 
     const mockStreamAfterRemovingFirstLine = Readable.from(['second line\nthird line\n'])
@@ -167,9 +151,9 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event, listener) => {
         if (event === 'error') {
-          callback(error)
+          listener(error)
         }
         return mockEtl
       })
@@ -206,9 +190,6 @@ describe('runEtlProcess', () => {
     const config = require('../../../app/config')
     config.etlConfig = { fakeData: true }
     storage.deleteFile.mockResolvedValue()
-    db.etlStageLog.create.mockResolvedValue({ etlId: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
     storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
 
@@ -218,13 +199,13 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event, listener) => {
         if (event === 'finish') {
-          callback([])
+          listener([])
         }
 
         if (event === 'result') {
-          callback([])
+          listener([])
         }
 
         return mockEtl
@@ -254,9 +235,6 @@ describe('runEtlProcess', () => {
     const mockFileData = 'first line\nsecond line\nthird line\n'
     const mockFileStream = Readable.from([mockFileData])
     storage.deleteFile.mockResolvedValue()
-    db.etlStageLog.create.mockResolvedValue({ etlId: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
     storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
 
@@ -266,11 +244,11 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event, listener) => {
         if (event === 'finish') {
-          callback([])
+          listener([])
         } else if (event === 'result') {
-          callback([])
+          listener([])
         }
 
         return mockEtl
@@ -300,9 +278,6 @@ describe('runEtlProcess', () => {
     const mockFileData = 'first line\nsecond line\nthird line\n'
     const mockFileStream = Readable.from([mockFileData])
     storage.deleteFile.mockResolvedValue()
-    db.etlStageLog.create.mockResolvedValue({ etlId: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
     storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
 
@@ -313,9 +288,9 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn(function (event, callback) {
+      on: jest.fn(function (event, listener) {
         if (event === 'error') {
-          callback(error) // Simulate error event
+          listener(error) // Simulate error event
         }
         return this
       })
@@ -343,9 +318,6 @@ describe('runEtlProcess', () => {
     const mockFileStream = Readable.from([mockFileData])
 
     storage.deleteFile.mockResolvedValue(false) // Simulate file not found
-    db.etlStageLog.create.mockResolvedValue({ etl_id: 1 })
-    db.etlStageLog.update.mockResolvedValue()
-    db.someModel = { count: jest.fn().mockResolvedValue(0), max: jest.fn().mockResolvedValue(0) }
     getFirstLineNumber.mockResolvedValue(10)
 
     const mockEtl = {
@@ -354,11 +326,11 @@ describe('runEtlProcess', () => {
       transform: jest.fn().mockReturnThis(),
       destination: jest.fn().mockReturnThis(),
       pump: jest.fn().mockReturnThis(),
-      on: jest.fn((event, callback) => {
+      on: jest.fn((event, listener) => {
         if (event === 'finish') {
-          callback([])
+          listener([])
         } else if (event === 'result') {
-          callback([])
+          listener([])
         }
 
         return mockEtl
@@ -382,6 +354,120 @@ describe('runEtlProcess', () => {
     })
 
     expect(result).toEqual([])
-    expect(db.etlStageLog.update).toHaveBeenCalled()
+    expect(mockDb.builder.update).toHaveBeenCalled()
+  })
+
+  test('counts existing rows and finds the max etl id via the table accessor, and passes the db connection to the framework, when configured', async () => {
+    const mockFileData = 'first line\nsecond line\nthird line\n'
+    const mockFileStream = Readable.from([mockFileData])
+    storage.deleteFile.mockResolvedValue()
+    getFirstLineNumber.mockResolvedValue(10)
+    storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
+
+    const db = require('../../../app/database')
+    const accessorBuilder = createQueryBuilder()
+    accessorBuilder.resolves({ count: '7', max: 42 })
+    db.etlStageApplicationDetail = jest.fn(() => accessorBuilder)
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, listener) => {
+        if (event === 'finish') {
+          listener([])
+        } else if (event === 'result') {
+          listener([])
+        }
+        return mockEtl
+      })
+    }
+
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.ProvidedConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
+
+    await runEtlProcess({
+      fileStream: mockFileStream,
+      columns: [],
+      table: 'etlStageApplicationDetail',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
+    })
+
+    expect(accessorBuilder.count).toHaveBeenCalledWith({ count: '*' })
+    expect(accessorBuilder.max).toHaveBeenCalledWith({ max: 'etlId' })
+    expect(Connections.ProvidedConnection).toHaveBeenCalledWith({ connectionname: 'postgresConnection', connection: db })
+    expect(Destinations.PostgresDestination).toHaveBeenCalledWith(expect.objectContaining({ connectionname: 'postgresConnection' }))
+
+    delete db.etlStageApplicationDetail
+  })
+
+  test('defaults idFrom to 1 when no rows exist yet, and keeps the lower id bound when the max grows during the run', async () => {
+    const mockFileData = 'first line\nsecond line\nthird line\n'
+    const mockFileStream = Readable.from([mockFileData])
+    storage.deleteFile.mockResolvedValue()
+    getFirstLineNumber.mockResolvedValue(10)
+    storage.downloadFileAsStream.mockResolvedValue(mockFileStream)
+
+    const db = require('../../../app/database')
+    const beforeBuilder = createQueryBuilder()
+    beforeBuilder.resolves({ count: '0', max: null })
+    const afterBuilder = createQueryBuilder()
+    afterBuilder.resolves({ count: '9', max: 50 })
+
+    db.etlStageApplicationDetail = jest.fn()
+      .mockImplementationOnce(() => beforeBuilder) // countRows, in prepareEtlContext
+      .mockImplementationOnce(() => beforeBuilder) // maxEtlId, in prepareEtlContext -> idFrom = 0 + 1
+      .mockImplementationOnce(() => afterBuilder) // countRows, in handleEtlResult
+      .mockImplementationOnce(() => afterBuilder) // maxEtlId, in handleEtlResult -> idTo = 50
+
+    const mockEtl = {
+      connection: jest.fn().mockReturnThis(),
+      loader: jest.fn().mockReturnThis(),
+      transform: jest.fn().mockReturnThis(),
+      destination: jest.fn().mockReturnThis(),
+      pump: jest.fn().mockReturnThis(),
+      on: jest.fn((event, listener) => {
+        if (event === 'finish') {
+          listener([])
+        } else if (event === 'result') {
+          listener([])
+        }
+        return mockEtl
+      })
+    }
+
+    Etl.Etl.mockImplementation(() => mockEtl)
+    Connections.ProvidedConnection.mockResolvedValue({})
+    Loaders.CSVLoader.mockImplementation(() => {})
+    Transformers.FakerTransformer.mockImplementation(() => {})
+    Transformers.StringReplaceTransformer.mockImplementation(() => {})
+    Destinations.PostgresDestination.mockImplementation(() => {})
+
+    await runEtlProcess({
+      fileStream: mockFileStream,
+      columns: [],
+      table: 'etlStageApplicationDetail',
+      mapping: {},
+      transformer: {},
+      nonProdTransformer: {},
+      file: 'someFile'
+    })
+
+    expect(mockDb.builder.update).toHaveBeenCalledWith(expect.objectContaining({
+      idFrom: 1,
+      idTo: 50,
+      rowsLoadedCount: 9
+    }))
+
+    delete db.etlStageApplicationDetail
   })
 })

@@ -1,14 +1,9 @@
-const db = require('../data')
+const db = require('../database')
 
 const findDelinkedCalculations = async (applicationId, frn, transaction) => {
-  return db.delinkedCalculation.findAll({
-    attributes: ['calculationId', 'sbi'],
-    where: {
-      applicationId,
-      frn
-    },
-    transaction
-  })
+  return db.delinkedCalculation(transaction ?? undefined)
+    .where({ applicationId, frn })
+    .select('calculationId', 'sbi')
 }
 
 module.exports = {

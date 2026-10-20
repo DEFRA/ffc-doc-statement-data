@@ -1,36 +1,40 @@
-const db = require('../../../../app/data')
+const { createKnexMock } = require('../../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['d365'])
+
+jest.mock('../../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
+
 const getUnpublishedD365 = require('../../../../app/publishing/d365/get-unpublished')
 const { mockD3651, mockD3652, mockD3653 } = require('../../../mocks/d365')
 
-db.d365 = {
-  findAll: jest.fn()
-}
-
 describe('send d365 updates', () => {
-  beforeEach(async () => {
-    db.d365.findAll.mockClear()
-    db.d365.findAll.mockResolvedValue([mockD3651, mockD3652, mockD3653])
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockDb.builder.resolves([mockD3651, mockD3652, mockD3653])
   })
 
   test('getUnpublishedD365 returns the correct data', async () => {
-    const transaction = {}
+    const transaction = mockDb.trx
     const result = await getUnpublishedD365(transaction)
+
     expect(result).toEqual([mockD3651, mockD3652, mockD3653])
-    expect(db.d365.findAll).toHaveBeenCalledWith(expect.objectContaining({
-      lock: true,
-      skipLocked: true,
-      where: { datePublished: null },
-      transaction,
-      limit: expect.any(Number)
-    }))
-    expect(db.d365.findAll.mock.calls[0][0].order).toBeUndefined()
+    expect(mockDb.tables.d365).toHaveBeenCalledWith(transaction)
+    expect(mockDb.builder.whereNull).toHaveBeenCalledWith('datePublished')
+    expect(mockDb.builder.limit).toHaveBeenCalledWith(expect.any(Number))
+    expect(mockDb.builder.forUpdate).toHaveBeenCalled()
+    expect(mockDb.builder.skipLocked).toHaveBeenCalled()
+    expect(mockDb.builder.orderByRaw).not.toHaveBeenCalled()
   })
 
   test('getUnpublishedD365 sets random order when randomise is true', async () => {
-    const transaction = {}
+    const transaction = mockDb.trx
     await getUnpublishedD365(transaction, undefined, true)
-    expect(db.d365.findAll).toHaveBeenCalledWith(expect.objectContaining({
-      order: expect.any(Object)
-    }))
+
+    expect(mockDb.builder.orderByRaw).toHaveBeenCalledWith('random()')
   })
 })

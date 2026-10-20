@@ -1,13 +1,13 @@
 const { randomUUID } = require('node:crypto')
 const storage = require('../../../../app/storage')
-const { cssContractDelinked } = require('../../../../app/constants/tables')
+const { cssContractDelinked } = require('../../../../app/constants/etl-tables')
 const { stageCSSContract } = require('../../../../app/etl/staging/stage-css-contract')
 const { Readable } = require('stream')
 
 jest.mock('node:crypto')
 jest.mock('../../../../app/storage')
 jest.mock('../../../../app/config/dwh')
-jest.mock('../../../../app/constants/tables')
+jest.mock('../../../../app/constants/etl-tables')
 jest.mock('../../../../app/etl/run-etl-process')
 
 describe('stageCSSContract', () => {
