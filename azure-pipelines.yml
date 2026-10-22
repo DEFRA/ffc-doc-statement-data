@@ -36,6 +36,7 @@ extends:
   parameters:
     appFrameworkType: nodejs
     failOnThreshold: moderate # Optional: moderate (default), low, high, critical
+    runSnykScan: false
     prDeployment: ${{ parameters.prDeployment }}
     branchDeployment: ${{ parameters.branchDeployment }}
     sndDeployment: ${{ parameters.snd2Deployment }}
