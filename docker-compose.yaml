@@ -51,7 +51,7 @@ services:
       USE_NEW_DWH_CONTAINER: ${USE_NEW_DWH_CONTAINER:-true}
 
   ffc-doc-statement-data-postgres:
-    image: postgres:11.4-alpine
+    image: postgres:16.5-alpine
     environment:
       POSTGRES_DB: ffc_doc_statement_data
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
