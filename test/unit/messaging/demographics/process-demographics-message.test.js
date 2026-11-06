@@ -94,6 +94,21 @@ describe('process demographics message', () => {
     }])
   })
 
+  test('should create alert with fallback message when error has no message', async () => {
+    const error = {}
+    mockDb.builder.rejects(error)
+
+    console.error = jest.fn()
+
+    await processDemographicsMessage(demographicsData, receiver)
+
+    expect(createAlerts).toHaveBeenCalledWith([{
+      message: 'An unknown error occurred'
+    }])
+
+    expect(receiver.completeMessage).not.toHaveBeenCalled()
+  })
+
   test('should ignore message received before day 0 date time', async () => {
     const message = {
       body: demographicsData.body,
