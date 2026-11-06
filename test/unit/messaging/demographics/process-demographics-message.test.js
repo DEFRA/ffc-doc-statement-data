@@ -1,6 +1,7 @@
 const moment = require('moment')
 const { getAddressLines } = require('../../../../app/messaging/demographics/get-address-lines')
 const { getSBI } = require('../../../../app/messaging/demographics/get-sbi')
+const { createAlerts } = require('../../../../app/messaging/create-alerts')
 const { createKnexMock } = require('../../../helpers/mock-knex')
 
 const mockDb = createKnexMock(['organisations'])
@@ -74,16 +75,23 @@ describe('process demographics message', () => {
     expect(mockDb.builder.update).not.toHaveBeenCalled()
   })
 
-  test('should handle errors gracefully', async () => {
+  test('should create alert with error message as a string when processing fails', async () => {
     const error = new Error('Test Error')
+    error.category = 'Validation'
     mockDb.builder.rejects(error)
 
     console.error = jest.fn()
 
     await processDemographicsMessage(demographicsData, receiver)
 
-    expect(console.error).toHaveBeenCalledWith('Unable to process demographics message:', error)
+    expect(console.error).toHaveBeenCalledWith(
+      'Unable to process demographics message:',
+      error
+    )
     expect(receiver.completeMessage).not.toHaveBeenCalled()
+    expect(createAlerts).toHaveBeenCalledWith([{
+      message: 'Test Error'
+    }])
   })
 
   test('should ignore message received before day 0 date time', async () => {
