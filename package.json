@@ -38,7 +38,7 @@
     "ffc-database": "2.0.2",
     "ffc-pay-etl-framework": "2.0.5",
     "ffc-pay-event-publisher": "2.0.2",
-    "joi": "18.3.1",
+    "joi": "18.3.2",
     "log-timestamp": "0.3.0",
     "moment": "2.31.0",
     "node-stream-zip": "1.15.0",
