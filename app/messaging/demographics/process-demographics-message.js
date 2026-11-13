@@ -43,7 +43,7 @@ const processDemographicsMessage = async (message, receiver) => {
       await receiver.deadLetterMessage(message)
     }
     await createAlerts([{
-      message: err
+      message: err?.message ?? 'An unknown error occurred'
     }])
   }
 }
